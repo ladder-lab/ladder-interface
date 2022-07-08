@@ -1,0 +1,24 @@
+{
+  "background_color": "#fff",
+  "display": "standalone",
+  "homepage_url": "",
+  "icons": [
+    {
+      "src": "./images/196x196_App_Icon.png",
+      "sizes": "196x196",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./images/512x512_App_Icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "orientation": "portrait",
+  "name": "Ladder",
+  "short_name": "Ladder",
+  "start_url": ".",
+  "theme_color": "#D8FF20"
+}
