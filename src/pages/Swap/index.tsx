@@ -5,6 +5,7 @@ import SelectButton from 'components/Button/SelectButton'
 import NumericalInput from 'components/Input/InputNumerical'
 import ActionButton from 'components/Button/ActionButton'
 import { ReactComponent as SettingIcon } from 'assets/svg/setting.svg'
+import { ReactComponent as ArrowCircle } from 'assets/svg/arrow_circle.svg'
 
 export default function Swap() {
   const [fromVal, setFromVal] = useState('')
@@ -25,6 +26,7 @@ export default function Swap() {
             <SelectButton width={'346px'}>DAI</SelectButton>
             <NumericalInput value={fromVal} onChange={onFromVal} maxWidth={254} />
           </Box>
+          <ArrowCircle />
           <Box display="flex" gap={16}>
             <SelectButton width={'346px'}>DAI</SelectButton>
             <NumericalInput value={fromVal} onChange={onFromVal} maxWidth={254} />
