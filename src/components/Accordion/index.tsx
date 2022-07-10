@@ -13,10 +13,11 @@ interface Props {
   expanded: boolean
   onChange: () => void
   iconCssOverride?: CSSProperties
+  margin?: string
 }
 
 export default function _Accordion(props: Props) {
-  const { summary, details, onChange, expanded, iconCssOverride } = props
+  const { summary, details, onChange, expanded, iconCssOverride, margin } = props
   const theme = useTheme()
 
   return (
@@ -27,12 +28,12 @@ export default function _Accordion(props: Props) {
         background: theme.palette.background.default,
         borderRadius: '8px',
         padding: '16px 18px',
-        margin: 0,
+        margin: margin || 0,
         '&:before': {
           display: 'none'
         },
         '&.Mui-expanded': {
-          margin: 0
+          margin: `${margin} !important` || 0
         },
         '& .MuiAccordionSummary-content': {
           margin: '20px 0'
