@@ -37,7 +37,7 @@ const CustomizedAutoRow = styled('div')(`
   display: flex;
   align-items: center;
   & > div {
-    width: 50%;  
+    width: 50%;
   }
 `)
 

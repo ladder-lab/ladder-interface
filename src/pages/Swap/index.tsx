@@ -4,7 +4,6 @@ import AppBody from 'components/AppBody'
 import SelectButton from 'components/Button/SelectButton'
 import NumericalInput from 'components/Input/InputNumerical'
 import ActionButton from 'components/Button/ActionButton'
-import { ReactComponent as SettingIcon } from 'assets/svg/setting.svg'
 import { ReactComponent as ArrowCircle } from 'assets/svg/arrow_circle.svg'
 import Accordion from 'components/Accordion'
 import { ReactComponent as InfoIcon } from 'assets/svg/info.svg'
@@ -15,6 +14,7 @@ import AddIcon from '@mui/icons-material/Add'
 import Image from 'components/Image'
 import SampleNftLogo from 'assets/images/sample-nft.png'
 import SampleTokenLogo from 'assets/images/ethereum-logo.png'
+import Settings from 'components/essential/Settings'
 
 export default function Swap() {
   const [fromVal, setFromVal] = useState('')
@@ -104,7 +104,7 @@ export default function Swap() {
 function SettingButton({ sx }: { sx: SxProps }) {
   return (
     <IconButton sx={{ backgroundColor: '#F7F7F7', borderRadius: '8px', width: 52, height: 52, ...sx }}>
-      <SettingIcon />
+      <Settings />
     </IconButton>
   )
 }
