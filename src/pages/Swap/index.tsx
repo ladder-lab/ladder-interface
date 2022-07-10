@@ -24,7 +24,13 @@ export default function Swap() {
           <SettingButton sx={{ position: 'absolute', right: 32, top: 24 }} />
           <Box display="flex" gap={16}>
             <SelectButton width={'346px'}>DAI</SelectButton>
-            <NumericalInput value={fromVal} onChange={onFromVal} maxWidth={254} />
+            <NumericalInput
+              value={fromVal}
+              onChange={onFromVal}
+              maxWidth={254}
+              subStr="~$568.23"
+              subStr2="Balence: 2.35512345 DAI"
+            />
           </Box>
           <ArrowCircle />
           <Box display="flex" gap={16}>

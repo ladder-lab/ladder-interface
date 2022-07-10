@@ -84,7 +84,7 @@ export const themeColors = {
       main: '#31B047'
     },
     background: {
-      default: '#F6F6F6',
+      default: '#F7F7F7',
       paper: '#FFFFFF'
     },
     text: {
