@@ -14,6 +14,7 @@ export default function Swap() {
   const [fromVal, setFromVal] = useState('')
   const [toVal, setToVal] = useState('')
   const [fromAccordionExpanded, setFromAccordionExpanded] = useState(false)
+  const [toAccordionExpanded, setToAccordionExpanded] = useState(false)
 
   const onFromVal = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setFromVal(e.target.value)
@@ -31,7 +32,7 @@ export default function Swap() {
             SWAP
           </Typography>
           <SettingButton sx={{ position: 'absolute', right: 32, top: 24 }} />
-          <Box display="flex" gap={16}>
+          <Box display="flex" gap={16} mb={12}>
             <SelectButton width={'346px'}>DAI</SelectButton>
             <NumericalInput
               value={fromVal}
@@ -50,11 +51,26 @@ export default function Swap() {
             onChange={() => setFromAccordionExpanded(!fromAccordionExpanded)}
             expanded={fromAccordionExpanded}
           />
-          <ArrowCircle />
-          <Box display="flex" gap={16}>
+          <ArrowCircle style={{ margin: '23px auto' }} />
+          <Box display="flex" gap={16} mb={12}>
             <SelectButton width={'346px'}>DAI</SelectButton>
-            <NumericalInput value={toVal} onChange={onToVal} maxWidth={254} />
+            <NumericalInput
+              value={toVal}
+              onChange={onToVal}
+              maxWidth={254}
+              subStr="~$568.23"
+              subStr2="Balence: 2.35512345 DAI"
+            />
           </Box>
+          <CurrencyAccordion
+            currency={ETHER}
+            name="DAI"
+            contract="123"
+            tokenId="123"
+            tokenType="ERC20"
+            onChange={() => setToAccordionExpanded(!toAccordionExpanded)}
+            expanded={toAccordionExpanded}
+          />
           <ActionButton onAction={() => {}} actionText="Swap" error="Select a Token" />
         </Box>
       </AppBody>
@@ -93,8 +109,8 @@ function CurrencyAccordion({
     borderRadius: '10px',
     boxShadow: '0px 3px 10px rgba(0,0,0,0.15 )',
     position: 'absolute',
-    right: 12,
-    top: 12,
+    right: 0,
+    top: 0,
     fontSize: 12,
     padding: '4px 12px'
   })
@@ -120,5 +136,13 @@ function CurrencyAccordion({
     </Box>
   )
 
-  return <Accordion summary={summary} details={details} expanded={expanded} onChange={onChange} />
+  return (
+    <Accordion
+      summary={summary}
+      details={details}
+      expanded={expanded}
+      onChange={onChange}
+      iconCssOverride={{ right: 0, bottom: 0, position: 'absolute' }}
+    />
+  )
 }

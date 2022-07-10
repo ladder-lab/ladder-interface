@@ -6,15 +6,17 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 // import RemoveIcon from '@mui/icons-material/Remove'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import Divider from 'components/Divider'
+import { CSSProperties } from 'react'
 interface Props {
   summary: string | JSX.Element
   details: string | JSX.Element
   expanded: boolean
   onChange: () => void
+  iconCssOverride?: CSSProperties
 }
 
 export default function _Accordion(props: Props) {
-  const { summary, details, onChange, expanded } = props
+  const { summary, details, onChange, expanded, iconCssOverride } = props
   const theme = useTheme()
 
   return (
@@ -25,17 +27,18 @@ export default function _Accordion(props: Props) {
         background: theme.palette.background.default,
         borderRadius: '8px',
         padding: '16px 18px',
+        margin: 0,
         '&:before': {
           display: 'none'
         },
-        margin: '16px 0',
+        '&.Mui-expanded': {
+          margin: 0
+        },
         '& .MuiAccordionSummary-content': {
           margin: '20px 0'
         },
         '& .MuiAccordionSummary-expandIconWrapper': {
-          right: 18.52,
-          bottom: 18.52,
-          position: 'absolute'
+          ...iconCssOverride
         }
       }}
       expanded={expanded}
@@ -46,8 +49,11 @@ export default function _Accordion(props: Props) {
       >
         {summary}
       </AccordionSummary>
-      <Divider />
-      <AccordionDetails>{details}</AccordionDetails>
+      <AccordionDetails sx={{ mt: 16 }}>
+        <Divider />
+
+        {details}
+      </AccordionDetails>
     </Accordion>
   )
 }
