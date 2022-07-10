@@ -1,5 +1,5 @@
 import React, { ChangeEvent, InputHTMLAttributes } from 'react'
-import { InputBase, styled, Typography, Box } from '@mui/material'
+import { InputBase, styled, Typography, Box, useTheme } from '@mui/material'
 import { inputBaseClasses } from '@mui/material/InputBase'
 import InputLabel from './InputLabel'
 
@@ -68,6 +68,7 @@ export default function Input({
   subStr2,
   ...rest
 }: InputProps & Omit<InputHTMLAttributes<HTMLInputElement>, 'color' | 'outline' | 'size'>) {
+  const theme = useTheme()
   return (
     <div style={{ width: '100%', maxWidth: maxWidth || 'unset' }}>
       {label && <InputLabel>{label}</InputLabel>}
@@ -104,13 +105,13 @@ export default function Input({
       />
       <Box display="flex" justifyContent="space-between">
         {subStr && (
-          <Typography fontSize={12} mt={12} sx={{ opacity: 0.5 }}>
+          <Typography fontSize={12} mt={12} sx={{ color: theme.palette.text.secondary }}>
             {subStr}
           </Typography>
         )}
 
         {subStr2 && (
-          <Typography fontSize={12} mt={12} sx={{ opacity: 0.5 }}>
+          <Typography fontSize={12} mt={12} sx={{ color: theme.palette.text.secondary }}>
             {subStr2}
           </Typography>
         )}
