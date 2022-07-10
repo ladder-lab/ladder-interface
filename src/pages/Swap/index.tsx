@@ -91,7 +91,10 @@ export default function Swap() {
             onChange={() => setSummaryExpanded(!summaryExpanded)}
             margin="20px 0 40px"
           />
-          <ActionButton onAction={() => {}} actionText="Swap" error="Select a Token" />
+          <Box display="grid" gap={16}>
+            <ActionButton onAction={() => {}} actionText="Allow the Ladder to use your DAI" />
+            <ActionButton onAction={() => {}} actionText="Swap" error="Select a Token" />
+          </Box>
         </Box>
       </AppBody>
     </>

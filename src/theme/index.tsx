@@ -203,7 +203,8 @@ export const override: (theme: any) => any & {
           backgroundColor: theme.palette.primary.dark
         },
         '&:disabled': {
-          backgroundColor: theme.palette.primary.light,
+          // backgroundColor: theme.palette.primary.light,
+          backgroundColor: '#DADADA',
           color: '#464647'
         }
       },
