@@ -43,10 +43,7 @@ export default function _Accordion(props: Props) {
       }}
       expanded={expanded}
     >
-      <AccordionSummary
-        sx={{ fontSize: { xs: 14, md: 16 } }}
-        expandIcon={<KeyboardArrowDownIcon sx={{ transform: expanded ? 'rotate(180deg)' : 'none' }} />}
-      >
+      <AccordionSummary sx={{ fontSize: { xs: 14, md: 16 } }} expandIcon={<KeyboardArrowDownIcon />}>
         {summary}
       </AccordionSummary>
       <AccordionDetails sx={{ mt: 16 }}>

@@ -27,7 +27,12 @@ export default function Swap() {
   return (
     <>
       <AppBody width={'680px'} maxWidth={'680px'}>
-        <Box sx={{ padding: '33px 32px 30px', position: 'relative' }}>
+        <Box
+          sx={{
+            padding: '33px 32px 30px',
+            position: 'relative'
+          }}
+        >
           <Typography fontSize={28} mb={45}>
             SWAP
           </Typography>
@@ -51,7 +56,10 @@ export default function Swap() {
             onChange={() => setFromAccordionExpanded(!fromAccordionExpanded)}
             expanded={fromAccordionExpanded}
           />
-          <ArrowCircle style={{ margin: '23px auto' }} />
+          <Box sx={{ height: 76, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <ArrowCircle />
+          </Box>
+
           <Box display="flex" gap={16} mb={12}>
             <SelectButton width={'346px'}>DAI</SelectButton>
             <NumericalInput
@@ -119,7 +127,7 @@ function CurrencyAccordion({
     <Box sx={{ display: 'flex', gap: 19, alignItems: 'center' }}>
       <CurrencyLogo currency={currency} />
       <Box display="grid" gap={8}>
-        <Typography color={theme.palette.text.secondary}>Name: {currency.symbol}</Typography>
+        <Typography color={theme.palette.text.secondary}>Name: {name}</Typography>
         <Typography color={theme.palette.text.secondary}>Contract: {contract}</Typography>
         <Typography color={theme.palette.text.secondary}>Token Id: {tokenId || 'none'}</Typography>
       </Box>
