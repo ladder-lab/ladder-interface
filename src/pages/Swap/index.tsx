@@ -7,8 +7,6 @@ import ActionButton from 'components/Button/ActionButton'
 import { ReactComponent as SettingIcon } from 'assets/svg/setting.svg'
 import { ReactComponent as ArrowCircle } from 'assets/svg/arrow_circle.svg'
 import Accordion from 'components/Accordion'
-import { Currency, ETHER } from 'constants/token'
-import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { ReactComponent as InfoIcon } from 'assets/svg/info.svg'
 import { ReactComponent as GasStationIcon } from 'assets/svg/gas_station.svg'
 import QuestionHelper from 'components/essential/QuestionHelper'
@@ -56,8 +54,8 @@ export default function Swap() {
               subStr2="Balence: 2.35512345 DAI"
             />
           </Box>
-          <CurrencyAccordion
-            currency={ETHER}
+          <AssetAccordion
+            logo={SampleTokenLogo}
             name="DAI"
             contract="123"
             tokenId="123"
@@ -79,8 +77,8 @@ export default function Swap() {
               subStr2="Balence: 2.35512345 DAI"
             />
           </Box>
-          <CurrencyAccordion
-            currency={ETHER}
+          <AssetAccordion
+            logo={SampleNftLogo}
             name="DAI"
             contract="123"
             tokenId="123"
@@ -108,8 +106,8 @@ function SettingButton({ sx }: { sx: SxProps }) {
   )
 }
 
-function CurrencyAccordion({
-  currency,
+function AssetAccordion({
+  logo,
   name,
   contract,
   tokenId,
@@ -117,7 +115,7 @@ function CurrencyAccordion({
   expanded,
   onChange
 }: {
-  currency: Currency
+  logo: string
   name: string
   contract: string
   tokenId?: string
@@ -139,7 +137,7 @@ function CurrencyAccordion({
 
   const summary = (
     <Box sx={{ display: 'flex', gap: 19, alignItems: 'center' }}>
-      <CurrencyLogo currency={currency} />
+      <Image src={logo} style={{ width: 36 }} />
       <Box display="grid" gap={8}>
         <Typography color={theme.palette.text.secondary}>Name: {name}</Typography>
         <Typography color={theme.palette.text.secondary}>Contract: {contract}</Typography>
