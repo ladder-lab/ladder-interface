@@ -1,4 +1,4 @@
-import { Button } from '@mui/material'
+import { Button, useTheme } from '@mui/material'
 import Spinner from 'components/Spinner'
 import { Typography } from '@mui/material'
 
@@ -25,10 +25,12 @@ export default function ActionButton({
   width?: string
   disableAction?: boolean
 }) {
+  const theme = useTheme()
+
   return (
     <>
       {error || pending ? (
-        <Button variant="outlined" color="primary" disabled sx={{ height, width }}>
+        <Button disabled sx={{ height, width, background: theme.palette.action.disabledBackground }}>
           {pending ? (
             <>
               <Spinner marginRight={16} />
@@ -43,7 +45,11 @@ export default function ActionButton({
           <Typography variant="inherit">{successText ?? actionText}</Typography>
         </Button>
       ) : (
-        <Button sx={{ height, width }} onClick={onAction} disabled={disableAction}>
+        <Button
+          sx={{ height, width, background: theme.gradient.gradient1 }}
+          onClick={onAction}
+          disabled={disableAction}
+        >
           {actionText}
         </Button>
       )}

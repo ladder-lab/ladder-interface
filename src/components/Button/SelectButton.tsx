@@ -24,7 +24,7 @@ export default function SelectButton(props: Props) {
         ...style,
         width: width || '100%',
         height: height || 60,
-        backgroundColor: primary ? theme.palette.primary.main : theme.palette.text.secondary,
+        backgroundColor: primary ? theme.palette.primary.main : theme.palette.background.default,
         color: theme.palette.text.primary,
         borderRadius: 1,
         fontSize: 16,

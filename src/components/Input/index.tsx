@@ -1,5 +1,5 @@
 import React, { ChangeEvent, InputHTMLAttributes } from 'react'
-import { InputBase, styled, Typography } from '@mui/material'
+import { InputBase, styled, Typography, Box, useTheme } from '@mui/material'
 import { inputBaseClasses } from '@mui/material/InputBase'
 import InputLabel from './InputLabel'
 
@@ -18,6 +18,7 @@ export interface InputProps {
   error?: boolean
   smallPlaceholder?: boolean
   subStr?: string
+  subStr2?: string
 }
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
@@ -64,8 +65,10 @@ export default function Input({
   error,
   smallPlaceholder,
   subStr,
+  subStr2,
   ...rest
 }: InputProps & Omit<InputHTMLAttributes<HTMLInputElement>, 'color' | 'outline' | 'size'>) {
+  const theme = useTheme()
   return (
     <div style={{ width: '100%', maxWidth: maxWidth || 'unset' }}>
       {label && <InputLabel>{label}</InputLabel>}
@@ -100,11 +103,19 @@ export default function Input({
         endAdornment={endAdornment && <span style={{ paddingRight: 20 }}>{endAdornment}</span>}
         {...rest}
       />
-      {subStr && (
-        <Typography fontSize={12} mt={12} sx={{ opacity: 0.5 }}>
-          {subStr}
-        </Typography>
-      )}
+      <Box display="flex" justifyContent="space-between">
+        {subStr && (
+          <Typography fontSize={12} mt={12} sx={{ color: theme.palette.text.secondary }}>
+            {subStr}
+          </Typography>
+        )}
+
+        {subStr2 && (
+          <Typography fontSize={12} mt={12} sx={{ color: theme.palette.text.secondary }}>
+            {subStr2}
+          </Typography>
+        )}
+      </Box>
     </div>
   )
 }
