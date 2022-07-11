@@ -8,6 +8,7 @@ import AddIcon from '@mui/icons-material/Add'
 import Image from 'components/Image'
 import SampleNftLogo from 'assets/images/sample-nft.png'
 import SampleTokenLogo from 'assets/images/ethereum-logo.png'
+import { useIsDarkMode } from 'state/user/hooks'
 
 export function SwapSummary({
   expanded,
@@ -97,6 +98,7 @@ export function SwapSummary({
 
 function RouterGraph({ logo1, logo2, fee }: { logo1: string; logo2: string; fee: string }) {
   const theme = useTheme()
+  const darkMode = useIsDarkMode()
 
   const Dashline = styled(Box)({
     borderBottom: `1px dashed ${theme.palette.text.secondary}`,
@@ -110,7 +112,7 @@ function RouterGraph({ logo1, logo2, fee }: { logo1: string; logo2: string; fee:
       <Image src={logo1} alt={'swap-from-logo'} style={{ width: 24 }} />
       <Box
         sx={{
-          background: theme.palette.background.paper,
+          background: darkMode ? '#484D50' : '#ffffff',
           width: 125,
           height: 38,
           display: 'flex',

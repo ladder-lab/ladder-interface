@@ -1,5 +1,5 @@
 import { useCallback, useState, ChangeEvent } from 'react'
-import { Typography, Box } from '@mui/material'
+import { Typography, Box, useTheme } from '@mui/material'
 import AppBody from 'components/AppBody'
 import SelectButton from 'components/Button/SelectButton'
 import NumericalInput from 'components/Input/InputNumerical'
@@ -12,6 +12,7 @@ import { AssetAccordion } from './AssetAccordion'
 import { SwapSummary } from './SwapSummary'
 
 export default function Swap() {
+  const theme = useTheme()
   const [fromVal, setFromVal] = useState('')
   const [toVal, setToVal] = useState('')
   const [fromAccordionExpanded, setFromAccordionExpanded] = useState(false)
@@ -43,7 +44,7 @@ export default function Swap() {
               position: 'absolute',
               right: 32,
               top: 24,
-              backgroundColor: '#F7F7F7',
+              background: theme.palette.background.default,
               borderRadius: '8px',
               width: 52,
               height: 52,
@@ -54,8 +55,6 @@ export default function Swap() {
           >
             <Settings />
           </Box>
-
-          {/* </IconButton> */}
           <Box display="flex" gap={16} mb={12}>
             <SelectButton width={'346px'}>DAI</SelectButton>
             <NumericalInput

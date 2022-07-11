@@ -1,6 +1,7 @@
 import { Typography, Box, styled, useTheme } from '@mui/material'
 import Image from 'components/Image'
 import Accordion from 'components/Accordion'
+import { useIsDarkMode } from 'state/user/hooks'
 
 export function AssetAccordion({
   logo,
@@ -20,15 +21,17 @@ export function AssetAccordion({
   onChange: () => void
 }) {
   const theme = useTheme()
+  const darkMode = useIsDarkMode()
 
   const Tag = styled(Box)({
     borderRadius: '10px',
-    boxShadow: '0px 3px 10px rgba(0,0,0,0.15 )',
+    boxShadow: '0px 3px 10px rgba(0,0,0,0.15)',
     position: 'absolute',
     right: 0,
     top: 0,
     fontSize: 12,
-    padding: '4px 12px'
+    padding: '4px 12px',
+    background: darkMode ? '#484D50' : '#FFFFFF'
   })
 
   const summary = (

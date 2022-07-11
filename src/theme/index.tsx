@@ -85,7 +85,8 @@ export const themeColors = {
     },
     background: {
       default: '#F7F7F7',
-      paper: '#FFFFFF'
+      paper: '#FFFFFF',
+      secondary: '#484D50'
     },
     text: {
       primary: '#333333',
@@ -93,7 +94,8 @@ export const themeColors = {
       disabled: '#828282'
     },
     action: {
-      disabledOpacity: 0.8
+      disabledOpacity: 0.8,
+      disabledBackground: '#DADADA'
     }
   },
   ...themeConstants
@@ -127,7 +129,7 @@ export const themeDarkColors = {
       main: '#31B047'
     },
     background: {
-      default: '#000000',
+      default: '#343739',
       paper: '#1A1C1E'
     },
     text: {
@@ -136,7 +138,8 @@ export const themeDarkColors = {
       disabled: '#61666A'
     },
     action: {
-      disabledOpacity: 0.8
+      disabledOpacity: 0.8,
+      disabledBackground: '#282B2E'
     }
   },
   ...themeConstants
@@ -203,8 +206,7 @@ export const override: (theme: any) => any & {
           backgroundColor: theme.palette.primary.dark
         },
         '&:disabled': {
-          // backgroundColor: theme.palette.primary.light,
-          backgroundColor: '#DADADA',
+          backgroundColor: theme.palette.action.disabledBackground,
           color: '#464647'
         }
       },
