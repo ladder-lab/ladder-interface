@@ -10,6 +10,11 @@ import SampleTokenLogo from 'assets/images/ethereum-logo.png'
 import Settings from 'components/essential/Settings'
 import { AssetAccordion } from './AssetAccordion'
 import { SwapSummary } from './SwapSummary'
+import useModal from 'hooks/useModal'
+import SelectCurrencyModal from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
+import { Currency } from 'constants/token'
+import LogoText from 'components/LogoText'
+import CurrencyLogo from 'components/essential/CurrencyLogo'
 
 export default function Swap() {
   const theme = useTheme()
@@ -18,6 +23,8 @@ export default function Swap() {
   const [fromAccordionExpanded, setFromAccordionExpanded] = useState(false)
   const [toAccordionExpanded, setToAccordionExpanded] = useState(false)
   const [summaryExpanded, setSummaryExpanded] = useState(false)
+  const { showModal } = useModal()
+  const [fromCurrency, setFromCurrency] = useState<Currency | null>(null)
 
   const onFromVal = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setFromVal(e.target.value)
@@ -26,6 +33,14 @@ export default function Swap() {
   const onToVal = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setToVal(e.target.value)
   }, [])
+
+  const onSelectCurrency = useCallback((currency: Currency) => {
+    setFromCurrency(currency)
+  }, [])
+
+  const showCurrencySearch = useCallback(() => {
+    showModal(<SelectCurrencyModal onSelectCurrency={onSelectCurrency} />)
+  }, [onSelectCurrency, showModal])
 
   return (
     <>
@@ -56,7 +71,13 @@ export default function Swap() {
             <Settings />
           </Box>
           <Box display="flex" gap={16} mb={12}>
-            <SelectButton width={'346px'}>DAI</SelectButton>
+            <SelectButton width={'346px'} onClick={showCurrencySearch}>
+              {fromCurrency ? (
+                <LogoText logo={<CurrencyLogo currency={fromCurrency} />} text={fromCurrency.symbol} />
+              ) : (
+                <>Select Token</>
+              )}
+            </SelectButton>
             <NumericalInput
               value={fromVal}
               onChange={onFromVal}
