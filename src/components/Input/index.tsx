@@ -102,7 +102,7 @@ export default function Input({
         value={value}
         disabled={disabled}
         type={type}
-        startAdornment={startAdornment && <span style={{ paddingRight: 20 }}>{startAdornment}</span>}
+        startAdornment={startAdornment && <span style={{ paddingRight: 17 }}>{startAdornment}</span>}
         endAdornment={endAdornment && <span style={{ paddingRight: 20 }}>{endAdornment}</span>}
         {...rest}
       />
