@@ -1,5 +1,5 @@
 import { useCallback, useState, ChangeEvent } from 'react'
-import { Typography, Box, useTheme } from '@mui/material'
+import { Typography, Box, useTheme, Button } from '@mui/material'
 import AppBody from 'components/AppBody'
 import SelectButton from 'components/Button/SelectButton'
 import NumericalInput from 'components/Input/InputNumerical'
@@ -10,6 +10,9 @@ import SampleTokenLogo from 'assets/images/ethereum-logo.png'
 import Settings from 'components/essential/Settings'
 import { AssetAccordion } from './AssetAccordion'
 import { SwapSummary } from './SwapSummary'
+import { useActiveWeb3React } from 'hooks'
+import { useWalletModalToggle } from 'state/application/hooks'
+import CurrencyInputPanel from 'components/Input/CurrencyInputPanel'
 
 export default function Swap() {
   const theme = useTheme()
@@ -18,6 +21,9 @@ export default function Swap() {
   const [fromAccordionExpanded, setFromAccordionExpanded] = useState(false)
   const [toAccordionExpanded, setToAccordionExpanded] = useState(false)
   const [summaryExpanded, setSummaryExpanded] = useState(false)
+
+  const { account } = useActiveWeb3React()
+  const toggleWallet = useWalletModalToggle()
 
   const onFromVal = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setFromVal(e.target.value)
@@ -55,15 +61,8 @@ export default function Swap() {
           >
             <Settings />
           </Box>
-          <Box display="flex" gap={16} mb={12}>
-            <SelectButton width={'346px'}>DAI</SelectButton>
-            <NumericalInput
-              value={fromVal}
-              onChange={onFromVal}
-              maxWidth={254}
-              subStr="~$568.23"
-              subStr2="Balence: 2.35512345 DAI"
-            />
+          <Box mb={12}>
+            <CurrencyInputPanel value={fromVal} onChange={onFromVal} onSelectCurrency={() => {}} />{' '}
           </Box>
           <AssetAccordion
             logo={SampleTokenLogo}
@@ -102,10 +101,16 @@ export default function Swap() {
             onChange={() => setSummaryExpanded(!summaryExpanded)}
             margin="20px 0 40px"
           />
-          <Box display="grid" gap={16}>
-            <ActionButton onAction={() => {}} actionText="Allow the Ladder to use your DAI" />
-            <ActionButton onAction={() => {}} actionText="Swap" error="Select a Token" />
-          </Box>
+          {account ? (
+            <Box display="grid" gap={16}>
+              <ActionButton onAction={() => {}} actionText="Allow the Ladder to use your DAI" />
+              <ActionButton onAction={() => {}} actionText="Swap" error="Select a Token" />
+            </Box>
+          ) : (
+            <Button sx={{ background: theme.gradient.gradient1 }} onClick={toggleWallet}>
+              Connect Wallet
+            </Button>
+          )}
         </Box>
       </AppBody>
     </>
