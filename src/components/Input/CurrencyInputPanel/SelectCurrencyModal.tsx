@@ -1,5 +1,5 @@
 import { useState, ChangeEvent, useCallback } from 'react'
-import { Box, Typography } from '@mui/material'
+import { Box, Typography, ButtonBase } from '@mui/material'
 import Modal from 'components/Modal'
 import CurrencyList from './CurrencyList'
 import Divider from 'components/Divider'
@@ -15,7 +15,7 @@ export enum Mode {
 
 export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurrency?: (currency: Currency) => void }) {
   const [input, setInput] = useState('')
-  const [mode] = useState(Mode.TOKEN)
+  const [mode, setMode] = useState(Mode.TOKEN)
 
   // const onManage = useCallback(() => {}, [])
 
@@ -33,12 +33,20 @@ export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurr
 
   return (
     <>
-      <Modal width={'680px'} closeIcon>
-        <Box width="100%" display="flex" padding="32px" gap={14} alignItems="center">
+      <Modal width={'680px'} closeIcon padding="32px">
+        <Box width="100%" display="flex" gap={14} alignItems="center">
           <Typography fontSize={24}>Select a token</Typography>
           <QuestionHelper text="..." size={22} />
         </Box>
-        <Box padding="0 32px 23px 32px">
+        <Box display="flex" gap={20} padding="31px 0 30px" alignItems="center">
+          <ModeButton selected={mode === Mode.TOKEN} onClick={() => setMode(Mode.TOKEN)}>
+            ERC20
+          </ModeButton>
+          <ModeButton selected={mode === Mode.NFT} onClick={() => setMode(Mode.NFT)}>
+            ERC1155
+          </ModeButton>
+        </Box>
+        <Box>
           <Input
             value={input}
             onChange={onInput}
@@ -59,5 +67,31 @@ export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurr
         </Box> */}
       </Modal>
     </>
+  )
+}
+
+function ModeButton({
+  children,
+  selected,
+  onClick
+}: {
+  children?: React.ReactNode
+  selected?: boolean
+  onClick?: () => void
+}) {
+  return (
+    <ButtonBase
+      onClick={onClick}
+      sx={{
+        padding: '7px 20px',
+        borderRadius: selected ? '10px' : '18px',
+        color: selected ? '#1F9898' : ' #9E9E9E',
+        boxShadow: selected ? '0px 4px 6px rgba(0, 0, 0, 0.05)' : 'inset 0px 2px 12px rgba(0, 0, 0, 0.1)',
+        background: selected ? '#FFFFFF' : '#F8F8F8',
+        fontSize: 16
+      }}
+    >
+      {children}
+    </ButtonBase>
   )
 }
