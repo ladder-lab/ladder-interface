@@ -7,6 +7,9 @@ import Input from 'components/Input'
 import { Currency } from 'constants/token'
 import QuestionHelper from 'components/essential/QuestionHelper'
 import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
+import LogoText from 'components/LogoText'
+import CurrencyLogo from 'components/essential/CurrencyLogo'
+import { ETHER } from 'constants/token/'
 
 export enum Mode {
   TOKEN = 'token',
@@ -46,15 +49,15 @@ export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurr
             ERC1155
           </ModeButton>
         </Box>
-        <Box>
-          <Input
-            value={input}
-            onChange={onInput}
-            placeholder="Search by name or paste address"
-            outlined
-            startAdornment={<SearchIcon />}
-          />
-        </Box>
+
+        <Input
+          value={input}
+          onChange={onInput}
+          placeholder="Search by name or paste address"
+          outlined
+          startAdornment={<SearchIcon />}
+        />
+        <CommonOptions options={[ETHER]} />
         <Divider />
         <Box paddingTop={'24px'}>
           <CurrencyList mode={mode} currencyOptions={[]} onSelectCurrency={onSelectCurrency} />
@@ -93,5 +96,20 @@ function ModeButton({
     >
       {children}
     </ButtonBase>
+  )
+}
+
+function CommonOptions({ options }: { options: Currency[] }) {
+  return (
+    <Box display="flex" gap={20} margin="20px 0">
+      {options.map(option => (
+        <Box
+          key={option.symbol}
+          sx={{ borderRadius: '8px', background: theme => theme.palette.background.default, padding: '11px 23px' }}
+        >
+          <LogoText logo={<CurrencyLogo currency={option} />} text={option.symbol} />
+        </Box>
+      ))}
+    </Box>
   )
 }
