@@ -10,6 +10,7 @@ import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
 import LogoText from 'components/LogoText'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { ETHER } from 'constants/token/'
+import NftList from './NftList'
 
 export enum Mode {
   TOKEN = 'token',
@@ -38,7 +39,7 @@ export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurr
     <>
       <Modal width={'680px'} closeIcon padding="32px">
         <Box width="100%" display="flex" gap={14} alignItems="center">
-          <Typography fontSize={24}>Select a token</Typography>
+          <Typography fontSize={24}>{mode === Mode.TOKEN ? 'Select a Token' : 'Select a NFT'}</Typography>
           <QuestionHelper text="..." size={22} />
         </Box>
         <Box display="flex" gap={20} padding="31px 0 30px" alignItems="center">
@@ -50,6 +51,15 @@ export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurr
           </ModeButton>
         </Box>
 
+        {mode === Mode.NFT && (
+          <Box display="flex" alignItems="center" gap={3} mb={16}>
+            <Typography fontSize={16} fontWeight={500}>
+              Don&apos;t see your NFT ?
+            </Typography>
+            <ButtonBase sx={{ color: theme => theme.palette.text.secondary }}>Import it</ButtonBase>
+          </Box>
+        )}
+
         <Input
           value={input}
           onChange={onInput}
@@ -57,10 +67,20 @@ export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurr
           outlined
           startAdornment={<SearchIcon />}
         />
-        <CommonOptions options={[ETHER]} />
-        <Divider />
+
+        {mode === Mode.TOKEN && (
+          <>
+            <CommonOptions options={[ETHER]} />
+            <Divider />
+          </>
+        )}
+
         <Box paddingTop={'24px'}>
-          <CurrencyList mode={mode} currencyOptions={[]} onSelectCurrency={onSelectCurrency} />
+          {mode === Mode.TOKEN ? (
+            <CurrencyList mode={mode} currencyOptions={[]} onSelectCurrency={onSelectCurrency} />
+          ) : (
+            <NftList />
+          )}
         </Box>
         {/* <Divider />
         <Box height="55px" justifyContent="center" display="flex">
