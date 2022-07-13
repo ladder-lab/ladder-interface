@@ -31,9 +31,9 @@ export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurr
 
   return (
     <>
-      <Modal closeIcon>
-        <Box width="100%" display="flex" justifyContent="center" padding="24px">
-          <Typography variant="inherit">Select a token</Typography>
+      <Modal width={'680px'} closeIcon>
+        <Box width="100%" display="flex" padding="32px">
+          <Typography fontSize={24}>Select a token</Typography>
         </Box>
         <Box padding="0 32px 23px 32px">
           <Input value={input} onChange={onInput} placeholder="Search by name or paste address" outlined />
