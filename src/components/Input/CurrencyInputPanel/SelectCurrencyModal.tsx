@@ -8,9 +8,8 @@ import { Currency } from 'constants/token'
 import QuestionHelper from 'components/essential/QuestionHelper'
 import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
 import LogoText from 'components/LogoText'
-import CurrencyLogo from 'components/essential/CurrencyLogo'
-import { ETHER } from 'constants/token/'
 import NftList from './NftList'
+import { COMMON_CURRENCIES } from 'constants/currencies'
 
 export enum Mode {
   TOKEN = 'token',
@@ -70,7 +69,21 @@ export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurr
 
         {mode === Mode.TOKEN && (
           <>
-            <CommonOptions options={[ETHER]} />
+            <Box display="flex" gap={20} margin="20px 0">
+              {COMMON_CURRENCIES.map((currency: { symbol: string; logo: string }) => (
+                <ButtonBase
+                  onClick={() => {}}
+                  key={currency.symbol}
+                  sx={{
+                    borderRadius: '8px',
+                    background: theme => theme.palette.background.default,
+                    padding: '11px 23px'
+                  }}
+                >
+                  <LogoText logo={currency.logo} text={currency.symbol} />
+                </ButtonBase>
+              ))}
+            </Box>
             <Divider />
           </>
         )}
@@ -116,20 +129,5 @@ function ModeButton({
     >
       {children}
     </ButtonBase>
-  )
-}
-
-function CommonOptions({ options }: { options: Currency[] }) {
-  return (
-    <Box display="flex" gap={20} margin="20px 0">
-      {options.map(option => (
-        <Box
-          key={option.symbol}
-          sx={{ borderRadius: '8px', background: theme => theme.palette.background.default, padding: '11px 23px' }}
-        >
-          <LogoText logo={<CurrencyLogo currency={option} />} text={option.symbol} />
-        </Box>
-      ))}
-    </Box>
   )
 }
