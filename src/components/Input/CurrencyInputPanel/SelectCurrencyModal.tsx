@@ -6,6 +6,7 @@ import Divider from 'components/Divider'
 import Input from 'components/Input'
 import { Currency } from 'constants/token'
 import QuestionHelper from 'components/essential/QuestionHelper'
+import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
 
 export enum Mode {
   TOKEN = 'token',
@@ -38,7 +39,13 @@ export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurr
           <QuestionHelper text="..." size={22} />
         </Box>
         <Box padding="0 32px 23px 32px">
-          <Input value={input} onChange={onInput} placeholder="Search by name or paste address" outlined />
+          <Input
+            value={input}
+            onChange={onInput}
+            placeholder="Search by name or paste address"
+            outlined
+            startAdornment={<SearchIcon />}
+          />
         </Box>
         <Divider />
         <Box paddingTop={'24px'}>
