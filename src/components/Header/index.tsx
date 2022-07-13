@@ -93,20 +93,22 @@ const Filler = styled('div')(({ theme }) => ({
   }
 }))
 
-const MainLogo = styled(Link)<{ isDarkMode?: boolean }>(({ theme, isDarkMode }) => ({
-  '& svg': {
-    width: 180.8,
-    height: 34.7,
-    fill: isDarkMode ? theme.palette.text.primary : '#232859'
-  },
-  '&:hover': {
-    cursor: 'pointer'
-  },
-  [theme.breakpoints.down('sm')]: {
-    '& img': { width: 100, height: 'auto' },
-    marginBottom: -10
-  }
-}))
+const MainLogo = styled(Link, { shouldForwardProp: prop => !(prop === 'isDarkMode') })<{ isDarkMode?: boolean }>(
+  ({ theme, isDarkMode }) => ({
+    '& svg': {
+      width: 180.8,
+      height: 34.7,
+      fill: isDarkMode ? theme.palette.text.primary : '#232859'
+    },
+    '&:hover': {
+      cursor: 'pointer'
+    },
+    [theme.breakpoints.down('sm')]: {
+      '& img': { width: 100, height: 'auto' },
+      marginBottom: -10
+    }
+  })
+)
 
 const LinksWrapper = muiStyled('div')(({ theme }) => ({
   marginLeft: 60,

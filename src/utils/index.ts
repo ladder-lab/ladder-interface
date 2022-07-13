@@ -3,8 +3,7 @@ import { getAddress } from '@ethersproject/address'
 import { AddressZero } from '@ethersproject/constants'
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { BigNumber } from '@ethersproject/bignumber'
-import { CurrencyAmount, Percent } from '../constants/token/fractions'
-import JSBI from 'jsbi'
+import { JSBI, Percent, CurrencyAmount } from '@uniswap/sdk'
 import { ChainId } from '../constants/chain'
 
 // returns the checksummed address if the address is valid, otherwise returns false
@@ -86,14 +85,6 @@ const chains: ChainObject = {
   },
   [ChainId.GÖRLI]: {
     link: 'https://gorli.etherscan.io',
-    builder: explorers.etherscan
-  },
-  [ChainId.BSCTEST]: {
-    link: 'https://testnet.bscscan.com',
-    builder: explorers.etherscan
-  },
-  [ChainId.BSC]: {
-    link: 'https://bscscan.com',
     builder: explorers.etherscan
   }
 }

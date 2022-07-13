@@ -3,6 +3,8 @@ import { useIsDarkMode } from 'state/user/hooks'
 
 interface Gradient {
   gradient1: string
+  gradient2: string
+  gradient3: string
 }
 
 interface Height {
@@ -38,7 +40,11 @@ declare module '@mui/material/styles/createTheme' {
 
 const themeConstants = {
   gradient: {
-    gradient1: 'linear-gradient(98.91deg, #D8FF20 10.95%, #99F7F4 100%)'
+    gradient1: 'linear-gradient(98.91deg, #D8FF20 10.95%, #99F7F4 100%)',
+    gradient2:
+      'linear-gradient(0deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.06)), linear-gradient(98.91deg, #D8FF20 10.95%, #99F7F4 100%)',
+    gradient3:
+      'linear-gradient(0deg, rgba(0, 0, 0, 0.19), rgba(0, 0, 0, 0.19)), linear-gradient(98.91deg, #D8FF20 10.95%, #99F7F4 100%)'
   },
   height: {
     header: '80px',
@@ -60,7 +66,7 @@ export const themeColors = {
   palette: {
     primary: {
       light: '#ADDFB5',
-      main: '#D8FF20',
+      main: '#1F9898',
       dark: '#CAF400',
       contrastText: '#1A1C1E'
     },
@@ -161,33 +167,24 @@ export const override: (theme: any) => any & {
         paddingRight: '0px!important'
       },
       'html, input, textarea, button, body': {
-        fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, sans-serif',
+        fontFamily: FONTS.content,
         fontDisplay: 'fallback'
       },
       '@supports (font-variation-settings: normal)': {
         'html, input, textarea, button, body': {
-          fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, sans-serif',
+          fontFamily: FONTS.content,
           fontDisplay: 'fallback'
         }
       }
     }
   },
-  MuiButtonBase: {
-    styleOverrides: {
-      root: {
-        fontSize: 16,
-        fontWeight: 500,
-        fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, sans-serif!important'
-      }
-    }
-  },
   MuiButton: {
     defaultProps: {
-      variant: 'contained'
+      variant: 'contained',
+      disableRipple: true
     },
     styleOverrides: {
       root: {
-        fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, sans-serif!important',
         color: theme.palette.primary.contrastText,
         borderRadius: theme.shape.borderRadius,
         transition: '.3s',
@@ -198,16 +195,21 @@ export const override: (theme: any) => any & {
         fontWeight: 500
       },
       contained: {
-        backgroundColor: theme.palette.primary.main,
+        background: theme.gradient.gradient1,
         color: theme.palette.primary.contrastText,
         boxShadow: 'unset',
-        '&:hover, :active': {
+        '&:hover': {
           boxShadow: 'unset',
-          backgroundColor: theme.palette.primary.dark
+          background: theme.gradient.gradient2
+        },
+        '&:active': {
+          boxShadow: 'unset',
+          background: theme.gradient.gradient3
         },
         '&:disabled': {
-          backgroundColor: theme.palette.action.disabledBackground,
-          color: '#464647'
+          boxShadow: 'unset',
+          background: theme.palette.action.disabledBackground,
+          color: theme.palette.text.disabled
         }
       },
       containedSecondary: {
@@ -278,8 +280,7 @@ export const override: (theme: any) => any & {
   MuiTypography: {
     styleOverrides: {
       root: {
-        lineHeight: 1.2,
-        fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, sans-serif!important'
+        lineHeight: 1.2
       },
       body1: {
         fontSize: 14
@@ -305,6 +306,11 @@ export const override: (theme: any) => any & {
   }
 })
 
+const FONTS = {
+  title: 'Monument Extended, Helvetica, sans-serif',
+  content: 'Lato, Helvetica, sans-serif'
+}
+
 export const HideOnMobile = styled('div', {
   shouldForwardProp: () => true
 })<{ breakpoint?: 'sm' | 'md' }>(({ theme, breakpoint }) => ({
@@ -326,6 +332,11 @@ export const theme = createTheme({
   ...themeColors,
   components: {
     ...override(themeColors)
+  },
+  typography: {
+    allVariants: {
+      fontFamily: FONTS.content
+    }
   }
 })
 
@@ -333,6 +344,11 @@ export const themeDark = createTheme({
   ...themeDarkColors,
   components: {
     ...override(themeDarkColors)
+  },
+  typography: {
+    allVariants: {
+      fontFamily: FONTS.content
+    }
   }
 })
 
