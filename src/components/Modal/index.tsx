@@ -61,7 +61,7 @@ export default function Modal(props: Props) {
           sx: {
             ...{
               width: { xs: 'calc(100vw - 32px)!important', sm: width || 488 },
-              maxWidth: maxWidth || 488,
+              maxWidth,
               background: theme => background ?? theme.palette.background.paper,
               border: hasBorder ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid transparent',
               boxShadow: 'unset',
@@ -70,8 +70,8 @@ export default function Modal(props: Props) {
               borderRadius: 2,
               marginBottom: { xs: 0, sm: '10vh' },
               overflowX: 'hidden',
+              overflowY: 'hidden',
               position: 'absolute',
-              overflowY: 'auto',
               maxHeight: theme => `calc(100vh - ${theme.height.header})`
             },
             ...(!isCardOnMobile
