@@ -21,7 +21,7 @@ const dummyNfts = [
 
 export default function NftList() {
   return (
-    <Grid container spacing={20}>
+    <Grid container spacing={20} sx={{ overflow: 'auto', height: 480 }}>
       {dummyNfts.map(({ title, image, address }, idx) => (
         <Grid item xs={12} md={3} key={idx}>
           <NftCard key={idx} title={title} image={image} address={address} />
