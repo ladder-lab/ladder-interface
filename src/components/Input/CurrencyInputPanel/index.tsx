@@ -1,11 +1,9 @@
 import { ChangeEvent, useCallback } from 'react'
 import { styled, Box, useTheme, Typography, Button } from '@mui/material'
 import InputNumerical from 'components/Input/InputNumerical'
-import InputLabel from 'components/Input/InputLabel'
 import SelectButton from 'components/Button/SelectButton'
 import useModal from 'hooks/useModal'
 import LogoText from 'components/LogoText'
-import { HideOnMobile, ShowOnMobile } from 'theme/index'
 import SelectCurrencyModal from './SelectCurrencyModal'
 import { useActiveWeb3React } from 'hooks'
 import { useCurrencyBalance } from 'state/wallet/hooks'
@@ -22,7 +20,6 @@ interface Props {
   selectActive?: boolean
   inputFocused?: boolean
   disableCurrencySelect?: boolean
-  customBalanceText?: string
   hideBalance?: boolean
   onSelectCurrency: (cur: Currency) => void
 }
@@ -30,9 +27,10 @@ interface Props {
 const InputRow = styled('div')(({ theme }) => ({
   position: 'relative',
   width: '100%',
-  height: '48px',
+  height: 60,
   display: 'flex',
   justifyContent: 'flex-end',
+  maxWidth: 254,
   '& .Mui-focused': {
     '&:before': {
       content: '""',
@@ -74,7 +72,6 @@ export default function CurrencyInputPanel({
   disableCurrencySelect,
   currency,
   onSelectCurrency,
-  customBalanceText,
   hideBalance,
   onChange
 }: Props) {
@@ -90,28 +87,12 @@ export default function CurrencyInputPanel({
   }, [disableCurrencySelect, onSelectCurrency, showModal])
 
   return (
-    <Box display="grid" gap="24px">
-      <ShowOnMobile breakpoint={'sm'}>
-        <InputLabel>Token</InputLabel>
-        <SelectButton width={'180px'} onClick={showCurrencySearch} disabled={disabled} primary={selectActive}>
-          {currency ? (
-            <LogoText logo={<CurrencyLogo currency={currency} />} text={currency.symbol} />
-          ) : (
-            <>Select Token</>
-          )}
-        </SelectButton>
-      </ShowOnMobile>
-      <div>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <InputLabel>Amount</InputLabel>
-          {currency && (
-            <Typography color={theme.palette.text.primary} fontWeight={500} fontSize={14}>
-              {!hideBalance && !!currency && selectedCurrencyBalance
-                ? (customBalanceText ?? 'Your balance: ') + selectedCurrencyBalance?.toSignificant(6)
-                : ' -'}
-            </Typography>
-          )}
-        </Box>
+    <Box display="flex" gap={16} width="100%" alignItems={'flex-start'}>
+      {/* <InputLabel>Token</InputLabel> */}
+      <SelectButton width={'346px'} onClick={showCurrencySearch} disabled={disabled} primary={selectActive}>
+        {currency ? <LogoText logo={<CurrencyLogo currency={currency} />} text={currency.symbol} /> : <>Select Token</>}
+      </SelectButton>
+      <Box flexGrow={1}>
         <InputRow>
           <StyledInput
             placeholder={placeholder ?? 'Enter amount to swap'}
@@ -128,17 +109,17 @@ export default function CurrencyInputPanel({
               </Button>
             </ButtonWrapper>
           )}
-          <HideOnMobile breakpoint={'sm'}>
-            <SelectButton width={'180px'} onClick={showCurrencySearch} disabled={disabled} primary={selectActive}>
-              {currency ? (
-                <LogoText logo={<CurrencyLogo currency={currency} />} text={currency.symbol} />
-              ) : (
-                <>Select Token</>
-              )}
-            </SelectButton>
-          </HideOnMobile>
         </InputRow>
-      </div>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography fontSize={12} mt={12} sx={{ color: theme.palette.text.secondary }}>
+            ~$568.23
+          </Typography>
+          <Typography fontSize={12} mt={12} sx={{ color: theme.palette.text.secondary }}>
+            Balance:{' '}
+            {!hideBalance && !!currency && selectedCurrencyBalance ? selectedCurrencyBalance?.toSignificant(6) : ' -'}
+          </Typography>
+        </Box>
+      </Box>
     </Box>
   )
 }

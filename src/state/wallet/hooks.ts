@@ -1,20 +1,16 @@
 import { useMemo } from 'react'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
-import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
 import { useSingleContractMultipleData, useMultipleContractSingleData } from '../multicall/hooks'
-import { CurrencyAmount, TokenAmount } from '../../constants/token/fractions'
-import JSBI from 'jsbi'
-import { Currency, ETHER, Token } from '../../constants/token'
-import { BAST_TOKEN } from '../../constants'
+import { Currency, ETHER, Token, JSBI, CurrencyAmount, TokenAmount } from '@uniswap/sdk'
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
  */
-export function useETHBalances(
-  uncheckedAddresses?: (string | undefined)[]
-): { [address: string]: CurrencyAmount | undefined } {
+export function useETHBalances(uncheckedAddresses?: (string | undefined)[]): {
+  [address: string]: CurrencyAmount | undefined
+} {
   const multicallContract = useMulticallContract()
 
   const addresses: string[] = useMemo(
@@ -100,9 +96,10 @@ export function useCurrencyBalances(
   account?: string,
   currencies?: (Currency | undefined)[]
 ): (CurrencyAmount | undefined)[] {
-  const tokens = useMemo(() => currencies?.filter((currency): currency is Token => currency instanceof Token) ?? [], [
-    currencies
-  ])
+  const tokens = useMemo(
+    () => currencies?.filter((currency): currency is Token => currency instanceof Token) ?? [],
+    [currencies]
+  )
 
   const tokenBalances = useTokenBalances(account, tokens)
   const containsETH: boolean = useMemo(() => currencies?.some(currency => currency === ETHER) ?? false, [currencies])
@@ -122,17 +119,4 @@ export function useCurrencyBalances(
 
 export function useCurrencyBalance(account?: string, currency?: Currency): CurrencyAmount | undefined {
   return useCurrencyBalances(account, [currency])[0]
-}
-
-// get the total owned, unclaimed, and unharvested UNI for account
-export function useAggregateUniBalance(): TokenAmount | undefined {
-  const { account, chainId } = useActiveWeb3React()
-
-  const uni = chainId ? BAST_TOKEN[chainId] : undefined
-
-  const uniBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, uni)
-
-  if (!uni) return undefined
-
-  return uniBalance
 }

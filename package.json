@@ -94,6 +94,8 @@
     "dayjs": "^1.11.3",
     "decimal.js-light": "^2.5.1",
     "jsbi": "^4.3.0",
-    "toformat": "^2.0.0"
+    "toformat": "^2.0.0",
+    "@uniswap/sdk": "3.0.3",
+    "@uniswap/default-token-list": "^2.0.0"
   }
 }
