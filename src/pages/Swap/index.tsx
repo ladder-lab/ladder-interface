@@ -108,9 +108,12 @@ export default function Swap() {
             expanded={toAccordionExpanded}
           />
           <SwapSummary
+            fromAsset={fromAsset}
+            toAsset={toAsset}
             expanded={summaryExpanded}
             onChange={() => setSummaryExpanded(!summaryExpanded)}
             margin="20px 0 40px"
+            gasFee="8.23"
           />
           {account ? (
             <Box display="grid" gap={16}>
