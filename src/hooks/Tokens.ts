@@ -1,5 +1,5 @@
 import { parseBytes32String } from '@ethersproject/strings'
-import { Currency, ETHER, Token, ChainId } from '@uniswap/sdk'
+import { Currency, ETHER, Token, ChainId, currencyEquals } from '@uniswap/sdk'
 import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
 import { useMemo } from 'react'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
@@ -11,6 +11,17 @@ import { arrayify } from 'ethers/lib/utils'
 import { TokenList, WrappedTokenInfo } from 'models/tokenList'
 import { listToTokenMap } from 'utils/swap/listUtils'
 import { useUserAddedTokens } from 'state/user/hooks'
+
+// Check if currency is included in custom list from user storage
+export function useIsUserAddedToken(currency: Currency | undefined | null): boolean {
+  const userAddedTokens = useUserAddedTokens()
+
+  if (!currency) {
+    return false
+  }
+
+  return !!userAddedTokens.find(token => currencyEquals(currency, token))
+}
 
 export type TokenAddressMap = Readonly<{
   [chainId in ChainId]: Readonly<{ [tokenAddress: string]: { token: WrappedTokenInfo; list: TokenList } }>
