@@ -36,7 +36,7 @@ export default function _Accordion(props: Props) {
           margin: `${margin} !important` || 0
         },
         '& .MuiAccordionSummary-content': {
-          margin: '20px 0'
+          margin: 0
         },
         '& .MuiAccordionSummary-expandIconWrapper': {
           ...iconCssOverride

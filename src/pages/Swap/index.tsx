@@ -1,12 +1,8 @@
 import { useCallback, useState, ChangeEvent } from 'react'
 import { Typography, Box, useTheme, Button } from '@mui/material'
 import AppBody from 'components/AppBody'
-import SelectButton from 'components/Button/SelectButton'
-import NumericalInput from 'components/Input/InputNumerical'
 import ActionButton from 'components/Button/ActionButton'
 import { ReactComponent as ArrowCircle } from 'assets/svg/arrow_circle.svg'
-import SampleNftLogo from 'assets/images/sample-nft.png'
-import SampleTokenLogo from 'assets/images/ethereum-logo.png'
 import Settings from 'components/essential/Settings'
 import { AssetAccordion } from './AssetAccordion'
 import { SwapSummary } from './SwapSummary'
@@ -14,6 +10,7 @@ import { Currency } from 'constants/token'
 import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
 import CurrencyInputPanel from 'components/Input/CurrencyInputPanel'
+import CurrencyLogo from 'components/essential/CurrencyLogo'
 
 export default function Swap() {
   const theme = useTheme()
@@ -22,7 +19,8 @@ export default function Swap() {
   const [fromAccordionExpanded, setFromAccordionExpanded] = useState(false)
   const [toAccordionExpanded, setToAccordionExpanded] = useState(false)
   const [summaryExpanded, setSummaryExpanded] = useState(false)
-  const [fromCurrency, setFromCurrency] = useState<Currency | null>(null)
+  const [fromAsset, setFromAsset] = useState<Currency | undefined>(undefined)
+  const [toAsset, setToAsset] = useState<Currency | undefined>(undefined)
 
   const { account } = useActiveWeb3React()
   const toggleWallet = useWalletModalToggle()
@@ -35,8 +33,12 @@ export default function Swap() {
     setToVal(e.target.value)
   }, [])
 
-  const onSelectCurrency = useCallback((currency: Currency) => {
-    setFromCurrency(currency)
+  const onSelectFromAsset = useCallback((asset: Currency) => {
+    setFromAsset(asset)
+  }, [])
+
+  const onSelectToAsset = useCallback((asset: Currency) => {
+    setToAsset(asset)
   }, [])
 
   return (
@@ -71,13 +73,13 @@ export default function Swap() {
             <CurrencyInputPanel
               value={fromVal}
               onChange={onFromVal}
-              onSelectCurrency={onSelectCurrency}
-              currency={fromCurrency}
-            />{' '}
+              onSelectCurrency={onSelectFromAsset}
+              currency={fromAsset}
+            />
           </Box>
           <AssetAccordion
-            logo={SampleTokenLogo}
-            name="DAI"
+            logo={<CurrencyLogo currency={fromAsset} />}
+            name={fromAsset?.symbol || ''}
             contract="123"
             tokenId="123"
             tokenType="ERC20"
@@ -89,18 +91,16 @@ export default function Swap() {
           </Box>
 
           <Box display="flex" gap={16} mb={12}>
-            <SelectButton width={'346px'}>DAI</SelectButton>
-            <NumericalInput
+            <CurrencyInputPanel
               value={toVal}
               onChange={onToVal}
-              maxWidth={254}
-              subStr="~$568.23"
-              subStr2="Balence: 2.35512345 DAI"
+              onSelectCurrency={onSelectToAsset}
+              currency={toAsset}
             />
           </Box>
           <AssetAccordion
-            logo={SampleNftLogo}
-            name="DAI"
+            logo={<CurrencyLogo currency={toAsset} />}
+            name={toAsset?.symbol || ''}
             contract="123"
             tokenId="123"
             tokenType="ERC20"
