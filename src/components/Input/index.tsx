@@ -12,6 +12,7 @@ export interface InputProps {
   focused?: boolean
   outlined?: boolean
   type?: string
+  startAdornment?: React.ReactNode
   endAdornment?: React.ReactNode
   maxWidth?: string | number
   height?: string | number
@@ -57,6 +58,7 @@ export default function Input({
   disabled,
   type,
   outlined,
+  startAdornment,
   endAdornment,
   maxWidth,
   label,
@@ -99,6 +101,7 @@ export default function Input({
         value={value}
         disabled={disabled}
         type={type}
+        startAdornment={startAdornment && <span style={{ paddingRight: 17 }}>{startAdornment}</span>}
         endAdornment={endAdornment && <span style={{ paddingRight: 20 }}>{endAdornment}</span>}
         {...rest}
       />

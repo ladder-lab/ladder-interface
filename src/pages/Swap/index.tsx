@@ -10,6 +10,7 @@ import SampleTokenLogo from 'assets/images/ethereum-logo.png'
 import Settings from 'components/essential/Settings'
 import { AssetAccordion } from './AssetAccordion'
 import { SwapSummary } from './SwapSummary'
+import { Currency } from 'constants/token'
 import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
 import CurrencyInputPanel from 'components/Input/CurrencyInputPanel'
@@ -21,6 +22,7 @@ export default function Swap() {
   const [fromAccordionExpanded, setFromAccordionExpanded] = useState(false)
   const [toAccordionExpanded, setToAccordionExpanded] = useState(false)
   const [summaryExpanded, setSummaryExpanded] = useState(false)
+  const [fromCurrency, setFromCurrency] = useState<Currency | null>(null)
 
   const { account } = useActiveWeb3React()
   const toggleWallet = useWalletModalToggle()
@@ -31,6 +33,10 @@ export default function Swap() {
 
   const onToVal = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setToVal(e.target.value)
+  }, [])
+
+  const onSelectCurrency = useCallback((currency: Currency) => {
+    setFromCurrency(currency)
   }, [])
 
   return (
@@ -62,7 +68,12 @@ export default function Swap() {
             <Settings />
           </Box>
           <Box mb={12}>
-            <CurrencyInputPanel value={fromVal} onChange={onFromVal} onSelectCurrency={() => {}} />{' '}
+            <CurrencyInputPanel
+              value={fromVal}
+              onChange={onFromVal}
+              onSelectCurrency={onSelectCurrency}
+              currency={fromCurrency}
+            />{' '}
           </Box>
           <AssetAccordion
             logo={SampleTokenLogo}

@@ -7,18 +7,21 @@ export function CloseIcon({ onClick }: { onClick?: () => void }) {
   return (
     <IconButton
       onClick={onClick}
-      size="large"
       sx={{
         padding: 0,
         position: 'absolute',
         top: '24px',
-        right: '24px',
+        right: '32px',
+        width: 52,
+        height: 52,
+        background: theme => theme.palette.background.default,
+        borderRadius: '8px',
         '&:hover $closeIcon': {
           color: theme => theme.palette.text.primary
         }
       }}
     >
-      <MuiCloseIcon sx={{ color: theme => theme.palette.grey[500] }} />
+      <MuiCloseIcon sx={{ color: theme => theme.palette.grey[500], size: 13 }} />
     </IconButton>
   )
 }
