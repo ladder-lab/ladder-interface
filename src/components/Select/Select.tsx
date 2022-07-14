@@ -55,7 +55,7 @@ export default function Select(props: Props) {
     defaultValue,
     placeholder,
     renderValue,
-    style
+    style = {}
   } = props
   const theme = useTheme()
 
@@ -63,32 +63,34 @@ export default function Select(props: Props) {
     <div>
       {label && <StyledInputLabel>{label}</StyledInputLabel>}
       <StyledSelect
-        sx={{
-          backgroundColor: primary ? theme.palette.primary.main : theme.palette.background.default,
-          width: width || '100%',
-          height: height || '60px',
-          '&:before': {
-            content: value || defaultValue ? "''" : `"${placeholder}"`,
-            position: 'absolute',
-            left: 24,
-            top: 10,
-            zIndex: 999,
-            fontSize: 16,
-            fontWeight: 400
+        sx={Object.assign(
+          {
+            backgroundColor: primary ? theme.palette.primary.main : theme.palette.background.default,
+            width: width || '100%',
+            height: height || '60px',
+            '&:before': {
+              content: value || defaultValue ? "''" : `"${placeholder}"`,
+              position: 'absolute',
+              left: 24,
+              top: 10,
+              zIndex: 999,
+              fontSize: 16,
+              fontWeight: 400
+            },
+            '&:hover': {
+              backgroundColor: disabled ? theme.palette.background.paper : theme.palette.primary.main
+            },
+            '& .MuiSelect-icon': {
+              display: disabled ? 'none' : 'block',
+              color: theme.palette.text.secondary
+            },
+            '& .Mui-disabled.MuiInputBase-input': {
+              color: theme.palette.text.primary,
+              WebkitTextFillColor: theme.palette.text.primary
+            }
           },
-          '&:hover': {
-            backgroundColor: disabled ? theme.palette.background.paper : theme.palette.primary.main
-          },
-          '& .MuiSelect-icon': {
-            display: disabled ? 'none' : 'block',
-            color: theme.palette.text.secondary
-          },
-          '& .Mui-disabled.MuiInputBase-input': {
-            color: theme.palette.text.primary,
-            WebkitTextFillColor: theme.palette.text.primary
-          },
-          ...style
-        }}
+          style
+        )}
         value={value}
         displayEmpty
         disabled={disabled}

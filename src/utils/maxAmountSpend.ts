@@ -1,6 +1,4 @@
-import { CurrencyAmount } from '../constants/token/fractions'
-import { ETHER } from '../constants/token'
-import JSBI from 'jsbi'
+import { JSBI, CurrencyAmount, ETHER } from '@uniswap/sdk'
 import { MIN_ETH } from '../constants'
 
 /**

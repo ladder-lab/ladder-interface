@@ -6,6 +6,7 @@ import { updateVersion } from './global/actions'
 import user from './user/reducer'
 import transactions from './transactions/reducer'
 import multicall from './multicall/reducer'
+import swap from './swap/reducer'
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions']
 
@@ -14,7 +15,8 @@ const store = configureStore({
     application,
     user,
     transactions,
-    multicall
+    multicall,
+    swap
   },
   middleware: [...getDefaultMiddleware({ thunk: false }), save({ states: PERSISTED_KEYS })],
   preloadedState: load({ states: PERSISTED_KEYS })
