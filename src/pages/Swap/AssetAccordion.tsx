@@ -12,7 +12,7 @@ export function AssetAccordion({
   expanded,
   onChange
 }: {
-  logo: string
+  logo: string | JSX.Element
   name: string
   contract: string
   tokenId?: string
@@ -36,7 +36,7 @@ export function AssetAccordion({
 
   const summary = (
     <Box sx={{ display: 'flex', gap: 19, alignItems: 'center' }}>
-      <Image src={logo} style={{ width: 36 }} />
+      {typeof logo === 'string' ? <Image src={logo as string} alt={`${name} logo`} style={{ width: 36 }} /> : logo}
       <Box display="grid" gap={8}>
         <Typography color={theme.palette.text.secondary}>Name: {name}</Typography>
         <Typography color={theme.palette.text.secondary}>Contract: {contract}</Typography>
