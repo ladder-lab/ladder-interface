@@ -39,7 +39,7 @@ export default function CurrencyList({ mode, onSelectCurrency, currencyOptions }
       }
 
       return (
-        <ListItem onClick={mode === Mode.SELECT ? onClickCurrency : () => {}}>
+        <ListItem onClick={onClickCurrency}>
           <Box display="flex">
             <CurrencyLogo currency={currency} style={{ width: '30px', height: '30px' }} />
             <Box display="flex" flexDirection="column" marginLeft="16px">
@@ -47,7 +47,7 @@ export default function CurrencyList({ mode, onSelectCurrency, currencyOptions }
               <Typography variant="caption">{currency.name}</Typography>
             </Box>
           </Box>
-          {mode === Mode.SELECT && <span style={{ fontWeight: 500 }}>{0}</span>}
+          <span style={{ fontWeight: 500 }}>{0}</span>
         </ListItem>
       )
     },
