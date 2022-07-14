@@ -84,7 +84,6 @@ export default function AccountDetails({
               color="secondary"
               style={{ marginRight: '8px' }}
               onClick={() => {
-                console.log(connector?.deactivate.toString())
                 connector?.deactivate()
               }}
             >

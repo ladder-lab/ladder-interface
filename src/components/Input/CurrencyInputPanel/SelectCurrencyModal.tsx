@@ -1,5 +1,6 @@
-import { useState, ChangeEvent, useCallback } from 'react'
+import { useState, useCallback, useMemo, KeyboardEvent, useRef, ChangeEvent } from 'react'
 import { Box, Typography, ButtonBase } from '@mui/material'
+import { FixedSizeList } from 'react-window'
 import Modal from 'components/Modal'
 import CurrencyList from './CurrencyList'
 import Divider from 'components/Divider'
@@ -10,6 +11,12 @@ import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
 import LogoText from 'components/LogoText'
 import NftList from './NftList'
 import { COMMON_CURRENCIES } from 'constants/currencies'
+import { useAllTokens, useIsUserAddedToken, useToken } from 'hooks/Tokens'
+import useDebounce from 'hooks/useDebounce'
+import { isAddress } from 'utils'
+import { ETHER, Token } from '@uniswap/sdk'
+import { filterTokens, useSortedTokensByQuery } from 'utils/swap/filtering'
+import { useTokenComparator } from 'utils/swap/sorting'
 
 export enum Mode {
   TOKEN = 'token',
@@ -17,22 +24,66 @@ export enum Mode {
 }
 
 export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurrency?: (currency: Currency) => void }) {
-  const [input, setInput] = useState('')
   const [mode, setMode] = useState(Mode.TOKEN)
+  const [searchQuery, setSearchQuery] = useState<string>('')
+  const debouncedQuery = useDebounce(searchQuery, 200)
+  const fixedList = useRef<FixedSizeList>()
 
-  // const onManage = useCallback(() => {}, [])
+  const [invertSearchOrder] = useState<boolean>(false)
 
-  const onInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value)
+  const allTokens = useAllTokens()
+
+  // if they input an address, use it
+  const searchToken = useToken(debouncedQuery)
+  const searchTokenIsAdded = useIsUserAddedToken(searchToken)
+
+  const showETH: boolean = useMemo(() => {
+    const s = debouncedQuery.toLowerCase().trim()
+    return s === '' || s === 'e' || s === 'et' || s === 'eth'
+  }, [debouncedQuery])
+
+  const tokenComparator = useTokenComparator(invertSearchOrder)
+
+  const filteredTokens: Token[] = useMemo(() => {
+    return filterTokens(Object.values(allTokens), debouncedQuery)
+  }, [allTokens, debouncedQuery])
+
+  const sortedTokens: Token[] = useMemo(() => {
+    return filteredTokens.sort(tokenComparator)
+  }, [filteredTokens, tokenComparator])
+
+  const filteredSortedTokens = useSortedTokensByQuery(sortedTokens, debouncedQuery)
+
+  // manage focus on modal show
+  const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    const input = event.target.value
+    const checksummedInput = isAddress(input)
+    setSearchQuery(checksummedInput || input)
+    fixedList.current?.scrollTo(0)
   }, [])
 
-  // useEffect(() => {
-  //   if (input !== '') {
-  //     return SetMode(Mode.IMPORT)
-  //   }
+  const handleEnter = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        const s = debouncedQuery.toLowerCase().trim()
+        if (s === 'eth') {
+          onSelectCurrency && onSelectCurrency(ETHER)
+        } else if (filteredSortedTokens.length > 0) {
+          if (
+            filteredSortedTokens[0].symbol?.toLowerCase() === debouncedQuery.trim().toLowerCase() ||
+            filteredSortedTokens.length === 1
+          ) {
+            onSelectCurrency && onSelectCurrency(filteredSortedTokens[0])
+          }
+        }
+      }
+    },
+    [filteredSortedTokens, onSelectCurrency, debouncedQuery]
+  )
 
-  //   SetMode(Mode.SELECT)
-  // }, [input])
+  // const onInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+  //   setInput(e.target.value)
+  // }, [])
 
   return (
     <>
@@ -60,11 +111,12 @@ export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurr
         )}
 
         <Input
-          value={input}
-          onChange={onInput}
+          value={searchQuery}
+          onChange={handleInput}
           placeholder="Search by name or paste address"
           outlined
           startAdornment={<SearchIcon />}
+          onKeyDown={handleEnter}
         />
 
         {mode === Mode.TOKEN && (
@@ -90,7 +142,15 @@ export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurr
 
         <Box paddingTop={'24px'}>
           {mode === Mode.TOKEN ? (
-            <CurrencyList mode={mode} currencyOptions={[]} onSelectCurrency={onSelectCurrency} />
+            <CurrencyList
+              mode={mode}
+              currencyOptions={filteredSortedTokens}
+              onSelectCurrency={onSelectCurrency}
+              fixedListRef={fixedList}
+              showETH={showETH}
+              searchToken={searchToken}
+              searchTokenIsAdded={searchTokenIsAdded}
+            />
           ) : (
             <NftList />
           )}
