@@ -7,6 +7,7 @@ import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { useIsDarkMode } from 'state/user/hooks'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
 import QuestionHelper from 'components/essential/QuestionHelper'
+import ActionButton from 'components/Button/ActionButton'
 
 export default function ConfirmSwapModal({
   onConfirm,
@@ -39,9 +40,7 @@ export default function ConfirmSwapModal({
           Output is estimated.You will receive at least 2 Tickets for the community #56 or the transaction will revert.
         </Typography>
         <SwapDetails />
-        <Button sx={{ background: theme.gradient.gradient1, mt: 40 }} onClick={onConfirm}>
-          Confirm Swap
-        </Button>
+        <ActionButton onAction={onConfirm} actionText="Confirm Swap" error={showNotify ? 'Confirm Swap' : undefined} />
       </Box>
     </Modal>
   )
@@ -63,9 +62,6 @@ function SwapPanelRow({
   const Tag = styled(Box)({
     borderRadius: '10px',
     boxShadow: '0px 3px 10px rgba(0,0,0,0.15)',
-    // position: 'absolute',
-    // right: 0,
-    // top: 0,
     fontSize: 12,
     padding: '4px 12px',
     background: darkMode ? '#484D50' : '#FFFFFF'
@@ -131,7 +127,14 @@ function SwapDetails() {
 
   return (
     <Box
-      sx={{ padding: 20, background: theme.palette.background.default, borderRadius: '8px', display: 'grid', gap: 12 }}
+      sx={{
+        padding: 20,
+        background: theme.palette.background.default,
+        borderRadius: '8px',
+        display: 'grid',
+        gap: 12,
+        mb: 40
+      }}
     >
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center" gap={9}>
