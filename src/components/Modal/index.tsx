@@ -2,11 +2,12 @@ import React from 'react'
 import { Dialog, useTheme, Box, Slide, Fade, SlideProps, FadeProps } from '@mui/material'
 import useModal from 'hooks/useModal'
 import { useRef } from 'react'
-import { CloseIcon } from 'theme/components'
+import { CloseIcon, BackBtn } from 'theme/components'
 import useBreakpoint from 'hooks/useBreakpoint'
 
 interface Props {
   children?: React.ReactNode
+  onBack?: () => void
   closeIcon?: boolean
   width?: string
   maxWidth?: string
@@ -27,6 +28,7 @@ const Transition = React.forwardRef<unknown, SlideProps | FadeProps>(function Tr
 export default function Modal(props: Props) {
   const {
     children,
+    onBack,
     closeIcon,
     isCardOnMobile,
     customIsOpen,
@@ -104,6 +106,7 @@ export default function Modal(props: Props) {
         onClose={hide}
       >
         <Box width="100%" height="100%" position="relative" padding={padding || 0}>
+          {onBack && <BackBtn onClick={onBack} />}
           {closeIcon && <CloseIcon onClick={hide} />}
           {children}
         </Box>
