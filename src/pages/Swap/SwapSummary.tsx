@@ -67,7 +67,7 @@ export function SwapSummary({
       <Box display="grid" gap={8} padding="12px 0">
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display="flex" alignItems="center" gap={9}>
-            <Typography>EMinimum received after slippage (13.36%)</Typography>
+            <Typography>Minimum received after slippage (13.36%)</Typography>
             <QuestionHelper text="..." />
           </Box>
 

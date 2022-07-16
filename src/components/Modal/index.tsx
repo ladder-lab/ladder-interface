@@ -72,7 +72,7 @@ export default function Modal(props: Props) {
               borderRadius: 2,
               marginBottom: { xs: 0, sm: '10vh' },
               overflowX: 'hidden',
-              overflowY: 'hidden',
+              overflowY: 'auto',
               position: 'absolute',
               maxHeight: theme => `calc(100vh - ${theme.height.header})`
             },
