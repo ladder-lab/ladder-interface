@@ -6,17 +6,23 @@ import QuestionHelper from 'components/essential/QuestionHelper'
 import Divider from 'components/Divider'
 import AddIcon from '@mui/icons-material/Add'
 import Image from 'components/Image'
-import SampleNftLogo from 'assets/images/sample-nft.png'
-import SampleTokenLogo from 'assets/images/ethereum-logo.png'
 import { useIsDarkMode } from 'state/user/hooks'
+import { Currency } from 'constants/token'
+import CurrencyLogo from 'components/essential/CurrencyLogo'
 
 export function SwapSummary({
+  fromAsset,
+  toAsset,
   expanded,
   onChange,
-  margin
+  margin,
+  gasFee
 }: {
+  fromAsset?: Currency
+  toAsset?: Currency
   expanded: boolean
   onChange: () => void
+  gasFee?: string
   margin: string
 }) {
   const theme = useTheme()
@@ -30,7 +36,7 @@ export function SwapSummary({
 
       <Box display="flex" gap={5} alignItems="center">
         <GasStationIcon />
-        <Typography color={theme.palette.text.secondary}>-$8.23</Typography>
+        <Typography color={theme.palette.text.secondary}>~${gasFee || '-'}</Typography>
       </Box>
     </Box>
   )
@@ -75,7 +81,7 @@ export function SwapSummary({
             <QuestionHelper text="..." />
           </Box>
 
-          <Typography sx={{ color: theme.palette.text.secondary }}>~$8.23</Typography>
+          <Typography sx={{ color: theme.palette.text.secondary }}>~${gasFee || '-'}</Typography>
         </Box>
       </Box>
       <Divider />
@@ -84,7 +90,11 @@ export function SwapSummary({
           <Typography>Router</Typography>
           <AddIcon />
         </Box>
-        <RouterGraph logo1={SampleTokenLogo} logo2={SampleNftLogo} fee="0.05%" />
+        <RouterGraph
+          logo1={<CurrencyLogo currency={fromAsset} style={{ width: 24 }} />}
+          logo2={<CurrencyLogo currency={toAsset} style={{ width: 24 }} />}
+          fee="0.05%"
+        />
         <Typography sx={{ color: theme.palette.text.secondary, opacity: 0.5 }}>
           Best price route costs ~$8.23 in gas.This route optimizes your total output by considering aplit
           routes,multiple hops,and the gas cost of each step.
@@ -96,7 +106,7 @@ export function SwapSummary({
   return <Accordion summary={summary} details={details} expanded={expanded} onChange={onChange} margin={margin} />
 }
 
-function RouterGraph({ logo1, logo2, fee }: { logo1: string; logo2: string; fee: string }) {
+function RouterGraph({ logo1, logo2, fee }: { logo1: string | JSX.Element; logo2: string | JSX.Element; fee: string }) {
   const theme = useTheme()
   const darkMode = useIsDarkMode()
 
@@ -109,7 +119,12 @@ function RouterGraph({ logo1, logo2, fee }: { logo1: string; logo2: string; fee:
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between" padding="16px 0" position="relative">
-      <Image src={logo1} alt={'swap-from-logo'} style={{ width: 24 }} />
+      {/* <Image src={logo1} alt={'swap-from-logo'} style={{ width: 24 }} /> */}
+      {typeof logo1 === 'string' ? (
+        <Image src={logo1 as string} alt={`from-asset-logo`} style={{ width: 24 }} />
+      ) : (
+        logo1
+      )}
       <Box
         sx={{
           background: darkMode ? '#484D50' : '#ffffff',
@@ -125,17 +140,38 @@ function RouterGraph({ logo1, logo2, fee }: { logo1: string; logo2: string; fee:
         <DualLogo logo1={logo1} logo2={logo2} />
         <Typography>{fee}</Typography>
       </Box>
-      <Image src={logo2} alt={'swap-to-logo'} style={{ width: 24 }} />
+      {typeof logo2 === 'string' ? <Image src={logo2 as string} alt={`to-asset-logo`} style={{ width: 24 }} /> : logo2}
       <Dashline />
     </Box>
   )
 }
 
-function DualLogo({ logo1, logo2 }: { logo1: string; logo2: string }) {
+function DualLogo({ logo1, logo2 }: { logo1: string | JSX.Element; logo2: string | JSX.Element }) {
   return (
     <Box sx={{ display: 'flex' }}>
-      <Image src={logo1} style={{ width: 24 }} />
-      <Image src={logo2} style={{ width: 24, transform: 'translate(-7px)' }} />
+      {typeof logo1 === 'string' ? (
+        <Image src={logo1 as string} alt={`to-asset-logo`} style={{ width: 24, transform: 'translate(-7px)' }} />
+      ) : (
+        logo1
+      )}
+      {typeof logo2 === 'string' ? (
+        <Image src={logo2 as string} alt={`to-asset-logo`} style={{ width: 24, transform: 'translate(-7px)' }} />
+      ) : (
+        <Box
+          sx={{
+            width: 24,
+            height: 24,
+            transform: 'translate(-7px)',
+            background: '#ffffff',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          {logo2}
+        </Box>
+      )}
     </Box>
   )
 }
