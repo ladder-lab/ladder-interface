@@ -2,8 +2,6 @@ import { useTheme } from '@mui/material'
 import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
-// import AddIcon from '@mui/icons-material/Add'
-// import RemoveIcon from '@mui/icons-material/Remove'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import Divider from 'components/Divider'
 import { CSSProperties } from 'react'
@@ -36,7 +34,7 @@ export default function _Accordion(props: Props) {
           margin: `${margin} !important` || 0
         },
         '& .MuiAccordionSummary-content': {
-          margin: '20px 0'
+          margin: 0
         },
         '& .MuiAccordionSummary-expandIconWrapper': {
           ...iconCssOverride
