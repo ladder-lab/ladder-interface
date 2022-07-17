@@ -20,7 +20,11 @@ export function SwapSummary({
   margin,
   gasFee,
   currencyPrice,
-  currencyRate
+  currencyRate,
+  expectedNftQty,
+  priceImpact,
+  minReceiveNftQty,
+  slippage
 }: {
   fromAsset?: Currency
   toAsset?: Currency
@@ -30,6 +34,10 @@ export function SwapSummary({
   margin: string
   currencyPrice: string
   currencyRate: string
+  expectedNftQty: string
+  priceImpact: string
+  minReceiveNftQty: string
+  slippage: string
 }) {
   const theme = useTheme()
 
@@ -62,7 +70,7 @@ export function SwapSummary({
             </Box>
 
             <Typography>
-              50 <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
+              {expectedNftQty} <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
             </Typography>
           </Box>
           <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -71,19 +79,19 @@ export function SwapSummary({
               <QuestionHelper text={HelperText.priceImpact} />
             </Box>
 
-            <Typography sx={{ color: theme.palette.text.secondary }}>0.41%</Typography>
+            <Typography sx={{ color: theme.palette.text.secondary }}>{priceImpact}%</Typography>
           </Box>
         </Box>
         <Divider />
         <Box display="grid" gap={8} padding="12px 0">
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Box display="flex" alignItems="center" gap={9}>
-              <Typography>Minimum received after slippage (13.36%)</Typography>
+              <Typography>Minimum received after slippage ({slippage}%)</Typography>
               <QuestionHelper text={HelperText.minReceived} />
             </Box>
 
             <Typography>
-              48 <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
+              {minReceiveNftQty} <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
             </Typography>
           </Box>
           <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -107,13 +115,13 @@ export function SwapSummary({
             fee="0.05%"
           />
           <Typography sx={{ color: theme.palette.text.secondary, opacity: 0.5 }}>
-            Best price route costs ~$8.23 in gas.This route optimizes your total output by considering aplit
+            Best price route costs ~${gasFee} in gas.This route optimizes your total output by considering aplit
             routes,multiple hops,and the gas cost of each step.
           </Typography>
         </Box>
       </>
     )
-  }, [])
+  }, [expectedNftQty, priceImpact, slippage, minReceiveNftQty, gasFee, fromAsset, toAsset])
 
   return <Accordion summary={summary} details={details} expanded={expanded} onChange={onChange} margin={margin} />
 }

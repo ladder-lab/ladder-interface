@@ -132,6 +132,10 @@ export default function Swap() {
             gasFee="8.23"
             currencyPrice={'123'}
             currencyRate={'1.000'}
+            expectedNftQty={'50'}
+            priceImpact={'0.41'}
+            minReceiveNftQty={'48'}
+            slippage="13.68"
           />
           {account ? (
             <Box display="grid" gap={16}>
