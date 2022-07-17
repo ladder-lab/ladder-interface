@@ -130,6 +130,8 @@ export default function Swap() {
             onChange={() => setSummaryExpanded(!summaryExpanded)}
             margin="20px 0 40px"
             gasFee="8.23"
+            currencyPrice={'123'}
+            currencyRate={'1.000'}
           />
           {account ? (
             <Box display="grid" gap={16}>

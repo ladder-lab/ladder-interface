@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { Typography, Box, useTheme, styled } from '@mui/material'
 import { ReactComponent as InfoIcon } from 'assets/svg/info.svg'
 import { ReactComponent as GasStationIcon } from 'assets/svg/gas_station.svg'
@@ -9,6 +10,7 @@ import Image from 'components/Image'
 import { useIsDarkMode } from 'state/user/hooks'
 import { Currency } from 'constants/token'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
+import { HelperText } from 'constants/helperText'
 
 export function SwapSummary({
   fromAsset,
@@ -16,7 +18,9 @@ export function SwapSummary({
   expanded,
   onChange,
   margin,
-  gasFee
+  gasFee,
+  currencyPrice,
+  currencyRate
 }: {
   fromAsset?: Currency
   toAsset?: Currency
@@ -24,84 +28,92 @@ export function SwapSummary({
   onChange: () => void
   gasFee?: string
   margin: string
+  currencyPrice: string
+  currencyRate: string
 }) {
   const theme = useTheme()
 
-  const summary = (
-    <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
-      <Box display="flex" gap={14} alignItems="center">
-        <InfoIcon />
-        <Typography color={theme.palette.text.secondary}>1 Tickets for the...= 0.254587 DAI ($1.0000)</Typography>
-      </Box>
-
-      <Box display="flex" gap={5} alignItems="center">
-        <GasStationIcon />
-        <Typography color={theme.palette.text.secondary}>~${gasFee || '-'}</Typography>
-      </Box>
-    </Box>
-  )
-
-  const details = (
-    <>
-      <Box display="grid" gap={8} padding="12px 0">
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box display="flex" alignItems="center" gap={9}>
-            <Typography>Expected Output</Typography>
-            <QuestionHelper text="..." />
-          </Box>
-
-          <Typography>
-            50 <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
+  const summary = useMemo(() => {
+    return (
+      <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
+        <Box display="flex" gap={14} alignItems="center">
+          <InfoIcon />
+          <Typography color={theme.palette.text.secondary}>
+            1 Tickets for the...= {currencyPrice} {fromAsset?.symbol} (${currencyRate})
           </Typography>
         </Box>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box display="flex" alignItems="center" gap={9}>
-            <Typography>Price Impact</Typography>
-            <QuestionHelper text="..." />
-          </Box>
 
-          <Typography sx={{ color: theme.palette.text.secondary }}>0.41%</Typography>
+        <Box display="flex" gap={5} alignItems="center">
+          <GasStationIcon />
+          <Typography color={theme.palette.text.secondary}>~${gasFee || '-'}</Typography>
         </Box>
       </Box>
-      <Divider />
-      <Box display="grid" gap={8} padding="12px 0">
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box display="flex" alignItems="center" gap={9}>
-            <Typography>Minimum received after slippage (13.36%)</Typography>
-            <QuestionHelper text="..." />
-          </Box>
+    )
+  }, [gasFee, currencyPrice, currencyRate])
 
-          <Typography>
-            48 <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
+  const details = useMemo(() => {
+    return (
+      <>
+        <Box display="grid" gap={8} padding="12px 0">
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Box display="flex" alignItems="center" gap={9}>
+              <Typography>Expected Output</Typography>
+              <QuestionHelper text={HelperText.expectedOuptut} />
+            </Box>
+
+            <Typography>
+              50 <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
+            </Typography>
+          </Box>
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Box display="flex" alignItems="center" gap={9}>
+              <Typography>Price Impact</Typography>
+              <QuestionHelper text={HelperText.priceImpact} />
+            </Box>
+
+            <Typography sx={{ color: theme.palette.text.secondary }}>0.41%</Typography>
+          </Box>
+        </Box>
+        <Divider />
+        <Box display="grid" gap={8} padding="12px 0">
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Box display="flex" alignItems="center" gap={9}>
+              <Typography>Minimum received after slippage (13.36%)</Typography>
+              <QuestionHelper text={HelperText.minReceived} />
+            </Box>
+
+            <Typography>
+              48 <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
+            </Typography>
+          </Box>
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Box display="flex" alignItems="center" gap={9}>
+              <Typography>Network Fee</Typography>
+              <QuestionHelper text={HelperText.networkFee} />
+            </Box>
+
+            <Typography sx={{ color: theme.palette.text.secondary }}>~${gasFee || '-'}</Typography>
+          </Box>
+        </Box>
+        <Divider />
+        <Box padding="12px 0">
+          <Box display="flex" alignItems="center" justifyContent="space-between">
+            <Typography>Router</Typography>
+            <AddIcon />
+          </Box>
+          <RouterGraph
+            logo1={<CurrencyLogo currency={fromAsset} style={{ width: 24 }} />}
+            logo2={<CurrencyLogo currency={toAsset} style={{ width: 24 }} />}
+            fee="0.05%"
+          />
+          <Typography sx={{ color: theme.palette.text.secondary, opacity: 0.5 }}>
+            Best price route costs ~$8.23 in gas.This route optimizes your total output by considering aplit
+            routes,multiple hops,and the gas cost of each step.
           </Typography>
         </Box>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box display="flex" alignItems="center" gap={9}>
-            <Typography>Network Fee</Typography>
-            <QuestionHelper text="..." />
-          </Box>
-
-          <Typography sx={{ color: theme.palette.text.secondary }}>~${gasFee || '-'}</Typography>
-        </Box>
-      </Box>
-      <Divider />
-      <Box padding="12px 0">
-        <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Typography>Router</Typography>
-          <AddIcon />
-        </Box>
-        <RouterGraph
-          logo1={<CurrencyLogo currency={fromAsset} style={{ width: 24 }} />}
-          logo2={<CurrencyLogo currency={toAsset} style={{ width: 24 }} />}
-          fee="0.05%"
-        />
-        <Typography sx={{ color: theme.palette.text.secondary, opacity: 0.5 }}>
-          Best price route costs ~$8.23 in gas.This route optimizes your total output by considering aplit
-          routes,multiple hops,and the gas cost of each step.
-        </Typography>
-      </Box>
-    </>
-  )
+      </>
+    )
+  }, [])
 
   return <Accordion summary={summary} details={details} expanded={expanded} onChange={onChange} margin={margin} />
 }

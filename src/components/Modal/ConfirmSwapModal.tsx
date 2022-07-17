@@ -8,6 +8,7 @@ import { useIsDarkMode } from 'state/user/hooks'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
 import QuestionHelper from 'components/essential/QuestionHelper'
 import ActionButton from 'components/Button/ActionButton'
+import { HelperText } from 'constants/helperText'
 
 export default function ConfirmSwapModal({
   onConfirm,
@@ -137,13 +138,6 @@ function SwapDetails({
 }) {
   const theme = useTheme()
 
-  const helpText = {
-    expectedOuptut: 'expectedOuptut',
-    priceImpact: 'priceImpact',
-    minReceived: 'minReceived',
-    networkFee: 'networkFee'
-  }
-
   return (
     <Box
       sx={{
@@ -158,7 +152,7 @@ function SwapDetails({
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center" gap={9}>
           <Typography>Expected Output</Typography>
-          <QuestionHelper text={helpText.expectedOuptut} />
+          <QuestionHelper text={HelperText.expectedOuptut} />
         </Box>
 
         <Typography>
@@ -168,7 +162,7 @@ function SwapDetails({
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center" gap={9}>
           <Typography>Price Impact</Typography>
-          <QuestionHelper text={helpText.priceImpact} />
+          <QuestionHelper text={HelperText.priceImpact} />
         </Box>
 
         <Typography sx={{ color: theme.palette.text.secondary }}>{priceImpact}%</Typography>
@@ -178,7 +172,7 @@ function SwapDetails({
           <Typography sx={{ color: theme.palette.text.secondary }}>
             Minimum received after slippage ({slippage}%)
           </Typography>
-          <QuestionHelper text={helpText.minReceived} />
+          <QuestionHelper text={HelperText.minReceived} />
         </Box>
 
         <Typography>
@@ -188,7 +182,7 @@ function SwapDetails({
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center" gap={9}>
           <Typography sx={{ color: theme.palette.text.secondary }}>Network Fee</Typography>
-          <QuestionHelper text={helpText.networkFee} />
+          <QuestionHelper text={HelperText.networkFee} />
         </Box>
 
         <Typography sx={{ color: theme.palette.text.secondary }}>~${NetworkFee}</Typography>
