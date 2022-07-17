@@ -24,6 +24,7 @@ const FancyButton = styled('button')(({ theme }) => ({
   border: `1px solid ${theme.palette.text.primary}`,
   outline: 'none',
   padding: '14px',
+  background: theme.palette.background.default,
   '&:hover': {
     border: `1px solid ${theme.palette.text.secondary}`
   },
