@@ -39,7 +39,7 @@ export default function ConfirmSwapModal({
         <Typography sx={{ fontSize: 16, color: theme.palette.text.secondary, mt: 24, mb: 24 }}>
           Output is estimated.You will receive at least 2 Tickets for the community #56 or the transaction will revert.
         </Typography>
-        <SwapDetails />
+        <SwapDetails ExpectedNftQty="50" priceImpact="0.41" slippage="13.36" MinReceiveNftQty="48" NetworkFee="8.23" />
         <ActionButton onAction={onConfirm} actionText="Confirm Swap" error={showNotify ? 'Confirm Swap' : undefined} />
       </Box>
     </Modal>
@@ -122,8 +122,27 @@ function PriceUpdateNotification({ onDismiss }: { onDismiss: () => void }) {
   )
 }
 
-function SwapDetails() {
+function SwapDetails({
+  ExpectedNftQty,
+  priceImpact,
+  slippage,
+  MinReceiveNftQty,
+  NetworkFee
+}: {
+  ExpectedNftQty: string
+  priceImpact: string
+  slippage: string
+  MinReceiveNftQty: string
+  NetworkFee: string
+}) {
   const theme = useTheme()
+
+  const helpText = {
+    expectedOuptut: 'expectedOuptut',
+    priceImpact: 'priceImpact',
+    minReceived: 'minReceived',
+    networkFee: 'networkFee'
+  }
 
   return (
     <Box
@@ -139,38 +158,40 @@ function SwapDetails() {
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center" gap={9}>
           <Typography>Expected Output</Typography>
-          <QuestionHelper text="..." />
+          <QuestionHelper text={helpText.expectedOuptut} />
         </Box>
 
         <Typography>
-          50 <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
+          {ExpectedNftQty} <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
         </Typography>
       </Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center" gap={9}>
           <Typography>Price Impact</Typography>
-          <QuestionHelper text="..." />
+          <QuestionHelper text={helpText.priceImpact} />
         </Box>
 
-        <Typography sx={{ color: theme.palette.text.secondary }}>0.41%</Typography>
+        <Typography sx={{ color: theme.palette.text.secondary }}>{priceImpact}%</Typography>
       </Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center" gap={9}>
-          <Typography sx={{ color: theme.palette.text.secondary }}>Minimum received after slippage (13.36%)</Typography>
-          <QuestionHelper text="..." />
+          <Typography sx={{ color: theme.palette.text.secondary }}>
+            Minimum received after slippage ({slippage}%)
+          </Typography>
+          <QuestionHelper text={helpText.minReceived} />
         </Box>
 
         <Typography>
-          48 <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
+          {MinReceiveNftQty} <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
         </Typography>
       </Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center" gap={9}>
           <Typography sx={{ color: theme.palette.text.secondary }}>Network Fee</Typography>
-          <QuestionHelper text="..." />
+          <QuestionHelper text={helpText.networkFee} />
         </Box>
 
-        <Typography sx={{ color: theme.palette.text.secondary }}>~$8.23</Typography>
+        <Typography sx={{ color: theme.palette.text.secondary }}>~${NetworkFee}</Typography>
       </Box>
     </Box>
   )
