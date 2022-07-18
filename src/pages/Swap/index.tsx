@@ -1,4 +1,4 @@
-import { useCallback, useState, ChangeEvent } from 'react'
+import { useCallback, useState, ChangeEvent, useMemo } from 'react'
 import { Typography, Box, useTheme, Button } from '@mui/material'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
@@ -11,6 +11,8 @@ import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
 import CurrencyInputPanel from 'components/Input/CurrencyInputPanel'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
+import ConfirmSwapModal from 'components/Modal/ConfirmSwapModal'
+import useModal from 'hooks/useModal'
 
 export default function Swap() {
   const theme = useTheme()
@@ -24,6 +26,8 @@ export default function Swap() {
 
   const { account } = useActiveWeb3React()
   const toggleWallet = useWalletModalToggle()
+
+  const { showModal } = useModal()
 
   const onFromVal = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setFromVal(e.target.value)
@@ -40,6 +44,18 @@ export default function Swap() {
   const onSelectToAsset = useCallback((asset: Currency) => {
     setToAsset(asset)
   }, [])
+
+  const error = useMemo(() => {
+    if (!fromAsset || !toAsset) {
+      return 'Select a Token'
+    }
+
+    return undefined
+  }, [fromAsset, toAsset])
+
+  const onSwap = useCallback(() => {
+    showModal(<ConfirmSwapModal onConfirm={() => {}} from={fromAsset} to={toAsset} fromVal={fromVal} toVal={toVal} />)
+  }, [fromAsset, toAsset, fromVal, toVal])
 
   return (
     <>
@@ -114,11 +130,17 @@ export default function Swap() {
             onChange={() => setSummaryExpanded(!summaryExpanded)}
             margin="20px 0 40px"
             gasFee="8.23"
+            currencyPrice={'123'}
+            currencyRate={'1.000'}
+            expectedNftQty={'50'}
+            priceImpact={'0.41'}
+            minReceiveNftQty={'48'}
+            slippage="13.68"
           />
           {account ? (
             <Box display="grid" gap={16}>
               <ActionButton onAction={() => {}} actionText="Allow the Ladder to use your DAI" />
-              <ActionButton onAction={() => {}} actionText="Swap" error="Select a Token" />
+              <ActionButton onAction={onSwap} actionText="Swap" error={error} />
             </Box>
           ) : (
             <Button sx={{ background: theme.gradient.gradient1 }} onClick={toggleWallet}>

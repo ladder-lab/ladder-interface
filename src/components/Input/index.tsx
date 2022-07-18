@@ -20,6 +20,7 @@ export interface InputProps {
   smallPlaceholder?: boolean
   subStr?: string
   subStr2?: string
+  helperText?: string
 }
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
@@ -67,12 +68,13 @@ export default function Input({
   smallPlaceholder,
   subStr,
   subStr2,
+  helperText,
   ...rest
 }: InputProps & Omit<InputHTMLAttributes<HTMLInputElement>, 'color' | 'outline' | 'size'>) {
   const theme = useTheme()
   return (
     <div style={{ width: '100%', maxWidth: maxWidth || 'unset' }}>
-      {label && <InputLabel>{label}</InputLabel>}
+      {label && <InputLabel helperText={helperText}>{label}</InputLabel>}
       <StyledInputBase
         sx={{
           height: height || 60,

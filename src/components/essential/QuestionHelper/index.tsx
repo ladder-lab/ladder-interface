@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { CSSProperties, useCallback, useState } from 'react'
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined'
 import { styled, Typography } from '@mui/material'
 import Tooltip from './Tooltip'
@@ -44,7 +44,17 @@ const QuestionMark = styled('span')({
   fontSize: '1rem'
 })
 
-export default function QuestionHelper({ text, size = 14, title }: { text: string; size?: number; title?: any }) {
+export default function QuestionHelper({
+  text,
+  size = 14,
+  title,
+  style
+}: {
+  text: string
+  size?: number
+  title?: any
+  style?: CSSProperties
+}) {
   const [show, setShow] = useState<boolean>(false)
 
   const open = useCallback(() => setShow(true), [setShow])
@@ -52,7 +62,7 @@ export default function QuestionHelper({ text, size = 14, title }: { text: strin
 
   return (
     <Tooltip text={text} show={show}>
-      <QuestionWrapper onClick={open} onMouseEnter={open} onMouseLeave={close}>
+      <QuestionWrapper onClick={open} onMouseEnter={open} onMouseLeave={close} style={{ ...style }}>
         {title ? title : <HelpOutlineOutlinedIcon sx={{ height: size, width: size }} />}
       </QuestionWrapper>
     </Tooltip>
