@@ -24,6 +24,7 @@ const FancyButton = styled('button')(({ theme }) => ({
   border: `1px solid ${theme.palette.text.primary}`,
   outline: 'none',
   padding: '14px',
+  background: theme.palette.background.default,
   '&:hover': {
     border: `1px solid ${theme.palette.text.secondary}`
   },
@@ -153,10 +154,13 @@ export default function TransactionSettings({
     <Box display="grid" gap="24px">
       <Box display="grid" gap="8px">
         <Box display="flex" alignItems="center">
-          <Typography fontWeight={400} fontSize={14} color={theme.palette.text.primary}>
+          <Typography fontWeight={400} fontSize={14} color={theme.palette.text.secondary}>
             Slippage tolerance
           </Typography>
-          <QuestionHelper text="Your transaction will revert if the price changes unfavorably by more than this percentage." />
+          <QuestionHelper
+            text="Your transaction will revert if the price changes unfavorably by more than this percentage."
+            style={{ marginLeft: 5 }}
+          />
         </Box>
         <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
           <Option
@@ -235,10 +239,13 @@ export default function TransactionSettings({
       {!onlySlippage && (
         <Box display="grid" gap="8px">
           <Box display="flex" alignItems="center">
-            <Typography fontSize={14} fontWeight={400} color={theme.palette.text.primary}>
+            <Typography fontSize={14} fontWeight={400} color={theme.palette.text.secondary}>
               Transaction deadline
             </Typography>
-            <QuestionHelper text="Your transaction will revert if it is pending for more than this long." />
+            <QuestionHelper
+              text="Your transaction will revert if it is pending for more than this long."
+              style={{ marginLeft: 5 }}
+            />
           </Box>
           <Box display="flex" alignItems="center">
             <OptionCustom style={{ width: '10rem', marginRight: '12px' }} tabIndex={-1}>

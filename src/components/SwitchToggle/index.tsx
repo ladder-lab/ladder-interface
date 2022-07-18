@@ -4,63 +4,63 @@ import { switchClasses } from '@mui/material/Switch'
 
 const StyledSwitch = styled(Switch)(({ theme }) => ({
   [`&.${switchClasses.root}`]: {
-    width: 80,
-    height: 36,
+    width: 44,
+    height: 24,
     padding: 0
   },
   [`& .${switchClasses.switchBase}`]: {
-    padding: '8px'
+    padding: '4px 6px'
   },
   [`& .${switchClasses.thumb}`]: {
-    width: 20,
-    height: 20,
+    width: 16,
+    height: 16,
     backgroundColor: '#FFFFFF'
   },
   [`& .${switchClasses.track}`]: {
     width: 80,
-    height: 36,
+    height: 24,
     opacity: '1 !important',
-    backgroundColor: 'transparent',
-    border: '1px solid #cccccc',
-    borderRadius: '49px',
-    position: 'relative',
-    '&:before, &:after': {
-      display: 'inline-block',
-      position: 'absolute',
-      top: '50%',
-      width: '50%',
-      transform: 'translateY(-50%)',
-      textAlign: 'center'
-    },
-    '&:before': {
-      content: '"On"',
-      left: 4,
-      opacity: 0
-    },
-    '&:after': {
-      content: '"Off"',
-      right: 4
-    }
+    backgroundColor: '#DADADA',
+    // border: '1px solid #cccccc',
+    borderRadius: '30px',
+    position: 'relative'
+    // '&:before, &:after': {
+    //   display: 'inline-block',
+    //   position: 'absolute',
+    //   top: '50%',
+    //   width: '50%',
+    //   transform: 'translateY(-50%)',
+    //   textAlign: 'center'
+    // }
+    // '&:before': {
+    //   content: '"On"',
+    //   left: 4,
+    //   opacity: 0
+    // }
+    // '&:after': {
+    //   content: '"Off"',
+    //   right: 4
+    // }
   },
   [`& .${switchClasses.checked}`]: {
     [`&.${switchClasses.switchBase}`]: {
-      transform: 'translateX(44px)',
+      transform: 'translateX(16px)',
       '&:hover': {}
     },
     [`& .${switchClasses.thumb}`]: {
-      backgroundColor: theme.palette.primary.main
+      backgroundColor: '#FFFFFF'
     },
     [`& + .${switchClasses.track}`]: {
-      background: 'transparent !important',
-      opacity: '1 !important',
-      border: '1px solid #cccccc',
-      borderRadius: '49px',
-      '&:before': {
-        opacity: 1
-      },
-      '&:after': {
-        opacity: 0
-      }
+      background: '#1F9898'
+      // opacity: '1 !important',
+      // border: '1px solid #cccccc'
+      // borderRadius: '49px'
+      // '&:before': {
+      //   opacity: 1
+      // },
+      // '&:after': {
+      //   opacity: 0
+      // }
     }
   }
 }))
