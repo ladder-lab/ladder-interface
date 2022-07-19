@@ -5,7 +5,6 @@ import Modal from 'components/Modal'
 import CurrencyList from './CurrencyList'
 import Divider from 'components/Divider'
 import Input from 'components/Input'
-import { Currency } from 'constants/token'
 import QuestionHelper from 'components/essential/QuestionHelper'
 import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
 import LogoText from 'components/LogoText'
@@ -17,7 +16,7 @@ import { isAddress } from 'utils'
 import { ETHER, Token } from '@uniswap/sdk'
 import { filterTokens, useSortedTokensByQuery } from 'utils/swap/filtering'
 import { useTokenComparator } from 'utils/swap/sorting'
-import { TokenType } from 'models/allTokens'
+import { AllTokens, TokenType } from 'models/allTokens'
 import useModal from 'hooks/useModal'
 import ImportModal from 'components/Modal/ImportModal'
 
@@ -28,12 +27,12 @@ export enum Mode {
 
 export default function SelectCurrencyModal({
   onSelectCurrency,
-  fromTokenType
+  selectedTokenType
 }: {
-  onSelectCurrency?: (currency: Currency) => void
-  fromTokenType?: TokenType
+  onSelectCurrency?: (currency: AllTokens) => void
+  selectedTokenType?: TokenType
 }) {
-  const [mode, setMode] = useState(fromTokenType === 'erc20' ? Mode.NFT : Mode.TOKEN)
+  const [mode, setMode] = useState(selectedTokenType === 'erc20' ? Mode.NFT : Mode.TOKEN)
   const [searchQuery, setSearchQuery] = useState<string>('')
   const debouncedQuery = useDebounce(searchQuery, 200)
   const fixedList = useRef<FixedSizeList>()
@@ -95,12 +94,12 @@ export default function SelectCurrencyModal({
   //   setInput(e.target.value)
   // }, [])
   useEffect(() => {
-    if (fromTokenType === 'erc20') {
+    if (selectedTokenType === 'erc20') {
       setMode(Mode.NFT)
     } else {
       setMode(Mode.TOKEN)
     }
-  }, [fromTokenType])
+  }, [selectedTokenType])
 
   const onImport = useCallback(() => {
     showModal(<ImportModal />)
@@ -117,14 +116,14 @@ export default function SelectCurrencyModal({
           <ModeButton
             selected={mode === Mode.TOKEN}
             onClick={() => setMode(Mode.TOKEN)}
-            disabled={fromTokenType === 'erc20'}
+            disabled={selectedTokenType === 'erc20'}
           >
             ERC20
           </ModeButton>
           <ModeButton
             selected={mode === Mode.NFT}
             onClick={() => setMode(Mode.NFT)}
-            disabled={fromTokenType === 'erc1155'}
+            disabled={selectedTokenType === 'erc1155'}
           >
             ERC1155
           </ModeButton>
@@ -183,7 +182,7 @@ export default function SelectCurrencyModal({
               searchTokenIsAdded={searchTokenIsAdded}
             />
           ) : (
-            <NftList />
+            <NftList onClick={onSelectCurrency} />
           )}
         </Box>
         {/* <Divider />

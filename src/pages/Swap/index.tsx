@@ -90,8 +90,9 @@ export default function Swap() {
           >
             <Settings />
           </Box>
-          <Box mb={12}>
+          <Box mb={16}>
             <CurrencyInputPanel
+              selectedTokenType={toAsset ? ('tokenId' in toAsset ? 'erc1155' : 'erc20') : undefined}
               value={fromVal}
               onChange={onFromVal}
               onSelectCurrency={onSelectFromAsset}
@@ -103,9 +104,9 @@ export default function Swap() {
             <ArrowCircle />
           </Box>
 
-          <Box mb={12}>
+          <Box mb={16}>
             <CurrencyInputPanel
-              fromTokenType={fromAsset ? ('tokenId' in fromAsset ? 'erc1155' : 'erc20') : undefined}
+              selectedTokenType={fromAsset ? ('tokenId' in fromAsset ? 'erc1155' : 'erc20') : undefined}
               value={toVal}
               onChange={onToVal}
               onSelectCurrency={onSelectToAsset}

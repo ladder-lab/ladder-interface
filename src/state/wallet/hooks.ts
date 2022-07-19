@@ -1,11 +1,12 @@
 import { useMemo } from 'react'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
-import { useMulticallContract } from '../../hooks/useContract'
+import { use1155Contract, useMulticallContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
-import { useSingleContractMultipleData, useMultipleContractSingleData } from '../multicall/hooks'
+import { useSingleContractMultipleData, useMultipleContractSingleData, useSingleCallResult } from '../multicall/hooks'
 import { Currency, ETHER, Token, JSBI, CurrencyAmount, TokenAmount } from '@uniswap/sdk'
 import { useActiveWeb3React } from 'hooks'
 import { useAllTokens } from 'hooks/Tokens'
+import { Token1155 } from 'constants/token/token1155'
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -130,4 +131,16 @@ export function useAllTokenBalances(): { [tokenAddress: string]: TokenAmount | u
   const allTokensArray = useMemo(() => Object.values(allTokens ?? {}), [allTokens])
   const balances = useTokenBalances(account ?? undefined, allTokensArray)
   return useMemo(() => balances ?? {}, [balances])
+}
+
+export function useToken1155Balance(token?: Token1155 | null | undefined) {
+  const { account } = useActiveWeb3React()
+  const args = useMemo(() => {
+    return [account ?? undefined, token?.tokenId]
+  }, [account, token?.tokenId])
+
+  const contract = use1155Contract(token?.address)
+  const balance = useSingleCallResult(contract, 'balanceOf', args)
+
+  return balance.result?.toString()
 }
