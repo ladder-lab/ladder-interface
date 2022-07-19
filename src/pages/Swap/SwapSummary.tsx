@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { Typography, Box, useTheme, styled } from '@mui/material'
 import { ReactComponent as InfoIcon } from 'assets/svg/info.svg'
 import { ReactComponent as GasStationIcon } from 'assets/svg/gas_station.svg'
@@ -6,97 +7,135 @@ import QuestionHelper from 'components/essential/QuestionHelper'
 import Divider from 'components/Divider'
 import AddIcon from '@mui/icons-material/Add'
 import Image from 'components/Image'
-import SampleNftLogo from 'assets/images/sample-nft.png'
-import SampleTokenLogo from 'assets/images/ethereum-logo.png'
 import { useIsDarkMode } from 'state/user/hooks'
+import CurrencyLogo from 'components/essential/CurrencyLogo'
+import { HelperText } from 'constants/helperText'
+import { AllTokens } from 'models/allTokens'
 
 export function SwapSummary({
+  fromAsset,
+  toAsset,
   expanded,
   onChange,
-  margin
+  margin,
+  gasFee,
+  currencyPrice,
+  currencyRate,
+  expectedNftQty,
+  priceImpact,
+  minReceiveNftQty,
+  slippage
 }: {
+  fromAsset?: AllTokens
+  toAsset?: AllTokens
   expanded: boolean
   onChange: () => void
+  gasFee?: string
   margin: string
+  currencyPrice: string
+  currencyRate: string
+  expectedNftQty: string
+  priceImpact: string
+  minReceiveNftQty: string
+  slippage: string
 }) {
   const theme = useTheme()
 
-  const summary = (
-    <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
-      <Box display="flex" gap={14} alignItems="center">
-        <InfoIcon />
-        <Typography color={theme.palette.text.secondary}>1 Tickets for the...= 0.254587 DAI ($1.0000)</Typography>
-      </Box>
-
-      <Box display="flex" gap={5} alignItems="center">
-        <GasStationIcon />
-        <Typography color={theme.palette.text.secondary}>-$8.23</Typography>
-      </Box>
-    </Box>
-  )
-
-  const details = (
-    <>
-      <Box display="grid" gap={8} padding="12px 0">
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box display="flex" alignItems="center" gap={9}>
-            <Typography>Expected Output</Typography>
-            <QuestionHelper text="..." />
-          </Box>
-
-          <Typography>
-            50 <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
+  const summary = useMemo(() => {
+    return (
+      <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
+        <Box display="flex" gap={14} alignItems="center">
+          <InfoIcon />
+          <Typography color={theme.palette.text.secondary}>
+            1 Tickets for the...= {currencyPrice} {fromAsset?.symbol} (${currencyRate})
           </Typography>
         </Box>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box display="flex" alignItems="center" gap={9}>
-            <Typography>Price Impact</Typography>
-            <QuestionHelper text="..." />
-          </Box>
 
-          <Typography sx={{ color: theme.palette.text.secondary }}>0.41%</Typography>
+        <Box display="flex" gap={5} alignItems="center">
+          <GasStationIcon />
+          <Typography color={theme.palette.text.secondary}>~${gasFee || '-'}</Typography>
         </Box>
       </Box>
-      <Divider />
-      <Box display="grid" gap={8} padding="12px 0">
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box display="flex" alignItems="center" gap={9}>
-            <Typography>EMinimum received after slippage (13.36%)</Typography>
-            <QuestionHelper text="..." />
-          </Box>
+    )
+  }, [theme.palette.text.secondary, currencyPrice, fromAsset?.symbol, currencyRate, gasFee])
 
-          <Typography>
-            48 <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
+  const details = useMemo(() => {
+    return (
+      <>
+        <Box display="grid" gap={8} padding="12px 0">
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Box display="flex" alignItems="center" gap={9}>
+              <Typography>Expected Output</Typography>
+              <QuestionHelper text={HelperText.expectedOuptut} />
+            </Box>
+
+            <Typography>
+              {expectedNftQty} <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
+            </Typography>
+          </Box>
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Box display="flex" alignItems="center" gap={9}>
+              <Typography>Price Impact</Typography>
+              <QuestionHelper text={HelperText.priceImpact} />
+            </Box>
+
+            <Typography sx={{ color: theme.palette.text.secondary }}>{priceImpact}%</Typography>
+          </Box>
+        </Box>
+        <Divider />
+        <Box display="grid" gap={8} padding="12px 0">
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Box display="flex" alignItems="center" gap={9}>
+              <Typography>Minimum received after slippage ({slippage}%)</Typography>
+              <QuestionHelper text={HelperText.minReceived} />
+            </Box>
+
+            <Typography>
+              {minReceiveNftQty} <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
+            </Typography>
+          </Box>
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Box display="flex" alignItems="center" gap={9}>
+              <Typography>Network Fee</Typography>
+              <QuestionHelper text={HelperText.networkFee} />
+            </Box>
+
+            <Typography sx={{ color: theme.palette.text.secondary }}>~${gasFee || '-'}</Typography>
+          </Box>
+        </Box>
+        <Divider />
+        <Box padding="12px 0">
+          <Box display="flex" alignItems="center" justifyContent="space-between">
+            <Typography>Router</Typography>
+            <AddIcon />
+          </Box>
+          <RouterGraph
+            logo1={<CurrencyLogo currency={fromAsset} style={{ width: 24 }} />}
+            logo2={<CurrencyLogo currency={toAsset} style={{ width: 24 }} />}
+            fee="0.05%"
+          />
+          <Typography sx={{ color: theme.palette.text.secondary, opacity: 0.5 }}>
+            Best price route costs ~${gasFee} in gas.This route optimizes your total output by considering aplit
+            routes,multiple hops,and the gas cost of each step.
           </Typography>
         </Box>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box display="flex" alignItems="center" gap={9}>
-            <Typography>Network Fee</Typography>
-            <QuestionHelper text="..." />
-          </Box>
-
-          <Typography sx={{ color: theme.palette.text.secondary }}>~$8.23</Typography>
-        </Box>
-      </Box>
-      <Divider />
-      <Box padding="12px 0">
-        <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Typography>Router</Typography>
-          <AddIcon />
-        </Box>
-        <RouterGraph logo1={SampleTokenLogo} logo2={SampleNftLogo} fee="0.05%" />
-        <Typography sx={{ color: theme.palette.text.secondary, opacity: 0.5 }}>
-          Best price route costs ~$8.23 in gas.This route optimizes your total output by considering aplit
-          routes,multiple hops,and the gas cost of each step.
-        </Typography>
-      </Box>
-    </>
-  )
+      </>
+    )
+  }, [
+    expectedNftQty,
+    theme.palette.text.secondary,
+    priceImpact,
+    slippage,
+    minReceiveNftQty,
+    gasFee,
+    fromAsset,
+    toAsset
+  ])
 
   return <Accordion summary={summary} details={details} expanded={expanded} onChange={onChange} margin={margin} />
 }
 
-function RouterGraph({ logo1, logo2, fee }: { logo1: string; logo2: string; fee: string }) {
+function RouterGraph({ logo1, logo2, fee }: { logo1: string | JSX.Element; logo2: string | JSX.Element; fee: string }) {
   const theme = useTheme()
   const darkMode = useIsDarkMode()
 
@@ -109,7 +148,12 @@ function RouterGraph({ logo1, logo2, fee }: { logo1: string; logo2: string; fee:
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between" padding="16px 0" position="relative">
-      <Image src={logo1} alt={'swap-from-logo'} style={{ width: 24 }} />
+      {/* <Image src={logo1} alt={'swap-from-logo'} style={{ width: 24 }} /> */}
+      {typeof logo1 === 'string' ? (
+        <Image src={logo1 as string} alt={`from-asset-logo`} style={{ width: 24 }} />
+      ) : (
+        logo1
+      )}
       <Box
         sx={{
           background: darkMode ? '#484D50' : '#ffffff',
@@ -125,17 +169,38 @@ function RouterGraph({ logo1, logo2, fee }: { logo1: string; logo2: string; fee:
         <DualLogo logo1={logo1} logo2={logo2} />
         <Typography>{fee}</Typography>
       </Box>
-      <Image src={logo2} alt={'swap-to-logo'} style={{ width: 24 }} />
+      {typeof logo2 === 'string' ? <Image src={logo2 as string} alt={`to-asset-logo`} style={{ width: 24 }} /> : logo2}
       <Dashline />
     </Box>
   )
 }
 
-function DualLogo({ logo1, logo2 }: { logo1: string; logo2: string }) {
+function DualLogo({ logo1, logo2 }: { logo1: string | JSX.Element; logo2: string | JSX.Element }) {
   return (
     <Box sx={{ display: 'flex' }}>
-      <Image src={logo1} style={{ width: 24 }} />
-      <Image src={logo2} style={{ width: 24, transform: 'translate(-7px)' }} />
+      {typeof logo1 === 'string' ? (
+        <Image src={logo1 as string} alt={`to-asset-logo`} style={{ width: 24, transform: 'translate(-7px)' }} />
+      ) : (
+        logo1
+      )}
+      {typeof logo2 === 'string' ? (
+        <Image src={logo2 as string} alt={`to-asset-logo`} style={{ width: 24, transform: 'translate(-7px)' }} />
+      ) : (
+        <Box
+          sx={{
+            width: 24,
+            height: 24,
+            transform: 'translate(-7px)',
+            background: '#ffffff',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          {logo2}
+        </Box>
+      )}
     </Box>
   )
 }

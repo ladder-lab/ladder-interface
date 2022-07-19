@@ -18,6 +18,8 @@ import { ETHER, Token } from '@uniswap/sdk'
 import { filterTokens, useSortedTokensByQuery } from 'utils/swap/filtering'
 import { useTokenComparator } from 'utils/swap/sorting'
 import { TokenType } from 'models/allTokens'
+import useModal from 'hooks/useModal'
+import ImportModal from 'components/Modal/ImportModal'
 
 export enum Mode {
   TOKEN = 'token',
@@ -35,6 +37,7 @@ export default function SelectCurrencyModal({
   const [searchQuery, setSearchQuery] = useState<string>('')
   const debouncedQuery = useDebounce(searchQuery, 200)
   const fixedList = useRef<FixedSizeList>()
+  const { showModal } = useModal()
 
   const [invertSearchOrder] = useState<boolean>(false)
 
@@ -99,6 +102,10 @@ export default function SelectCurrencyModal({
     }
   }, [fromTokenType])
 
+  const onImport = useCallback(() => {
+    showModal(<ImportModal />)
+  }, [showModal])
+
   return (
     <>
       <Modal width={'680px'} closeIcon padding="32px">
@@ -128,7 +135,9 @@ export default function SelectCurrencyModal({
             <Typography fontSize={16} fontWeight={500}>
               Don&apos;t see your NFT ?
             </Typography>
-            <ButtonBase sx={{ color: theme => theme.palette.text.secondary }}>Import it</ButtonBase>
+            <ButtonBase sx={{ color: theme => theme.palette.text.secondary }} onClick={onImport}>
+              Import it
+            </ButtonBase>
           </Box>
         )}
 

@@ -43,8 +43,7 @@ const themeConstants = {
     gradient1: 'linear-gradient(98.91deg, #D8FF20 10.95%, #99F7F4 100%)',
     gradient2:
       'linear-gradient(0deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.06)), linear-gradient(98.91deg, #D8FF20 10.95%, #99F7F4 100%)',
-    gradient3:
-      'linear-gradient(0deg, rgba(0, 0, 0, 0.19), rgba(0, 0, 0, 0.19)), linear-gradient(98.91deg, #D8FF20 10.95%, #99F7F4 100%)'
+    gradient3: 'linear-gradient(98.91deg, rgba(216, 255, 32, 0.2) 10.95%, rgba(153, 247, 244, 0.2) 100%)'
   },
   height: {
     header: '80px',
