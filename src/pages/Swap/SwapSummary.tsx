@@ -11,6 +11,7 @@ import { useIsDarkMode } from 'state/user/hooks'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { HelperText } from 'constants/helperText'
 import { AllTokens } from 'models/allTokens'
+import useBreakpoint from 'hooks/useBreakpoint'
 
 export function SwapSummary({
   fromAsset,
@@ -40,6 +41,7 @@ export function SwapSummary({
   slippage: string
 }) {
   const theme = useTheme()
+  const isDownMd = useBreakpoint('md')
 
   const summary = useMemo(() => {
     return (
@@ -66,7 +68,7 @@ export function SwapSummary({
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Box display="flex" alignItems="center" gap={9}>
               <Typography>Expected Output</Typography>
-              <QuestionHelper text={HelperText.expectedOuptut} />
+              {!isDownMd && <QuestionHelper text={HelperText.expectedOuptut} />}
             </Box>
 
             <Typography>
@@ -76,7 +78,7 @@ export function SwapSummary({
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Box display="flex" alignItems="center" gap={9}>
               <Typography>Price Impact</Typography>
-              <QuestionHelper text={HelperText.priceImpact} />
+              {!isDownMd && <QuestionHelper text={HelperText.priceImpact} />}
             </Box>
 
             <Typography sx={{ color: theme.palette.text.secondary }}>{priceImpact}%</Typography>
@@ -85,9 +87,9 @@ export function SwapSummary({
         <Divider />
         <Box display="grid" gap={8} padding="12px 0">
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Box display="flex" alignItems="center" gap={9}>
+            <Box display="flex" alignItems="center" gap={9} sx={{ maxWidth: { xs: 154, md: 'unset' } }}>
               <Typography>Minimum received after slippage ({slippage}%)</Typography>
-              <QuestionHelper text={HelperText.minReceived} />
+              {!isDownMd && <QuestionHelper text={HelperText.minReceived} />}
             </Box>
 
             <Typography>
@@ -97,7 +99,7 @@ export function SwapSummary({
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Box display="flex" alignItems="center" gap={9}>
               <Typography>Network Fee</Typography>
-              <QuestionHelper text={HelperText.networkFee} />
+              {!isDownMd && <QuestionHelper text={HelperText.networkFee} />}
             </Box>
 
             <Typography sx={{ color: theme.palette.text.secondary }}>~${gasFee || '-'}</Typography>
@@ -129,7 +131,8 @@ export function SwapSummary({
     minReceiveNftQty,
     gasFee,
     fromAsset,
-    toAsset
+    toAsset,
+    isDownMd
   ])
 
   return <Accordion summary={summary} details={details} expanded={expanded} onChange={onChange} margin={margin} />

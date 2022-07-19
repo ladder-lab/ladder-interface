@@ -71,7 +71,18 @@ export default function Swap() {
             position: 'relative'
           }}
         >
-          <Typography fontSize={28} mb={45}>
+          <Typography
+            sx={{
+              fontSize: {
+                xs: 20,
+                md: 28
+              },
+              mb: {
+                xs: 32,
+                md: 45
+              }
+            }}
+          >
             SWAP
           </Typography>
           <Box
