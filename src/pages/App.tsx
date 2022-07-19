@@ -10,6 +10,7 @@ import ComingSoon from './ComingSoon'
 import { ModalProvider } from 'context/ModalContext'
 import { routes } from 'constants/routes'
 import Swap from './Swap'
+import Pool from './Pool'
 
 const AppWrapper = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -60,7 +61,7 @@ export default function App() {
               <Web3ReactManager>
                 <Routes>
                   <Route path={routes.swap} element={<Swap />} />
-                  <Route path={routes.pool} element={<ComingSoon />} />
+                  <Route path={routes.pool} element={<Pool />} />
                   <Route path="/" element={<ComingSoon />} />
                 </Routes>
               </Web3ReactManager>
