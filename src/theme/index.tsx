@@ -47,7 +47,7 @@ const themeConstants = {
   },
   height: {
     header: '80px',
-    mobileHeader: '51px',
+    mobileHeader: '67px',
     footer: '60px'
   },
   width: {
