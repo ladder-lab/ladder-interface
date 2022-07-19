@@ -7,11 +7,12 @@ import LogoText from 'components/LogoText'
 import SelectCurrencyModal from './SelectCurrencyModal'
 import { useActiveWeb3React } from 'hooks'
 import { useCurrencyBalance } from 'state/wallet/hooks'
-import { Currency } from 'constants/token/currency'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
+import { AllTokens, TokenType } from 'models/allTokens'
+import { Token1155 } from 'constants/token/token1155'
 
 interface Props {
-  currency?: Currency | null
+  currency?: AllTokens | null
   value: string
   onChange: (e: ChangeEvent<HTMLInputElement>) => void
   onMax?: () => void
@@ -21,7 +22,8 @@ interface Props {
   inputFocused?: boolean
   disableCurrencySelect?: boolean
   hideBalance?: boolean
-  onSelectCurrency: (cur: Currency) => void
+  onSelectCurrency: (cur: AllTokens) => void
+  fromTokenType?: TokenType
 }
 
 const InputRow = styled('div')(({ theme }) => ({
@@ -73,18 +75,23 @@ export default function CurrencyInputPanel({
   currency,
   onSelectCurrency,
   hideBalance,
-  onChange
+  onChange,
+  fromTokenType
 }: Props) {
   const { account } = useActiveWeb3React()
-  const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
+  const selectedCurrencyBalance = useCurrencyBalance(
+    account ?? undefined,
+    currency && !(currency instanceof Token1155) ? currency : undefined
+  )
+
   const { showModal } = useModal()
   const theme = useTheme()
 
   const showCurrencySearch = useCallback(() => {
     if (!disableCurrencySelect) {
-      showModal(<SelectCurrencyModal onSelectCurrency={onSelectCurrency} />)
+      showModal(<SelectCurrencyModal onSelectCurrency={onSelectCurrency} fromTokenType={fromTokenType} />)
     }
-  }, [disableCurrencySelect, onSelectCurrency, showModal])
+  }, [disableCurrencySelect, fromTokenType, onSelectCurrency, showModal])
 
   return (
     <Box display="flex" gap={16} width="100%" alignItems={'flex-start'}>
