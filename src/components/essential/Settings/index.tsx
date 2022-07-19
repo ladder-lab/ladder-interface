@@ -15,12 +15,9 @@ import TransactionSettings from './TransactionSettings'
 import { ReactComponent as SettingsIcon } from 'assets/componentsIcon/setting.svg'
 import SwitchToggle from 'components/SwitchToggle'
 
-const StyledMenuIcon = styled(SettingsIcon)(({ theme }) => ({
+const StyledMenuIcon = styled(SettingsIcon)(() => ({
   height: '20px',
   width: '20px',
-  '& > *': {
-    stroke: theme.palette.text.primary
-  },
   '&:hover': {
     opacity: 0.7
   }

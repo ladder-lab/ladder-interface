@@ -5,6 +5,8 @@ import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { JSBI, Percent, CurrencyAmount } from '@uniswap/sdk'
 import { ChainId } from '../constants/chain'
+import { ROUTER_ADDRESS } from 'constants/index'
+import { abi as V2RouterABI } from 'constants/abis/v2Router.json'
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -144,6 +146,11 @@ export function getContract(address: string, ABI: any, library: Web3Provider, ac
   }
 
   return new Contract(address, ABI, getProviderOrSigner(library, account) as any)
+}
+
+// account is optional
+export function getRouterContract(_: number, library: Web3Provider, account?: string): Contract {
+  return getContract(ROUTER_ADDRESS, V2RouterABI, library, account)
 }
 
 export function escapeRegExp(string: string): string {

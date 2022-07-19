@@ -29,7 +29,7 @@ export function AssetAccordion({ token }: { token?: AllTokens }) {
     <Box sx={{ display: 'flex', gap: 19, alignItems: 'center' }}>
       <CurrencyLogo currency={token} style={{ width: 36 }} />
       <Box display="grid" gap={8}>
-        <Typography color={theme.palette.text.secondary}>Name: {token?.symbol ?? '-'}</Typography>
+        <Typography color={theme.palette.text.secondary}>Name: {token?.name ?? '-'}</Typography>
         <Typography color={theme.palette.text.secondary}>
           Contract: {token && 'address' in token ? token?.address : '-'}
         </Typography>
