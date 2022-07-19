@@ -6,7 +6,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { JSBI, Percent, CurrencyAmount } from '@uniswap/sdk'
 import { ChainId } from '../constants/chain'
 import { ROUTER_ADDRESS } from 'constants/index'
-import { abi as V2RouterABI } from 'constants/abis/v2Router.json'
+import V2RouterABI from 'constants/abis/v2Router.json'
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
