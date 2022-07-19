@@ -33,13 +33,13 @@ const EmojiWrapper = styled('div')({
   fontSize: '14px'
 })
 
-const CustomizedAutoRow = styled('div')(`
-  display: flex;
-  align-items: center;
-  & > div {
-    width: 50%;
-  }
-`)
+// const CustomizedAutoRow = styled('div')(`
+//   display: flex;
+//   align-items: center;
+//   & > div {
+//     width: 50%;
+//   }
+// `)
 
 export const SLIPPAGE_TYPE = { generation: 'generation', redeem: 'redeem' }
 
@@ -103,9 +103,10 @@ export default function Settings({ onlySlippage }: { onlySlippage?: boolean }) {
           </Box>
         </Box>
       </Modal>
-      <Modal customIsOpen={open} customOnDismiss={toggle} closeIcon>
+      <Modal customIsOpen={open} customOnDismiss={toggle} closeIcon maxWidth={'433px'}>
         <Box
-          display="grid"
+          display="flex"
+          flexDirection={'column'}
           gap="28px"
           padding="30px 30px 48px"
           justifyContent="center"
@@ -124,11 +125,11 @@ export default function Settings({ onlySlippage }: { onlySlippage?: boolean }) {
               <Typography fontWeight={400} fontSize={18} style={{ marginTop: '16px' }}>
                 Interface Settings
               </Typography>
-              <CustomizedAutoRow>
-                <Box display="grid">
+              <Box display="grid" gap={16}>
+                <Box display="flex" justifyContent="space-between" alignItems="center">
                   <Box display="flex" alignItems="center" marginBottom="11px">
-                    <Typography fontWeight={400} fontSize={14} color={theme.palette.text.primary}>
-                      Toggle Expert Mode
+                    <Typography fontWeight={400} fontSize={14} color={theme.palette.text.secondary}>
+                      Expert Mode
                     </Typography>
                     <QuestionHelper text="Bypasses confirmation modals and allows high slippage trades. Use at your own risk." />
                   </Box>
@@ -147,9 +148,9 @@ export default function Settings({ onlySlippage }: { onlySlippage?: boolean }) {
                     }
                   />
                 </Box>
-                <Box display="grid">
+                <Box display="flex" justifyContent="space-between" alignItems="center">
                   <Box display="flex" alignItems="center" marginBottom="11px">
-                    <Typography fontWeight={400} fontSize={14} color={theme.palette.text.primary}>
+                    <Typography fontWeight={400} fontSize={14} color={theme.palette.text.secondary}>
                       Disable Multihops
                     </Typography>
                     <QuestionHelper text="Restricts swaps to direct pairs only." />
@@ -159,7 +160,7 @@ export default function Settings({ onlySlippage }: { onlySlippage?: boolean }) {
                     onChange={() => (singleHopOnly ? setSingleHopOnly(false) : setSingleHopOnly(true))}
                   />
                 </Box>
-              </CustomizedAutoRow>
+              </Box>
             </>
           )}
         </Box>
