@@ -14,7 +14,7 @@ export function AssetAccordion({ token }: { token?: AllTokens }) {
     setExpanded(prev => !prev)
   }, [])
 
-  const Tag = styled(Box)({
+  const Tag = styled(Box)(({ theme }) => ({
     borderRadius: '10px',
     boxShadow: '0px 3px 10px rgba(0,0,0,0.15)',
     position: 'absolute',
@@ -22,8 +22,9 @@ export function AssetAccordion({ token }: { token?: AllTokens }) {
     top: 0,
     fontSize: 12,
     padding: '4px 12px',
-    background: darkMode ? '#484D50' : '#FFFFFF'
-  })
+    background: darkMode ? '#484D50' : '#FFFFFF',
+    color: theme.palette.primary.main
+  }))
 
   const summary = (
     <Box sx={{ display: 'flex', gap: 19, alignItems: 'center' }}>
