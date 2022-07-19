@@ -1,27 +1,18 @@
 import { Typography, Box, styled, useTheme } from '@mui/material'
-import Image from 'components/Image'
 import Accordion from 'components/Accordion'
 import { useIsDarkMode } from 'state/user/hooks'
+import { useCallback, useState } from 'react'
+import { AllTokens } from 'models/allTokens'
+import CurrencyLogo from 'components/essential/CurrencyLogo'
 
-export function AssetAccordion({
-  logo,
-  name,
-  contract,
-  tokenId,
-  tokenType,
-  expanded,
-  onChange
-}: {
-  logo: string
-  name: string
-  contract: string
-  tokenId?: string
-  tokenType?: string
-  expanded: boolean
-  onChange: () => void
-}) {
+export function AssetAccordion({ token }: { token?: AllTokens }) {
+  const [expanded, setExpanded] = useState(false)
   const theme = useTheme()
   const darkMode = useIsDarkMode()
+
+  const handleChange = useCallback(() => {
+    setExpanded(prev => !prev)
+  }, [])
 
   const Tag = styled(Box)({
     borderRadius: '10px',
@@ -36,14 +27,18 @@ export function AssetAccordion({
 
   const summary = (
     <Box sx={{ display: 'flex', gap: 19, alignItems: 'center' }}>
-      <Image src={logo} style={{ width: 36 }} />
+      <CurrencyLogo currency={token} style={{ width: 36 }} />
       <Box display="grid" gap={8}>
-        <Typography color={theme.palette.text.secondary}>Name: {name}</Typography>
-        <Typography color={theme.palette.text.secondary}>Contract: {contract}</Typography>
-        <Typography color={theme.palette.text.secondary}>Token Id: {tokenId || 'none'}</Typography>
+        <Typography color={theme.palette.text.secondary}>Name: {token?.symbol ?? '-'}</Typography>
+        <Typography color={theme.palette.text.secondary}>
+          Contract: {token && 'address' in token ? token?.address : '-'}
+        </Typography>
+        <Typography color={theme.palette.text.secondary}>
+          Token Id: {token && 'tokenId' in token ? token.tokenId : 'none'}
+        </Typography>
       </Box>
 
-      <Tag>{tokenType}</Tag>
+      <Tag>{token && 'is1155' in token ? 'ERC1155' : 'ERC20'}</Tag>
     </Box>
   )
 
@@ -60,7 +55,8 @@ export function AssetAccordion({
       summary={summary}
       details={details}
       expanded={expanded}
-      onChange={onChange}
+      onChange={handleChange}
+      margin={'0'}
       iconCssOverride={{ right: 0, bottom: 0, position: 'absolute' }}
     />
   )

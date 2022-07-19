@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, KeyboardEvent, useRef, ChangeEvent } from 'react'
+import { useState, useCallback, useMemo, KeyboardEvent, useRef, ChangeEvent, useEffect } from 'react'
 import { Box, Typography, ButtonBase } from '@mui/material'
 import { FixedSizeList } from 'react-window'
 import Modal from 'components/Modal'
@@ -17,14 +17,21 @@ import { isAddress } from 'utils'
 import { ETHER, Token } from '@uniswap/sdk'
 import { filterTokens, useSortedTokensByQuery } from 'utils/swap/filtering'
 import { useTokenComparator } from 'utils/swap/sorting'
+import { TokenType } from 'models/allTokens'
 
 export enum Mode {
   TOKEN = 'token',
   NFT = 'nft'
 }
 
-export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurrency?: (currency: Currency) => void }) {
-  const [mode, setMode] = useState(Mode.TOKEN)
+export default function SelectCurrencyModal({
+  onSelectCurrency,
+  fromTokenType
+}: {
+  onSelectCurrency?: (currency: Currency) => void
+  fromTokenType?: TokenType
+}) {
+  const [mode, setMode] = useState(fromTokenType === 'erc20' ? Mode.NFT : Mode.TOKEN)
   const [searchQuery, setSearchQuery] = useState<string>('')
   const debouncedQuery = useDebounce(searchQuery, 200)
   const fixedList = useRef<FixedSizeList>()
@@ -84,6 +91,13 @@ export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurr
   // const onInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
   //   setInput(e.target.value)
   // }, [])
+  useEffect(() => {
+    if (fromTokenType === 'erc20') {
+      setMode(Mode.NFT)
+    } else {
+      setMode(Mode.TOKEN)
+    }
+  }, [fromTokenType])
 
   return (
     <>
@@ -93,10 +107,18 @@ export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurr
           <QuestionHelper text="..." size={22} />
         </Box>
         <Box display="flex" gap={20} padding="31px 0 30px" alignItems="center">
-          <ModeButton selected={mode === Mode.TOKEN} onClick={() => setMode(Mode.TOKEN)}>
+          <ModeButton
+            selected={mode === Mode.TOKEN}
+            onClick={() => setMode(Mode.TOKEN)}
+            disabled={fromTokenType === 'erc20'}
+          >
             ERC20
           </ModeButton>
-          <ModeButton selected={mode === Mode.NFT} onClick={() => setMode(Mode.NFT)}>
+          <ModeButton
+            selected={mode === Mode.NFT}
+            onClick={() => setMode(Mode.NFT)}
+            disabled={fromTokenType === 'erc1155'}
+          >
             ERC1155
           </ModeButton>
         </Box>
@@ -169,15 +191,18 @@ export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurr
 function ModeButton({
   children,
   selected,
-  onClick
+  onClick,
+  disabled
 }: {
   children?: React.ReactNode
   selected?: boolean
   onClick?: () => void
+  disabled?: boolean
 }) {
   return (
     <ButtonBase
       onClick={onClick}
+      disabled={disabled}
       sx={{
         padding: '7px 20px',
         borderRadius: selected ? '10px' : '18px',
