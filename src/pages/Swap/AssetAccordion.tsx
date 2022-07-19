@@ -41,11 +41,11 @@ export function AssetAccordion({ token }: { token?: AllTokens }) {
             xs: 'flex-start',
             md: 'center'
           },
-          maxWidth: 100
+          width: '100%'
         }}
       >
         <CurrencyLogo currency={token} style={{ width: 36 }} />
-        <Box display="flex" flexDirection="column" gap={8}>
+        <Box display="flex" flexDirection="column" gap={8} width="100%">
           <Typography color={theme.palette.text.secondary}>Name: {token?.name ?? '-'}</Typography>
           <Typography color={theme.palette.text.secondary} sx={{ wordWrap: 'break-word' }}>
             Contract: {token && 'address' in token ? token?.address : '-'}
