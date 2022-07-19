@@ -1,20 +1,18 @@
 import { useState, useCallback } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { AppBar, Box, IconButton, MenuItem, styled as muiStyled, styled, Typography } from '@mui/material'
+import { AppBar, Box, IconButton, MenuItem, styled as muiStyled, styled, Typography, useTheme } from '@mui/material'
 import { ExternalLink } from 'theme/components'
 import Web3Status from './Web3Status'
 import { HideOnMobile, ShowOnMobile } from 'theme/index'
 import PlainSelect from 'components/Select/PlainSelect'
 import { ReactComponent as Ladder } from '../../assets/svg/ladder.svg'
 import { ReactComponent as LadderLogo } from '../../assets/svg/ladder_logo.svg'
-import { ReactComponent as MenuIcon } from '../../assets/svg/menu.svg'
 import { routes } from 'constants/routes'
 import MobileMenu from './MobileMenu'
 import NetworkSelect from './NetworkSelect'
 import SwitchToggle from 'components/SwitchToggle'
 import { useDarkModeManager } from 'state/user/hooks'
 import useBreakpoint from 'hooks/useBreakpoint'
-import { theme } from 'theme'
 
 interface TabContent {
   title: string
@@ -112,8 +110,7 @@ const MainLogo = styled(Link, { shouldForwardProp: prop => !(prop === 'isDarkMod
       marginBottom: -10,
       '& svg': {
         width: 34,
-        height: 40,
-        fill: isDarkMode ? theme.palette.text.primary : '#232859'
+        height: 40
       }
     }
   })
@@ -127,6 +124,7 @@ const LinksWrapper = muiStyled('div')(({ theme }) => ({
 }))
 
 export default function Header() {
+  const theme = useTheme()
   const isDownMd = useBreakpoint('md')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { pathname } = useLocation()
@@ -249,13 +247,42 @@ export default function Header() {
                 width: 46,
                 padding: '4px',
                 borderRadius: '8px',
-                background: theme.palette.background.default
+                background: theme => theme.palette.background.default
               }}
               onClick={() => {
                 setMobileMenuOpen(open => !open)
               }}
             >
-              <MenuIcon />
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M21 10.7825H7"
+                  stroke={theme.palette.text.primary}
+                  strokeWidth="1.7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M21 6H3"
+                  stroke={theme.palette.text.primary}
+                  strokeWidth="1.7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M21 15.5652H3"
+                  stroke={theme.palette.text.primary}
+                  strokeWidth="1.7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M21 20.3479H7"
+                  stroke={theme.palette.text.primary}
+                  strokeWidth="1.7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
             </IconButton>
           </ShowOnMobile>
         </Box>

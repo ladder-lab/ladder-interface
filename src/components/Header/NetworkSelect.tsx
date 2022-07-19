@@ -1,15 +1,15 @@
-import { MenuItem } from '@mui/material'
+import { MenuItem, useTheme } from '@mui/material'
 import LogoText from 'components/LogoText'
 import Select from 'components/Select/Select'
 import { useActiveWeb3React } from 'hooks'
 import { ChainId, ChainList, SUPPORTED_NETWORKS } from 'constants/chain'
 import useBreakpoint from 'hooks/useBreakpoint'
 import Image from 'components/Image'
-import { theme } from 'theme'
 
 export default function NetworkSelect() {
   const { chainId, account, library } = useActiveWeb3React()
   const isDownSm = useBreakpoint('sm')
+  const theme = useTheme()
 
   if (!chainId || !account) return null
 
@@ -21,7 +21,6 @@ export default function NetworkSelect() {
       height={isDownSm ? '46px' : '44px'}
       style={{
         background: theme.palette.background.default,
-        // border: '1px solid rgba(0, 0, 0, 0.1)',
         '& .Mui-disabled.MuiSelect-select.MuiInputBase-input': {
           paddingRight: isDownSm ? 0 : 10,
           color: theme => theme.palette.text.primary,
