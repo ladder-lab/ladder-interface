@@ -51,7 +51,15 @@ export default function Swap() {
   }, [fromAsset, toAsset])
 
   const onSwap = useCallback(() => {
-    showModal(<ConfirmSwapModal onConfirm={() => {}} from={fromAsset} to={toAsset} fromVal={fromVal} toVal={toVal} />)
+    showModal(
+      <ConfirmSwapModal
+        onConfirm={() => {}}
+        from={fromAsset ?? undefined}
+        to={toAsset ?? undefined}
+        fromVal={fromVal}
+        toVal={toVal}
+      />
+    )
   }, [showModal, fromAsset, toAsset, fromVal, toVal])
 
   return (
@@ -106,8 +114,8 @@ export default function Swap() {
           </Box>
           {toAsset && <AssetAccordion token={toAsset} />}
           <SwapSummary
-            fromAsset={fromAsset}
-            toAsset={toAsset}
+            fromAsset={fromAsset ?? undefined}
+            toAsset={toAsset ?? undefined}
             expanded={summaryExpanded}
             onChange={() => setSummaryExpanded(!summaryExpanded)}
             margin="20px 0 40px"
