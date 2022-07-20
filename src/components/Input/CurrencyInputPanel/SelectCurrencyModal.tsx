@@ -19,6 +19,9 @@ import { useTokenComparator } from 'utils/swap/sorting'
 import { AllTokens, TokenType } from 'models/allTokens'
 import useModal from 'hooks/useModal'
 import ImportModal from 'components/Modal/ImportModal'
+import { HelperText } from 'constants/helperText'
+import { theme } from 'theme'
+import useBreakpoint from 'hooks/useBreakpoint'
 
 export enum Mode {
   TOKEN = 'token',
@@ -32,6 +35,7 @@ export default function SelectCurrencyModal({
   onSelectCurrency?: (currency: AllTokens) => void
   selectedTokenType?: TokenType
 }) {
+  const isDownMd = useBreakpoint('md')
   const [mode, setMode] = useState(selectedTokenType === 'erc20' ? Mode.NFT : Mode.TOKEN)
   const [searchQuery, setSearchQuery] = useState<string>('')
   const debouncedQuery = useDebounce(searchQuery, 200)
@@ -107,10 +111,23 @@ export default function SelectCurrencyModal({
 
   return (
     <>
-      <Modal width={'680px'} closeIcon padding="32px">
+      <Modal width="100%" maxWidth="680px" closeIcon padding={isDownMd ? '16px 28px' : '32px 32px'}>
         <Box width="100%" display="flex" gap={14} alignItems="center">
-          <Typography fontSize={24}>{mode === Mode.TOKEN ? 'Select a Token' : 'Select a NFT'}</Typography>
-          <QuestionHelper text="..." size={22} />
+          <Typography
+            sx={{
+              fontSize: {
+                xs: 14,
+                md: 24
+              }
+            }}
+          >
+            {mode === Mode.TOKEN ? 'Select a Token' : 'Select a NFT'}
+          </Typography>
+          <QuestionHelper
+            text={mode === Mode.TOKEN ? HelperText.selectToken : HelperText.selectNft}
+            size={isDownMd ? 18.33 : 22}
+            style={{ color: theme.palette.text.primary }}
+          />
         </Box>
         <Box display="flex" gap={20} padding="31px 0 30px" alignItems="center">
           <ModeButton
@@ -134,7 +151,7 @@ export default function SelectCurrencyModal({
             <Typography fontSize={16} fontWeight={500}>
               Don&apos;t see your NFT ?
             </Typography>
-            <ButtonBase sx={{ color: theme => theme.palette.text.secondary }} onClick={onImport}>
+            <ButtonBase sx={{ color: theme => theme.palette.text.secondary, fontSize: 16 }} onClick={onImport}>
               Import it
             </ButtonBase>
           </Box>
@@ -143,10 +160,11 @@ export default function SelectCurrencyModal({
         <Input
           value={searchQuery}
           onChange={handleInput}
-          placeholder="Search by name or paste address"
+          placeholder="Search name or paste address"
           outlined
           startAdornment={<SearchIcon />}
           onKeyDown={handleEnter}
+          height={isDownMd ? 48 : 60}
         />
 
         {mode === Mode.TOKEN && (
@@ -212,12 +230,18 @@ function ModeButton({
       onClick={onClick}
       disabled={disabled}
       sx={{
-        padding: '7px 20px',
+        padding: {
+          xs: '4px 12px',
+          md: '7px 20px'
+        },
         borderRadius: selected ? '10px' : '18px',
         color: selected ? '#1F9898' : ' #9E9E9E',
         boxShadow: selected ? '0px 4px 6px rgba(0, 0, 0, 0.05)' : 'inset 0px 2px 12px rgba(0, 0, 0, 0.1)',
         background: selected ? '#FFFFFF' : '#F8F8F8',
-        fontSize: 16
+        fontSize: {
+          xs: 14,
+          md: 16
+        }
       }}
     >
       {children}

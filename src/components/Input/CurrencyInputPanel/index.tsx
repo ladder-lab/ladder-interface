@@ -11,6 +11,7 @@ import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { AllTokens, TokenType } from 'models/allTokens'
 import { checkIs1155 } from 'utils/checkIs1155'
 import { Token1155 } from 'constants/token/token1155'
+import useBreakpoint from 'hooks/useBreakpoint'
 
 interface Props {
   currency?: AllTokens | null
@@ -32,7 +33,7 @@ const InputRow = styled('div')(({ theme }) => ({
   height: 60,
   display: 'flex',
   justifyContent: 'flex-end',
-  maxWidth: 254,
+  // maxWidth: 254,
   '& .Mui-focused': {
     '&:before': {
       content: '""',
@@ -50,7 +51,8 @@ const InputRow = styled('div')(({ theme }) => ({
 }))
 
 const StyledInput = styled(InputNumerical)({
-  position: 'absolute'
+  position: 'absolute',
+  width: '100%'
 })
 
 export default function CurrencyInputPanel({
@@ -74,6 +76,7 @@ export default function CurrencyInputPanel({
 
   const { showModal } = useModal()
   const theme = useTheme()
+  const isDownMd = useBreakpoint('md')
 
   const showCurrencySearch = useCallback(() => {
     if (!disableCurrencySelect) {
@@ -89,9 +92,27 @@ export default function CurrencyInputPanel({
   // }, [is1155, onChange, selectedCurrencyBalance, token1155Balance])
 
   return (
-    <Box display="flex" gap={16} width="100%" alignItems={'flex-start'}>
+    <Box
+      sx={{
+        width: '100%',
+        display: 'flex',
+        flexDirection: {
+          xs: 'column',
+          md: 'row'
+        },
+        gap: {
+          xs: 12,
+          md: 16
+        }
+      }}
+    >
       {/* <InputLabel>Token</InputLabel> */}
-      <SelectButton width={'346px'} onClick={showCurrencySearch} disabled={disabled} primary={selectActive}>
+      <SelectButton
+        width={isDownMd ? '100%' : '346px'}
+        onClick={showCurrencySearch}
+        disabled={disabled}
+        primary={selectActive}
+      >
         {currency ? (
           <LogoText
             logo={<CurrencyLogo currency={currency} />}
