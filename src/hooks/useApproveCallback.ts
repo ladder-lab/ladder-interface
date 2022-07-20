@@ -6,8 +6,10 @@ import { useTransactionAdder, useHasPendingApproval } from '../state/transaction
 import { calculateGasMargin } from '../utils'
 import { useTokenContract } from './useContract'
 import { useActiveWeb3React } from './index'
-import { CurrencyAmount, TokenAmount } from '../constants/token/fractions'
-import { ETHER } from '../constants/token'
+import { Trade, CurrencyAmount, TokenAmount, ETHER } from '@uniswap/sdk'
+import { computeSlippageAdjustedAmounts } from 'utils/swap/prices'
+import { ROUTER_ADDRESS } from 'constants/index'
+import { Field } from 'state/swap/actions'
 
 export enum ApprovalState {
   UNKNOWN,
@@ -92,4 +94,14 @@ export function useApproveCallback(
   }, [approvalState, token, tokenContract, amountToApprove, spender, addTransaction])
 
   return [approvalState, approve]
+}
+
+// wraps useApproveCallback in the context of a swap
+export function useApproveCallbackFromTrade(trade?: Trade, allowedSlippage = 0) {
+  const amountToApprove = useMemo(
+    () => (trade ? computeSlippageAdjustedAmounts(trade, allowedSlippage)[Field.INPUT as Field] : undefined),
+    [trade, allowedSlippage]
+  )
+
+  return useApproveCallback(amountToApprove, ROUTER_ADDRESS)
 }

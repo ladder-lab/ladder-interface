@@ -1,15 +1,17 @@
-import { Contract } from '@ethersproject/contracts'
 import { useMemo } from 'react'
+import { Contract } from '@ethersproject/contracts'
+import { ChainId, WETH } from '@uniswap/sdk'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
 import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
+import WETH_ABI from '../constants/abis/weth.json'
 import ERC20_ABI from '../constants/abis/erc20.json'
+import ERC1155_ABI from '../constants/abis/erc1155.json'
 import { MIGRATOR_ABI, MIGRATOR_ADDRESS } from '../constants/abis/migrator'
 import UNISOCKS_ABI from '../constants/abis/unisocks.json'
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
 import { getContract } from '../utils'
 import { useActiveWeb3React } from './index'
-import { ChainId } from '../constants/chain'
 
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -32,6 +34,11 @@ export function useV2MigratorContract(): Contract | null {
 
 export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
   return useContract(tokenAddress, ERC20_ABI, withSignerIfPossible)
+}
+
+export function useWETHContract(withSignerIfPossible?: boolean): Contract | null {
+  const { chainId } = useActiveWeb3React()
+  return useContract(chainId ? WETH[chainId].address : undefined, WETH_ABI, withSignerIfPossible)
 }
 
 export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contract | null {
@@ -70,4 +77,8 @@ export function useSocksController(): Contract | null {
     UNISOCKS_ABI,
     false
   )
+}
+
+export function use1155Contract(address: string | undefined, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(address, ERC1155_ABI, withSignerIfPossible)
 }

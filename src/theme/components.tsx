@@ -33,8 +33,14 @@ export function CloseIcon({ onClick }: { onClick?: () => void }) {
         position: 'absolute',
         top: '24px',
         right: '32px',
-        width: 52,
-        height: 52,
+        width: {
+          xs: 32,
+          md: 52
+        },
+        height: {
+          xs: 32,
+          md: 52
+        },
         background: theme => theme.palette.background.default,
         borderRadius: '8px',
         '&:hover $closeIcon': {

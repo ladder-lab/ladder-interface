@@ -55,7 +55,8 @@ export default function Modal(props: Props) {
           },
           '& .MuiDialog-container ': {
             alignItems: { xs: !isCardOnMobile ? 'flex-end' : 'center', sm: 'center' }
-          }
+          },
+          margin: '0 16px'
         }}
         TransitionComponent={Transition}
         PaperProps={{
@@ -69,23 +70,22 @@ export default function Modal(props: Props) {
               boxShadow: 'unset',
               padding: 0,
               boxSizing: 'border-box',
-              borderRadius: 2,
+              borderRadius: '12px',
               marginBottom: { xs: 0, sm: '10vh' },
               overflowX: 'hidden',
-              overflowY: 'auto',
+              overflowY: 'hidden',
               position: 'absolute',
               maxHeight: theme => `calc(100vh - ${theme.height.header})`
             },
             ...(!isCardOnMobile
               ? {
                   [theme.breakpoints.down('sm')]: {
-                    margin: 0,
                     border: 'none',
                     width: '100%!important',
                     maxWidth: 'unset!important',
                     maxHeight: `calc(100vh - ${theme.height.mobileHeader})`,
                     height: 'auto',
-                    borderRadius: '0',
+                    borderRadius: '12px',
                     marginTop: theme.height.mobileHeader,
                     marginBottom: 0,
                     pb: '50px',

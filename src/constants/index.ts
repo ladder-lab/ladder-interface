@@ -10,6 +10,8 @@ type ChainTokenList = {
 // used to ensure the user doesn't send so much ETH so they end up with <.01
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
 
+export const ROUTER_ADDRESS = '0x54F0d8485e931c22D542D7b95dbbf5ecdE9C91E8'
+
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 export const AMPL = new Token(ChainId.MAINNET, '0xD46bA6D942050d489DBd938a2C909A5d5039A161', 9, 'AMPL', 'Ampleforth')

@@ -1,11 +1,10 @@
-import { useState, useCallback, useMemo, KeyboardEvent, useRef, ChangeEvent } from 'react'
+import { useState, useCallback, useMemo, KeyboardEvent, useRef, ChangeEvent, useEffect } from 'react'
 import { Box, Typography, ButtonBase } from '@mui/material'
 import { FixedSizeList } from 'react-window'
 import Modal from 'components/Modal'
 import CurrencyList from './CurrencyList'
 import Divider from 'components/Divider'
 import Input from 'components/Input'
-import { Currency } from 'constants/token'
 import QuestionHelper from 'components/essential/QuestionHelper'
 import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
 import LogoText from 'components/LogoText'
@@ -17,20 +16,31 @@ import { isAddress } from 'utils'
 import { ETHER, Token } from '@uniswap/sdk'
 import { filterTokens, useSortedTokensByQuery } from 'utils/swap/filtering'
 import { useTokenComparator } from 'utils/swap/sorting'
+import { AllTokens, TokenType } from 'models/allTokens'
 import useModal from 'hooks/useModal'
 import ImportModal from 'components/Modal/ImportModal'
+import { HelperText } from 'constants/helperText'
+import { theme } from 'theme'
+import useBreakpoint from 'hooks/useBreakpoint'
 
 export enum Mode {
   TOKEN = 'token',
   NFT = 'nft'
 }
 
-export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurrency?: (currency: Currency) => void }) {
-  const [mode, setMode] = useState(Mode.TOKEN)
-  const { showModal } = useModal()
+export default function SelectCurrencyModal({
+  onSelectCurrency,
+  selectedTokenType
+}: {
+  onSelectCurrency?: (currency: AllTokens) => void
+  selectedTokenType?: TokenType
+}) {
+  const isDownMd = useBreakpoint('md')
+  const [mode, setMode] = useState(selectedTokenType === 'erc20' ? Mode.NFT : Mode.TOKEN)
   const [searchQuery, setSearchQuery] = useState<string>('')
   const debouncedQuery = useDebounce(searchQuery, 200)
   const fixedList = useRef<FixedSizeList>()
+  const { showModal } = useModal()
 
   const [invertSearchOrder] = useState<boolean>(false)
 
@@ -87,23 +97,51 @@ export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurr
   // const onInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
   //   setInput(e.target.value)
   // }, [])
+  useEffect(() => {
+    if (selectedTokenType === 'erc20') {
+      setMode(Mode.NFT)
+    } else {
+      setMode(Mode.TOKEN)
+    }
+  }, [selectedTokenType])
 
   const onImport = useCallback(() => {
     showModal(<ImportModal />)
-  }, [])
+  }, [showModal])
 
   return (
     <>
-      <Modal width={'680px'} closeIcon padding="32px">
+      <Modal width="100%" maxWidth="680px" closeIcon padding={isDownMd ? '16px 28px' : '32px 32px'}>
         <Box width="100%" display="flex" gap={14} alignItems="center">
-          <Typography fontSize={24}>{mode === Mode.TOKEN ? 'Select a Token' : 'Select a NFT'}</Typography>
-          <QuestionHelper text="..." size={22} />
+          <Typography
+            sx={{
+              fontSize: {
+                xs: 14,
+                md: 24
+              }
+            }}
+          >
+            {mode === Mode.TOKEN ? 'Select a Token' : 'Select a NFT'}
+          </Typography>
+          <QuestionHelper
+            text={mode === Mode.TOKEN ? HelperText.selectToken : HelperText.selectNft}
+            size={isDownMd ? 18.33 : 22}
+            style={{ color: theme.palette.text.primary }}
+          />
         </Box>
         <Box display="flex" gap={20} padding="31px 0 30px" alignItems="center">
-          <ModeButton selected={mode === Mode.TOKEN} onClick={() => setMode(Mode.TOKEN)}>
+          <ModeButton
+            selected={mode === Mode.TOKEN}
+            onClick={() => setMode(Mode.TOKEN)}
+            disabled={selectedTokenType === 'erc20'}
+          >
             ERC20
           </ModeButton>
-          <ModeButton selected={mode === Mode.NFT} onClick={() => setMode(Mode.NFT)}>
+          <ModeButton
+            selected={mode === Mode.NFT}
+            onClick={() => setMode(Mode.NFT)}
+            disabled={selectedTokenType === 'erc1155'}
+          >
             ERC1155
           </ModeButton>
         </Box>
@@ -113,7 +151,7 @@ export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurr
             <Typography fontSize={16} fontWeight={500}>
               Don&apos;t see your NFT ?
             </Typography>
-            <ButtonBase sx={{ color: theme => theme.palette.text.secondary }} onClick={onImport}>
+            <ButtonBase sx={{ color: theme => theme.palette.text.secondary, fontSize: 16 }} onClick={onImport}>
               Import it
             </ButtonBase>
           </Box>
@@ -122,10 +160,11 @@ export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurr
         <Input
           value={searchQuery}
           onChange={handleInput}
-          placeholder="Search by name or paste address"
+          placeholder="Search name or paste address"
           outlined
           startAdornment={<SearchIcon />}
           onKeyDown={handleEnter}
+          height={isDownMd ? 48 : 60}
         />
 
         {mode === Mode.TOKEN && (
@@ -161,7 +200,7 @@ export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurr
               searchTokenIsAdded={searchTokenIsAdded}
             />
           ) : (
-            <NftList />
+            <NftList onClick={onSelectCurrency} />
           )}
         </Box>
         {/* <Divider />
@@ -178,22 +217,31 @@ export default function SelectCurrencyModal({ onSelectCurrency }: { onSelectCurr
 function ModeButton({
   children,
   selected,
-  onClick
+  onClick,
+  disabled
 }: {
   children?: React.ReactNode
   selected?: boolean
   onClick?: () => void
+  disabled?: boolean
 }) {
   return (
     <ButtonBase
       onClick={onClick}
+      disabled={disabled}
       sx={{
-        padding: '7px 20px',
+        padding: {
+          xs: '4px 12px',
+          md: '7px 20px'
+        },
         borderRadius: selected ? '10px' : '18px',
         color: selected ? '#1F9898' : ' #9E9E9E',
         boxShadow: selected ? '0px 4px 6px rgba(0, 0, 0, 0.05)' : 'inset 0px 2px 12px rgba(0, 0, 0, 0.1)',
         background: selected ? '#FFFFFF' : '#F8F8F8',
-        fontSize: 16
+        fontSize: {
+          xs: 14,
+          md: 16
+        }
       }}
     >
       {children}
