@@ -1,6 +1,7 @@
 import { styled } from '@mui/material'
 import CurrencyLogo from '.'
-import { Currency } from '../../../constants/token/currency'
+// import { Currency } from '../../../constants/token/currency'
+import { AllTokens } from 'models/allTokens'
 
 const Wrapper = styled('div')({
   position: 'relative',
@@ -11,8 +12,8 @@ const Wrapper = styled('div')({
 interface DoubleCurrencyLogoProps {
   margin?: boolean
   size?: number
-  currency0?: Currency
-  currency1?: Currency
+  currency0?: AllTokens
+  currency1?: AllTokens
 }
 
 export default function DoubleCurrencyLogo({
