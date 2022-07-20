@@ -1,4 +1,5 @@
 export const routes = {
   swap: '/swap',
-  pool: '/pool'
+  pool: '/pool',
+  addLiquidy: '/addLiquidity'
 }

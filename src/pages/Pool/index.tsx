@@ -1,8 +1,12 @@
+import { useNavigate } from 'react-router-dom'
 import AppBody from 'components/AppBody'
 import { Box, Typography, useTheme, Button } from '@mui/material'
+import { routes } from 'constants/routes'
 
 export default function Pool() {
   const theme = useTheme()
+  const navigate = useNavigate()
+
   return (
     <AppBody width={'100%'} maxWidth={'1140px'}>
       <Box sx={{ padding: '30px 32px' }}>
@@ -28,7 +32,12 @@ export default function Pool() {
             >
               Create a pair
             </Button>
-            <Button sx={{ fontSize: 12, height: 44, whiteSpace: 'nowrap', minWidth: 'auto' }}>Add Liquidity</Button>
+            <Button
+              onClick={() => navigate(routes.addLiquidy)}
+              sx={{ fontSize: 12, height: 44, whiteSpace: 'nowrap', minWidth: 'auto' }}
+            >
+              Add Liquidity
+            </Button>
           </Box>
         </Box>
       </Box>
