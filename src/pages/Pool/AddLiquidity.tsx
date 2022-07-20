@@ -194,7 +194,7 @@ export default function AddLiquidy() {
         to={toAsset ?? undefined}
         fromVal={fromVal}
         toVal={toVal}
-        isOpen={true}
+        isOpen={false}
         onDismiss={() => {}}
       />
 
