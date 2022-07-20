@@ -22,7 +22,7 @@ export default function NftList({ onClick }: { onClick?: (token: AllTokens) => v
   return (
     <Grid container spacing={20} sx={{ overflow: 'auto', height: 480 }}>
       {dummyNfts.map((token1155, idx) => (
-        <Grid item xs={12} md={3} key={idx}>
+        <Grid item xs={6} md={3} key={idx}>
           <NftCard
             key={idx}
             token={token1155}

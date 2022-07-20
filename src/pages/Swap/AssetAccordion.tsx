@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { Typography, Box, styled, useTheme } from '@mui/material'
 import Accordion from 'components/Accordion'
 import { useIsDarkMode } from 'state/user/hooks'
@@ -26,22 +27,38 @@ export function AssetAccordion({ token }: { token?: AllTokens }) {
     color: theme.palette.primary.main
   }))
 
-  const summary = (
-    <Box sx={{ display: 'flex', gap: 19, alignItems: 'center' }}>
-      <CurrencyLogo currency={token} style={{ width: 36 }} />
-      <Box display="grid" gap={8}>
-        <Typography color={theme.palette.text.secondary}>Name: {token?.name ?? '-'}</Typography>
-        <Typography color={theme.palette.text.secondary}>
-          Contract: {token && 'address' in token ? token?.address : '-'}
-        </Typography>
-        <Typography color={theme.palette.text.secondary}>
-          Token Id: {token && 'tokenId' in token ? token.tokenId : 'none'}
-        </Typography>
-      </Box>
+  const summary = useMemo(() => {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: {
+            xs: 'column',
+            md: 'row'
+          },
+          gap: 19,
+          alignItems: {
+            xs: 'flex-start',
+            md: 'center'
+          },
+          width: '100%'
+        }}
+      >
+        <CurrencyLogo currency={token} style={{ width: 36 }} />
+        <Box display="flex" flexDirection="column" gap={8} width="100%">
+          <Typography color={theme.palette.text.secondary}>Name: {token?.name ?? '-'}</Typography>
+          <Typography color={theme.palette.text.secondary} sx={{ wordWrap: 'break-word' }}>
+            Contract: {token && 'address' in token ? token?.address : '-'}
+          </Typography>
+          <Typography color={theme.palette.text.secondary} sx={{ wordWrap: 'break-word' }}>
+            Token Id: {token && 'tokenId' in token ? token.tokenId : 'none'}
+          </Typography>
+        </Box>
 
-      <Tag>{token && 'is1155' in token ? 'ERC1155' : 'ERC20'}</Tag>
-    </Box>
-  )
+        <Tag>{token && 'is1155' in token ? 'ERC1155' : 'ERC20'}</Tag>
+      </Box>
+    )
+  }, [token])
 
   const details = (
     <Box pt={12}>
