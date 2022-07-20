@@ -23,6 +23,7 @@ interface Props {
   disableCurrencySelect?: boolean
   onSelectCurrency: (cur: AllTokens) => void
   selectedTokenType?: TokenType
+  onMax?: () => void
 }
 
 const InputRow = styled('div')(({ theme }) => ({
@@ -62,7 +63,8 @@ export default function CurrencyInputPanel({
   currency,
   onSelectCurrency,
   onChange,
-  selectedTokenType
+  selectedTokenType,
+  onMax
 }: Props) {
   const { account } = useActiveWeb3React()
   const is1155 = checkIs1155(currency)
@@ -79,12 +81,12 @@ export default function CurrencyInputPanel({
     }
   }, [disableCurrencySelect, onSelectCurrency, selectedTokenType, showModal])
 
-  const handleMax = useCallback(() => {
-    if (!selectedCurrencyBalance && !token1155Balance) return
-    onChange({
-      target: { value: is1155 ? token1155Balance : selectedCurrencyBalance?.toExact() ?? '0' }
-    } as ChangeEvent<HTMLInputElement>)
-  }, [is1155, onChange, selectedCurrencyBalance, token1155Balance])
+  // const handleMax = useCallback(() => {
+  //   if (!selectedCurrencyBalance && !token1155Balance) return
+  //   onChange({
+  //     target: { value: is1155 ? token1155Balance : selectedCurrencyBalance?.toExact() ?? '0' }
+  //   } as ChangeEvent<HTMLInputElement>)
+  // }, [is1155, onChange, selectedCurrencyBalance, token1155Balance])
 
   return (
     <Box display="flex" gap={16} width="100%" alignItems={'flex-start'}>
@@ -120,11 +122,11 @@ export default function CurrencyInputPanel({
               {!!currency && token1155Balance ? token1155Balance : ''}
               {!selectedCurrencyBalance && !token1155Balance && '-'}
             </Typography>
-            {currency && (
+            {currency && onMax && (
               <Button
                 variant="text"
                 sx={{ fontSize: 12, minWidth: 'unset', width: 'max-content', height: 'max-content', padding: '0 10px' }}
-                onClick={handleMax}
+                onClick={onMax}
               >
                 MAX
               </Button>

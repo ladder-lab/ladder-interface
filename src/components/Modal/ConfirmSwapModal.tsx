@@ -15,19 +15,23 @@ export default function ConfirmSwapModal({
   from,
   to,
   fromVal,
-  toVal
+  toVal,
+  isOpen,
+  onDismiss
 }: {
   onConfirm: () => void
   from?: AllTokens
   to?: AllTokens
   fromVal: string
   toVal: string
+  isOpen: boolean
+  onDismiss: () => void
 }) {
   const theme = useTheme()
   const [showNotify, setShowNotify] = useState(true)
 
   return (
-    <Modal closeIcon>
+    <Modal closeIcon customIsOpen={isOpen} customOnDismiss={onDismiss}>
       <Box padding="33px 32px">
         <Typography fontSize={28} mb={39}>
           Confirm Swap

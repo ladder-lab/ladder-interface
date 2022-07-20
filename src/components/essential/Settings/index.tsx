@@ -25,7 +25,7 @@ const StyledMenuIcon = styled(SettingsIcon)(() => ({
 
 const EmojiWrapper = styled('div')({
   position: 'absolute',
-  bottom: '-6px',
+  bottom: '0px',
   right: '0px',
   fontSize: '14px'
 })
