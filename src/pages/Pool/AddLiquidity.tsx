@@ -11,7 +11,6 @@ import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
 import CurrencyInputPanel from 'components/Input/CurrencyInputPanel'
 import { AllTokens } from 'models/allTokens'
-import ConfirmSwapModal from 'components/Modal/ConfirmSwapModal'
 import { useExpertModeManager, useUserSingleHopOnly, useUserSlippageTolerance } from 'state/user/hooks'
 import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
 import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
@@ -26,6 +25,7 @@ import TransacitonPendingModal from 'components/Modal/TransactionModals/Transact
 import useModal from 'hooks/useModal'
 import { useNavigate } from 'react-router-dom'
 import { BackBtn } from 'theme/components'
+import ConfirmSupplyModal from 'components/Modal/ConfirmSupplyModal'
 
 export default function AddLiquidy() {
   const theme = useTheme()
@@ -188,15 +188,16 @@ export default function AddLiquidy() {
 
   return (
     <>
-      <ConfirmSwapModal
-        onConfirm={handleSwap}
+      <ConfirmSupplyModal
+        onConfirm={() => {}}
         from={fromAsset ?? undefined}
         to={toAsset ?? undefined}
         fromVal={fromVal}
         toVal={toVal}
-        isOpen={false}
+        isOpen={true}
         onDismiss={() => {}}
       />
+
       <AppBody width={'100%'} maxWidth={'680px'}>
         <Box
           sx={{
