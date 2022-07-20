@@ -1,29 +1,21 @@
+import { useMemo } from 'react'
 import { Typography, Box, styled, useTheme } from '@mui/material'
-import Image from 'components/Image'
 import Accordion from 'components/Accordion'
 import { useIsDarkMode } from 'state/user/hooks'
+import { useCallback, useState } from 'react'
+import { AllTokens } from 'models/allTokens'
+import CurrencyLogo from 'components/essential/CurrencyLogo'
 
-export function AssetAccordion({
-  logo,
-  name,
-  contract,
-  tokenId,
-  tokenType,
-  expanded,
-  onChange
-}: {
-  logo: string | JSX.Element
-  name: string
-  contract: string
-  tokenId?: string
-  tokenType?: string
-  expanded: boolean
-  onChange: () => void
-}) {
+export function AssetAccordion({ token }: { token?: AllTokens }) {
+  const [expanded, setExpanded] = useState(false)
   const theme = useTheme()
   const darkMode = useIsDarkMode()
 
-  const Tag = styled(Box)({
+  const handleChange = useCallback(() => {
+    setExpanded(prev => !prev)
+  }, [])
+
+  const Tag = styled(Box)(({ theme }) => ({
     borderRadius: '10px',
     boxShadow: '0px 3px 10px rgba(0,0,0,0.15)',
     position: 'absolute',
@@ -31,21 +23,42 @@ export function AssetAccordion({
     top: 0,
     fontSize: 12,
     padding: '4px 12px',
-    background: darkMode ? '#484D50' : '#FFFFFF'
-  })
+    background: darkMode ? '#484D50' : '#FFFFFF',
+    color: theme.palette.primary.main
+  }))
 
-  const summary = (
-    <Box sx={{ display: 'flex', gap: 19, alignItems: 'center' }}>
-      {typeof logo === 'string' ? <Image src={logo as string} alt={`${name} logo`} style={{ width: 36 }} /> : logo}
-      <Box display="grid" gap={8}>
-        <Typography color={theme.palette.text.secondary}>Name: {name}</Typography>
-        <Typography color={theme.palette.text.secondary}>Contract: {contract}</Typography>
-        <Typography color={theme.palette.text.secondary}>Token Id: {tokenId || 'none'}</Typography>
+  const summary = useMemo(() => {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: {
+            xs: 'column',
+            md: 'row'
+          },
+          gap: 19,
+          alignItems: {
+            xs: 'flex-start',
+            md: 'center'
+          },
+          width: '100%'
+        }}
+      >
+        <CurrencyLogo currency={token} style={{ width: 36 }} />
+        <Box display="flex" flexDirection="column" gap={8} width="100%">
+          <Typography color={theme.palette.text.secondary}>Name: {token?.name ?? '-'}</Typography>
+          <Typography color={theme.palette.text.secondary} sx={{ wordWrap: 'break-word' }}>
+            Contract: {token && 'address' in token ? token?.address : '-'}
+          </Typography>
+          <Typography color={theme.palette.text.secondary} sx={{ wordWrap: 'break-word' }}>
+            Token Id: {token && 'tokenId' in token ? token.tokenId : 'none'}
+          </Typography>
+        </Box>
+
+        <Tag>{token && 'is1155' in token ? 'ERC1155' : 'ERC20'}</Tag>
       </Box>
-
-      <Tag>{tokenType}</Tag>
-    </Box>
-  )
+    )
+  }, [token])
 
   const details = (
     <Box pt={12}>
@@ -60,7 +73,8 @@ export function AssetAccordion({
       summary={summary}
       details={details}
       expanded={expanded}
-      onChange={onChange}
+      onChange={handleChange}
+      margin={'0'}
       iconCssOverride={{ right: 0, bottom: 0, position: 'absolute' }}
     />
   )

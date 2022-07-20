@@ -112,7 +112,6 @@ export function useTradeExactIn(currencyAmountIn?: CurrencyAmount, currencyOut?:
       }
       return bestTradeSoFar
     }
-
     return null
   }, [allowedPairs, currencyAmountIn, currencyOut, singleHopOnly])
 }

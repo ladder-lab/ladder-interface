@@ -6,22 +6,25 @@ import useModal from 'hooks/useModal'
 import LogoText from 'components/LogoText'
 import SelectCurrencyModal from './SelectCurrencyModal'
 import { useActiveWeb3React } from 'hooks'
-import { useCurrencyBalance } from 'state/wallet/hooks'
-import { Currency } from 'constants/token/currency'
+import { useCurrencyBalance, useToken1155Balance } from 'state/wallet/hooks'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
+import { AllTokens, TokenType } from 'models/allTokens'
+import { checkIs1155 } from 'utils/checkIs1155'
+import { Token1155 } from 'constants/token/token1155'
+import useBreakpoint from 'hooks/useBreakpoint'
 
 interface Props {
-  currency?: Currency | null
+  currency?: AllTokens | null
   value: string
   onChange: (e: ChangeEvent<HTMLInputElement>) => void
-  onMax?: () => void
   disabled?: boolean
   placeholder?: string
   selectActive?: boolean
   inputFocused?: boolean
   disableCurrencySelect?: boolean
-  hideBalance?: boolean
-  onSelectCurrency: (cur: Currency) => void
+  onSelectCurrency: (cur: AllTokens) => void
+  selectedTokenType?: TokenType
+  onMax?: () => void
 }
 
 const InputRow = styled('div')(({ theme }) => ({
@@ -30,7 +33,7 @@ const InputRow = styled('div')(({ theme }) => ({
   height: 60,
   display: 'flex',
   justifyContent: 'flex-end',
-  maxWidth: 254,
+  // maxWidth: 254,
   '& .Mui-focused': {
     '&:before': {
       content: '""',
@@ -48,22 +51,11 @@ const InputRow = styled('div')(({ theme }) => ({
 }))
 
 const StyledInput = styled(InputNumerical)({
-  position: 'absolute'
+  position: 'absolute',
+  width: '100%'
 })
 
-const ButtonWrapper = styled('div')(({ theme }) => ({
-  position: 'absolute',
-  right: 196,
-  height: '100%',
-  display: 'flex',
-  alignItems: 'center',
-  [theme.breakpoints.down('md')]: {
-    right: 20
-  }
-}))
-
 export default function CurrencyInputPanel({
-  onMax,
   value,
   disabled,
   placeholder,
@@ -72,25 +64,63 @@ export default function CurrencyInputPanel({
   disableCurrencySelect,
   currency,
   onSelectCurrency,
-  hideBalance,
-  onChange
+  onChange,
+  selectedTokenType,
+  onMax
 }: Props) {
   const { account } = useActiveWeb3React()
-  const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
+  const is1155 = checkIs1155(currency)
+  const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency && !is1155 ? currency : undefined)
+
+  const token1155Balance = useToken1155Balance(is1155 ? (currency as Token1155) : undefined)
+
   const { showModal } = useModal()
   const theme = useTheme()
+  const isDownMd = useBreakpoint('md')
 
   const showCurrencySearch = useCallback(() => {
     if (!disableCurrencySelect) {
-      showModal(<SelectCurrencyModal onSelectCurrency={onSelectCurrency} />)
+      showModal(<SelectCurrencyModal onSelectCurrency={onSelectCurrency} selectedTokenType={selectedTokenType} />)
     }
-  }, [disableCurrencySelect, onSelectCurrency, showModal])
+  }, [disableCurrencySelect, onSelectCurrency, selectedTokenType, showModal])
+
+  // const handleMax = useCallback(() => {
+  //   if (!selectedCurrencyBalance && !token1155Balance) return
+  //   onChange({
+  //     target: { value: is1155 ? token1155Balance : selectedCurrencyBalance?.toExact() ?? '0' }
+  //   } as ChangeEvent<HTMLInputElement>)
+  // }, [is1155, onChange, selectedCurrencyBalance, token1155Balance])
 
   return (
-    <Box display="flex" gap={16} width="100%" alignItems={'flex-start'}>
+    <Box
+      sx={{
+        width: '100%',
+        display: 'flex',
+        flexDirection: {
+          xs: 'column',
+          md: 'row'
+        },
+        gap: {
+          xs: 12,
+          md: 16
+        }
+      }}
+    >
       {/* <InputLabel>Token</InputLabel> */}
-      <SelectButton width={'346px'} onClick={showCurrencySearch} disabled={disabled} primary={selectActive}>
-        {currency ? <LogoText logo={<CurrencyLogo currency={currency} />} text={currency.symbol} /> : <>Select Token</>}
+      <SelectButton
+        width={isDownMd ? '100%' : '346px'}
+        onClick={showCurrencySearch}
+        disabled={disabled}
+        primary={selectActive}
+      >
+        {currency ? (
+          <LogoText
+            logo={<CurrencyLogo currency={currency} />}
+            text={checkIs1155(currency) ? currency.name : currency.symbol}
+          />
+        ) : (
+          <>Select Token</>
+        )}
       </SelectButton>
       <Box flexGrow={1}>
         <InputRow>
@@ -102,22 +132,27 @@ export default function CurrencyInputPanel({
             disabled={disabled}
             focused={inputFocused}
           />
-          {currency && onMax && (
-            <ButtonWrapper>
-              <Button variant="outlined" sx={{ width: '64px', height: '28px', borderRadius: '20px' }} onClick={onMax}>
-                Max
-              </Button>
-            </ButtonWrapper>
-          )}
         </InputRow>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography fontSize={12} mt={12} sx={{ color: theme.palette.text.secondary }}>
+        <Box display="flex" justifyContent="space-between" alignItems="center" mt={9}>
+          <Typography fontSize={12} sx={{ color: theme.palette.text.secondary }}>
             ~$568.23
           </Typography>
-          <Typography fontSize={12} mt={12} sx={{ color: theme.palette.text.secondary }}>
-            Balance:{' '}
-            {!hideBalance && !!currency && selectedCurrencyBalance ? selectedCurrencyBalance?.toSignificant(6) : ' -'}
-          </Typography>
+          <Box display="flex" alignItems={'center'}>
+            <Typography fontSize={12} sx={{ color: theme.palette.text.secondary }}>
+              Balance: {!!currency && selectedCurrencyBalance ? selectedCurrencyBalance?.toSignificant(6) : ''}
+              {!!currency && token1155Balance ? token1155Balance : ''}
+              {!selectedCurrencyBalance && !token1155Balance && '-'}
+            </Typography>
+            {currency && onMax && (
+              <Button
+                variant="text"
+                sx={{ fontSize: 12, minWidth: 'unset', width: 'max-content', height: 'max-content', padding: '0 10px' }}
+                onClick={onMax}
+              >
+                MAX
+              </Button>
+            )}
+          </Box>
         </Box>
       </Box>
     </Box>

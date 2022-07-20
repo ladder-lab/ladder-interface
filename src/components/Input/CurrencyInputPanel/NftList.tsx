@@ -1,40 +1,48 @@
+import { useMemo } from 'react'
 import { Grid, Box, Typography, useTheme } from '@mui/material'
 import Image from 'components/Image'
 import SampleNftImg from 'assets/images/sample-nft.png'
+import { Token1155 } from 'constants/token/token1155'
+import { useActiveWeb3React } from 'hooks'
+import { AllTokens } from 'models/allTokens'
+import { shortenAddress } from 'utils'
+import useModal from 'hooks/useModal'
 
-const dummyNfts = [
-  { title: 'Tickets for the community #56', image: SampleNftImg, address: '0xKos3...r87ujv' },
-  { title: 'Tickets for the community #56', image: SampleNftImg, address: '0xKos3...r87ujv' },
-  { title: 'Tickets for the community #56', image: SampleNftImg, address: '0xKos3...r87ujv' },
-  { title: 'Tickets for the community #56', image: SampleNftImg, address: '0xKos3...r87ujv' },
-  { title: 'Tickets for the community #56', image: SampleNftImg, address: '0xKos3...r87ujv' },
-  { title: 'Tickets for the community #56', image: SampleNftImg, address: '0xKos3...r87ujv' },
-  { title: 'Tickets for the community #56', image: SampleNftImg, address: '0xKos3...r87ujv' },
-  { title: 'Tickets for the community #56', image: SampleNftImg, address: '0xKos3...r87ujv' },
-  { title: 'Tickets for the community #56', image: SampleNftImg, address: '0xKos3...r87ujv' },
-  { title: 'Tickets for the community #56', image: SampleNftImg, address: '0xKos3...r87ujv' },
-  { title: 'Tickets for the community #56', image: SampleNftImg, address: '0xKos3...r87ujv' },
-  { title: 'Tickets for the community #56', image: SampleNftImg, address: '0xKos3...r87ujv' },
-  { title: 'Tickets for the community #56', image: SampleNftImg, address: '0xKos3...r87ujv' },
-  { title: 'Tickets for the community #56', image: SampleNftImg, address: '0xKos3...r87ujv' }
-]
+export default function NftList({ onClick }: { onClick?: (token: AllTokens) => void }) {
+  const { library } = useActiveWeb3React()
+  const { hideModal } = useModal()
 
-export default function NftList() {
+  const dummyNfts = useMemo(() => {
+    return [
+      new Token1155(4, '0x75e4b5644eA842817155f960600b3cC3194D14C2', '1', library, 'Standard ERC1155 (ERC1155)'),
+      new Token1155(4, '0x75e4b5644eA842817155f960600b3cC3194D14C2', '1', library, 'Standard ERC1155 (ERC1155)')
+    ]
+  }, [library])
+
   return (
     <Grid container spacing={20} sx={{ overflow: 'auto', height: 480 }}>
-      {dummyNfts.map(({ title, image, address }, idx) => (
-        <Grid item xs={12} md={3} key={idx}>
-          <NftCard key={idx} title={title} image={image} address={address} />
+      {dummyNfts.map((token1155, idx) => (
+        <Grid item xs={6} md={3} key={idx}>
+          <NftCard
+            key={idx}
+            token={token1155}
+            onClick={() => {
+              onClick && onClick(token1155)
+              hideModal()
+            }}
+          />
         </Grid>
       ))}
     </Grid>
   )
 }
 
-function NftCard({ title, image, address }: { title: string; image: string; address: string }) {
+function NftCard({ token, onClick }: { token: Token1155; onClick: () => void }) {
   const theme = useTheme()
+
   return (
     <Box
+      onClick={onClick}
       sx={{
         width: '100%',
         display: 'flex',
@@ -47,16 +55,17 @@ function NftCard({ title, image, address }: { title: string; image: string; addr
         cursor: 'pointer',
         '&:hover': {
           boxShadow: '0px 3px 10px rgba(0, 0, 0, 0.15)',
-          background: '#FFFFFF'
+          background: '#FFFFFF',
+          cursor: 'pointer'
         }
       }}
     >
-      <Image src={image} style={{ borderRadius: '8px', overflow: 'hidden', width: '100%' }} />
+      <Image src={token?.uri ?? SampleNftImg} style={{ borderRadius: '8px', overflow: 'hidden', width: '100%' }} />
       <Typography sx={{ color: theme.palette.text.secondary, fontSize: 12, fontWeight: 600, mt: 8, mb: 8 }}>
-        {title}
+        {token.name} #{token.tokenId}
       </Typography>
       <Typography sx={{ color: theme.palette.text.secondary, fontSize: 10, fontWeight: 400, mb: 4 }}>
-        {address}
+        {shortenAddress(token.address)}
       </Typography>
       <Typography sx={{ fontSize: 10, fontWeight: 600 }}>
         12 /<span style={{ color: theme.palette.text.secondary }}>1 M</span>

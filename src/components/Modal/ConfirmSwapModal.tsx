@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Typography, Box, Button, useTheme, styled } from '@mui/material'
 import Modal from 'components/Modal'
-import { Currency } from 'constants/token'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { useIsDarkMode } from 'state/user/hooks'
@@ -9,25 +8,30 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber'
 import QuestionHelper from 'components/essential/QuestionHelper'
 import ActionButton from 'components/Button/ActionButton'
 import { HelperText } from 'constants/helperText'
+import { AllTokens } from 'models/allTokens'
 
 export default function ConfirmSwapModal({
   onConfirm,
   from,
   to,
   fromVal,
-  toVal
+  toVal,
+  isOpen,
+  onDismiss
 }: {
   onConfirm: () => void
-  from?: Currency
-  to?: Currency
+  from?: AllTokens
+  to?: AllTokens
   fromVal: string
   toVal: string
+  isOpen: boolean
+  onDismiss: () => void
 }) {
   const theme = useTheme()
   const [showNotify, setShowNotify] = useState(true)
 
   return (
-    <Modal closeIcon>
+    <Modal closeIcon customIsOpen={isOpen} customOnDismiss={onDismiss}>
       <Box padding="33px 32px">
         <Typography fontSize={28} mb={39}>
           Confirm Swap
@@ -53,7 +57,7 @@ function SwapPanelRow({
   approx,
   type
 }: {
-  asset?: Currency
+  asset?: AllTokens
   value: string
   approx: string
   type: string
@@ -85,7 +89,7 @@ function SwapPanelRow({
   )
 }
 
-function SwapPanel({ from, to, fromVal, toVal }: { from?: Currency; to?: Currency; fromVal: string; toVal: string }) {
+function SwapPanel({ from, to, fromVal, toVal }: { from?: AllTokens; to?: AllTokens; fromVal: string; toVal: string }) {
   const theme = useTheme()
 
   return (

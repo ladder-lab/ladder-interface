@@ -18,16 +18,18 @@ const ActionButton = styled(Button)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     maxWidth: 320,
     width: '100%',
-    borderRadius: 49,
+    borderRadius: '8px',
     marginBottom: 0
   }
 }))
 
 const Web3StatusIcon = styled(Web3StatusIconSvg)(({ theme }) => ({
-  [theme.breakpoints.down('sm')]: {
-    height: '24px',
-    width: '24px'
-  }
+  height: 28,
+  width: 28
+  // [theme.breakpoints.down('sm')]: {
+  //   height: '28px',
+  //   width: '28px'
+  // }
 }))
 
 // we want the latest one to come first, so return negative if a is after b
@@ -51,43 +53,44 @@ function Web3StatusInner() {
 
   if (account) {
     return (
-      <Box
-        sx={{ cursor: 'pointer', marginBottom: { xs: 0, sm: 15 }, mt: { xs: 0, sm: 8 } }}
-        onClick={toggleWalletModal}
-      >
+      <Box sx={{ cursor: 'pointer' }} onClick={toggleWalletModal}>
         <Box
           sx={{
-            height: { xs: 24, sm: 36 },
-            width: { xs: 100, sm: 180 },
-            borderRadius: '46px',
+            height: { xs: 46, sm: 46 },
+            width: 'fit-content',
+            borderRadius: '8px',
             display: 'flex',
+            gap: 13,
             justifyContent: 'space-between',
             alignItems: 'center',
-            backgroundColor: theme.palette.background.default
+            backgroundColor: theme.palette.background.default,
+            padding: {
+              xs: '6px 9px 6px 16px',
+              md: '6px 9px 6px 25px'
+            }
           }}
         >
-          <div />
-          {hasPendingTransactions ? (
-            <Box sx={{ display: 'flex', alignItems: 'center', mr: { xs: 10, sm: 17 }, ml: { xs: 10, sm: 20 } }}>
-              <Spinner color={theme.palette.text.primary} size={isDownSm ? '10px' : '16px'} />
-              <Box component="span" sx={{ ml: 3 }}>
-                <Typography sx={{ fontSize: { xs: 9, sm: 14 }, ml: 8, color: theme.palette.text.primary }} noWrap>
-                  {pending?.length} Pending
-                </Typography>
+          <Box>
+            {hasPendingTransactions ? (
+              <Box sx={{ display: 'flex', alignItems: 'center', mr: { xs: 10, sm: 17 }, ml: { xs: 10, sm: 20 } }}>
+                <Spinner color={theme.palette.text.primary} size={isDownSm ? '10px' : '16px'} />
+                <Box component="span" sx={{ ml: 3 }}>
+                  <Typography sx={{ fontSize: { xs: 9, sm: 14 }, ml: 8, color: theme.palette.text.primary }} noWrap>
+                    {pending?.length} Pending
+                  </Typography>
+                </Box>
               </Box>
-            </Box>
-          ) : (
-            <Typography
-              sx={{
-                fontSize: { xs: 9, sm: 14 },
-                mr: { xs: 10, sm: 17 },
-                ml: { xs: 10, sm: 20 },
-                color: theme.palette.text.primary
-              }}
-            >
-              {ENSName || shortenAddress(account)}
-            </Typography>
-          )}
+            ) : (
+              <Typography
+                sx={{
+                  fontSize: { xs: 11, sm: 14 },
+                  color: theme.palette.text.secondary
+                }}
+              >
+                {ENSName || shortenAddress(account)}
+              </Typography>
+            )}
+          </Box>
           <Web3StatusIcon />
         </Box>
       </Box>
