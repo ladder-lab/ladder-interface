@@ -7,7 +7,6 @@ import ActionButton from 'components/Button/ActionButton'
 import { ReactComponent as ArrowCircle } from 'assets/svg/arrow_circle.svg'
 import Settings from 'components/essential/Settings'
 import { AssetAccordion } from '../Swap/AssetAccordion'
-import { SwapSummary } from '../Swap/SwapSummary'
 import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
 import CurrencyInputPanel from 'components/Input/CurrencyInputPanel'
@@ -33,7 +32,6 @@ export default function AddLiquidy() {
   const { account } = useActiveWeb3React()
   const navigate = useNavigate()
 
-  const [summaryExpanded, setSummaryExpanded] = useState(false)
   // modal and loading
   const [{ showConfirm, tradeToConfirm, swapErrorMessage /*, attemptingTxn, txHash*/ }, setSwapState] = useState<{
     showConfirm: boolean
@@ -239,6 +237,7 @@ export default function AddLiquidy() {
           >
             <Settings />
           </Box>
+          <Tips />
           <Box mb={fromAsset ? 16 : 0}>
             <CurrencyInputPanel
               selectedTokenType={toAsset ? ('tokenId' in toAsset ? 'erc1155' : 'erc20') : undefined}
@@ -264,20 +263,8 @@ export default function AddLiquidy() {
             />
           </Box>
           {toAsset && <AssetAccordion token={toAsset} />}
-          <SwapSummary
-            fromAsset={fromAsset ?? undefined}
-            toAsset={toAsset ?? undefined}
-            expanded={summaryExpanded}
-            onChange={() => setSummaryExpanded(!summaryExpanded)}
-            margin="20px 0 40px"
-            gasFee="8.23"
-            currencyPrice={'123'}
-            currencyRate={'1.000'}
-            expectedNftQty={'50'}
-            priceImpact={'0.41'}
-            minReceiveNftQty={'48'}
-            slippage="13.68"
-          />
+
+          <PriceAndPoolShare />
           <Box>
             {!account ? (
               <Button onClick={toggleWallet}>Connect Wallet</Button>
@@ -390,5 +377,42 @@ export default function AddLiquidy() {
         </Box>
       </AppBody>
     </>
+  )
+}
+
+function Tips() {
+  const theme = useTheme()
+
+  return (
+    <Box
+      sx={{ width: '100%', background: theme.gradient.gradient3, padding: '16px 20px', borderRadius: '8px', mb: 20 }}
+    >
+      <Typography sx={{ fontSize: 16, fontWeight: 400 }}>
+        Tip: When you add liquidity, you will receive pool tokens representing your position. These tokens automatically
+        earn fees proportional to your share of the pool, and can be redeemed at any time.
+      </Typography>
+    </Box>
+  )
+}
+
+function PriceAndPoolShare() {
+  const theme = useTheme()
+  const data = {
+    ['Tickets for the co...per DAI']: '2344887737787377',
+    ['DAI per Tickets for the co...']: '0.2344887737787377',
+    ['Share of pool']: '5.00 %'
+  }
+  return (
+    <Card gray style={{ margin: '20px 0 40px', padding: '16px 20px' }}>
+      <Typography sx={{ fontSize: 20, mb: 12 }}>Prices and pool share</Typography>
+      <Box sx={{ display: 'grid', gap: 12 }}>
+        {Object.keys(data).map((key, idx) => (
+          <Box key={idx} display="flex" justifyContent="space-between">
+            <Typography sx={{ color: theme.palette.text.secondary, fontWeight: 500 }}>{key}</Typography>
+            <Typography sx={{ fontWeight: 700 }}>{data[key as keyof typeof data]}</Typography>
+          </Box>
+        ))}
+      </Box>
+    </Card>
   )
 }
