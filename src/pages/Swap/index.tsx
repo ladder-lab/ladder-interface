@@ -195,7 +195,7 @@ export default function Swap() {
         isOpen={false}
         onDismiss={() => {}}
       />
-      <AppBody width={'680px'} maxWidth={'680px'}>
+      <AppBody width={'100%'} maxWidth={'680px'}>
         <Box
           sx={{
             padding: '33px 32px 30px',
