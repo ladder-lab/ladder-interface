@@ -11,7 +11,7 @@ import { Web3Provider } from '@ethersproject/providers'
 export class Token1155 extends Currency {
   public readonly chainId: ChainId
   public readonly address: string
-  public readonly tokenId: string
+  public readonly tokenId: string | number
   public readonly name?: string
   public readonly is1155: boolean
   public uri?: string
@@ -19,7 +19,7 @@ export class Token1155 extends Currency {
   public constructor(
     chainId: ChainId,
     address: string,
-    tokenId: string,
+    tokenId: string | number,
     library?: Web3Provider,
     name?: string,
     symbol?: string,
