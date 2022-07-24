@@ -4,19 +4,17 @@ import { Link, IconButton, keyframes, styled, Theme } from '@mui/material'
 import { SxProps } from '@mui/system'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 
-export function BackBtn({ onClick }: { onClick?: () => void }) {
+export function BackBtn({ onClick, sx }: { onClick?: () => void; sx?: SxProps }) {
   return (
     <IconButton
       onClick={onClick}
       sx={{
         padding: 0,
-        position: 'absolute',
-        top: 24,
-        left: 32,
         width: 52,
         height: 52,
         background: theme => theme.palette.background.default,
-        borderRadius: '8px'
+        borderRadius: '8px',
+        ...sx
       }}
     >
       <ArrowBackIosNewIcon sx={{ color: theme => theme.palette.grey[500], size: 13 }} />
