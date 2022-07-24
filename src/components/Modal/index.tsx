@@ -106,7 +106,7 @@ export default function Modal(props: Props) {
         onClose={hide}
       >
         <Box width="100%" height="100%" position="relative" padding={padding || 0}>
-          {onBack && <BackBtn onClick={onBack} />}
+          {onBack && <BackBtn onClick={onBack} sx={{ position: 'absolute', top: 24, left: 32 }} />}
           {closeIcon && <CloseIcon onClick={hide} />}
           {children}
         </Box>

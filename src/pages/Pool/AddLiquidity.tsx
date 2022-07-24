@@ -205,7 +205,7 @@ export default function AddLiquidy() {
             position: 'relative'
           }}
         >
-          <BackBtn onClick={() => navigate(routes.pool)} />
+          <BackBtn onClick={() => navigate(routes.pool)} sx={{ position: 'absolute', top: 24, left: 32 }} />
 
           <Typography
             sx={{
