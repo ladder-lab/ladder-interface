@@ -33,7 +33,7 @@ export default function Pool() {
               Create a pair
             </Button>
             <Button
-              onClick={() => navigate(routes.addLiquidy)}
+              onClick={() => navigate(routes.addLiquidity)}
               sx={{ fontSize: 12, height: 44, whiteSpace: 'nowrap', minWidth: 'auto' }}
             >
               Add Liquidity

@@ -14,8 +14,8 @@ export default function NftList({ onClick }: { onClick?: (token: AllTokens) => v
 
   const dummyNfts = useMemo(() => {
     return [
-      new Token1155(4, '0x75e4b5644eA842817155f960600b3cC3194D14C2', '1', library, 'Standard ERC1155 (ERC1155)'),
-      new Token1155(4, '0x75e4b5644eA842817155f960600b3cC3194D14C2', '1', library, 'Standard ERC1155 (ERC1155)')
+      new Token1155(4, '0x75e4b5644eA842817155f960600b3cC3194D14C2', 1, library, 'Standard ERC1155 (ERC1155)'),
+      new Token1155(4, '0x75e4b5644eA842817155f960600b3cC3194D14C2', 1, library, 'Standard ERC1155 (ERC1155)')
     ]
   }, [library])
 
