@@ -226,7 +226,6 @@ export default function Swap() {
           </Box>
           <Box mb={fromAsset ? 16 : 0}>
             <CurrencyInputPanel
-              selectedTokenType={toAsset ? ('tokenId' in toAsset ? 'erc1155' : 'erc20') : undefined}
               value={fromVal}
               onChange={handleFromVal}
               onSelectCurrency={handleFromAsset}

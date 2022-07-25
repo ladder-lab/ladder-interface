@@ -12,6 +12,7 @@ import { TokenList, WrappedTokenInfo } from 'models/tokenList'
 import { listToTokenMap } from 'utils/swap/listUtils'
 import { useUserAddedTokens } from 'state/user/hooks'
 import { Token1155 } from 'constants/token/token1155'
+import { IS_TEST_NET } from 'constants/chain'
 
 // Check if currency is included in custom list from user storage
 export function useIsUserAddedToken(currency: Currency | undefined | null): boolean {
@@ -65,10 +66,19 @@ function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean):
     return mapWithoutUrls
   }, [chainId, userAddedTokens, tokenMap, includeUserAdded])
 }
-
+const testTokens = {
+  '0xD64b11169B87030EB5647Add8265d2F1D30cF2e6': new Token(
+    4,
+    '0xD64b11169B87030EB5647Add8265d2F1D30cF2e6',
+    18,
+    'TEST',
+    'Test Coin'
+  )
+}
 export function useAllTokens(): { [address: string]: Token } {
   const allTokens = useDefaultTokenList()
-  return useTokensFromMap(allTokens, true)
+  const tokens = useTokensFromMap(allTokens, true)
+  return useMemo(() => ({ ...tokens, ...(IS_TEST_NET ? testTokens : {}) }), [tokens])
 }
 
 // parse a name or symbol from a token response
