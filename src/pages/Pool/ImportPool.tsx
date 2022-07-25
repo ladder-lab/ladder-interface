@@ -15,8 +15,9 @@ import { ApprovalState, useApproveCallbackFromTrade } from 'hooks/useApproveCall
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import Card from 'components/Card'
 import { useNavigate } from 'react-router-dom'
-import ConfirmSupplyModal from 'components/Modal/ConfirmSupplyModal'
+// import ConfirmSupplyModal from 'components/Modal/ConfirmSupplyModal'
 import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
+import Tag from 'components/Tag'
 
 export default function ImportPool() {
   const navigate = useNavigate()
@@ -98,16 +99,16 @@ export default function ImportPool() {
   )
 
   const error = useMemo(() => {
-    if (!fromAsset || !toAsset) {
-      return 'Select a token to find your liquidity'
-    }
+    // if (!fromAsset || !toAsset) {
+    //   return 'Select a token to find your liquidity'
+    // }
 
     return undefined
   }, [fromAsset, toAsset])
 
   return (
     <>
-      <ConfirmSupplyModal
+      {/* <ConfirmSupplyModal
         onConfirm={() => {}}
         from={fromAsset ?? undefined}
         to={toAsset ?? undefined}
@@ -115,7 +116,7 @@ export default function ImportPool() {
         toVal={toVal}
         isOpen={false}
         onDismiss={() => {}}
-      />
+      /> */}
 
       <AppBody
         width={'100%'}
@@ -193,8 +194,21 @@ function PositionInfo({
       >
         {error && <Typography>{error}</Typography>}
         {!error && (
-          <Box width="100%">
-            <Typography sx={{ fontSize: 20, mb: 12 }}>Your position</Typography>
+          <Box sx={{ width: '100%' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center', mb: 12 }}>
+              <Typography sx={{ fontSize: 20 }}>Your position</Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8
+                }}
+              >
+                <Tag>ERC20</Tag>
+                <Tag>ERC1155</Tag>
+              </Box>
+            </Box>
+
             <Box display="flex" justifyContent="space-between" mb={28}>
               <DoubleCurrencyLogo currency0={from} currency1={to} />
               <Typography fontSize={16} fontWeight={700}>
