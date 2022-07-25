@@ -6,6 +6,17 @@ import InputLabel from './InputLabel'
 
 const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`) // match escaped "." characters via in a non-capturing group
 
+const enforcer = (nextUserInput: string, integer?: boolean) => {
+  if (integer && nextUserInput !== '') {
+    return parseInt(nextUserInput).toString()
+  }
+  const fixed = nextUserInput.replace(/,/g, '.')
+  if (fixed === '' || inputRegex.test(escapeRegExp(fixed))) {
+    return fixed
+  }
+  return null
+}
+
 export default function NumericalInput({
   placeholder,
   onChange,
@@ -16,6 +27,7 @@ export default function NumericalInput({
   unit,
   endAdornment,
   subStr,
+  integer,
   ...props
 }: InputProps &
   InputHTMLAttributes<HTMLInputElement> & {
@@ -25,25 +37,19 @@ export default function NumericalInput({
     endAdornment?: JSX.Element
     onDeposit?: () => void
     subStr?: string
+    integer?: boolean
   }) {
-  const enforcer = (nextUserInput: string) => {
-    const fixed = nextUserInput.replace(/,/g, '.')
-    if (fixed === '' || inputRegex.test(escapeRegExp(fixed))) {
-      return fixed
-    }
-    return null
-  }
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       // replace commas with periods
-      const formatted = enforcer(event.target.value)
+      const formatted = enforcer(event.target.value, integer)
       if (formatted === null) {
         return
       }
       event.target.value = formatted
       onChange && onChange(event)
     },
-    [onChange]
+    [integer, onChange]
   )
 
   return (

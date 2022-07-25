@@ -21,7 +21,6 @@ import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { useSwapCallback } from 'hooks/useSwapCallback'
 import { computeTradePriceBreakdown, warningSeverity } from 'utils/swap/prices'
 import confirmPriceImpactWithoutFee from 'utils/swap/confirmPriceImpactWithoutFee'
-import Card from 'components/Card'
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import useModal from 'hooks/useModal'
 
@@ -154,13 +153,6 @@ export default function Swap() {
     [onUserInput]
   )
 
-  const handleToVal = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      onUserInput(Field.OUTPUT, e.target.value)
-    },
-    [onUserInput]
-  )
-
   const handleFromAsset = useCallback(
     (currency: AllTokens) => {
       setApprovalSubmitted(false) // reset 2 step UI for approvals
@@ -234,7 +226,6 @@ export default function Swap() {
           </Box>
           <Box mb={fromAsset ? 16 : 0}>
             <CurrencyInputPanel
-              selectedTokenType={toAsset ? ('tokenId' in toAsset ? 'erc1155' : 'erc20') : undefined}
               value={fromVal}
               onChange={handleFromVal}
               onSelectCurrency={handleFromAsset}
@@ -250,8 +241,9 @@ export default function Swap() {
           <Box mb={toAsset ? 16 : 0}>
             <CurrencyInputPanel
               selectedTokenType={fromAsset ? ('tokenId' in fromAsset ? 'erc1155' : 'erc20') : undefined}
-              value={toVal}
-              onChange={handleToVal}
+              value={formattedAmounts[Field.OUTPUT]}
+              onChange={() => {}}
+              disableInput={true}
               onSelectCurrency={handleToAsset}
               currency={toAsset}
             />
@@ -280,10 +272,10 @@ export default function Swap() {
                   (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
               </Button>
             ) : noRoute && userHasSpecifiedInputOutput ? (
-              <Card style={{ textAlign: 'center' }}>
+              <Button disabled style={{ textAlign: 'center' }}>
                 <Typography mb="4px">Insufficient liquidity for this trade.</Typography>
                 {singleHopOnly && <Typography mb="4px">Try enabling multi-hop trades.</Typography>}
-              </Card>
+              </Button>
             ) : showApproveFlow ? (
               <Box>
                 {/* <ActionButton

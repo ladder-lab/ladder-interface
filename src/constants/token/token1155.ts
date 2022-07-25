@@ -1,18 +1,14 @@
-import { validateAndParseAddress } from './utils'
 import { ChainId } from '../chain'
 // import ERC1155Abi from 'constants/abis/erc1155.json'
-import { Currency } from '@uniswap/sdk'
+import { Token } from '@uniswap/sdk'
 // import { getContract } from 'utils'
 import { Web3Provider } from '@ethersproject/providers'
 
 /**
  * Represents an ERC1155 token with a unique address and some metadata.
  */
-export class Token1155 extends Currency {
-  public readonly chainId: ChainId
-  public readonly address: string
+export class Token1155 extends Token {
   public readonly tokenId: string | number
-  public readonly name?: string
   public readonly is1155: boolean
   public uri?: string
 
@@ -25,11 +21,8 @@ export class Token1155 extends Currency {
     symbol?: string,
     uri?: string
   ) {
-    super(0, symbol)
-    this.chainId = chainId
-    this.address = validateAndParseAddress(address)
+    super(chainId, address, 0, symbol, name)
     this.tokenId = tokenId
-    this.name = name
     this.is1155 = true
     this.uri = uri
     if (!library || uri) {

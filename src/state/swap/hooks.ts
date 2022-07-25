@@ -8,7 +8,7 @@ import { useCurrency } from '../../hooks/Tokens'
 import { useTradeExactIn, useTradeExactOut } from 'hooks/Trades'
 import { isAddress } from '../../utils'
 import { AppDispatch, AppState } from '../index'
-import { useCurrencyBalances } from '../wallet/hooks'
+import { useCurrencyBalance } from '../wallet/hooks'
 import { Field, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
 import { useUserSlippageTolerance } from '../user/hooks'
 import { computeSlippageAdjustedAmounts } from 'utils/swap/prices'
@@ -122,25 +122,23 @@ export function useDerivedSwapInfo(): {
     recipient
   } = useSwapState()
 
-  const inputCur = inputCurrencyId && inputTokenId ? getHashAddress(inputCurrencyId, +inputTokenId) : inputCurrencyId
-  const outputCur =
-    outputCurrencyId && outputTokenId ? getHashAddress(outputCurrencyId, +outputTokenId) : outputCurrencyId
-
   const inputCurrencyRaw = useCurrency(inputCurrencyId, inputTokenId)
   const outputCurrencyRaw = useCurrency(outputCurrencyId, outputTokenId)
 
   const inputCurrency =
-    inputTokenId && inputCur ? new Token(chainId ?? NETWORK_CHAIN_ID, inputCur, 0) : inputCurrencyRaw
+    inputTokenId && inputCurrencyId
+      ? new Token(chainId ?? NETWORK_CHAIN_ID, getHashAddress(inputCurrencyId, +inputTokenId), 0)
+      : inputCurrencyRaw
   const outputCurrency =
-    outputTokenId && outputCur ? new Token(chainId ?? NETWORK_CHAIN_ID, outputCur, 0) : outputCurrencyRaw
+    outputTokenId && outputCurrencyId
+      ? new Token(chainId ?? NETWORK_CHAIN_ID, getHashAddress(outputCurrencyId, +outputTokenId), 0)
+      : outputCurrencyRaw
 
   const recipientLookup = useENS(recipient ?? undefined)
   const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
 
-  const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
-    inputCurrency ?? undefined,
-    outputCurrency ?? undefined
-  ])
+  const inputBalance = useCurrencyBalance(account ?? undefined, inputCurrencyRaw ?? undefined)
+  const outputBalance = useCurrencyBalance(account ?? undefined, outputCurrencyRaw ?? undefined)
 
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined)
@@ -151,8 +149,8 @@ export function useDerivedSwapInfo(): {
   const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
 
   const currencyBalances = {
-    [Field.INPUT]: relevantTokenBalances[0],
-    [Field.OUTPUT]: relevantTokenBalances[1]
+    [Field.INPUT]: inputBalance,
+    [Field.OUTPUT]: outputBalance
   }
 
   const currencies: { [field in Field]?: Currency } = {
