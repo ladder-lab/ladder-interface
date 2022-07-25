@@ -6,11 +6,11 @@ import useModal from 'hooks/useModal'
 import LogoText from 'components/LogoText'
 import SelectCurrencyModal from './SelectCurrencyModal'
 import { useActiveWeb3React } from 'hooks'
-import { useCurrencyBalance, useToken1155Balance } from 'state/wallet/hooks'
+import { useCurrencyBalance } from 'state/wallet/hooks'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { AllTokens, TokenType } from 'models/allTokens'
 import { checkIs1155 } from 'utils/checkIs1155'
-import { Token1155 } from 'constants/token/token1155'
+
 import useBreakpoint from 'hooks/useBreakpoint'
 
 interface Props {
@@ -25,6 +25,7 @@ interface Props {
   onSelectCurrency: (cur: AllTokens) => void
   selectedTokenType?: TokenType
   onMax?: () => void
+  disableInput?: boolean
 }
 
 const InputRow = styled('div')(({ theme }) => ({
@@ -66,13 +67,12 @@ export default function CurrencyInputPanel({
   onSelectCurrency,
   onChange,
   selectedTokenType,
-  onMax
+  onMax,
+  disableInput
 }: Props) {
   const { account } = useActiveWeb3React()
   const is1155 = checkIs1155(currency)
-  const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency && !is1155 ? currency : undefined)
-
-  const token1155Balance = useToken1155Balance(is1155 ? (currency as Token1155) : undefined)
+  const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
 
   const { showModal } = useModal()
   const theme = useTheme()
@@ -129,8 +129,9 @@ export default function CurrencyInputPanel({
             value={value.toString()}
             onChange={onChange}
             type={'number'}
-            disabled={disabled}
+            disabled={disabled || disableInput}
             focused={inputFocused}
+            integer={!!is1155}
           />
         </InputRow>
         <Box display="flex" justifyContent="space-between" alignItems="center" mt={9}>
@@ -140,8 +141,7 @@ export default function CurrencyInputPanel({
           <Box display="flex" alignItems={'center'}>
             <Typography fontSize={12} sx={{ color: theme.palette.text.secondary }}>
               Balance: {!!currency && selectedCurrencyBalance ? selectedCurrencyBalance?.toSignificant(6) : ''}
-              {!!currency && token1155Balance ? token1155Balance : ''}
-              {!selectedCurrencyBalance && !token1155Balance && '-'}
+              {!selectedCurrencyBalance && '-'}
             </Typography>
             {currency && onMax && (
               <Button

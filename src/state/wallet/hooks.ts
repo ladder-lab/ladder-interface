@@ -7,6 +7,7 @@ import { Currency, ETHER, Token, JSBI, CurrencyAmount, TokenAmount } from '@unis
 import { useActiveWeb3React } from 'hooks'
 import { useAllTokens } from 'hooks/Tokens'
 import { Token1155 } from 'constants/token/token1155'
+import { checkIs1155 } from 'utils/checkIs1155'
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -56,9 +57,11 @@ export function useTokenBalancesWithLoadingIndicator(
     [tokens]
   )
 
+  const arg = useMemo(() => [address], [address])
+
   const validatedTokenAddresses = useMemo(() => validatedTokens.map(vt => vt.address), [validatedTokens])
 
-  const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'balanceOf', [address])
+  const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'balanceOf', arg)
 
   const anyLoading: boolean = useMemo(() => balances.some(callState => callState.loading), [balances])
 
@@ -121,7 +124,10 @@ export function useCurrencyBalances(
 }
 
 export function useCurrencyBalance(account?: string, currency?: Currency): CurrencyAmount | undefined {
-  return useCurrencyBalances(account, [currency])[0]
+  const is1155 = checkIs1155(currency)
+  const token1155Balance = useToken1155Balance(is1155 ? (currency as Token1155) : undefined)
+  const balances = useCurrencyBalances(is1155 ? undefined : account, [currency])[0]
+  return is1155 ? token1155Balance : balances
 }
 
 // mimics useAllBalances
@@ -135,12 +141,13 @@ export function useAllTokenBalances(): { [tokenAddress: string]: TokenAmount | u
 
 export function useToken1155Balance(token?: Token1155 | null | undefined) {
   const { account } = useActiveWeb3React()
+
   const args = useMemo(() => {
     return [account ?? undefined, token?.tokenId]
   }, [account, token?.tokenId])
 
-  const contract = use1155Contract(token?.address)
+  const contract = use1155Contract(token?.address ? token.address : undefined)
   const balance = useSingleCallResult(contract, 'balanceOf', args)
 
-  return balance.result?.toString()
+  return token && balance.result ? new TokenAmount(token, balance.result[0]?.toString()) : undefined
 }

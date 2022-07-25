@@ -151,16 +151,21 @@ export function useToken1155(tokenAddress?: string, tokenId?: string | number): 
     if (!chainId || !address || !tokenId) return undefined
     if (symbol.loading || tokenName.loading) return null
 
-    if (tokenName.result) {
-      return new Token1155(chainId, address, tokenId, undefined, symbol.result?.[0], uri.result?.[0])
-    }
-    return undefined
+    return new Token1155(
+      chainId,
+      address,
+      tokenId,
+      undefined,
+      tokenName.result?.[0],
+      symbol.result?.[0],
+      uri.result?.[0]
+    )
   }, [address, chainId, symbol.loading, symbol.result, tokenId, tokenName.loading, tokenName.result, uri.result])
 }
 
 export function useCurrency(currencyId: string | undefined, tokenId?: string | number): Currency | null | undefined {
   const isETH = currencyId?.toUpperCase() === 'ETH'
-  const token1155 = useToken1155(currencyId, tokenId)
+  const token1155 = useToken1155(!isETH && tokenId ? currencyId : undefined, tokenId)
   const token = useToken(isETH || tokenId ? undefined : currencyId)
 
   return tokenId ? token1155 : isETH ? ETHER : token

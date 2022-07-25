@@ -11,7 +11,7 @@ import { ModalProvider } from 'context/ModalContext'
 import { routes } from 'constants/routes'
 import Swap from './Swap'
 import Pool from './Pool'
-import AddLiquidty from './Pool/AddLiquidity'
+import AddLiquidity from './Pool/AddLiquidity'
 
 const AppWrapper = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -63,14 +63,14 @@ export default function App() {
                 <Routes>
                   <Route path={routes.swap} element={<Swap />} />
                   <Route path={routes.pool} element={<Pool />} />
-                  <Route path={routes.addLiquidy} element={<AddLiquidty />} />
+                  <Route path={routes.addLiquidity} element={<AddLiquidity />} />
                   <Route path="/" element={<ComingSoon />} />
                 </Routes>
               </Web3ReactManager>
             </BodyWrapper>
           </ContentWrapper>
         </AppWrapper>
-      </ModalProvider>{' '}
+      </ModalProvider>
     </Suspense>
   )
 }
