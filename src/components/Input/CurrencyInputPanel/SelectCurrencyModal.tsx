@@ -13,7 +13,7 @@ import { COMMON_CURRENCIES } from 'constants/currencies'
 import { useAllTokens, useIsUserAddedToken, useToken } from 'hooks/Tokens'
 import useDebounce from 'hooks/useDebounce'
 import { isAddress } from 'utils'
-import { ETHER, Token } from '@uniswap/sdk'
+import { Currency, ETHER, Token } from '@uniswap/sdk'
 import { filterTokens, useSortedTokensByQuery } from 'utils/swap/filtering'
 import { useTokenComparator } from 'utils/swap/sorting'
 import { AllTokens, TokenType } from 'models/allTokens'
@@ -22,6 +22,7 @@ import ImportModal from 'components/Modal/ImportModal'
 import { HelperText } from 'constants/helperText'
 import { theme } from 'theme'
 import useBreakpoint from 'hooks/useBreakpoint'
+import CurrencyLogo from 'components/essential/CurrencyLogo'
 
 export enum Mode {
   TOKEN = 'token',
@@ -40,7 +41,7 @@ export default function SelectCurrencyModal({
   const [searchQuery, setSearchQuery] = useState<string>('')
   const debouncedQuery = useDebounce(searchQuery, 200)
   const fixedList = useRef<FixedSizeList>()
-  const { showModal } = useModal()
+  const { showModal, hideModal } = useModal()
 
   const [invertSearchOrder] = useState<boolean>(false)
 
@@ -66,6 +67,17 @@ export default function SelectCurrencyModal({
   }, [filteredTokens, tokenComparator])
 
   const filteredSortedTokens = useSortedTokensByQuery(sortedTokens, debouncedQuery)
+
+  const commonCur = useMemo(() => {
+    const curList: Currency[] = [ETHER]
+    Object.keys(allTokens).map(key => {
+      const token = allTokens[key as keyof typeof allTokens]
+      if (token?.symbol && COMMON_CURRENCIES.includes(token.symbol)) {
+        curList.push(token)
+      }
+    })
+    return curList
+  }, [allTokens])
 
   // manage focus on modal show
   const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
@@ -114,6 +126,7 @@ export default function SelectCurrencyModal({
       <Modal width="100%" maxWidth="680px" closeIcon padding={isDownMd ? '16px 28px' : '32px 32px'}>
         <Box width="100%" display="flex" gap={14} alignItems="center">
           <Typography
+            variant="h5"
             sx={{
               fontSize: {
                 xs: 14,
@@ -170,9 +183,12 @@ export default function SelectCurrencyModal({
         {mode === Mode.TOKEN && (
           <>
             <Box display="flex" gap={20} margin="20px 0">
-              {COMMON_CURRENCIES.map((currency: { symbol: string; logo: string }) => (
+              {commonCur.map((currency: Currency) => (
                 <ButtonBase
-                  onClick={() => {}}
+                  onClick={() => {
+                    onSelectCurrency && onSelectCurrency(currency)
+                    hideModal()
+                  }}
                   key={currency.symbol}
                   sx={{
                     borderRadius: '8px',
@@ -180,7 +196,7 @@ export default function SelectCurrencyModal({
                     padding: '11px 23px'
                   }}
                 >
-                  <LogoText logo={currency.logo} text={currency.symbol} />
+                  <LogoText logo={<CurrencyLogo currency={currency} />} text={currency.symbol} />
                 </ButtonBase>
               ))}
             </Box>
