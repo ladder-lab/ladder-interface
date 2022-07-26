@@ -45,7 +45,7 @@ export function AssetAccordion({ token }: { token?: AllTokens }) {
         <Tag sx={{ position: 'absolute', right: 0, top: 0 }}>{token && 'is1155' in token ? 'ERC1155' : 'ERC20'}</Tag>
       </Box>
     )
-  }, [token])
+  }, [token, theme.palette.text.secondary])
 
   const details = (
     <Box pt={12}>
