@@ -23,13 +23,9 @@ const ActionButton = styled(Button)(({ theme }) => ({
   }
 }))
 
-const Web3StatusIcon = styled(Web3StatusIconSvg)(({ theme }) => ({
+const Web3StatusIcon = styled(Web3StatusIconSvg)(() => ({
   height: 28,
   width: 28
-  // [theme.breakpoints.down('sm')]: {
-  //   height: '28px',
-  //   width: '28px'
-  // }
 }))
 
 // we want the latest one to come first, so return negative if a is after b

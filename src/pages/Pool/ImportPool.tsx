@@ -99,9 +99,9 @@ export default function ImportPool() {
   )
 
   const error = useMemo(() => {
-    // if (!fromAsset || !toAsset) {
-    //   return 'Select a token to find your liquidity'
-    // }
+    if (!fromAsset || !toAsset) {
+      return 'Select a token to find your liquidity'
+    }
 
     return undefined
   }, [fromAsset, toAsset])
