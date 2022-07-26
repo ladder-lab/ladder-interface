@@ -5,7 +5,6 @@ import { CurrencyAmount, JSBI, Trade } from '@uniswap/sdk'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
 import { ReactComponent as ArrowCircle } from 'assets/svg/arrow_circle.svg'
-import Settings from 'components/essential/Settings'
 import { AssetAccordion } from '../Swap/AssetAccordion'
 import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
@@ -24,11 +23,9 @@ import Card from 'components/Card'
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import useModal from 'hooks/useModal'
 import { useNavigate } from 'react-router-dom'
-import { BackBtn } from 'theme/components'
 import ConfirmSupplyModal from 'components/Modal/ConfirmSupplyModal'
 
 export default function AddLiquidy() {
-  const theme = useTheme()
   const { account } = useActiveWeb3React()
   const navigate = useNavigate()
 
@@ -198,46 +195,15 @@ export default function AddLiquidy() {
         onDismiss={() => {}}
       />
 
-      <AppBody width={'100%'} maxWidth={'680px'}>
-        <Box
-          sx={{
-            padding: '33px 32px 30px',
-            position: 'relative'
-          }}
-        >
-          <BackBtn onClick={() => navigate(routes.pool)} />
-
-          <Typography
-            sx={{
-              fontSize: {
-                xs: 20,
-                md: 28
-              },
-              mb: {
-                xs: 32,
-                md: 45
-              },
-              ml: 72
-            }}
-          >
-            Add Liquidity
-          </Typography>
-          <Box
-            sx={{
-              position: 'absolute',
-              right: 32,
-              top: 24,
-              background: theme.palette.background.default,
-              borderRadius: '8px',
-              width: 52,
-              height: 52,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <Settings />
-          </Box>
+      <AppBody
+        width={'100%'}
+        maxWidth={'680px'}
+        onReturnClick={() => navigate(routes.pool)}
+        title="Add Liquidity"
+        sx={{ padding: '24px 32px' }}
+        setting
+      >
+        <Box mt={35}>
           <Tips />
           <Box mb={fromAsset ? 16 : 0}>
             <CurrencyInputPanel

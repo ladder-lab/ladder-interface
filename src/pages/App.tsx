@@ -12,6 +12,7 @@ import { routes } from 'constants/routes'
 import Swap from './Swap'
 import Pool from './Pool'
 import AddLiquidity from './Pool/AddLiquidity'
+import ImportPool from './Pool/ImportPool'
 
 const AppWrapper = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -63,6 +64,7 @@ export default function App() {
                 <Routes>
                   <Route path={routes.swap} element={<Swap />} />
                   <Route path={routes.pool} element={<Pool />} />
+                  <Route path={routes.importPool} element={<ImportPool />} />
                   <Route path={routes.addLiquidity} element={<AddLiquidity />} />
                   <Route path="/" element={<ComingSoon />} />
                 </Routes>

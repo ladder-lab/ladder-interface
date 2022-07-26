@@ -2,7 +2,7 @@ import { ChangeEvent } from 'react'
 import { Switch, styled } from '@mui/material'
 import { switchClasses } from '@mui/material/Switch'
 
-const StyledSwitch = styled(Switch)(({ theme }) => ({
+const StyledSwitch = styled(Switch)(() => ({
   [`&.${switchClasses.root}`]: {
     width: 44,
     height: 24,
