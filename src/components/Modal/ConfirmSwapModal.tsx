@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo } from 'react'
 import { Typography, Box, Button, useTheme, styled } from '@mui/material'
 import Modal from 'components/Modal'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
@@ -9,26 +9,57 @@ import QuestionHelper from 'components/essential/QuestionHelper'
 import ActionButton from 'components/Button/ActionButton'
 import { HelperText } from 'constants/helperText'
 import { AllTokens } from 'models/allTokens'
+import { currencyEquals, Trade } from '@uniswap/sdk'
+import { computeSlippageAdjustedAmounts } from 'utils/swap/prices'
+import { Field } from 'state/swap/actions'
+
+/**
+ * Returns true if the trade requires a confirmation of details before we can submit it
+ * @param tradeA trade A
+ * @param tradeB trade B
+ */
+function tradeMeaningfullyDiffers(tradeA: Trade, tradeB: Trade): boolean {
+  return (
+    tradeA.tradeType !== tradeB.tradeType ||
+    !currencyEquals(tradeA.inputAmount.currency, tradeB.inputAmount.currency) ||
+    !tradeA.inputAmount.equalTo(tradeB.inputAmount) ||
+    !currencyEquals(tradeA.outputAmount.currency, tradeB.outputAmount.currency) ||
+    !tradeA.outputAmount.equalTo(tradeB.outputAmount)
+  )
+}
 
 export default function ConfirmSwapModal({
   onConfirm,
   from,
   to,
-  fromVal,
-  toVal,
   isOpen,
-  onDismiss
+  onDismiss,
+  onAcceptChanges,
+  trade,
+  originalTrade,
+  allowedSlippage
 }: {
   onConfirm: () => void
   from?: AllTokens
   to?: AllTokens
-  fromVal: string
-  toVal: string
   isOpen: boolean
   onDismiss: () => void
+  onAcceptChanges: () => void
+  trade: Trade | undefined
+  originalTrade: Trade | undefined
+  allowedSlippage: number
 }) {
   const theme = useTheme()
-  const [showNotify, setShowNotify] = useState(true)
+
+  const showAcceptChanges = useMemo(
+    () => Boolean(trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade)),
+    [originalTrade, trade]
+  )
+
+  const slippageAdjustedAmounts = useMemo(
+    () => computeSlippageAdjustedAmounts(trade, allowedSlippage),
+    [trade, allowedSlippage]
+  )
 
   return (
     <Modal closeIcon customIsOpen={isOpen} customOnDismiss={onDismiss}>
@@ -36,16 +67,27 @@ export default function ConfirmSwapModal({
         <Typography fontSize={28} mb={39}>
           Confirm Swap
         </Typography>
-        <SwapPanel from={from} to={to} fromVal={fromVal} toVal={toVal} />
+        <SwapPanel
+          from={from}
+          to={to}
+          fromVal={trade?.inputAmount.toExact() ?? '-'}
+          toVal={trade?.outputAmount.toExact() ?? '-'}
+        />
         <Typography fontSize={16} mt={16} mb={24}>
-          1 Tickets for the...= 0.254587 DAI ($1.0000)
+          {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {trade?.outputAmount.currency.name ?? '-'} ={' '}
+          {trade?.inputAmount.toExact()} {trade?.inputAmount.currency.name} ($1.0000)
         </Typography>
-        {showNotify && <PriceUpdateNotification onDismiss={() => setShowNotify(false)} />}
+        {showAcceptChanges && <PriceUpdateNotification onDismiss={onAcceptChanges} />}
         <Typography sx={{ fontSize: 16, color: theme.palette.text.secondary, mt: 24, mb: 24 }}>
-          Output is estimated.You will receive at least 2 Tickets for the community #56 or the transaction will revert.
+          Output is estimated.You will receive at least {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)}{' '}
+          {to?.name} {to && 'tokenId' in to ? `# ${to.tokenId}` : ''} or the transaction will revert.
         </Typography>
         <SwapDetails ExpectedNftQty="50" priceImpact="0.41" slippage="13.36" MinReceiveNftQty="48" NetworkFee="8.23" />
-        <ActionButton onAction={onConfirm} actionText="Confirm Swap" error={showNotify ? 'Confirm Swap' : undefined} />
+        <ActionButton
+          onAction={onConfirm}
+          actionText="Confirm Swap"
+          error={showAcceptChanges ? 'Confirm Swap' : undefined}
+        />
       </Box>
     </Modal>
   )
