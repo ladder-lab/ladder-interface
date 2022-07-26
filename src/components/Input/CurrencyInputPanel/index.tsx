@@ -56,6 +56,14 @@ const StyledInput = styled(InputNumerical)({
   width: '100%'
 })
 
+const trimBalance = (balance: string) => {
+  if (balance.length > 11) {
+    const str = balance.slice(0, 10)
+    return str + '...'
+  }
+  return balance
+}
+
 export default function CurrencyInputPanel({
   value,
   disabled,
@@ -140,7 +148,8 @@ export default function CurrencyInputPanel({
           </Typography>
           <Box display="flex" alignItems={'center'}>
             <Typography fontSize={12} sx={{ color: theme.palette.text.secondary }}>
-              Balance: {!!currency && selectedCurrencyBalance ? selectedCurrencyBalance?.toSignificant(6) : ''}
+              Balance:{' '}
+              {!!currency && selectedCurrencyBalance ? trimBalance(selectedCurrencyBalance?.toSignificant(6)) : ''}
               {!selectedCurrencyBalance && '-'}
             </Typography>
             {currency && onMax && (

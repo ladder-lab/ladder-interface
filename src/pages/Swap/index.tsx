@@ -212,6 +212,7 @@ export default function Swap() {
           }}
         >
           <Typography
+            variant="h5"
             sx={{
               fontSize: {
                 xs: 20,

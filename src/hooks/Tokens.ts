@@ -67,12 +67,17 @@ function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean):
   }, [chainId, userAddedTokens, tokenMap, includeUserAdded])
 }
 const testTokens = {
-  '0xD64b11169B87030EB5647Add8265d2F1D30cF2e6': new Token(
-    4,
-    '0xD64b11169B87030EB5647Add8265d2F1D30cF2e6',
-    18,
-    'TEST',
-    'Test Coin'
+  '0xD64b11169B87030EB5647Add8265d2F1D30cF2e6': new WrappedTokenInfo(
+    {
+      chainId: 4,
+      address: '0xD64b11169B87030EB5647Add8265d2F1D30cF2e6',
+      decimals: 18,
+      symbol: 'TEST',
+      name: 'Test Coin',
+      logoURI:
+        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735/logo.png'
+    },
+    []
   )
 }
 export function useAllTokens(): { [address: string]: Token } {

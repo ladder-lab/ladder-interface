@@ -5,6 +5,16 @@ import { Mode } from './SelectCurrencyModal'
 import useModal from 'hooks/useModal'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { Token, Currency } from '@uniswap/sdk'
+import { useCurrencyBalance } from 'state/wallet/hooks'
+import { useActiveWeb3React } from 'hooks'
+import Spinner from 'components/Spinner'
+
+const StyledBalanceText = styled(Typography)(`
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 5rem;
+  text-overflow: ellipsis;
+`)
 
 interface Props {
   selectedCurrency?: Currency | null
@@ -25,6 +35,32 @@ const ListItem = styled('div')({
   justifyContent: 'space-between'
 })
 
+function Row({ currency, onClick }: { currency: Currency; onClick: () => void }) {
+  const { account } = useActiveWeb3React()
+  const balance = useCurrencyBalance(account ?? undefined, currency)
+
+  return (
+    <ListItem onClick={onClick}>
+      <Box display="flex">
+        <CurrencyLogo currency={currency} style={{ width: '30px', height: '30px' }} />
+        <Box display="flex" flexDirection="column" marginLeft="16px">
+          <Typography variant="inherit">{currency.symbol}</Typography>
+          <Typography variant="caption">{currency.name}</Typography>
+        </Box>
+      </Box>
+      <span style={{ fontWeight: 500 }}>
+        {balance ? (
+          <StyledBalanceText title={balance.toExact()} sx={{}}>
+            {balance.toSignificant(4)}
+          </StyledBalanceText>
+        ) : account ? (
+          <Spinner />
+        ) : null}
+      </span>
+    </ListItem>
+  )
+}
+
 export function CurrencyListComponent({ onSelectCurrency, currencyOptions, fixedListRef, showETH }: Props) {
   const { hideModal } = useModal()
 
@@ -34,7 +70,7 @@ export function CurrencyListComponent({ onSelectCurrency, currencyOptions, fixed
 
   const itemKey = useCallback((index: number, data: any) => currencyKey(data[index]), [currencyKey])
 
-  const Row = useCallback(
+  const Rows = useCallback(
     ({ data, index }: any) => {
       const currency: Currency = data[index]
       const onClickCurrency = () => {
@@ -42,18 +78,7 @@ export function CurrencyListComponent({ onSelectCurrency, currencyOptions, fixed
         hideModal()
       }
 
-      return (
-        <ListItem onClick={onClickCurrency}>
-          <Box display="flex">
-            <CurrencyLogo currency={currency} style={{ width: '30px', height: '30px' }} />
-            <Box display="flex" flexDirection="column" marginLeft="16px">
-              <Typography variant="inherit">{currency.symbol}</Typography>
-              <Typography variant="caption">{currency.name}</Typography>
-            </Box>
-          </Box>
-          <span style={{ fontWeight: 500 }}>{0}</span>
-        </ListItem>
-      )
+      return <Row currency={currency} onClick={onClickCurrency} />
     },
     [hideModal, onSelectCurrency]
   )
@@ -74,7 +99,7 @@ export function CurrencyListComponent({ onSelectCurrency, currencyOptions, fixed
       itemKey={itemKey}
       ref={fixedListRef as any}
     >
-      {Row}
+      {Rows}
     </FixedSizeList>
   )
 }

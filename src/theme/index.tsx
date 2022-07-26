@@ -289,7 +289,8 @@ export const override: (theme: any) => any & {
       },
       h5: {
         fontSize: 28,
-        fontWeight: 500
+        fontWeight: 500,
+        fontFamily: FONTS.title
       },
       h6: {
         fontSize: 22,
