@@ -1,6 +1,8 @@
 import React from 'react'
-import { styled } from '@mui/material/styles'
+import { styled, SxProps, Typography, Box } from '@mui/material'
 import { CloseIcon } from 'theme/components'
+import { BackBtn } from 'theme/components'
+import Settings from 'components/essential/Settings'
 
 const Root = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -23,18 +25,54 @@ interface Props {
   title?: string
   maxWidth?: string
   closeIcon?: boolean
+  setting?: boolean
+  sx?: SxProps
 }
 
 export default function AppBody(props: Props) {
-  const { children, closeIcon, onReturnClick, width, maxWidth } = props
+  const { children, closeIcon, onReturnClick, width, maxWidth, title, setting, sx } = props
 
   return (
     <Root
       sx={{
         width: width || 560,
-        maxWidth: maxWidth || 560
+        maxWidth: maxWidth || 560,
+        ...sx
       }}
     >
+      <Box display="flex" justifyContent="space-between">
+        <Box display="flex" gap={20} alignItems="center">
+          {onReturnClick && <BackBtn onClick={onReturnClick} />}
+          {title && (
+            <Typography
+              sx={{
+                fontSize: {
+                  xs: 20,
+                  md: 28
+                }
+              }}
+            >
+              {title}
+            </Typography>
+          )}
+        </Box>
+        {setting && (
+          <Box
+            sx={{
+              background: theme => theme.palette.background.default,
+              borderRadius: '8px',
+              width: 52,
+              height: 52,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <Settings />
+          </Box>
+        )}
+      </Box>
+
       {closeIcon && <CloseIcon onClick={onReturnClick} />}
       {children}
     </Root>
