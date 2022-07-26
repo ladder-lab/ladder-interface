@@ -23,26 +23,29 @@ export function BackBtn({ onClick, sx }: { onClick?: () => void; sx?: SxProps })
   )
 }
 
-export function CloseIcon({ onClick }: { onClick?: () => void }) {
+export function CloseIcon({ onClick, variant }: { onClick?: () => void; variant?: 'contained' | 'text' }) {
   return (
     <IconButton
       onClick={onClick}
       sx={{
         padding: 0,
         position: 'absolute',
-        top: '24px',
-        right: '32px',
+        top: variant === 'contained' ? '24px' : '36.5px',
+        right: variant === 'contained' ? '32px' : '42.5px',
         width: {
-          xs: 32,
-          md: 52
+          xs: variant === 'contained' ? 32 : 15,
+          md: variant === 'contained' ? 52 : 15
         },
         height: {
-          xs: 32,
-          md: 52
+          xs: variant === 'contained' ? 32 : 15,
+          md: variant === 'contained' ? 52 : 15
         },
-        background: theme => theme.palette.background.default,
+        background: variant === 'contained' ? theme => theme.palette.background.default : 'transparent',
         borderRadius: '8px',
-        '&:hover $closeIcon': {
+        '&:hover': {
+          background: 'transparent'
+        },
+        '&:hover svg': {
           color: theme => theme.palette.text.primary
         }
       }}
