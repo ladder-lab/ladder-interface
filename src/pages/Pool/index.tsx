@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AppBody from 'components/AppBody'
 import { Box, Typography, useTheme, Button, ButtonBase, Grid } from '@mui/material'
@@ -7,6 +8,8 @@ import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
 import { AllTokens } from 'models/allTokens'
 import Tag from 'components/Tag'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
+import LoadingIcon from 'assets/images/loading.png'
+import Image from 'components/Image'
 
 // Dummy Data
 import { ETHER } from 'constants/token'
@@ -15,6 +18,7 @@ import { ExternalLink } from 'theme/components'
 export default function Pool() {
   const theme = useTheme()
   const navigate = useNavigate()
+  const [isLoading] = useState(false)
 
   return (
     <>
@@ -50,26 +54,36 @@ export default function Pool() {
               </Button>
             </Box>
           </Box>
-          <Grid container mt={20} spacing={20}>
-            <Grid item xs={12} md={4}>
-              <PoolCard
-                currency0={ETHER}
-                currency1={ETHER}
-                title="DAI/Tickets for the community #56"
-                tokenAmount="123"
-                shareAmount="456"
-              />
+
+          {isLoading ? (
+            <Box minHeight={332} display="flex" justifyContent="center" alignItems="center">
+              <Box display="grid" gap={19}>
+                <Typography sx={{ color: theme.palette.text.secondary, fontSize: 20 }}> Loading...</Typography>
+                <Image src={LoadingIcon} />
+              </Box>
+            </Box>
+          ) : (
+            <Grid container mt={20} spacing={20}>
+              <Grid item xs={12} md={4}>
+                <PoolCard
+                  currency0={ETHER}
+                  currency1={ETHER}
+                  title="DAI/Tickets for the community #56"
+                  tokenAmount="123"
+                  shareAmount="456"
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <PoolCard
+                  currency0={ETHER}
+                  currency1={ETHER}
+                  title="DAI/Tickets for the community #56"
+                  tokenAmount="123"
+                  shareAmount="456"
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={4}>
-              <PoolCard
-                currency0={ETHER}
-                currency1={ETHER}
-                title="DAI/Tickets for the community #56"
-                tokenAmount="123"
-                shareAmount="456"
-              />
-            </Grid>
-          </Grid>
+          )}
         </Box>
       </AppBody>
       <Box
@@ -77,8 +91,7 @@ export default function Pool() {
           display: 'flex',
           alignItems: 'center',
           gap: 3,
-          position: 'absolute',
-          bottom: { xs: 40, md: 80 }
+          mt: 50
         }}
       >
         <Typography>Don’t see a pool you joined?</Typography>
