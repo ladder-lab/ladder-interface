@@ -23,6 +23,8 @@ import { computeTradePriceBreakdown, warningSeverity } from 'utils/swap/prices'
 import confirmPriceImpactWithoutFee from 'utils/swap/confirmPriceImpactWithoutFee'
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import useModal from 'hooks/useModal'
+import MessageBox from 'components/Modal/TransactionModals/MessageBox'
+import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 
 export default function Swap() {
   const theme = useTheme()
@@ -30,21 +32,19 @@ export default function Swap() {
 
   const [summaryExpanded, setSummaryExpanded] = useState(false)
   // modal and loading
-  const [{ showConfirm, tradeToConfirm, swapErrorMessage /*, attemptingTxn, txHash*/ }, setSwapState] = useState<{
+  const [{ showConfirm, tradeToConfirm, attemptingTxn, txHash }, setSwapState] = useState<{
     showConfirm: boolean
     tradeToConfirm: Trade | undefined
     attemptingTxn: boolean
-    swapErrorMessage: string | undefined
     txHash: string | undefined
   }>({
     showConfirm: false,
     tradeToConfirm: undefined,
     attemptingTxn: false,
-    swapErrorMessage: undefined,
     txHash: undefined
   })
 
-  const { showModal } = useModal()
+  const { showModal, hideModal } = useModal()
   const toggleWallet = useWalletModalToggle()
 
   // get custom setting values for user
@@ -84,7 +84,6 @@ export default function Swap() {
       ? parsedAmounts[independentField]?.toExact() ?? ''
       : parsedAmounts[dependentField]?.toSignificant(6) ?? ''
   }
-  const { [independentField]: fromVal, [dependentField]: toVal } = formattedAmounts
 
   const route = trade?.route
   const userHasSpecifiedInputOutput = Boolean(
@@ -117,21 +116,37 @@ export default function Swap() {
     if (!swapCallback) {
       return
     }
-    setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
+    showModal(<TransacitonPendingModal />)
+    setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, txHash: undefined })
     swapCallback()
       .then(hash => {
-        setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
+        hideModal()
+        showModal(<TransactionSubmittedModal />)
+        setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, txHash: hash })
       })
       .catch(error => {
+        hideModal()
+        showModal(<MessageBox type="error">{error.message}</MessageBox>)
         setSwapState({
           attemptingTxn: false,
           tradeToConfirm,
           showConfirm,
-          swapErrorMessage: error.message,
           txHash: undefined
         })
       })
-  }, [priceImpactWithoutFee, showConfirm, swapCallback, tradeToConfirm])
+  }, [hideModal, priceImpactWithoutFee, showConfirm, showModal, swapCallback, tradeToConfirm])
+
+  const handleConfirmDismiss = useCallback(() => {
+    setSwapState(prev => ({ ...prev, showConfirm: false, tradeToConfirm, attemptingTxn, txHash }))
+    // if there was a tx hash, we want to clear the input
+    if (txHash) {
+      onUserInput(Field.INPUT, '')
+    }
+  }, [attemptingTxn, onUserInput, tradeToConfirm, txHash])
+
+  const handleAcceptChanges = useCallback(() => {
+    setSwapState({ tradeToConfirm: trade, txHash, attemptingTxn, showConfirm })
+  }, [attemptingTxn, showConfirm, trade, txHash])
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
@@ -182,10 +197,12 @@ export default function Swap() {
         onConfirm={handleSwap}
         from={fromAsset ?? undefined}
         to={toAsset ?? undefined}
-        fromVal={fromVal}
-        toVal={toVal}
         isOpen={false}
-        onDismiss={() => {}}
+        onDismiss={handleConfirmDismiss}
+        trade={trade}
+        originalTrade={tradeToConfirm}
+        onAcceptChanges={handleAcceptChanges}
+        allowedSlippage={allowedSlippage}
       />
       <AppBody width={'100%'} maxWidth={'680px'}>
         <Box
@@ -226,7 +243,7 @@ export default function Swap() {
           </Box>
           <Box mb={fromAsset ? 16 : 0}>
             <CurrencyInputPanel
-              value={fromVal}
+              value={formattedAmounts[Field.INPUT]}
               onChange={handleFromVal}
               onSelectCurrency={handleFromAsset}
               currency={fromAsset}
@@ -278,18 +295,6 @@ export default function Swap() {
               </Button>
             ) : showApproveFlow ? (
               <Box>
-                {/* <ActionButton
-                    error={error}
-                    pending={approving}
-                    onAction={() => {
-                      approvalCallback()
-                      showModal(<TransacitonPendingModal />)
-                    }}
-                    success={approved}
-                    successText="Approved"
-                    pendingText="approving"
-                    actionText="Approve"
-                  /> */}
                 <ActionButton
                   onAction={() => {
                     approveCallback()
@@ -298,7 +303,7 @@ export default function Swap() {
                   actionText={
                     approvalSubmitted && approval === ApprovalState.APPROVED
                       ? 'Approved'
-                      : 'Approve ' + currencies[Field.INPUT]?.symbol
+                      : `Allow the Ladder to use your ${currencies[Field.INPUT]?.symbol}`
                   }
                   error={error}
                   disableAction={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
@@ -313,7 +318,6 @@ export default function Swap() {
                       setSwapState({
                         tradeToConfirm: trade,
                         attemptingTxn: false,
-                        swapErrorMessage: undefined,
                         showConfirm: true,
                         txHash: undefined
                       })
@@ -338,7 +342,6 @@ export default function Swap() {
                     setSwapState({
                       tradeToConfirm: trade,
                       attemptingTxn: false,
-                      swapErrorMessage: undefined,
                       showConfirm: true,
                       txHash: undefined
                     })
@@ -354,24 +357,7 @@ export default function Swap() {
                   : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
               </Button>
             )}
-            {showApproveFlow && (
-              <Box style={{ marginTop: '1rem' }}>
-                progress steps
-                {/* <ProgressSteps steps={[approval === ApprovalState.APPROVED]} /> */}
-              </Box>
-            )}
-            {isExpertMode && swapErrorMessage ? <Typography>{swapErrorMessage}</Typography> : null}
           </Box>
-          {/* {account ? (
-            <Box display="grid" gap={16}>
-              <ActionButton onAction={() => {}} actionText="Allow the Ladder to use your DAI" />
-              <ActionButton onAction={onSwap} actionText="Swap" error={error} />
-            </Box>
-          ) : (
-            <Button sx={{ background: theme.gradient.gradient1 }} onClick={toggleWallet}>
-              Connect Wallet
-            </Button>
-          )} */}
         </Box>
       </AppBody>
     </>
