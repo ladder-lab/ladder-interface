@@ -10,6 +10,7 @@ import Tag from 'components/Tag'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import LoadingIcon from 'assets/images/loading.png'
 import Image from 'components/Image'
+import { Dots } from 'theme/components'
 
 // Dummy Data
 import { ETHER } from 'constants/token'
@@ -18,7 +19,7 @@ import { ExternalLink } from 'theme/components'
 export default function Pool() {
   const theme = useTheme()
   const navigate = useNavigate()
-  const [isLoading] = useState(false)
+  const [isLoading] = useState(true)
 
   return (
     <>
@@ -58,7 +59,10 @@ export default function Pool() {
           {isLoading ? (
             <Box minHeight={332} display="flex" justifyContent="center" alignItems="center">
               <Box display="grid" gap={19}>
-                <Typography sx={{ color: theme.palette.text.secondary, fontSize: 20 }}> Loading...</Typography>
+                <Typography sx={{ color: theme.palette.text.secondary, fontSize: 20 }}>
+                  Loading
+                  <Dots />
+                </Typography>
                 <Image src={LoadingIcon} />
               </Box>
             </Box>
