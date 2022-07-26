@@ -3,6 +3,7 @@ import MuiCloseIcon from '@mui/icons-material/Close'
 import { Link, IconButton, keyframes, styled, Theme } from '@mui/material'
 import { SxProps } from '@mui/system'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
+import { ReactComponent as ExternalArrow } from 'assets/svg/external_arrow.svg'
 
 export function BackBtn({ onClick, sx }: { onClick?: () => void; sx?: SxProps }) {
   return (
@@ -59,13 +60,15 @@ export function ExternalLink({
   sx,
   className,
   children,
-  underline
+  underline,
+  showIcon
 }: Omit<HTMLProps<HTMLAnchorElement>, 'as' | 'ref' | 'onClick'> & {
   href: string
   style?: React.CSSProperties
   sx?: SxProps<Theme>
   underline?: 'always' | 'hover' | 'none'
   className?: string
+  showIcon?: boolean
 }) {
   const handleClick = useCallback(
     (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -89,6 +92,7 @@ export function ExternalLink({
       underline={underline ?? 'none'}
     >
       {children}
+      {showIcon && <ExternalArrow style={{ marginLeft: 8 }} />}
     </Link>
   )
 }
