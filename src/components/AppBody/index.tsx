@@ -45,6 +45,7 @@ export default function AppBody(props: Props) {
           {onReturnClick && <BackBtn onClick={onReturnClick} />}
           {title && (
             <Typography
+              variant="h5"
               sx={{
                 fontSize: {
                   xs: 20,
