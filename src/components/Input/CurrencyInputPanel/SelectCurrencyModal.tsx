@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, KeyboardEvent, useRef, ChangeEvent, useEffect } from 'react'
-import { Box, Typography, ButtonBase } from '@mui/material'
+import { Box, Typography, ButtonBase, useTheme } from '@mui/material'
 import { FixedSizeList } from 'react-window'
 import Modal from 'components/Modal'
 import CurrencyList from './CurrencyList'
@@ -23,6 +23,7 @@ import { HelperText } from 'constants/helperText'
 import { theme } from 'theme'
 import useBreakpoint from 'hooks/useBreakpoint'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
+import { useIsDarkMode } from 'state/user/hooks'
 
 export enum Mode {
   TOKEN = 'token',
@@ -241,6 +242,35 @@ function ModeButton({
   onClick?: () => void
   disabled?: boolean
 }) {
+  const theme = useTheme()
+  const isDarkMode = useIsDarkMode()
+
+  const background = useMemo(() => {
+    if (isDarkMode && selected) {
+      return '#484D50'
+    }
+    if (isDarkMode && !selected) {
+      return '#25282B'
+    }
+    if (selected) {
+      return '#FFFFFF'
+    }
+    return '#F8F8F8'
+  }, [isDarkMode, selected])
+
+  const textColor = useMemo(() => {
+    if (isDarkMode && selected) {
+      return theme.gradient.gradient1
+    }
+    if (isDarkMode && !selected) {
+      return theme.palette.text.primary
+    }
+    if (selected) {
+      return '#1F9898'
+    }
+    return '#9E9E9E'
+  }, [isDarkMode, selected, theme])
+
   return (
     <ButtonBase
       onClick={onClick}
@@ -250,17 +280,29 @@ function ModeButton({
           xs: '4px 12px',
           md: '7px 20px'
         },
-        borderRadius: selected ? '10px' : '18px',
-        color: selected ? '#1F9898' : ' #9E9E9E',
-        boxShadow: selected ? '0px 4px 6px rgba(0, 0, 0, 0.05)' : 'inset 0px 2px 12px rgba(0, 0, 0, 0.1)',
-        background: selected ? '#FFFFFF' : '#F8F8F8',
-        fontSize: {
-          xs: 14,
-          md: 16
-        }
+        borderRadius: '18px',
+        background,
+        boxShadow: isDarkMode
+          ? 'none'
+          : selected
+          ? '0px 3px 10px rgba(0, 0, 0, 0.15)'
+          : 'inset 0px 2px 12px rgba(0, 0, 0, 0.1)'
       }}
     >
-      {children}
+      <Typography
+        sx={{
+          color: selected ? theme.palette.text.primary : 'transparent',
+          fontSize: {
+            xs: 14,
+            md: 16
+          },
+          background: textColor,
+          backgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
+        }}
+      >
+        {children}
+      </Typography>
     </ButtonBase>
   )
 }
