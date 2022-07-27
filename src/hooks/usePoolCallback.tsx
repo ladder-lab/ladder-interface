@@ -1,7 +1,11 @@
 import { TransactionResponse } from '@ethersproject/providers'
 import { ETHER } from '@uniswap/sdk'
+import MessageBox from 'components/Modal/TransactionModals/MessageBox'
+import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
+import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import { BigNumber } from 'ethers'
 import { useActiveWeb3React } from 'hooks'
+import useModal from 'hooks/useModal'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
 import { AllTokens } from 'models/allTokens'
 import { useCallback, useMemo } from 'react'
@@ -14,6 +18,7 @@ import { wrappedCurrency } from 'utils/wrappedCurrency'
 
 export function usePoolCallback(currencyA: AllTokens | undefined, currencyB: AllTokens | undefined) {
   const { chainId, library, account } = useActiveWeb3React()
+  const { showModal, hideModal } = useModal()
   const addTransaction = useTransactionAdder()
   const { currencies, parsedAmounts, noLiquidity } = useDerivedMintInfo(currencyA, currencyB)
   const [allowedSlippage] = useUserSlippageTolerance()
@@ -21,7 +26,7 @@ export function usePoolCallback(currencyA: AllTokens | undefined, currencyB: All
 
   const addLiquidityCb = useCallback(async () => {
     if (!chainId || !library || !account) return
-
+    showModal(<TransacitonPendingModal />)
     const router = getRouterContract(chainId, library, account)
 
     const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts
@@ -73,6 +78,8 @@ export function usePoolCallback(currencyA: AllTokens | undefined, currencyB: All
           ...(value ? { value } : {}),
           gasLimit: calculateGasMargin(estimatedGasLimit)
         }).then(response => {
+          hideModal()
+          showModal(<TransactionSubmittedModal />)
           addTransaction(response, {
             summary:
               'Add ' +
@@ -89,9 +96,11 @@ export function usePoolCallback(currencyA: AllTokens | undefined, currencyB: All
         })
       )
       .catch(error => {
+        hideModal()
         // we only care if the error is something _other_ than the user rejected the tx
         if (error?.code !== 4001) {
           console.error(error)
+          showModal(<MessageBox type="error">{error.message}</MessageBox>)
         }
       })
   }, [
@@ -103,9 +112,11 @@ export function usePoolCallback(currencyA: AllTokens | undefined, currencyB: All
     currencyA,
     currencyB,
     deadline,
+    hideModal,
     library,
     noLiquidity,
-    parsedAmounts
+    parsedAmounts,
+    showModal
   ])
 
   return useMemo(
