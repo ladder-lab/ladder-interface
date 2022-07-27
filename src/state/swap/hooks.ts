@@ -124,6 +124,7 @@ export function useDerivedSwapInfo(): {
 
   const inputCurrencyRaw = useCurrency(inputCurrencyId, inputTokenId)
   const outputCurrencyRaw = useCurrency(outputCurrencyId, outputTokenId)
+
   const inputCurrency =
     inputTokenId && inputCurrencyId
       ? new Token(
@@ -134,6 +135,7 @@ export function useDerivedSwapInfo(): {
           inputCurrencyRaw?.name
         )
       : inputCurrencyRaw
+
   const outputCurrency =
     outputTokenId && outputCurrencyId
       ? new Token(

@@ -75,7 +75,7 @@ export default function Swap() {
         [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount
       }
 
-  const { /*onSwitchTokens,*/ onCurrencySelection, onUserInput } = useSwapActionHandlers()
+  const { onSwitchTokens, onCurrencySelection, onUserInput } = useSwapActionHandlers()
 
   const isValid = !swapInputError
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
@@ -265,10 +265,12 @@ export default function Swap() {
             />
           </Box>
           {fromAsset && <AssetAccordion token={fromAsset} />}
-          <Box sx={{ height: 76, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Box
+            sx={{ height: 76, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            onClick={onSwitchTokens}
+          >
             <ArrowCircle />
           </Box>
-
           <Box mb={toAsset ? 16 : 0}>
             <CurrencyInputPanel
               selectedTokenType={fromAsset ? ('tokenId' in fromAsset ? 'erc1155' : 'erc20') : undefined}
@@ -283,12 +285,12 @@ export default function Swap() {
           <SwapSummary
             fromAsset={fromAsset ?? undefined}
             toAsset={toAsset ?? undefined}
+            toVal={formattedAmounts[Field.OUTPUT]}
+            fromVal={formattedAmounts[Field.INPUT]}
             expanded={summaryExpanded}
             onChange={() => setSummaryExpanded(!summaryExpanded)}
             margin="20px 0 40px"
             gasFee="8.23"
-            currencyPrice={'123'}
-            currencyRate={'1.000'}
             expectedNftQty={'50'}
             priceImpact={'0.41'}
             minReceiveNftQty={'48'}

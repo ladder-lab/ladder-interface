@@ -1,27 +1,21 @@
-import { useMemo } from 'react'
 import { Grid, Box, Typography, useTheme } from '@mui/material'
 import Image from 'components/Image'
 import SampleNftImg from 'assets/images/sample-nft.png'
 import { Token1155 } from 'constants/token/token1155'
-import { useActiveWeb3React } from 'hooks'
 import { AllTokens } from 'models/allTokens'
 import { shortenAddress } from 'utils'
 import useModal from 'hooks/useModal'
+import { DEFAULT_1155_LIST } from 'constants/default1155List'
+import { useActiveWeb3React } from 'hooks'
+import { NETWORK_CHAIN_ID } from 'constants/chain'
 
 export default function NftList({ onClick }: { onClick?: (token: AllTokens) => void }) {
-  const { library } = useActiveWeb3React()
   const { hideModal } = useModal()
-
-  const dummyNfts = useMemo(() => {
-    return [
-      new Token1155(4, '0x75e4b5644eA842817155f960600b3cC3194D14C2', 1, library, 'Standard ERC1155 (ERC1155)'),
-      new Token1155(4, '0x75e4b5644eA842817155f960600b3cC3194D14C2', 1, library, 'Standard ERC1155 (ERC1155)')
-    ]
-  }, [library])
+  const { chainId } = useActiveWeb3React()
 
   return (
     <Grid container spacing={20} sx={{ overflow: 'auto', height: 480 }}>
-      {dummyNfts.map((token1155, idx) => (
+      {DEFAULT_1155_LIST[(chainId ?? NETWORK_CHAIN_ID) as keyof typeof DEFAULT_1155_LIST]?.map((token1155, idx) => (
         <Grid item xs={6} md={3} key={idx}>
           <NftCard
             key={idx}

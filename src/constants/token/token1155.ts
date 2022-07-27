@@ -1,8 +1,8 @@
 import { ChainId } from '../chain'
 // import ERC1155Abi from 'constants/abis/erc1155.json'
 import { Token } from '@uniswap/sdk'
+import { Axios } from 'utils/axios'
 // import { getContract } from 'utils'
-import { Web3Provider } from '@ethersproject/providers'
 
 /**
  * Represents an ERC1155 token with a unique address and some metadata.
@@ -16,25 +16,26 @@ export class Token1155 extends Token {
     chainId: ChainId,
     address: string,
     tokenId: string | number,
-    library?: Web3Provider,
-    name?: string,
-    symbol?: string,
-    uri?: string
+    metadata?: {
+      name?: string
+      symbol?: string
+      uri?: string
+    }
   ) {
-    super(chainId, address, 0, symbol, name)
+    super(chainId, address, 0, metadata?.symbol, metadata?.name)
     this.tokenId = tokenId
     this.is1155 = true
-    this.uri = uri
-    if (!library || uri) {
-      return
+    this.uri = metadata?.uri
+
+    if (!metadata) {
+      Axios.getMetadata(address, tokenId)
+        .then(r => {
+          console.log(r)
+        })
+        .catch(e => {
+          console.error(e)
+        })
     }
-    // const contract = getContract(address, ERC1155Abi, library)
-    // contract
-    //   .uri()
-    //   .then(() => {})
-    //   .catch((e: Error) => {
-    //     console.error(e)
-    //   })
   }
 
   /**
