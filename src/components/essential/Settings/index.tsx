@@ -73,6 +73,7 @@ export default function Settings({ onlySlippage }: { onlySlippage?: boolean }) {
         customOnDismiss={() => setShowConfirmation(false)}
         maxWidth="500px"
         closeIcon
+        closeVariant="text"
       >
         <Box display="grid" gap="8px" padding="24px">
           <Box display="flex" alignItems="center" justifyContent="space-between" padding="0 24px">
