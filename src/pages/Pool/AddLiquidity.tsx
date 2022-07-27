@@ -20,7 +20,7 @@ import Card from 'components/Card'
 // import useModal from 'hooks/useModal'
 import ConfirmSupplyModal from 'components/Modal/ConfirmSupplyModal'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/mint/hooks'
-import { usePoolCallback } from 'data/usePoolCallback'
+import { usePoolCallback } from 'hooks/usePoolCallback'
 import { checkIs1155 } from 'utils/checkIs1155'
 
 export default function AddLiquidy() {
@@ -182,24 +182,20 @@ export default function AddLiquidy() {
                   approvalB === ApprovalState.NOT_APPROVED ||
                   approvalB === ApprovalState.PENDING) &&
                   isValid && (
-                    <Box>
+                    <Box display="flex" gap={16}>
                       {approvalA !== ApprovalState.APPROVED && (
-                        <Box>
-                          <ActionButton
-                            onAction={approveACallback}
-                            disableAction={approvalA === ApprovalState.PENDING}
-                            width={approvalB !== ApprovalState.APPROVED ? '48%' : '100%'}
-                            pending={approvalA === ApprovalState.PENDING}
-                            pendingText={`>Approving ${currencies[Field.CURRENCY_A]?.symbol}`}
-                            actionText={'Approve ' + currencies[Field.CURRENCY_A]?.symbol}
-                          />
-                        </Box>
+                        <ActionButton
+                          onAction={approveACallback}
+                          disableAction={approvalA === ApprovalState.PENDING}
+                          pending={approvalA === ApprovalState.PENDING}
+                          pendingText={`Approving ${currencies[Field.CURRENCY_A]?.symbol}`}
+                          actionText={'Approve ' + currencies[Field.CURRENCY_A]?.symbol}
+                        />
                       )}
                       {approvalB !== ApprovalState.APPROVED && (
                         <ActionButton
                           onAction={approveBCallback}
                           disableAction={approvalB === ApprovalState.PENDING}
-                          width={approvalA !== ApprovalState.APPROVED ? '48%' : '100%'}
                           pending={approvalB === ApprovalState.PENDING}
                           pendingText={`Approving ${currencies[Field.CURRENCY_B]?.symbol}`}
                           actionText={'Approve ' + currencies[Field.CURRENCY_B]?.symbol}
@@ -210,7 +206,6 @@ export default function AddLiquidy() {
                 <Button
                   onClick={handleAdd}
                   disabled={!isValid || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED}
-                  // error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
                 >
                   {error ?? 'Supply'}
                 </Button>
