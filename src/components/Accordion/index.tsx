@@ -12,15 +12,16 @@ interface Props {
   onChange: () => void
   iconCssOverride?: CSSProperties
   margin?: string
+  disabled?: boolean
 }
 
 export default function _Accordion(props: Props) {
-  const { summary, details, onChange, expanded, iconCssOverride, margin } = props
+  const { summary, details, onChange, expanded, iconCssOverride, margin, disabled } = props
   const theme = useTheme()
 
   return (
     <Accordion
-      onChange={onChange}
+      onChange={disabled ? undefined : onChange}
       sx={{
         boxShadow: 'none',
         background: theme.palette.background.default,
@@ -38,7 +39,8 @@ export default function _Accordion(props: Props) {
           width: '100%'
         },
         '& .MuiAccordionSummary-expandIconWrapper': {
-          ...iconCssOverride
+          ...iconCssOverride,
+          display: disabled ? 'none' : 'inherit'
         }
       }}
       expanded={expanded}

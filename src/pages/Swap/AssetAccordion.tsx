@@ -5,6 +5,7 @@ import { useCallback, useState } from 'react'
 import { AllTokens } from 'models/allTokens'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import Tag from 'components/Tag'
+import { checkIs1155 } from 'utils/checkIs1155'
 
 export function AssetAccordion({ token }: { token?: AllTokens }) {
   const [expanded, setExpanded] = useState(false)
@@ -13,6 +14,8 @@ export function AssetAccordion({ token }: { token?: AllTokens }) {
   const handleChange = useCallback(() => {
     setExpanded(prev => !prev)
   }, [])
+
+  const is1155 = checkIs1155(token)
 
   const summary = useMemo(() => {
     return (
@@ -42,10 +45,10 @@ export function AssetAccordion({ token }: { token?: AllTokens }) {
           </Typography>
         </Box>
 
-        <Tag sx={{ position: 'absolute', right: 0, top: 0 }}>{token && 'is1155' in token ? 'ERC1155' : 'ERC20'}</Tag>
+        <Tag sx={{ position: 'absolute', right: 0, top: 0 }}>{is1155 ? 'ERC1155' : 'ERC20'}</Tag>
       </Box>
     )
-  }, [token, theme.palette.text.secondary])
+  }, [token, theme.palette.text.secondary, is1155])
 
   const details = (
     <Box pt={12}>
@@ -61,6 +64,7 @@ export function AssetAccordion({ token }: { token?: AllTokens }) {
       details={details}
       expanded={expanded}
       onChange={handleChange}
+      disabled={!is1155}
       margin={'0'}
       iconCssOverride={{ right: 0, bottom: 0, position: 'absolute' }}
     />

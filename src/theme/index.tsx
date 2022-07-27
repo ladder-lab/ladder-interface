@@ -1,6 +1,8 @@
 import { createTheme, styled, ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
 import { useIsDarkMode } from 'state/user/hooks'
 
+export type PaletteMode = 'light' | 'dark'
+
 interface Gradient {
   gradient1: string
   gradient2: string
@@ -62,105 +64,99 @@ const themeConstants = {
 }
 
 export const themeColors = {
-  palette: {
-    primary: {
-      light: '#ADDFB5',
-      main: '#1F9898',
-      dark: '#CAF400',
-      contrastText: '#1A1C1E'
-    },
-    secondary: {
-      light: '#31B047',
-      main: '#99F7F4',
-      dark: '#00E4DD',
-      contrastText: '#1A1C1E'
-    },
-    error: {
-      main: '#FA0E0E',
-      light: '#FA0E0E10'
-    },
-    warning: {
-      main: '#F0B90B'
-    },
-    info: {
-      main: '#1F9898'
-    },
-    success: {
-      main: '#31B047'
-    },
-    background: {
-      default: '#F7F7F7',
-      paper: '#FFFFFF',
-      secondary: '#484D50'
-    },
-    text: {
-      primary: '#333333',
-      secondary: '#828282',
-      disabled: '#828282'
-    },
-    action: {
-      disabledOpacity: 0.8,
-      disabledBackground: '#DADADA'
-    }
+  primary: {
+    light: '#ADDFB5',
+    main: '#1F9898',
+    dark: '#CAF400',
+    contrastText: '#1A1C1E'
   },
-  ...themeConstants
+  secondary: {
+    light: '#31B047',
+    main: '#99F7F4',
+    dark: '#00E4DD',
+    contrastText: '#1A1C1E'
+  },
+  error: {
+    main: '#FA0E0E',
+    light: '#FA0E0E10'
+  },
+  warning: {
+    main: '#F0B90B'
+  },
+  info: {
+    main: '#1F9898'
+  },
+  success: {
+    main: '#31B047'
+  },
+  background: {
+    default: '#F7F7F7',
+    paper: '#FFFFFF',
+    secondary: '#484D50'
+  },
+  text: {
+    primary: '#333333',
+    secondary: '#828282',
+    disabled: '#828282'
+  },
+  action: {
+    disabledOpacity: 0.8,
+    disabledBackground: '#DADADA'
+  }
 }
 
 export const themeDarkColors = {
-  palette: {
-    primary: {
-      light: '#ADDFB5',
-      main: '#D8FF20',
-      dark: '#CAF400',
-      contrastText: '#1A1C1E'
-    },
-    secondary: {
-      light: '#31B047',
-      main: '#99F7F4',
-      dark: '#00E4DD',
-      contrastText: '#ffffff'
-    },
-    error: {
-      main: '#FA0E0E',
-      light: '#FA0E0E10'
-    },
-    warning: {
-      main: '#F0B90B'
-    },
-    info: {
-      main: '#1F9898'
-    },
-    success: {
-      main: '#31B047'
-    },
-    background: {
-      default: '#343739',
-      paper: '#1A1C1E'
-    },
-    text: {
-      primary: '#E6EAEE',
-      secondary: '#878D92',
-      disabled: '#61666A'
-    },
-    action: {
-      disabledOpacity: 0.8,
-      disabledBackground: '#282B2E'
-    }
+  primary: {
+    light: '#ADDFB5',
+    main: '#D8FF20',
+    dark: '#CAF400',
+    contrastText: '#1A1C1E'
   },
-  ...themeConstants
+  secondary: {
+    light: '#31B047',
+    main: '#99F7F4',
+    dark: '#00E4DD',
+    contrastText: '#ffffff'
+  },
+  error: {
+    main: '#FA0E0E',
+    light: '#FA0E0E10'
+  },
+  warning: {
+    main: '#F0B90B'
+  },
+  info: {
+    main: '#1F9898'
+  },
+  success: {
+    main: '#31B047'
+  },
+  background: {
+    default: '#343739',
+    paper: '#1A1C1E'
+  },
+  text: {
+    primary: '#E6EAEE',
+    secondary: '#878D92',
+    disabled: '#61666A'
+  },
+  action: {
+    disabledOpacity: 0.8,
+    disabledBackground: '#282B2E'
+  }
 }
 
-export const override: (theme: any) => any & {
+export const override: (palette: any) => any & {
   MuiButton: {
     defaultProps: {
       variant: 'text'
     }
   }
-} = (theme: any) => ({
+} = (palette: any) => ({
   MuiCssBaseline: {
     styleOverrides: {
       body: {
-        backgroundColor: theme.palette.background.default,
+        backgroundColor: palette.background.default,
         fontSize: 16,
         overflow: 'auto!important',
         paddingRight: '0px!important'
@@ -184,8 +180,8 @@ export const override: (theme: any) => any & {
     },
     styleOverrides: {
       root: {
-        color: theme.palette.primary.contrastText,
-        borderRadius: theme.shape.borderRadius,
+        color: palette.primary.contrastText,
+        borderRadius: themeConstants.shape.borderRadius,
         transition: '.3s',
         textTransform: 'none' as const,
         width: '100%',
@@ -194,84 +190,84 @@ export const override: (theme: any) => any & {
         fontWeight: 500
       },
       contained: {
-        background: theme.gradient.gradient1,
-        color: theme.palette.primary.contrastText,
+        background: themeConstants.gradient.gradient1,
+        color: palette.primary.contrastText,
         boxShadow: 'unset',
         '&:hover': {
           boxShadow: 'unset',
-          background: theme.gradient.gradient2
+          background: themeConstants.gradient.gradient2
         },
         '&:active': {
           boxShadow: 'unset',
-          background: theme.gradient.gradient3
+          background: themeConstants.gradient.gradient3
         },
         '&:disabled': {
           boxShadow: 'unset',
-          background: theme.palette.action.disabledBackground,
-          color: theme.palette.text.disabled
+          background: palette.action.disabledBackground,
+          color: palette.text.disabled
         }
       },
       containedSecondary: {
-        backgroundColor: theme.palette.secondary.main,
-        color: theme.palette.secondary.contrastText,
+        backgroundColor: palette.secondary.main,
+        color: palette.secondary.contrastText,
         boxShadow: 'unset',
         '&:hover, :active': {
           boxShadow: 'unset',
-          backgroundColor: theme.palette.secondary.dark
+          backgroundColor: palette.secondary.dark
         },
         '&:disabled': {
-          opacity: theme.palette.action.disabledOpacity,
-          backgroundColor: theme.palette.secondary.light
+          opacity: palette.action.disabledOpacity,
+          backgroundColor: palette.secondary.light
         }
       },
       outlined: {
         backgroundColor: 'transparent',
-        borderColor: theme.palette.primary.main,
-        color: theme.palette.primary.main,
+        borderColor: palette.primary.main,
+        color: palette.primary.main,
         '&:hover, :active': {
           backgroundColor: 'transparent',
-          borderColor: theme.palette.primary.dark,
-          color: theme.palette.primary.dark
+          borderColor: palette.primary.dark,
+          color: palette.primary.dark
         },
         '&:disabled': {
-          opacity: theme.palette.action.disabledOpacity
+          opacity: palette.action.disabledOpacity
         }
       },
       outlinedSecondary: {
         backgroundColor: 'transparent',
-        borderColor: theme.palette.secondary.main,
-        color: theme.palette.secondary.main,
+        borderColor: palette.secondary.main,
+        color: palette.secondary.main,
         '&:hover, :active': {
           backgroundColor: 'transparent',
-          borderColor: theme.palette.secondary.dark,
-          color: theme.palette.secondary.dark
+          borderColor: palette.secondary.dark,
+          color: palette.secondary.dark
         },
         '&:disabled': {
-          opacity: theme.palette.action.disabledOpacity
+          opacity: palette.action.disabledOpacity
         }
       },
       text: {
         backgroundColor: 'transparent',
-        color: theme.palette.primary.main,
+        color: palette.primary.main,
         fontWeight: 500,
         '&:hover, :active': {
           backgroundColor: 'transparent',
-          color: theme.palette.primary.dark,
+          color: palette.primary.dark,
           opacity: 1
         }
       },
       textPrimary: {
-        color: theme.palette.primary.main,
+        color: palette.primary.main,
         '&:hover, :active': {
-          color: theme.palette.primary.dark
+          color: palette.primary.dark
         }
       },
       textSecondary: {
-        color: theme.palette.secondary.main,
+        color: palette.secondary.main,
         backgroundColor: 'transparent',
         '&:hover, :active': {
           backgroundColor: 'transparent',
-          color: theme.palette.secondary.dark
+          color: palette.secondary.dark
         }
       }
     }
@@ -298,7 +294,7 @@ export const override: (theme: any) => any & {
       },
       caption: {
         fontSize: 12,
-        color: theme.palette.text.primary
+        color: palette.text.primary
       },
       subtitle1: {},
       subtitle2: {}
@@ -329,7 +325,8 @@ export const ShowOnMobile = styled('div', {
 }))
 
 export const theme = createTheme({
-  ...themeColors,
+  palette: { mode: 'light', ...themeColors },
+  ...themeConstants,
   components: {
     ...override(themeColors)
   },
@@ -341,7 +338,8 @@ export const theme = createTheme({
 })
 
 export const themeDark = createTheme({
-  ...themeDarkColors,
+  palette: { mode: 'dark', ...themeDarkColors },
+  ...themeConstants,
   components: {
     ...override(themeDarkColors)
   },

@@ -1,7 +1,8 @@
-import { useCallback, useState, ChangeEvent, useMemo, useEffect } from 'react'
+import { useCallback, useState, ChangeEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { routes } from 'constants/routes'
 import { Typography, Box, useTheme, Button } from '@mui/material'
-import { CurrencyAmount, JSBI, Trade } from '@uniswap/sdk'
+import { TokenAmount } from '@uniswap/sdk'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
 import { ReactComponent as ArrowCircle } from 'assets/svg/arrow_circle.svg'
@@ -10,189 +11,128 @@ import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
 import CurrencyInputPanel from 'components/Input/CurrencyInputPanel'
 import { AllTokens } from 'models/allTokens'
-import { useExpertModeManager, useUserSingleHopOnly, useUserSlippageTolerance } from 'state/user/hooks'
-import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
-import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
-import { Field } from 'state/swap/actions'
-import { ApprovalState, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
+import { useIsExpertMode } from 'state/user/hooks'
+import { Field } from 'state/mint/actions'
+import { ApprovalState, useAllTokenApproveCallback } from 'hooks/useApproveCallback'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
-import { useSwapCallback } from 'hooks/useSwapCallback'
-import { computeTradePriceBreakdown, warningSeverity } from 'utils/swap/prices'
-import confirmPriceImpactWithoutFee from 'utils/swap/confirmPriceImpactWithoutFee'
 import Card from 'components/Card'
-import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
-import useModal from 'hooks/useModal'
-import { useNavigate } from 'react-router-dom'
+// import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
+// import useModal from 'hooks/useModal'
 import ConfirmSupplyModal from 'components/Modal/ConfirmSupplyModal'
+import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/mint/hooks'
+import { usePoolCallback } from 'data/usePoolCallback'
+import { checkIs1155 } from 'utils/checkIs1155'
 
 export default function AddLiquidy() {
+  const [currencyA, setCurrencyA] = useState<undefined | AllTokens>(undefined)
+  const [currencyB, setCurrencyB] = useState<undefined | AllTokens>(undefined)
+
   const { account } = useActiveWeb3React()
   const navigate = useNavigate()
+  // const { showModal } = useModal()
+  const toggleWallet = useWalletModalToggle()
+  const expertMode = useIsExpertMode()
+  const { addLiquidityCb } = usePoolCallback(currencyA, currencyB)
+
+  const { independentField, typedValue, otherTypedValue } = useMintState()
+  const {
+    dependentField,
+    currencies,
+    // pair,
+    // pairState,
+    currencyBalances,
+    parsedAmounts,
+    // price,
+    noLiquidity,
+    // liquidityMinted,
+    // poolTokenPercentage,
+    error
+  } = useDerivedMintInfo(currencyA, currencyB)
+  const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
+
+  const isValid = !error
 
   // modal and loading
-  const [{ showConfirm, tradeToConfirm, swapErrorMessage /*, attemptingTxn, txHash*/ }, setSwapState] = useState<{
-    showConfirm: boolean
-    tradeToConfirm: Trade | undefined
-    attemptingTxn: boolean
-    swapErrorMessage: string | undefined
-    txHash: string | undefined
-  }>({
-    showConfirm: false,
-    tradeToConfirm: undefined,
-    attemptingTxn: false,
-    swapErrorMessage: undefined,
-    txHash: undefined
-  })
+  const [showConfirm, setShowConfirm] = useState<boolean>(false)
 
-  const { showModal } = useModal()
-  const toggleWallet = useWalletModalToggle()
+  // txn values
 
-  // get custom setting values for user
-  const [allowedSlippage] = useUserSlippageTolerance()
-  const [isExpertMode] = useExpertModeManager()
-  const { independentField, typedValue, recipient } = useSwapState()
+  // const [txHash, setTxHash] = useState<string>('')
 
-  const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
-  const { [Field.INPUT]: fromAsset, [Field.OUTPUT]: toAsset } = currencies
-  const {
-    wrapType,
-    execute: onWrap,
-    inputError: wrapInputError
-  } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue)
-  const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
-
-  const trade = showWrap ? undefined : v2Trade
-
-  const parsedAmounts = showWrap
-    ? {
-        [Field.INPUT]: parsedAmount,
-        [Field.OUTPUT]: parsedAmount
-      }
-    : {
-        [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-        [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount
-      }
-
-  const { /*onSwitchTokens,*/ onCurrencySelection, onUserInput } = useSwapActionHandlers()
-
-  const isValid = !swapInputError
-  const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
-
+  // get formatted amounts
   const formattedAmounts = {
     [independentField]: typedValue,
-    [dependentField]: showWrap
-      ? parsedAmounts[independentField]?.toExact() ?? ''
-      : parsedAmounts[dependentField]?.toSignificant(6) ?? ''
+    [dependentField]: noLiquidity ? otherTypedValue : parsedAmounts[dependentField]?.toSignificant(6) ?? ''
   }
-  const { [independentField]: fromVal, [dependentField]: toVal } = formattedAmounts
 
-  const route = trade?.route
-  const userHasSpecifiedInputOutput = Boolean(
-    currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
+  // get the max amounts user can add
+  const maxAmounts: { [field in Field]?: TokenAmount } = [Field.CURRENCY_A, Field.CURRENCY_B].reduce(
+    (accumulator, field) => {
+      return {
+        ...accumulator,
+        [field]: maxAmountSpend(currencyBalances[field])
+      }
+    },
+    {}
   )
-  const noRoute = !route
 
-  // check whether the user has approved the router on the input token
-  const [approval, approveCallback] = useApproveCallbackFromTrade(trade, allowedSlippage)
-  const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
+  // check whether the user has approved the router on the tokens
+  const [approvalA, approveACallback] = useAllTokenApproveCallback(currencyA, parsedAmounts[Field.CURRENCY_A])
+  const [approvalB, approveBCallback] = useAllTokenApproveCallback(currencyB, parsedAmounts[Field.CURRENCY_B])
 
-  // mark when a user has submitted an approval, reset onTokenSelection for input field
-  useEffect(() => {
-    if (approval === ApprovalState.PENDING) {
-      setApprovalSubmitted(true)
-    }
-  }, [approval, approvalSubmitted])
+  const handleMaxInputA = useCallback(() => {
+    onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')
+  }, [maxAmounts, onFieldAInput])
 
-  const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
+  const handleMaxInputB = useCallback(() => {
+    onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
+  }, [maxAmounts, onFieldBInput])
 
-  // the callback to execute the swap
-  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, allowedSlippage, recipient)
-  const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
-  const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
-  const [singleHopOnly] = useUserSingleHopOnly()
-  const handleSwap = useCallback(() => {
-    if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
-      return
-    }
-    if (!swapCallback) {
-      return
-    }
-    setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
-    swapCallback()
-      .then(hash => {
-        setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
-      })
-      .catch(error => {
-        setSwapState({
-          attemptingTxn: false,
-          tradeToConfirm,
-          showConfirm,
-          swapErrorMessage: error.message,
-          txHash: undefined
-        })
-      })
-  }, [priceImpactWithoutFee, showConfirm, swapCallback, tradeToConfirm])
+  const handleAdd = useCallback(() => {
+    expertMode ? addLiquidityCb() : setShowConfirm(true)
+  }, [addLiquidityCb, expertMode])
 
-  // show approve flow when: no error on inputs, not approved or pending, or approved in current session
-  // never show if price impact is above threshold in non expert mode
-  const showApproveFlow =
-    !swapInputError &&
-    (approval === ApprovalState.NOT_APPROVED ||
-      approval === ApprovalState.PENDING ||
-      (approvalSubmitted && approval === ApprovalState.APPROVED)) &&
-    !(priceImpactSeverity > 3 && !isExpertMode)
-
-  const handleMaxInput = useCallback(() => {
-    maxAmountInput && onUserInput(Field.INPUT, maxAmountInput.toExact())
-  }, [maxAmountInput, onUserInput])
-
-  const handleFromVal = useCallback(
+  const handleAssetAVal = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      onUserInput(Field.INPUT, e.target.value)
+      onFieldAInput(e.target.value)
     },
-    [onUserInput]
+    [onFieldAInput]
   )
 
-  const handleToVal = useCallback(
+  const handleAssetBVal = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      onUserInput(Field.OUTPUT, e.target.value)
+      onFieldBInput(e.target.value)
     },
-    [onUserInput]
+    [onFieldBInput]
   )
 
-  const handleFromAsset = useCallback(
-    (currency: AllTokens) => {
-      setApprovalSubmitted(false) // reset 2 step UI for approvals
-      onCurrencySelection(Field.INPUT, currency)
-    },
-    [onCurrencySelection]
-  )
+  const handleAssetA = useCallback((currency: AllTokens) => {
+    setCurrencyA(currency)
+  }, [])
 
-  const handleToAsset = useCallback(
-    (currency: AllTokens) => {
-      onCurrencySelection(Field.OUTPUT, currency)
-    },
-    [onCurrencySelection]
-  )
+  const handleAssetB = useCallback((currency: AllTokens) => {
+    setCurrencyB(currency)
+  }, [])
 
-  const error = useMemo(() => {
-    if (!fromAsset || !toAsset) {
-      return 'Select a Token'
-    }
-
-    return undefined
-  }, [fromAsset, toAsset])
+  const handleDismissConfirmation = useCallback(() => {
+    setShowConfirm(false)
+    // if there was a tx hash, we want to clear the input
+    // if (txHash) {
+    //   onFieldAInput('')
+    // }
+    // setTxHash('')
+  }, [])
 
   return (
     <>
       <ConfirmSupplyModal
-        onConfirm={() => {}}
-        from={fromAsset ?? undefined}
-        to={toAsset ?? undefined}
-        fromVal={fromVal}
-        toVal={toVal}
-        isOpen={false}
-        onDismiss={() => {}}
+        onConfirm={addLiquidityCb}
+        from={currencyA}
+        to={currencyB}
+        fromVal={formattedAmounts[Field.CURRENCY_A]}
+        toVal={formattedAmounts[Field.CURRENCY_B]}
+        isOpen={showConfirm}
+        onDismiss={handleDismissConfirmation}
       />
 
       <AppBody
@@ -205,142 +145,78 @@ export default function AddLiquidy() {
       >
         <Box mt={35}>
           <Tips />
-          <Box mb={fromAsset ? 16 : 0}>
+          <Box mb={currencyA ? 16 : 0}>
             <CurrencyInputPanel
-              selectedTokenType={toAsset ? ('tokenId' in toAsset ? 'erc1155' : 'erc20') : undefined}
-              value={fromVal}
-              onChange={handleFromVal}
-              onSelectCurrency={handleFromAsset}
-              currency={fromAsset}
-              onMax={handleMaxInput}
+              value={formattedAmounts[Field.CURRENCY_A]}
+              onChange={handleAssetAVal}
+              onSelectCurrency={handleAssetA}
+              currency={currencyA}
+              onMax={handleMaxInputA}
             />
           </Box>
-          {fromAsset && <AssetAccordion token={fromAsset} />}
+          {currencyA && <AssetAccordion token={currencyA} />}
           <Box sx={{ height: 76, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <ArrowCircle />
           </Box>
 
-          <Box mb={toAsset ? 16 : 0}>
+          <Box mb={currencyB ? 16 : 0}>
             <CurrencyInputPanel
-              selectedTokenType={fromAsset ? ('tokenId' in fromAsset ? 'erc1155' : 'erc20') : undefined}
-              value={toVal}
-              onChange={handleToVal}
-              onSelectCurrency={handleToAsset}
-              currency={toAsset}
+              selectedTokenType={currencyA ? (checkIs1155(currencyA) ? 'erc1155' : 'erc20') : undefined}
+              value={formattedAmounts[Field.CURRENCY_B]}
+              onChange={handleAssetBVal}
+              onSelectCurrency={handleAssetB}
+              currency={currencyB}
+              onMax={handleMaxInputB}
             />
           </Box>
-          {toAsset && <AssetAccordion token={toAsset} />}
+          {currencyB && <AssetAccordion token={currencyB} />}
 
           <PriceAndPoolShare />
           <Box>
             {!account ? (
               <Button onClick={toggleWallet}>Connect Wallet</Button>
-            ) : showWrap ? (
-              <Button disabled={Boolean(wrapInputError)} onClick={onWrap}>
-                {wrapInputError ??
-                  (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
-              </Button>
-            ) : noRoute && userHasSpecifiedInputOutput ? (
-              <Card style={{ textAlign: 'center' }}>
-                <Typography mb="4px">Insufficient liquidity for this trade.</Typography>
-                {singleHopOnly && <Typography mb="4px">Try enabling multi-hop trades.</Typography>}
-              </Card>
-            ) : showApproveFlow ? (
-              <Box>
-                {/* <ActionButton
-                    error={error}
-                    pending={approving}
-                    onAction={() => {
-                      approvalCallback()
-                      showModal(<TransacitonPendingModal />)
-                    }}
-                    success={approved}
-                    successText="Approved"
-                    pendingText="approving"
-                    actionText="Approve"
-                  /> */}
-                <ActionButton
-                  onAction={() => {
-                    approveCallback()
-                    showModal(<TransacitonPendingModal />)
-                  }}
-                  actionText={
-                    approvalSubmitted && approval === ApprovalState.APPROVED
-                      ? 'Approved'
-                      : 'Approve ' + currencies[Field.INPUT]?.symbol
-                  }
-                  error={error}
-                  disableAction={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
-                  pending={approval === ApprovalState.PENDING}
-                  pendingText="Approving"
-                />
+            ) : (
+              <Box display="grid" gap={'16px'}>
+                {(approvalA === ApprovalState.NOT_APPROVED ||
+                  approvalA === ApprovalState.PENDING ||
+                  approvalB === ApprovalState.NOT_APPROVED ||
+                  approvalB === ApprovalState.PENDING) &&
+                  isValid && (
+                    <Box>
+                      {approvalA !== ApprovalState.APPROVED && (
+                        <Box>
+                          <ActionButton
+                            onAction={approveACallback}
+                            disableAction={approvalA === ApprovalState.PENDING}
+                            width={approvalB !== ApprovalState.APPROVED ? '48%' : '100%'}
+                            pending={approvalA === ApprovalState.PENDING}
+                            pendingText={`>Approving ${currencies[Field.CURRENCY_A]?.symbol}`}
+                            actionText={'Approve ' + currencies[Field.CURRENCY_A]?.symbol}
+                          />
+                        </Box>
+                      )}
+                      {approvalB !== ApprovalState.APPROVED && (
+                        <ActionButton
+                          onAction={approveBCallback}
+                          disableAction={approvalB === ApprovalState.PENDING}
+                          width={approvalA !== ApprovalState.APPROVED ? '48%' : '100%'}
+                          pending={approvalB === ApprovalState.PENDING}
+                          pendingText={`Approving ${currencies[Field.CURRENCY_B]?.symbol}`}
+                          actionText={'Approve ' + currencies[Field.CURRENCY_B]?.symbol}
+                        />
+                      )}
+                    </Box>
+                  )}
                 <Button
-                  onClick={() => {
-                    if (isExpertMode) {
-                      handleSwap()
-                    } else {
-                      setSwapState({
-                        tradeToConfirm: trade,
-                        attemptingTxn: false,
-                        swapErrorMessage: undefined,
-                        showConfirm: true,
-                        txHash: undefined
-                      })
-                    }
-                  }}
-                  disabled={
-                    !isValid || approval !== ApprovalState.APPROVED || (priceImpactSeverity > 3 && !isExpertMode)
-                  }
-                  // error={isValid && priceImpactSeverity > 2}
+                  onClick={handleAdd}
+                  disabled={!isValid || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED}
+                  // error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
                 >
-                  {priceImpactSeverity > 3 && !isExpertMode
-                    ? `Price Impact High`
-                    : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
+                  {error ?? 'Supply'}
                 </Button>
               </Box>
-            ) : (
-              <Button
-                onClick={() => {
-                  if (isExpertMode) {
-                    handleSwap()
-                  } else {
-                    setSwapState({
-                      tradeToConfirm: trade,
-                      attemptingTxn: false,
-                      swapErrorMessage: undefined,
-                      showConfirm: true,
-                      txHash: undefined
-                    })
-                  }
-                }}
-                disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
-                // error={isValid && priceImpactSeverity > 2 && !swapCallbackError}
-              >
-                {swapInputError
-                  ? swapInputError
-                  : priceImpactSeverity > 3 && !isExpertMode
-                  ? `Price Impact Too High`
-                  : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
-              </Button>
             )}
-            {showApproveFlow && (
-              <Box style={{ marginTop: '1rem' }}>
-                progress steps
-                {/* <ProgressSteps steps={[approval === ApprovalState.APPROVED]} /> */}
-              </Box>
-            )}
-            {isExpertMode && swapErrorMessage ? <Typography>{swapErrorMessage}</Typography> : null}
           </Box>
-          {/* {account ? (
-            <Box display="grid" gap={16}>
-              <ActionButton onAction={() => {}} actionText="Allow the Ladder to use your DAI" />
-              <ActionButton onAction={onSwap} actionText="Swap" error={error} />
-            </Box>
-          ) : (
-            <Button sx={{ background: theme.gradient.gradient1 }} onClick={toggleWallet}>
-              Connect Wallet
-            </Button>
-          )} */}
         </Box>
       </AppBody>
     </>

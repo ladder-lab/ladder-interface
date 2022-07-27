@@ -161,11 +161,6 @@ export function useDerivedSwapInfo(): {
 
   const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
 
-  const currencyBalances = {
-    [Field.INPUT]: inputBalance,
-    [Field.OUTPUT]: outputBalance
-  }
-
   const currencies: { [field in Field]?: Currency } = {
     [Field.INPUT]: inputCurrencyRaw ?? undefined,
     [Field.OUTPUT]: outputCurrencyRaw ?? undefined
@@ -202,10 +197,7 @@ export function useDerivedSwapInfo(): {
   const slippageAdjustedAmounts = v2Trade && allowedSlippage && computeSlippageAdjustedAmounts(v2Trade, allowedSlippage)
 
   // compare input balance to max input based on version
-  const [balanceIn, amountIn] = [
-    currencyBalances[Field.INPUT],
-    slippageAdjustedAmounts ? slippageAdjustedAmounts[Field.INPUT] : null
-  ]
+  const [balanceIn, amountIn] = [inputBalance, slippageAdjustedAmounts ? slippageAdjustedAmounts[Field.INPUT] : null]
 
   if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
     inputError = 'Insufficient ' + amountIn.currency.symbol + ' balance'
@@ -213,7 +205,10 @@ export function useDerivedSwapInfo(): {
 
   return {
     currencies,
-    currencyBalances,
+    currencyBalances: {
+      [Field.INPUT]: inputBalance,
+      [Field.OUTPUT]: outputBalance
+    },
     parsedAmount,
     v2Trade: v2Trade ?? undefined,
     inputError
