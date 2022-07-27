@@ -124,14 +124,25 @@ export function useDerivedSwapInfo(): {
 
   const inputCurrencyRaw = useCurrency(inputCurrencyId, inputTokenId)
   const outputCurrencyRaw = useCurrency(outputCurrencyId, outputTokenId)
-
   const inputCurrency =
     inputTokenId && inputCurrencyId
-      ? new Token(chainId ?? NETWORK_CHAIN_ID, getHashAddress(inputCurrencyId, +inputTokenId), 0)
+      ? new Token(
+          chainId ?? NETWORK_CHAIN_ID,
+          getHashAddress(inputCurrencyId, +inputTokenId),
+          0,
+          inputCurrencyRaw?.symbol,
+          inputCurrencyRaw?.name
+        )
       : inputCurrencyRaw
   const outputCurrency =
     outputTokenId && outputCurrencyId
-      ? new Token(chainId ?? NETWORK_CHAIN_ID, getHashAddress(outputCurrencyId, +outputTokenId), 0)
+      ? new Token(
+          chainId ?? NETWORK_CHAIN_ID,
+          getHashAddress(outputCurrencyId, +outputTokenId),
+          0,
+          outputCurrencyRaw?.symbol,
+          outputCurrencyRaw?.name
+        )
       : outputCurrencyRaw
 
   const recipientLookup = useENS(recipient ?? undefined)
@@ -168,7 +179,7 @@ export function useDerivedSwapInfo(): {
   }
 
   if (!currencies[Field.INPUT] || !currencies[Field.OUTPUT]) {
-    inputError = inputError ?? 'Select a token'
+    inputError = inputError = 'Select a token'
   }
 
   const formattedTo = isAddress(to)

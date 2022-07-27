@@ -25,6 +25,8 @@ import TransacitonPendingModal from 'components/Modal/TransactionModals/Transact
 import useModal from 'hooks/useModal'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
+import { useApproveERC1155Callback } from 'hooks/useApproveERC1155Callback'
+import { checkIs1155, filter1155 } from 'utils/checkIs1155'
 
 export default function Swap() {
   const theme = useTheme()
@@ -91,16 +93,25 @@ export default function Swap() {
   )
   const noRoute = !route
 
-  // check whether the user has approved the router on the input token
+  // approve work flow
+  const [approval1155, approve1155Callback] = useApproveERC1155Callback(filter1155(fromAsset))
   const [approval, approveCallback] = useApproveCallbackFromTrade(trade, allowedSlippage)
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
+  const handleApprove = useCallback(() => {
+    if (checkIs1155(fromAsset)) {
+      approve1155Callback()
+    } else {
+      approveCallback()
+    }
+    showModal(<TransacitonPendingModal />)
+  }, [approve1155Callback, approveCallback, fromAsset, showModal])
 
   // mark when a user has submitted an approval, reset onTokenSelection for input field
   useEffect(() => {
-    if (approval === ApprovalState.PENDING) {
+    if (approval === ApprovalState.PENDING || approval1155 === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
     }
-  }, [approval, approvalSubmitted])
+  }, [approval, approval1155, approvalSubmitted])
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
 
@@ -117,24 +128,23 @@ export default function Swap() {
       return
     }
     showModal(<TransacitonPendingModal />)
-    setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, txHash: undefined })
+    setSwapState(prev => ({ ...prev, attemptingTxn: true, showConfirm: false, txHash: undefined }))
     swapCallback()
       .then(hash => {
         hideModal()
         showModal(<TransactionSubmittedModal />)
-        setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, txHash: hash })
+        setSwapState(prev => ({ ...prev, attemptingTxn: false, txHash: hash }))
       })
       .catch(error => {
         hideModal()
         showModal(<MessageBox type="error">{error.message}</MessageBox>)
-        setSwapState({
+        setSwapState(prev => ({
+          ...prev,
           attemptingTxn: false,
-          tradeToConfirm,
-          showConfirm,
           txHash: undefined
-        })
+        }))
       })
-  }, [hideModal, priceImpactWithoutFee, showConfirm, showModal, swapCallback, tradeToConfirm])
+  }, [hideModal, priceImpactWithoutFee, showModal, swapCallback])
 
   const handleConfirmDismiss = useCallback(() => {
     setSwapState(prev => ({ ...prev, showConfirm: false, tradeToConfirm, attemptingTxn, txHash }))
@@ -145,8 +155,8 @@ export default function Swap() {
   }, [attemptingTxn, onUserInput, tradeToConfirm, txHash])
 
   const handleAcceptChanges = useCallback(() => {
-    setSwapState({ tradeToConfirm: trade, txHash, attemptingTxn, showConfirm })
-  }, [attemptingTxn, showConfirm, trade, txHash])
+    setSwapState(prev => ({ ...prev, tradeToConfirm: trade }))
+  }, [trade])
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
@@ -154,7 +164,10 @@ export default function Swap() {
     !swapInputError &&
     (approval === ApprovalState.NOT_APPROVED ||
       approval === ApprovalState.PENDING ||
-      (approvalSubmitted && approval === ApprovalState.APPROVED)) &&
+      (approvalSubmitted && approval === ApprovalState.APPROVED) ||
+      approval1155 === ApprovalState.NOT_APPROVED ||
+      approval1155 === ApprovalState.PENDING ||
+      (approvalSubmitted && approval1155 === ApprovalState.APPROVED)) &&
     !(priceImpactSeverity > 3 && !isExpertMode)
 
   const handleMaxInput = useCallback(() => {
@@ -197,7 +210,7 @@ export default function Swap() {
         onConfirm={handleSwap}
         from={fromAsset ?? undefined}
         to={toAsset ?? undefined}
-        isOpen={false}
+        isOpen={showConfirm}
         onDismiss={handleConfirmDismiss}
         trade={trade}
         originalTrade={tradeToConfirm}
@@ -294,25 +307,28 @@ export default function Swap() {
                 <Typography mb="4px">Insufficient liquidity for this trade.</Typography>
                 {singleHopOnly && <Typography mb="4px">Try enabling multi-hop trades.</Typography>}
               </Button>
-            ) : showApproveFlow ? (
-              <Box>
+            ) : (
+              <Box display="grid" gap="16px">
+                {showApproveFlow && (
+                  <ActionButton
+                    onAction={handleApprove}
+                    actionText={
+                      approvalSubmitted && approval === ApprovalState.APPROVED
+                        ? 'Approved'
+                        : `Allow the Ladder to use your ${currencies[Field.INPUT]?.symbol}`
+                    }
+                    error={error}
+                    disableAction={
+                      (approval !== ApprovalState.NOT_APPROVED && approval1155 !== ApprovalState.NOT_APPROVED) ||
+                      approvalSubmitted
+                    }
+                    pending={approval === ApprovalState.PENDING || approval1155 === ApprovalState.PENDING}
+                    pendingText="Approving"
+                  />
+                )}
                 <ActionButton
+                  actionText={`Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
                   onAction={() => {
-                    approveCallback()
-                    showModal(<TransacitonPendingModal />)
-                  }}
-                  actionText={
-                    approvalSubmitted && approval === ApprovalState.APPROVED
-                      ? 'Approved'
-                      : `Allow the Ladder to use your ${currencies[Field.INPUT]?.symbol}`
-                  }
-                  error={error}
-                  disableAction={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
-                  pending={approval === ApprovalState.PENDING}
-                  pendingText="Approving"
-                />
-                <Button
-                  onClick={() => {
                     if (isExpertMode) {
                       handleSwap()
                     } else {
@@ -324,39 +340,21 @@ export default function Swap() {
                       })
                     }
                   }}
-                  disabled={
-                    !isValid || approval !== ApprovalState.APPROVED || (priceImpactSeverity > 3 && !isExpertMode)
+                  disableAction={
+                    !isValid ||
+                    (priceImpactSeverity > 3 && !isExpertMode) ||
+                    !!swapCallbackError ||
+                    (showApproveFlow && approval !== ApprovalState.APPROVED && approval1155 !== ApprovalState.APPROVED)
                   }
-                  // error={isValid && priceImpactSeverity > 2}
-                >
-                  {priceImpactSeverity > 3 && !isExpertMode
-                    ? `Price Impact High`
-                    : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
-                </Button>
+                  error={
+                    swapInputError
+                      ? swapInputError
+                      : priceImpactSeverity > 3 && !isExpertMode
+                      ? `Price Impact Too High`
+                      : undefined
+                  }
+                />
               </Box>
-            ) : (
-              <Button
-                onClick={() => {
-                  if (isExpertMode) {
-                    handleSwap()
-                  } else {
-                    setSwapState({
-                      tradeToConfirm: trade,
-                      attemptingTxn: false,
-                      showConfirm: true,
-                      txHash: undefined
-                    })
-                  }
-                }}
-                disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
-                // error={isValid && priceImpactSeverity > 2 && !swapCallbackError}
-              >
-                {swapInputError
-                  ? swapInputError
-                  : priceImpactSeverity > 3 && !isExpertMode
-                  ? `Price Impact Too High`
-                  : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
-              </Button>
             )}
           </Box>
         </Box>
