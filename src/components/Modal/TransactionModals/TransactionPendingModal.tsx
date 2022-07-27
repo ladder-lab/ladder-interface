@@ -5,7 +5,7 @@ import Modal from '../index'
 export default function TransacitonPendingModal({ pendingText }: { pendingText?: string }) {
   const theme = useTheme()
   return (
-    <Modal closeIcon>
+    <Modal closeIcon closeVariant="text">
       <Box display="grid" padding="40px 24px" gap="24px" justifyItems="center">
         <Spinner size="40px" />
         <Typography fontWeight={400} fontSize={18}>
