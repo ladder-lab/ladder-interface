@@ -4,15 +4,15 @@ import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
 import { useMemo } from 'react'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
 import { isAddress } from '../utils'
-
 import { useActiveWeb3React } from './index'
-import { use1155Contract, useBytes32TokenContract, useTokenContract } from './useContract'
+import { useBytes32TokenContract, useTokenContract } from './useContract'
 import { arrayify } from 'ethers/lib/utils'
 import { TokenList, WrappedTokenInfo } from 'models/tokenList'
 import { listToTokenMap } from 'utils/swap/listUtils'
 import { useUserAddedTokens } from 'state/user/hooks'
 import { Token1155 } from 'constants/token/token1155'
-import { IS_TEST_NET } from 'constants/chain'
+import { IS_TEST_NET, NETWORK_CHAIN_ID } from 'constants/chain'
+import { DEFAULT_1155_LIST } from 'constants/default1155List'
 
 // Check if currency is included in custom list from user storage
 export function useIsUserAddedToken(currency: Currency | undefined | null): boolean {
@@ -153,29 +153,17 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
 
 export function useToken1155(tokenAddress?: string, tokenId?: string | number): Token1155 | undefined | null {
   const { chainId } = useActiveWeb3React()
-
   const address = isAddress(tokenAddress)
-  const arg = useMemo(() => [tokenId], [tokenId])
-  const tokenContract = use1155Contract(address ? address : undefined)
-
-  const tokenName = useSingleCallResult(tokenContract, 'name', undefined, NEVER_RELOAD)
-  const symbol = useSingleCallResult(tokenContract, 'symbol', undefined, NEVER_RELOAD)
-  const uri = useSingleCallResult(tokenContract, 'uri', arg, NEVER_RELOAD)
 
   return useMemo(() => {
     if (!chainId || !address || !tokenId) return undefined
-    if (symbol.loading || tokenName.loading) return null
-
-    return new Token1155(
-      chainId,
-      address,
-      tokenId,
-      undefined,
-      tokenName.result?.[0],
-      symbol.result?.[0],
-      uri.result?.[0]
-    )
-  }, [address, chainId, symbol.loading, symbol.result, tokenId, tokenName.loading, tokenName.result, uri.result])
+    const list = DEFAULT_1155_LIST[chainId ?? NETWORK_CHAIN_ID]
+    if (list) {
+      const token = list.find(token1155 => token1155.address === tokenAddress && token1155.tokenId === tokenId)
+      if (token) return token
+    }
+    return new Token1155(chainId, address, tokenId)
+  }, [address, chainId, tokenAddress, tokenId])
 }
 
 export function useCurrency(currencyId: string | undefined, tokenId?: string | number): Currency | null | undefined {

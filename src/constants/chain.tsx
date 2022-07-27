@@ -77,7 +77,7 @@ export const SUPPORTED_NETWORKS: {
       symbol: 'ETH',
       decimals: 18
     },
-    rpcUrls: ['https://mainnet.infura.io/v3'],
+    rpcUrls: ['https://mainnet.infura.io/v3/d49aedc5c8d04128ab366779756cfacd'],
     blockExplorerUrls: ['https://etherscan.com']
   },
   [ChainId.ROPSTEN]: {
@@ -99,7 +99,7 @@ export const SUPPORTED_NETWORKS: {
       symbol: 'ETH',
       decimals: 18
     },
-    rpcUrls: ['https://rinkeby.infura.io/v3/'],
+    rpcUrls: ['https://rinkeby.infura.io/v3/ab440a3a67f74b6b8a0a8e8e13a76a52'],
     blockExplorerUrls: ['https://rinkeby.etherscan.io/']
   },
   [ChainId.KOVAN]: {

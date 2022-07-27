@@ -20,12 +20,12 @@ export function SwapSummary({
   onChange,
   margin,
   gasFee,
-  currencyPrice,
-  currencyRate,
   expectedNftQty,
   priceImpact,
   minReceiveNftQty,
-  slippage
+  slippage,
+  fromVal,
+  toVal
 }: {
   fromAsset?: AllTokens
   toAsset?: AllTokens
@@ -33,12 +33,12 @@ export function SwapSummary({
   onChange: () => void
   gasFee?: string
   margin: string
-  currencyPrice: string
-  currencyRate: string
   expectedNftQty: string
   priceImpact: string
   minReceiveNftQty: string
   slippage: string
+  fromVal?: string
+  toVal?: string
 }) {
   const theme = useTheme()
   const isDownMd = useBreakpoint('md')
@@ -49,7 +49,8 @@ export function SwapSummary({
         <Box display="flex" gap={14} alignItems="center">
           <InfoIcon />
           <Typography color={theme.palette.text.secondary}>
-            1 Tickets for the...= {currencyPrice} {fromAsset?.symbol} (${currencyRate})
+            {fromVal} {fromAsset?.name} = {toVal} {toAsset?.name}
+            {/* (${currencyRate}) */}
           </Typography>
         </Box>
 
@@ -59,7 +60,7 @@ export function SwapSummary({
         </Box>
       </Box>
     )
-  }, [theme.palette.text.secondary, currencyPrice, fromAsset?.symbol, currencyRate, gasFee])
+  }, [theme.palette.text.secondary, fromVal, fromAsset?.name, toVal, toAsset?.name, gasFee])
 
   const details = useMemo(() => {
     return (

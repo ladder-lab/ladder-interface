@@ -5,6 +5,7 @@ import { Token } from '../../../constants/token/token'
 import useHttpLocations from 'hooks/useHttpLocations'
 import { WrappedTokenInfo } from 'models/tokenList'
 import tokenLogoUriList from 'assets/tokenLogoUriList.json'
+import { Token1155 } from 'constants/token/token1155'
 
 export const getTokenLogoURL = (address: string) =>
   `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`
@@ -25,6 +26,13 @@ export default function CurrencyLogo({
     if (!currency && !currencySymbol) {
       return []
     }
+
+    if (currency instanceof Token1155) {
+      if (currency.uri) {
+        return [currency.uri]
+      }
+    }
+
     if (currencySymbol) {
       const uri = (tokenLogoUriList as any)[currencySymbol]
       if (uri) return [uri]
