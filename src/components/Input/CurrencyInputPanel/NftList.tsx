@@ -8,6 +8,7 @@ import useModal from 'hooks/useModal'
 import { DEFAULT_1155_LIST } from 'constants/default1155List'
 import { useActiveWeb3React } from 'hooks'
 import { NETWORK_CHAIN_ID } from 'constants/chain'
+import { useIsDarkMode } from 'state/user/hooks'
 
 export default function NftList({ onClick }: { onClick?: (token: AllTokens) => void }) {
   const { hideModal } = useModal()
@@ -33,6 +34,7 @@ export default function NftList({ onClick }: { onClick?: (token: AllTokens) => v
 
 function NftCard({ token, onClick }: { token: Token1155; onClick: () => void }) {
   const theme = useTheme()
+  const isDarkMode = useIsDarkMode()
 
   return (
     <Box
@@ -44,12 +46,12 @@ function NftCard({ token, onClick }: { token: Token1155; onClick: () => void }) 
         padding: 8,
         alignItems: 'center',
         borderRadius: '8px',
-        background: '#F6F6F6',
+        background: isDarkMode ? '#15171A' : '#F6F6F6',
         transition: '0.5s',
         cursor: 'pointer',
         '&:hover': {
-          boxShadow: '0px 3px 10px rgba(0, 0, 0, 0.15)',
-          background: '#FFFFFF',
+          boxShadow: isDarkMode ? 'none' : '0px 3px 10px rgba(0, 0, 0, 0.15)',
+          background: isDarkMode ? '#2E3133' : '#FFFFFF',
           cursor: 'pointer'
         }
       }}
