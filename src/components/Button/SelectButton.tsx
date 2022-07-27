@@ -33,7 +33,6 @@ export default function SelectButton(props: Props) {
           padding: '0 15.67px 0 20px',
           border: '1px solid transparent',
           '&:hover': {
-            background: theme.palette.primary.main,
             border: `1px solid ${theme.palette.primary.main}`
           },
           display: 'flex',
