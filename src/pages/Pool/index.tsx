@@ -8,9 +8,8 @@ import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
 import { AllTokens } from 'models/allTokens'
 import Tag from 'components/Tag'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
-import LoadingIcon from 'assets/images/loading.png'
-import Image from 'components/Image'
 import { Dots } from 'theme/components'
+import { Loader } from 'components/AnimatedSvg/Loader'
 
 // Dummy Data
 import { ETHER } from 'constants/token'
@@ -63,7 +62,7 @@ export default function Pool() {
                   Loading
                   <Dots />
                 </Typography>
-                <Image src={LoadingIcon} />
+                <Loader size={90} />
               </Box>
             </Box>
           ) : (
