@@ -10,6 +10,9 @@ import { Trade, CurrencyAmount, TokenAmount, ETHER } from '@uniswap/sdk'
 import { computeSlippageAdjustedAmounts } from 'utils/swap/prices'
 import { ROUTER_ADDRESS } from 'constants/index'
 import { Field } from 'state/swap/actions'
+import { useApproveERC1155Callback } from './useApproveERC1155Callback'
+import { checkIs1155, filter1155 } from 'utils/checkIs1155'
+import { AllTokens } from 'models/allTokens'
 
 export enum ApprovalState {
   UNKNOWN,
@@ -104,4 +107,11 @@ export function useApproveCallbackFromTrade(trade?: Trade, allowedSlippage = 0) 
   )
 
   return useApproveCallback(amountToApprove, ROUTER_ADDRESS)
+}
+
+export function useAllTokenApproveCallback(token: AllTokens | undefined, amount?: CurrencyAmount) {
+  const is1155 = checkIs1155(token)
+  const erc20 = useApproveCallback(amount, ROUTER_ADDRESS)
+  const erc1155 = useApproveERC1155Callback(filter1155(token))
+  return is1155 ? erc1155 : erc20
 }

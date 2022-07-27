@@ -24,17 +24,6 @@ export default function Spinner({
       }}
     >
       <CircularProgress
-        variant="determinate"
-        sx={{
-          '& svg circle': {
-            stroke: '#cccccc'
-          }
-        }}
-        thickness={thickness - 1}
-        size={size}
-        value={100}
-      />
-      <CircularProgress
         variant="indeterminate"
         disableShrink
         sx={{
