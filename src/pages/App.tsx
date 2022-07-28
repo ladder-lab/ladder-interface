@@ -17,19 +17,21 @@ import darkBg from 'assets/images/dark_bg.png'
 import lightBg from 'assets/images/light_bg.png'
 import { useIsDarkMode } from 'state/user/hooks'
 
-const AppWrapper = styled('div')<{ isDarkMode: boolean }>(({ theme, isDarkMode }) => ({
-  display: 'flex',
-  alignItems: 'flex-start',
-  overflowX: 'hidden',
-  backgroundImage: `url(${isDarkMode ? darkBg : lightBg})`,
-  backgroundRepeat: 'no-repeat',
-  backgroundPosition: isDarkMode ? 'bottom' : 'top',
-  backgroundSize: isDarkMode ? '100% auto' : '100% 100%',
-  [theme.breakpoints.down('md')]: {
-    flexDirection: 'column',
-    height: '100vh'
-  }
-}))
+const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
+  ({ theme, isDarkMode }) => ({
+    display: 'flex',
+    alignItems: 'flex-start',
+    overflowX: 'hidden',
+    backgroundImage: `url(${isDarkMode ? darkBg : lightBg})`,
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: isDarkMode ? 'bottom' : 'top',
+    backgroundSize: isDarkMode ? '100% auto' : '100% 100%',
+    [theme.breakpoints.down('md')]: {
+      flexDirection: 'column',
+      height: '100vh'
+    }
+  })
+)
 
 const ContentWrapper = styled('div')({
   width: '100%',

@@ -20,8 +20,7 @@ export function SwapSummary({
   onChange,
   margin,
   gasFee,
-  expectedNftQty,
-  priceImpact,
+
   minReceiveNftQty,
   slippage,
   fromVal,
@@ -33,10 +32,9 @@ export function SwapSummary({
   onChange: () => void
   gasFee?: string
   margin: string
-  expectedNftQty: string
-  priceImpact: string
+
   minReceiveNftQty: string
-  slippage: string
+  slippage: number
   fromVal?: string
   toVal?: string
 }) {
@@ -49,7 +47,7 @@ export function SwapSummary({
         <Box display="flex" gap={14} alignItems="center">
           <InfoIcon />
           <Typography color={theme.palette.text.secondary}>
-            {fromVal} {fromAsset?.name} = {toVal} {toAsset?.name}
+            1 {fromAsset?.name} = {(+(toVal ?? 0) / +(fromVal ?? 1)).toFixed(10)} {toAsset?.name}
             {/* (${currencyRate}) */}
           </Typography>
         </Box>
@@ -73,7 +71,7 @@ export function SwapSummary({
             </Box>
 
             <Typography>
-              {expectedNftQty} <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
+              {toVal} <span style={{ color: theme.palette.text.secondary }}>{toAsset?.symbol}s</span>
             </Typography>
           </Box>
           <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -82,7 +80,7 @@ export function SwapSummary({
               {!isDownMd && <QuestionHelper text={HelperText.priceImpact} />}
             </Box>
 
-            <Typography sx={{ color: theme.palette.text.secondary }}>{priceImpact}%</Typography>
+            <Typography sx={{ color: theme.palette.text.secondary }}>{slippage}%</Typography>
           </Box>
         </Box>
         <Divider />
@@ -124,17 +122,7 @@ export function SwapSummary({
         </Box>
       </>
     )
-  }, [
-    expectedNftQty,
-    theme.palette.text.secondary,
-    priceImpact,
-    slippage,
-    minReceiveNftQty,
-    gasFee,
-    fromAsset,
-    toAsset,
-    isDownMd
-  ])
+  }, [isDownMd, toVal, theme.palette.text.secondary, slippage, minReceiveNftQty, gasFee, fromAsset, toAsset])
 
   return <Accordion summary={summary} details={details} expanded={expanded} onChange={onChange} margin={margin} />
 }
