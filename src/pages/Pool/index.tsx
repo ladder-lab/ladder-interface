@@ -74,6 +74,8 @@ export default function Pool() {
                   title="DAI/Tickets for the community #56"
                   tokenAmount="123"
                   shareAmount="456"
+                  onAdd={() => navigate(routes.addLiquidity)}
+                  onRemove={() => navigate(routes.removeLiquidity)}
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -83,6 +85,8 @@ export default function Pool() {
                   title="DAI/Tickets for the community #56"
                   tokenAmount="123"
                   shareAmount="456"
+                  onAdd={() => navigate(routes.addLiquidity)}
+                  onRemove={() => navigate(routes.removeLiquidity)}
                 />
               </Grid>
             </Grid>
@@ -114,13 +118,17 @@ function PoolCard({
   currency1,
   title,
   tokenAmount,
-  shareAmount
+  shareAmount,
+  onAdd,
+  onRemove
 }: {
   currency0: AllTokens
   currency1: AllTokens
   title: string
   tokenAmount: string
   shareAmount: string
+  onAdd: () => void
+  onRemove: () => void
 }) {
   const theme = useTheme()
 
@@ -154,7 +162,9 @@ function PoolCard({
         View accrued fees and analytics
       </ExternalLink>
       <Box display="flex" gap={8} mt={28}>
-        <Button sx={{ borderRadius: '16px', height: 44 }}>Add</Button>
+        <Button sx={{ borderRadius: '16px', height: 44 }} onClick={onAdd}>
+          Add
+        </Button>
         <Button
           sx={{
             borderRadius: '16px',
@@ -162,6 +172,7 @@ function PoolCard({
             background: theme.palette.action.disabledBackground,
             color: theme.palette.text.secondary
           }}
+          onClick={onRemove}
         >
           Remove
         </Button>
