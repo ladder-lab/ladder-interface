@@ -3,56 +3,68 @@ import Modal from 'components/Modal'
 import ActionButton from 'components/Button/ActionButton'
 import { AllTokens } from 'models/allTokens'
 import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
-import { filter1155 } from 'utils/checkIs1155'
+import { getTokenText } from 'utils/checkIs1155'
+import { TokenAmount } from '@uniswap/sdk'
+import CurrencyLogo from 'components/essential/CurrencyLogo'
 
 export default function ConfirmSupplyModal({
   onConfirm,
-  from,
-  to,
-  fromVal,
-  toVal,
+  shareOfPool,
   isOpen,
-  onDismiss
+  onDismiss,
+  liquidityMinted,
+  valA,
+  valB,
+  tokenA,
+  tokenB,
+  priceA,
+  priceB
 }: {
   onConfirm: () => void
-  from?: AllTokens
-  to?: AllTokens
-  fromVal: string
-  toVal: string
   isOpen: boolean
   onDismiss: () => void
+  liquidityMinted: TokenAmount | undefined
+  valA: string
+  valB: string
+  tokenA?: AllTokens
+  tokenB?: AllTokens
+  priceA: string
+  priceB: string
+  shareOfPool: string
 }) {
   const theme = useTheme()
+
+  const { token1Text, token2Text, token1Id, token2Id } = getTokenText(tokenA, tokenB)
 
   return (
     <Modal closeIcon customIsOpen={isOpen} customOnDismiss={onDismiss}>
       <Box padding="33px 32px">
-        <Typography fontSize={28} mb={39}>
+        <Typography fontSize={28} mb={39} fontWeight={500}>
           You will receive
         </Typography>
-        <Box display="flex" justifyContent="space-between">
+        <Box display="flex" justifyContent="space-between" alignItems={'center'}>
           <Typography fontSize={32} fontWeight={900}>
-            26.167681
+            {liquidityMinted?.toExact() ?? '-'}
           </Typography>
-          <DoubleCurrencyLogo currency0={from} currency1={to} />
+          <DoubleCurrencyLogo currency0={tokenA} currency1={tokenB} size={28} />
         </Box>
 
         <Typography fontSize={16} mt={4} mb={12}>
-          {from?.name ?? ''}
-          {filter1155(from) ? ` #${filter1155(from)?.tokenId}` : ''} / {to?.name ?? ''}
-          {filter1155(to) ? ` #${filter1155(to)?.tokenId}` : ''}
+          {token1Text ?? ''}
+          {token1Id ? `#${token1Id}` : ''} / {token2Text ?? ''}
+          {token2Id ? ` #${token2Id}` : ''}
         </Typography>
         <Typography sx={{ fontSize: 16, color: theme.palette.text.secondary, mb: 24 }}>
           Output is estimated.If the price changes by more than 5% your transaction will revert.
         </Typography>
         <AddLiquidityDetails
-          token1={from}
-          token2={to}
-          token1Val={fromVal}
-          token2Val={toVal}
-          rateToken1Token2={'22.32'}
-          rateToken2Token1={'0.0234'}
-          shareOfPool="0.2345"
+          token1={tokenA}
+          token2={tokenB}
+          token1Val={valA}
+          token2Val={valB}
+          rateToken1Token2={priceA}
+          rateToken2Token1={priceB}
+          shareOfPool={shareOfPool}
         />
         <ActionButton onAction={onConfirm} actionText="Confirm Supply" />
       </Box>
@@ -78,6 +90,7 @@ function AddLiquidityDetails({
   shareOfPool: string
 }) {
   const theme = useTheme()
+  const { token1Text, token2Text, token1Is1155 } = getTokenText(token1, token2)
 
   return (
     <Box
@@ -92,27 +105,39 @@ function AddLiquidityDetails({
     >
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center" gap={9}>
-          <Typography>{token1?.name} Deposited</Typography>
-        </Box>
-
-        <Typography>{token1Val}</Typography>
-      </Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Box display="flex" alignItems="center" gap={9}>
-          <Typography sx={{ color: theme.palette.text.secondary }}>
-            {token2?.name} <span style={{ color: theme.palette.text.primary }}>Deposited</span>
+          <Typography sx={{ color: token1Is1155 ? theme.palette.primary.main : undefined }}>
+            {token1Text} <span style={{ color: theme.palette.text.primary }}>Deposited</span>
           </Typography>
         </Box>
 
-        <Typography>{token2Val}</Typography>
+        <Typography display={'flex'} alignItems="center" gap={8}>
+          <CurrencyLogo currency={token1} size={'18px'} />
+          {token1Val}
+        </Typography>
       </Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box display="flex" alignItems="center" gap={9}>
+          <Typography sx={{ color: token1Is1155 ? undefined : theme.palette.primary.main }}>
+            {token2Text} <span style={{ color: theme.palette.text.primary }}>Deposited</span>
+          </Typography>
+        </Box>
+
+        <Typography display={'flex'} alignItems="center" gap={8}>
+          <CurrencyLogo currency={token2} size={'18px'} />
+          {token2Val}
+        </Typography>
+      </Box>
+      <Box display="flex" justifyContent="space-between" alignItems="center" margin="20px 0">
         <Box display="flex" alignItems="center" gap={9}>
           <Typography sx={{ color: theme.palette.text.secondary }}>Rates</Typography>
         </Box>
         <Box display="grid" gap={8}>
-          <Typography>1 DAI = {rateToken1Token2} Tickets for the c...</Typography>
-          <Typography>1 Tickets for the c...= {rateToken2Token1} DAI</Typography>
+          <Typography>
+            1 {token1Text} = {rateToken1Token2} {token2Text}
+          </Typography>
+          <Typography>
+            1 {token2Text} = {rateToken2Token1} {token1Text}
+          </Typography>
         </Box>
       </Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">

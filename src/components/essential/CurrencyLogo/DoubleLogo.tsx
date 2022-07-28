@@ -1,31 +1,25 @@
 import { styled } from '@mui/material'
 import CurrencyLogo from '.'
-// import { Currency } from '../../../constants/token/currency'
 import { AllTokens } from 'models/allTokens'
 
 const Wrapper = styled('div')({
   position: 'relative',
-  display: 'flex',
-  flexDirection: 'row'
+  flexDirection: 'row',
+  display: 'flex'
 })
 
 interface DoubleCurrencyLogoProps {
-  margin?: boolean
+  margin?: string
   size?: number
   currency0?: AllTokens
   currency1?: AllTokens
 }
 
-export default function DoubleCurrencyLogo({
-  currency0,
-  currency1,
-  size = 16,
-  margin = false
-}: DoubleCurrencyLogoProps) {
+export default function DoubleCurrencyLogo({ currency0, currency1, size = 24, margin }: DoubleCurrencyLogoProps) {
   return (
-    <Wrapper sx={{ marginRight: margin ? (size / 3 + 8).toString() + 'px' : undefined }}>
+    <Wrapper sx={{ marginRight: margin, width: (size * 14) / 8, height: size }}>
       {currency0 && (
-        <CurrencyLogo currency={currency0} size={size.toString() + 'px'} style={{ zIndex: 2, background: '#ffffff' }} />
+        <CurrencyLogo currency={currency0} size={size.toString() + 'px'} style={{ background: '#ffffff', zIndex: 2 }} />
       )}
       {currency1 && (
         <CurrencyLogo
@@ -34,7 +28,7 @@ export default function DoubleCurrencyLogo({
           style={{
             background: '#ffffff',
             position: 'absolute',
-            left: `${(size / 2).toString() + 'px'} !important`
+            right: 0
           }}
         />
       )}
