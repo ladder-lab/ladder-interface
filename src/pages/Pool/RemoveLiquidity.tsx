@@ -2,7 +2,7 @@ import { useState } from 'react'
 import AppBody from 'components/AppBody'
 import { useNavigate } from 'react-router-dom'
 import { routes } from 'constants/routes'
-import { Box, useTheme, Typography, Button } from '@mui/material'
+import { Box, useTheme, Typography, Button, Slider, styled } from '@mui/material'
 import Card from 'components/Card'
 import { ETHER } from 'constants/token'
 import { AllTokens } from 'models/allTokens'
@@ -13,12 +13,51 @@ import CurrencyLogo from 'components/essential/CurrencyLogo'
 import PositionCard from './PositionCard'
 
 enum Mode {
-  Simple,
-  Detailed
+  SIMPLE,
+  DETAIL
 }
 
+const StyledSlider = styled(Slider)({
+  // color: 'linear-gradient(19.49deg, #CAF400 -1.57%, #00E4DD 88.47%)',
+  height: 4,
+  '& .MuiSlider-track': {
+    border: 'none'
+  },
+  '& .MuiSlider-thumb': {
+    height: 24,
+    width: 24,
+    backgroundColor: '#fff',
+    border: '2px solid currentColor',
+    '&:focus, &:hover, &.Mui-active, &.Mui-focusVisible': {
+      boxShadow: 'inherit'
+    },
+    '&:before': {
+      display: 'none'
+    }
+  },
+  '& .MuiSlider-valueLabel': {
+    lineHeight: 1.2,
+    fontSize: 12,
+    background: 'unset',
+    padding: 0,
+    width: 32,
+    height: 32,
+    borderRadius: '50% 50% 50% 0',
+    backgroundColor: 'black',
+    transformOrigin: 'bottom left',
+    transform: 'translate(50%, -100%) rotate(-45deg) scale(0)',
+    '&:before': { display: 'none' },
+    '&.MuiSlider-valueLabelOpen': {
+      transform: 'translate(50%, -100%) rotate(-45deg) scale(1)'
+    },
+    '& > *': {
+      transform: 'rotate(45deg)'
+    }
+  }
+})
+
 export default function RemoveLiquidity() {
-  const [mode /*setMode*/] = useState(Mode.Simple)
+  const [mode /*setMode*/] = useState(Mode.DETAIL)
   const navigate = useNavigate()
   const theme = useTheme()
 
@@ -109,6 +148,7 @@ function NumericalCard({ mode }: { mode: Mode }) {
         <Typography sx={{ fontSize: 20, fontWeight: 400 }}>Remove Amount</Typography>
         <Typography sx={{ fontSize: 40, fontWeight: 900 }}>50%</Typography>
       </Box>
+      {mode === Mode.DETAIL && <StyledSlider />}
 
       <Box
         sx={{
@@ -125,7 +165,7 @@ function NumericalCard({ mode }: { mode: Mode }) {
         }}
       >
         <Typography sx={{ color: theme.palette.text.secondary }}>
-          {mode === Mode.Simple ? 'Simple' : 'Detailed'}
+          {mode === Mode.SIMPLE ? 'Simple' : 'Detailed'}
         </Typography>
       </Box>
     </Card>
