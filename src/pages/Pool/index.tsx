@@ -18,7 +18,7 @@ import { ExternalLink } from 'theme/components'
 export default function Pool() {
   const theme = useTheme()
   const navigate = useNavigate()
-  const [isLoading] = useState(true)
+  const [isLoading] = useState(false)
 
   return (
     <>
@@ -174,7 +174,7 @@ function PoolAssetCard({ currency, value }: { currency: AllTokens; value: string
   const theme = useTheme()
 
   return (
-    <Card padding="16px 20px 16px 16px">
+    <Card color={theme.palette.background.paper} padding="16px 20px 16px 16px">
       <Box display="flex" justifyContent="space-between">
         <Box display="grid" gap={8}>
           <Typography fontSize={12} fontWeight={400} color={theme.palette.text.secondary}>
