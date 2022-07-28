@@ -1,6 +1,6 @@
 export const routes = {
   swap: '/swap',
   pool: '/pool',
-  importPool: '/importPool',
+  importPool: '/import-pool',
   addLiquidity: '/add-liquidity'
 }

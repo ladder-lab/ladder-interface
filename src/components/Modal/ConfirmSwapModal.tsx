@@ -1,17 +1,17 @@
 import { useMemo } from 'react'
-import { Typography, Box, Button, useTheme, styled } from '@mui/material'
+import { Typography, Box, Button, useTheme } from '@mui/material'
 import Modal from 'components/Modal'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
-import { useIsDarkMode } from 'state/user/hooks'
 import WarningAmberIcon from '@mui/icons-material/WarningAmber'
 import QuestionHelper from 'components/essential/QuestionHelper'
 import ActionButton from 'components/Button/ActionButton'
 import { HelperText } from 'constants/helperText'
 import { AllTokens } from 'models/allTokens'
-import { currencyEquals, Trade } from '@uniswap/sdk'
-import { computeSlippageAdjustedAmounts } from 'utils/swap/prices'
+import { CurrencyAmount, currencyEquals, Trade } from '@uniswap/sdk'
 import { Field } from 'state/swap/actions'
+import Tag from 'components/Tag'
+import { checkIs1155, filter1155 } from 'utils/checkIs1155'
 
 /**
  * Returns true if the trade requires a confirmation of details before we can submit it
@@ -37,7 +37,9 @@ export default function ConfirmSwapModal({
   onAcceptChanges,
   trade,
   originalTrade,
-  allowedSlippage
+  allowedSlippage,
+  priceImpact,
+  slippageAdjustedAmounts
 }: {
   onConfirm: () => void
   from?: AllTokens
@@ -48,6 +50,11 @@ export default function ConfirmSwapModal({
   trade: Trade | undefined
   originalTrade: Trade | undefined
   allowedSlippage: number
+  priceImpact?: string
+  slippageAdjustedAmounts: {
+    INPUT?: CurrencyAmount | undefined
+    OUTPUT?: CurrencyAmount | undefined
+  }
 }) {
   const theme = useTheme()
 
@@ -56,15 +63,10 @@ export default function ConfirmSwapModal({
     [originalTrade, trade]
   )
 
-  const slippageAdjustedAmounts = useMemo(
-    () => computeSlippageAdjustedAmounts(trade, allowedSlippage),
-    [trade, allowedSlippage]
-  )
-
   return (
     <Modal closeIcon customIsOpen={isOpen} customOnDismiss={onDismiss}>
       <Box padding="33px 32px">
-        <Typography fontSize={28} mb={39}>
+        <Typography fontSize={28} mb={39} fontWeight={500}>
           Confirm Swap
         </Typography>
         <SwapPanel
@@ -82,7 +84,13 @@ export default function ConfirmSwapModal({
           Output is estimated.You will receive at least {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)}{' '}
           {to?.name} {to && 'tokenId' in to ? `# ${to.tokenId}` : ''} or the transaction will revert.
         </Typography>
-        <SwapDetails ExpectedNftQty="50" priceImpact="0.41" slippage="13.36" MinReceiveNftQty="48" NetworkFee="8.23" />
+        <SwapDetails
+          ExpectedQty={trade?.outputAmount?.toExact() ?? ''}
+          priceImpact={priceImpact ?? ''}
+          slippage={allowedSlippage / 100 + ''}
+          MinReceiveQty={slippageAdjustedAmounts.OUTPUT?.toExact() ?? ''}
+          NetworkFee="8.23"
+        />
         <ActionButton
           onAction={onConfirm}
           actionText="Confirm Swap"
@@ -104,16 +112,7 @@ function SwapPanelRow({
   approx: string
   type: string
 }) {
-  const darkMode = useIsDarkMode()
-
-  const Tag = styled(Box)({
-    borderRadius: '10px',
-    boxShadow: '0px 3px 10px rgba(0,0,0,0.15)',
-    fontSize: 12,
-    padding: '4px 12px',
-    background: darkMode ? '#484D50' : '#FFFFFF'
-  })
-
+  const is1155 = checkIs1155(asset)
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
       <Box sx={{ display: 'flex', gap: 14, position: 'relative', width: '100%', alignItems: 'center' }}>
@@ -123,9 +122,12 @@ function SwapPanelRow({
           <Typography sx={{ fontSize: 12, color: theme => theme.palette.text.secondary }}>~${approx}</Typography>
         </Box>
       </Box>
-      <Box display="flex" flexDirection="column" gap={8} alignItems="flex-end">
+      <Box display="flex" flexDirection="column" gap={8} alignItems="flex-end" width="50%">
         <Tag>{type}</Tag>
-        <Typography fontSize={20}>{asset?.symbol}</Typography>
+        <Typography fontSize={is1155 ? 16 : 20} textAlign="right">
+          {is1155 ? asset?.name : asset?.symbol}
+          {is1155 ? ` #${filter1155(asset)?.tokenId}` : ''}
+        </Typography>
       </Box>
     </Box>
   )
@@ -170,16 +172,16 @@ function PriceUpdateNotification({ onDismiss }: { onDismiss: () => void }) {
 }
 
 function SwapDetails({
-  ExpectedNftQty,
+  ExpectedQty,
   priceImpact,
   slippage,
-  MinReceiveNftQty,
+  MinReceiveQty,
   NetworkFee
 }: {
-  ExpectedNftQty: string
+  ExpectedQty: string
   priceImpact: string
   slippage: string
-  MinReceiveNftQty: string
+  MinReceiveQty: string
   NetworkFee: string
 }) {
   const theme = useTheme()
@@ -202,7 +204,7 @@ function SwapDetails({
         </Box>
 
         <Typography>
-          {ExpectedNftQty} <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
+          {ExpectedQty} <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
         </Typography>
       </Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -222,7 +224,7 @@ function SwapDetails({
         </Box>
 
         <Typography>
-          {MinReceiveNftQty} <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
+          {MinReceiveQty} <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
         </Typography>
       </Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">

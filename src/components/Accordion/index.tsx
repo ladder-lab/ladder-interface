@@ -36,7 +36,8 @@ export default function _Accordion(props: Props) {
         },
         '& .MuiAccordionSummary-content': {
           margin: 0,
-          width: '100%'
+          width: '100%',
+          cursor: disabled ? 'auto' : 'pointer'
         },
         '& .MuiAccordionSummary-expandIconWrapper': {
           ...iconCssOverride,
@@ -45,7 +46,13 @@ export default function _Accordion(props: Props) {
       }}
       expanded={expanded}
     >
-      <AccordionSummary sx={{ fontSize: { xs: 14, md: 16 } }} expandIcon={<KeyboardArrowDownIcon />}>
+      <AccordionSummary
+        sx={{
+          fontSize: { xs: 14, md: 16 },
+          userSelect: disabled ? 'none' : 'auto'
+        }}
+        expandIcon={<KeyboardArrowDownIcon />}
+      >
         {summary}
       </AccordionSummary>
       <AccordionDetails sx={{ mt: 16 }}>

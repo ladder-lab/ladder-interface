@@ -1,4 +1,4 @@
-import { MaxUint256 } from '@ethersproject/constants'
+// import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useCallback, useMemo } from 'react'
 import { useTokenAllowance } from '../data/Allowances'
@@ -13,6 +13,10 @@ import { Field } from 'state/swap/actions'
 import { useApproveERC1155Callback } from './useApproveERC1155Callback'
 import { checkIs1155, filter1155 } from 'utils/checkIs1155'
 import { AllTokens } from 'models/allTokens'
+import useModal from './useModal'
+import MessageBox from 'components/Modal/TransactionModals/MessageBox'
+import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
+import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 
 export enum ApprovalState {
   UNKNOWN,
@@ -26,6 +30,7 @@ export function useApproveCallback(
   amountToApprove?: CurrencyAmount,
   spender?: string
 ): [ApprovalState, () => Promise<void>] {
+  const { showModal, hideModal } = useModal()
   const { account } = useActiveWeb3React()
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
@@ -73,28 +78,35 @@ export function useApproveCallback(
       return
     }
 
-    let useExact = false
-    const estimatedGas = await tokenContract.estimateGas.approve(spender, MaxUint256).catch(() => {
-      // general fallback for tokens who restrict approval amounts
-      useExact = true
-      return tokenContract.estimateGas.approve(spender, amountToApprove.raw.toString())
-    })
+    // let useExact = false
+    // const estimatedGas = await tokenContract.estimateGas.approve(spender, MaxUint256).catch(() => {
+    //   // general fallback for tokens who restrict approval amounts
+    //   useExact = true
+    //   return tokenContract.estimateGas.approve(spender, amountToApprove.raw.toString())
+    // })
 
+    const estimatedGas = await tokenContract.estimateGas.approve(spender, amountToApprove.raw.toString())
+    showModal(<TransacitonPendingModal />)
     return tokenContract
-      .approve(spender, useExact ? amountToApprove.raw.toString() : MaxUint256, {
+      .approve(spender, amountToApprove.raw.toString(), {
+        // .approve(spender, useExact ? amountToApprove.raw.toString() : MaxUint256, {
         gasLimit: calculateGasMargin(estimatedGas)
       })
       .then((response: TransactionResponse) => {
+        hideModal()
+        showModal(<TransactionSubmittedModal />)
         addTransaction(response, {
           summary: 'Approve ' + amountToApprove.currency.symbol,
           approval: { tokenAddress: token.address, spender: spender }
         })
       })
       .catch((error: Error) => {
+        hideModal()
+        showModal(<MessageBox type="error">Failed to approve token</MessageBox>)
         console.debug('Failed to approve token', error)
         throw error
       })
-  }, [approvalState, token, tokenContract, amountToApprove, spender, addTransaction])
+  }, [approvalState, token, tokenContract, amountToApprove, spender, hideModal, showModal, addTransaction])
 
   return [approvalState, approve]
 }

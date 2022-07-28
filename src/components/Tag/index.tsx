@@ -14,11 +14,18 @@ export default function Tag({ children, sx }: { children: React.ReactNode; sx?: 
         fontSize: 12,
         padding: '4px 12px',
         background: darkMode ? '#484D50' : '#FFFFFF',
-        color: theme.palette.primary.main,
+        '&:before': {
+          content: `'${children}'`,
+          background: darkMode ? theme.gradient.gradient1 : theme.palette.primary.main,
+          color: 'transparent',
+          overflow: 'hidden',
+          textFillColor: 'transparent',
+          backgroundClip: 'text',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
+        },
         ...sx
       }}
-    >
-      {children}
-    </Box>
+    />
   )
 }
