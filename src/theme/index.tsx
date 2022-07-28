@@ -156,7 +156,7 @@ export const override: (palette: any) => any & {
   MuiCssBaseline: {
     styleOverrides: {
       body: {
-        backgroundColor: palette.background.default,
+        backgroundColor: palette.background.paper === '#1A1C1E' ? '#000000' : '#FFF6F6',
         fontSize: 16,
         overflow: 'auto!important',
         paddingRight: '0px!important'

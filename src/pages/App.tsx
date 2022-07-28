@@ -13,11 +13,18 @@ import Swap from './Swap'
 import Pool from './Pool'
 import AddLiquidity from './Pool/AddLiquidity'
 import ImportPool from './Pool/ImportPool'
+import darkBg from 'assets/images/dark_bg.png'
+import lightBg from 'assets/images/light_bg.png'
+import { useIsDarkMode } from 'state/user/hooks'
 
-const AppWrapper = styled('div')(({ theme }) => ({
+const AppWrapper = styled('div')<{ isDarkMode: boolean }>(({ theme, isDarkMode }) => ({
   display: 'flex',
   alignItems: 'flex-start',
   overflowX: 'hidden',
+  backgroundImage: `url(${isDarkMode ? darkBg : lightBg})`,
+  backgroundRepeat: 'no-repeat',
+  backgroundPosition: isDarkMode ? 'bottom' : 'top',
+  backgroundSize: isDarkMode ? '100% auto' : '100% 100%',
   [theme.breakpoints.down('md')]: {
     flexDirection: 'column',
     height: '100vh'
@@ -50,10 +57,11 @@ const BodyWrapper = styled('div')(({ theme }) => ({
 }))
 
 export default function App() {
+  const isDarkMode = useIsDarkMode()
   return (
     <Suspense fallback={null}>
       <ModalProvider>
-        <AppWrapper id="app">
+        <AppWrapper id="app" isDarkMode={isDarkMode}>
           <ContentWrapper>
             <Header />
             <BodyWrapper id="body">

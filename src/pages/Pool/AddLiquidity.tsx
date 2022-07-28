@@ -22,6 +22,8 @@ import ConfirmSupplyModal from 'components/Modal/ConfirmSupplyModal'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/mint/hooks'
 import { usePoolCallback } from 'hooks/usePoolCallback'
 import { checkIs1155 } from 'utils/checkIs1155'
+import { ONE_BIPS } from 'constants/index'
+import { PairState } from 'data/Reserves'
 
 export default function AddLiquidy() {
   const [currencyA, setCurrencyA] = useState<undefined | AllTokens>(undefined)
@@ -39,13 +41,13 @@ export default function AddLiquidy() {
     dependentField,
     currencies,
     // pair,
-    // pairState,
+    pairState,
     currencyBalances,
     parsedAmounts,
-    // price,
+    price,
     noLiquidity,
     // liquidityMinted,
-    // poolTokenPercentage,
+    poolTokenPercentage,
     error
   } = useDerivedMintInfo(currencyA, currencyB)
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
@@ -171,8 +173,23 @@ export default function AddLiquidy() {
           </Box>
           {currencyB && <AssetAccordion token={currencyB} />}
 
-          <PriceAndPoolShare />
-          <Box>
+          {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
+            <>
+              <PriceAndPoolShare
+                data={{
+                  [`${currencyA?.name} per ${currencyB?.name}`]: '2344887737787377',
+                  [`${currencyB?.name} per ${currencyA?.name}`]: '0.2344887737787377',
+                  ['Share of pool']: ` ${
+                    noLiquidity && price
+                      ? '100'
+                      : (poolTokenPercentage?.lessThan(ONE_BIPS) ? '<0.01' : poolTokenPercentage?.toFixed(2)) ?? '0'
+                  }
+                      %`
+                }}
+              />
+            </>
+          )}
+          <Box mt={40}>
             {!account ? (
               <Button onClick={toggleWallet}>Connect Wallet</Button>
             ) : (
@@ -233,16 +250,14 @@ function Tips() {
   )
 }
 
-function PriceAndPoolShare() {
+function PriceAndPoolShare({ data }: { data: object }) {
   const theme = useTheme()
-  const data = {
-    ['Tickets for the co...per DAI']: '2344887737787377',
-    ['DAI per Tickets for the co...']: '0.2344887737787377',
-    ['Share of pool']: '5.00 %'
-  }
+
   return (
-    <Card gray style={{ margin: '20px 0 40px', padding: '16px 20px' }}>
-      <Typography sx={{ fontSize: 20, mb: 12 }}>Prices and pool share</Typography>
+    <Card gray style={{ margin: '20px 0 0px', padding: '16px 20px' }}>
+      <Typography sx={{ fontSize: 20, mb: 12 }} fontWeight={500}>
+        Prices and pool share
+      </Typography>
       <Box sx={{ display: 'grid', gap: 12 }}>
         {Object.keys(data).map((key, idx) => (
           <Box key={idx} display="flex" justifyContent="space-between">
