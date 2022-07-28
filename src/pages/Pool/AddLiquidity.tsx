@@ -16,50 +16,50 @@ import { Field } from 'state/mint/actions'
 import { ApprovalState, useAllTokenApproveCallback } from 'hooks/useApproveCallback'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import Card from 'components/Card'
-// import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
-// import useModal from 'hooks/useModal'
+import useModal from 'hooks/useModal'
 import ConfirmSupplyModal from 'components/Modal/ConfirmSupplyModal'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/mint/hooks'
 import { usePoolCallback } from 'hooks/usePoolCallback'
 import { checkIs1155 } from 'utils/checkIs1155'
 import { ONE_BIPS } from 'constants/index'
 import { PairState } from 'data/Reserves'
+import MessageBox from 'components/Modal/TransactionModals/MessageBox'
+import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
+import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
+import { useTransactionAdder } from 'state/transactions/hooks'
 
 export default function AddLiquidy() {
   const [currencyA, setCurrencyA] = useState<undefined | AllTokens>(undefined)
   const [currencyB, setCurrencyB] = useState<undefined | AllTokens>(undefined)
+  const [showConfirm, setShowConfirm] = useState<boolean>(false)
 
   const { account } = useActiveWeb3React()
   const navigate = useNavigate()
-  // const { showModal } = useModal()
+  const { showModal, hideModal } = useModal()
   const toggleWallet = useWalletModalToggle()
   const expertMode = useIsExpertMode()
-  const { addLiquidityCb } = usePoolCallback(currencyA, currencyB)
+  const addTransaction = useTransactionAdder()
 
+  const { addLiquidityCb } = usePoolCallback(currencyA, currencyB)
   const { independentField, typedValue, otherTypedValue } = useMintState()
   const {
     dependentField,
     currencies,
-    // pair,
+    pair,
     pairState,
     currencyBalances,
     parsedAmounts,
     price,
     noLiquidity,
-    // liquidityMinted,
+    liquidityMinted,
     poolTokenPercentage,
     error
   } = useDerivedMintInfo(currencyA, currencyB)
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
-
-  const isValid = !error
-
-  // modal and loading
-  const [showConfirm, setShowConfirm] = useState<boolean>(false)
-
-  // txn values
-
-  // const [txHash, setTxHash] = useState<string>('')
+  const shareOfPool =
+    noLiquidity && price
+      ? '100'
+      : (poolTokenPercentage?.lessThan(ONE_BIPS) ? '<0.01' : poolTokenPercentage?.toFixed(2)) ?? '0'
 
   // get formatted amounts
   const formattedAmounts = {
@@ -90,9 +90,40 @@ export default function AddLiquidy() {
     onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
   }, [maxAmounts, onFieldBInput])
 
+  const handleAddCb = useCallback(() => {
+    setShowConfirm(false)
+    showModal(<TransacitonPendingModal />)
+    onFieldAInput('')
+    addLiquidityCb()
+      .then(response => {
+        hideModal()
+        showModal(<TransactionSubmittedModal />)
+        if (!response) return
+        addTransaction(response, {
+          summary:
+            'Add ' +
+            parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
+            ' ' +
+            currencies[Field.CURRENCY_A]?.symbol +
+            ' and ' +
+            parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
+            ' ' +
+            currencies[Field.CURRENCY_B]?.symbol
+        })
+      })
+      .catch(error => {
+        hideModal()
+        // error than the user rejected the tx
+        if (error?.code !== 4001) {
+          console.error(error)
+          showModal(<MessageBox type="error">{error.message}</MessageBox>)
+        }
+      })
+  }, [addLiquidityCb, addTransaction, currencies, hideModal, onFieldAInput, parsedAmounts, showModal])
+
   const handleAdd = useCallback(() => {
-    expertMode ? addLiquidityCb() : setShowConfirm(true)
-  }, [addLiquidityCb, expertMode])
+    expertMode ? handleAddCb() : setShowConfirm(true)
+  }, [expertMode, handleAddCb])
 
   const handleAssetAVal = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -118,23 +149,22 @@ export default function AddLiquidy() {
 
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false)
-    // if there was a tx hash, we want to clear the input
-    // if (txHash) {
-    //   onFieldAInput('')
-    // }
-    // setTxHash('')
   }, [])
 
   return (
     <>
       <ConfirmSupplyModal
-        onConfirm={addLiquidityCb}
-        from={currencyA}
-        to={currencyB}
-        fromVal={formattedAmounts[Field.CURRENCY_A]}
-        toVal={formattedAmounts[Field.CURRENCY_B]}
+        liquidityMinted={liquidityMinted}
+        onConfirm={handleAddCb}
+        tokenA={currencyA}
+        tokenB={currencyB}
+        priceA={pair?.token0Price?.toFixed() ?? ''}
+        priceB={pair?.token1Price?.toFixed() ?? ''}
+        valA={formattedAmounts[Field.CURRENCY_A]}
+        valB={formattedAmounts[Field.CURRENCY_B]}
         isOpen={showConfirm}
         onDismiss={handleDismissConfirmation}
+        shareOfPool={shareOfPool}
       />
 
       <AppBody
@@ -177,13 +207,9 @@ export default function AddLiquidy() {
             <>
               <PriceAndPoolShare
                 data={{
-                  [`${currencyA?.name} per ${currencyB?.name}`]: '2344887737787377',
-                  [`${currencyB?.name} per ${currencyA?.name}`]: '0.2344887737787377',
-                  ['Share of pool']: ` ${
-                    noLiquidity && price
-                      ? '100'
-                      : (poolTokenPercentage?.lessThan(ONE_BIPS) ? '<0.01' : poolTokenPercentage?.toFixed(2)) ?? '0'
-                  }
+                  [`${currencyA?.name} per ${currencyB?.name}`]: pair?.token0Price?.toFixed() ?? '',
+                  [`${currencyB?.name} per ${currencyA?.name}`]: pair?.token1Price?.toFixed() ?? '',
+                  ['Share of pool']: ` ${shareOfPool}
                       %`
                 }}
               />
@@ -198,7 +224,7 @@ export default function AddLiquidy() {
                   approvalA === ApprovalState.PENDING ||
                   approvalB === ApprovalState.NOT_APPROVED ||
                   approvalB === ApprovalState.PENDING) &&
-                  isValid && (
+                  !error && (
                     <Box display="flex" gap={16}>
                       {approvalA !== ApprovalState.APPROVED && (
                         <ActionButton
@@ -222,7 +248,7 @@ export default function AddLiquidy() {
                   )}
                 <Button
                   onClick={handleAdd}
-                  disabled={!isValid || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED}
+                  disabled={!!error || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED}
                 >
                   {error ?? 'Supply'}
                 </Button>

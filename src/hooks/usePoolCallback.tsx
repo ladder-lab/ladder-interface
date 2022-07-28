@@ -1,17 +1,12 @@
 import { TransactionResponse } from '@ethersproject/providers'
 import { ETHER } from '@uniswap/sdk'
-import MessageBox from 'components/Modal/TransactionModals/MessageBox'
-import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
-import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import { BigNumber } from 'ethers'
 import { useActiveWeb3React } from 'hooks'
-import useModal from 'hooks/useModal'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
 import { AllTokens } from 'models/allTokens'
 import { useCallback, useMemo } from 'react'
 import { Field } from 'state/mint/actions'
 import { useDerivedMintInfo } from 'state/mint/hooks'
-import { useTransactionAdder } from 'state/transactions/hooks'
 import { useUserSlippageTolerance } from 'state/user/hooks'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'utils'
 import { checkIs1155, filter1155 } from 'utils/checkIs1155'
@@ -19,15 +14,14 @@ import { wrappedCurrency } from 'utils/wrappedCurrency'
 
 export function usePoolCallback(currencyA: AllTokens | undefined, currencyB: AllTokens | undefined) {
   const { chainId, library, account } = useActiveWeb3React()
-  const { showModal, hideModal } = useModal()
-  const addTransaction = useTransactionAdder()
-  const { currencies, parsedAmounts, noLiquidity } = useDerivedMintInfo(currencyA, currencyB)
+
+  const { parsedAmounts, noLiquidity } = useDerivedMintInfo(currencyA, currencyB)
   const [allowedSlippage] = useUserSlippageTolerance()
   const deadline = useTransactionDeadline()
 
   const addLiquidityCb = useCallback(async () => {
     if (!chainId || !library || !account) return
-    showModal(<TransacitonPendingModal />)
+
     const router = getRouterContract(chainId, library, account)
 
     const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts
@@ -77,53 +71,13 @@ export function usePoolCallback(currencyA: AllTokens | undefined, currencyB: All
       ]
       value = null
     }
+    const estimatedGasLimit = await estimate(...args, value ? { value } : {})
 
-    await estimate(...args, value ? { value } : {})
-      .then(estimatedGasLimit =>
-        method(...args, {
-          ...(value ? { value } : {}),
-          gasLimit: calculateGasMargin(estimatedGasLimit)
-        }).then(response => {
-          hideModal()
-          showModal(<TransactionSubmittedModal />)
-          addTransaction(response, {
-            summary:
-              'Add ' +
-              parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
-              ' ' +
-              currencies[Field.CURRENCY_A]?.symbol +
-              ' and ' +
-              parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
-              ' ' +
-              currencies[Field.CURRENCY_B]?.symbol
-          })
-
-          // setTxHash(response.hash)
-        })
-      )
-      .catch(error => {
-        hideModal()
-        // we only care if the error is something _other_ than the user rejected the tx
-        if (error?.code !== 4001) {
-          console.error(error)
-          showModal(<MessageBox type="error">{error.message}</MessageBox>)
-        }
-      })
-  }, [
-    account,
-    addTransaction,
-    allowedSlippage,
-    chainId,
-    currencies,
-    currencyA,
-    currencyB,
-    deadline,
-    hideModal,
-    library,
-    noLiquidity,
-    parsedAmounts,
-    showModal
-  ])
+    return method(...args, {
+      ...(value ? { value } : {}),
+      gasLimit: calculateGasMargin(estimatedGasLimit)
+    })
+  }, [account, allowedSlippage, chainId, currencyA, currencyB, deadline, library, noLiquidity, parsedAmounts])
 
   return useMemo(
     () => ({
