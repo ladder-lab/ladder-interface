@@ -24,7 +24,7 @@ export default function Card({
       sx={{
         background: theme =>
           primary ? theme.gradient.gradient1 : gray ? theme.palette.background.default : color ?? '#ffffff',
-        borderRadius: '8px',
+        borderRadius: '12px',
         boxShadow: 'none',
         padding,
         width,

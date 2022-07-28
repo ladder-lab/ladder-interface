@@ -1,6 +1,6 @@
 import { useCallback, useState, ChangeEvent, useMemo, useEffect } from 'react'
 import { routes } from 'constants/routes'
-import { Box } from '@mui/material'
+import { Box, useTheme, Typography } from '@mui/material'
 import { CurrencyAmount } from '@uniswap/sdk'
 import AppBody from 'components/AppBody'
 import { ReactComponent as ArrowCircle } from 'assets/svg/arrow_circle.svg'
@@ -18,6 +18,7 @@ import PosittionCard from './PositionCard'
 
 export default function ImportPool() {
   const navigate = useNavigate()
+  const theme = useTheme()
 
   const [allowedSlippage] = useUserSlippageTolerance()
   const { independentField, typedValue } = useSwapState()
@@ -148,8 +149,14 @@ export default function ImportPool() {
             />
           </Box>
           {toAsset && <AssetAccordion token={toAsset} />}
-
-          <PosittionCard from={fromAsset} to={toAsset} price="25.1676" error={error} />
+          {!error && (
+            <Typography sx={{ textAlign: 'center', mt: 20, mb: 8, color: theme.palette.text.secondary }}>
+              Pool Found!
+            </Typography>
+          )}
+          <Box mt={error ? 40 : 0}>
+            <PosittionCard from={fromAsset} to={toAsset} price="25.1676" error={error} color="#F6F6F6" />
+          </Box>
         </Box>
       </AppBody>
     </>
