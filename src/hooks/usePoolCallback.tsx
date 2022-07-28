@@ -14,6 +14,7 @@ import { useDerivedMintInfo } from 'state/mint/hooks'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useUserSlippageTolerance } from 'state/user/hooks'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'utils'
+import { checkIs1155, filter1155 } from 'utils/checkIs1155'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
 
 export function usePoolCallback(currencyA: AllTokens | undefined, currencyB: AllTokens | undefined) {
@@ -45,10 +46,11 @@ export function usePoolCallback(currencyA: AllTokens | undefined, currencyB: All
       value: BigNumber | null
     if (currencyA === ETHER || currencyB === ETHER) {
       const tokenBIsETH = currencyB === ETHER
-      estimate = router.estimateGas.addLiquidityETH
-      method = router.addLiquidityETH
+      estimate = router.estimateGas.addLiquidityETH1155
+      method = router.addLiquidityETH1155
       args = [
         wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', // token
+        tokenBIsETH ? filter1155(currencyA)?.tokenId ?? '' : filter1155(currencyB)?.tokenId ?? '', //tokenId
         (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
         amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
         amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // eth min
@@ -57,15 +59,19 @@ export function usePoolCallback(currencyA: AllTokens | undefined, currencyB: All
       ]
       value = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString())
     } else {
-      estimate = router.estimateGas.addLiquidity
-      method = router.addLiquidity
+      const tokenAIs1155 = checkIs1155(currencyA)
+      const token1155 = filter1155(tokenAIs1155 ? currencyA : currencyB)
+      const token = tokenAIs1155 ? currencyB : currencyA
+      estimate = router.estimateGas.addLiquidity1155
+      method = router.addLiquidity1155
       args = [
-        wrappedCurrency(currencyA, chainId)?.address ?? '',
-        wrappedCurrency(currencyB, chainId)?.address ?? '',
-        parsedAmountA.raw.toString(),
-        parsedAmountB.raw.toString(),
-        amountsMin[Field.CURRENCY_A].toString(),
-        amountsMin[Field.CURRENCY_B].toString(),
+        token1155?.address ?? '',
+        token1155?.tokenId ?? '',
+        wrappedCurrency(token, chainId)?.address ?? '',
+        (tokenAIs1155 ? parsedAmountA : parsedAmountB).raw.toString(),
+        (tokenAIs1155 ? parsedAmountB : parsedAmountA).raw.toString(),
+        amountsMin[tokenAIs1155 ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
+        amountsMin[tokenAIs1155 ? Field.CURRENCY_B : Field.CURRENCY_A].toString(),
         account,
         deadline.toHexString()
       ]
