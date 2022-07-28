@@ -16,6 +16,7 @@ import ImportPool from './Pool/ImportPool'
 import darkBg from 'assets/images/dark_bg.png'
 import lightBg from 'assets/images/light_bg.png'
 import { useIsDarkMode } from 'state/user/hooks'
+import RemoveLiquidity from './Pool/RemoveLiquidity'
 
 const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
   ({ theme, isDarkMode }) => ({
@@ -76,6 +77,7 @@ export default function App() {
                   <Route path={routes.pool} element={<Pool />} />
                   <Route path={routes.importPool} element={<ImportPool />} />
                   <Route path={routes.addLiquidity} element={<AddLiquidity />} />
+                  <Route path={routes.removeLiquidity} element={<RemoveLiquidity />} />
                   <Route path="/" element={<ComingSoon />} />
                 </Routes>
               </Web3ReactManager>
