@@ -8,12 +8,14 @@ export default function PosittionCard({
   from,
   to,
   price,
-  error
+  error,
+  color
 }: {
   from?: AllTokens
   to?: AllTokens
   price?: string
   error?: string
+  color?: string
 }) {
   const theme = useTheme()
   const data = {
@@ -23,13 +25,9 @@ export default function PosittionCard({
   }
   return (
     <>
-      {!error && (
-        <Typography sx={{ textAlign: 'center', mt: 20, color: theme.palette.text.secondary }}>Pool Found!</Typography>
-      )}
       <Card
-        color={error ? theme.palette.action.disabledBackground : theme.palette.background.default}
+        color={error ? theme.palette.action.disabledBackground : color ? color : theme.palette.background.paper}
         style={{
-          margin: error ? '20px 0 40px' : '8px 0 40px',
           padding: '16px 20px',
           minHeight: 200,
           display: 'flex',
