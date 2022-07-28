@@ -15,6 +15,13 @@
 @font-face {
   font-family: 'Lato';
   font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: local('Lato Regular'), url('../fonts/Lato-Medium.ttf');
+}
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
   font-weight: 700;
   font-display: swap;
   src: local('Lato Bold'), url('../fonts/Lato-Bold.ttf');

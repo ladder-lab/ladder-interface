@@ -282,21 +282,21 @@ export default function Swap() {
             />
           </Box>
           {toAsset && <AssetAccordion token={toAsset} />}
-          <SwapSummary
-            fromAsset={fromAsset ?? undefined}
-            toAsset={toAsset ?? undefined}
-            toVal={formattedAmounts[Field.OUTPUT]}
-            fromVal={formattedAmounts[Field.INPUT]}
-            expanded={summaryExpanded}
-            onChange={() => setSummaryExpanded(!summaryExpanded)}
-            margin="20px 0 40px"
-            gasFee="8.23"
-            expectedNftQty={'50'}
-            priceImpact={'0.41'}
-            minReceiveNftQty={'48'}
-            slippage="13.68"
-          />
-          <Box>
+          {isValid && !swapCallbackError && (
+            <SwapSummary
+              fromAsset={fromAsset ?? undefined}
+              toAsset={toAsset ?? undefined}
+              toVal={formattedAmounts[Field.OUTPUT]}
+              fromVal={formattedAmounts[Field.INPUT]}
+              expanded={summaryExpanded}
+              onChange={() => setSummaryExpanded(!summaryExpanded)}
+              margin="20px 0 0"
+              gasFee="8.23"
+              slippage={allowedSlippage / 100}
+              minReceiveNftQty={'48'}
+            />
+          )}
+          <Box mt={40}>
             {!account ? (
               <Button onClick={toggleWallet}>Connect Wallet</Button>
             ) : showWrap ? (

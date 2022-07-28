@@ -3,6 +3,7 @@ import Modal from 'components/Modal'
 import ActionButton from 'components/Button/ActionButton'
 import { AllTokens } from 'models/allTokens'
 import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
+import { filter1155 } from 'utils/checkIs1155'
 
 export default function ConfirmSupplyModal({
   onConfirm,
@@ -37,7 +38,9 @@ export default function ConfirmSupplyModal({
         </Box>
 
         <Typography fontSize={16} mt={4} mb={12}>
-          DAI/Tickets for the community #56
+          {from?.name ?? ''}
+          {filter1155(from) ? ` #${filter1155(from)?.tokenId}` : ''} / {to?.name ?? ''}
+          {filter1155(to) ? ` #${filter1155(to)?.tokenId}` : ''}
         </Typography>
         <Typography sx={{ fontSize: 16, color: theme.palette.text.secondary, mb: 24 }}>
           Output is estimated.If the price changes by more than 5% your transaction will revert.
