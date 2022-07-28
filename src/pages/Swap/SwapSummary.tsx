@@ -20,10 +20,9 @@ export function SwapSummary({
   onChange,
   margin,
   gasFee,
-
-  minReceiveNftQty,
+  price,
+  minReceiveQty,
   slippage,
-  fromVal,
   toVal
 }: {
   fromAsset?: AllTokens
@@ -32,11 +31,10 @@ export function SwapSummary({
   onChange: () => void
   gasFee?: string
   margin: string
-
-  minReceiveNftQty: string
+  minReceiveQty: string
   slippage: number
-  fromVal?: string
   toVal?: string
+  price?: string
 }) {
   const theme = useTheme()
   const isDownMd = useBreakpoint('md')
@@ -47,7 +45,7 @@ export function SwapSummary({
         <Box display="flex" gap={14} alignItems="center">
           <InfoIcon />
           <Typography color={theme.palette.text.secondary}>
-            1 {fromAsset?.name} = {(+(toVal ?? 0) / +(fromVal ?? 1)).toFixed(10)} {toAsset?.name}
+            1 {fromAsset?.name} = {price} {toAsset?.name}
             {/* (${currencyRate}) */}
           </Typography>
         </Box>
@@ -58,7 +56,7 @@ export function SwapSummary({
         </Box>
       </Box>
     )
-  }, [theme.palette.text.secondary, fromVal, fromAsset?.name, toVal, toAsset?.name, gasFee])
+  }, [theme.palette.text.secondary, fromAsset?.name, price, toAsset?.name, gasFee])
 
   const details = useMemo(() => {
     return (
@@ -92,7 +90,7 @@ export function SwapSummary({
             </Box>
 
             <Typography>
-              {minReceiveNftQty} <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
+              {minReceiveQty} <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
             </Typography>
           </Box>
           <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -122,7 +120,7 @@ export function SwapSummary({
         </Box>
       </>
     )
-  }, [isDownMd, toVal, theme.palette.text.secondary, slippage, minReceiveNftQty, gasFee, fromAsset, toAsset])
+  }, [isDownMd, toVal, theme.palette.text.secondary, toAsset, slippage, minReceiveQty, gasFee, fromAsset])
 
   return <Accordion summary={summary} details={details} expanded={expanded} onChange={onChange} margin={margin} />
 }

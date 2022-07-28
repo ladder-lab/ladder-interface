@@ -19,7 +19,7 @@ import { Field } from 'state/swap/actions'
 import { ApprovalState, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { useSwapCallback } from 'hooks/useSwapCallback'
-import { computeTradePriceBreakdown, warningSeverity } from 'utils/swap/prices'
+import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from 'utils/swap/prices'
 import confirmPriceImpactWithoutFee from 'utils/swap/confirmPriceImpactWithoutFee'
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import useModal from 'hooks/useModal'
@@ -103,13 +103,14 @@ export default function Swap() {
     } else {
       approveCallback()
     }
-    showModal(<TransacitonPendingModal />)
-  }, [approve1155Callback, approveCallback, fromAsset, showModal])
+  }, [approve1155Callback, approveCallback, fromAsset])
 
   // mark when a user has submitted an approval, reset onTokenSelection for input field
   useEffect(() => {
     if (approval === ApprovalState.PENDING || approval1155 === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
+    } else {
+      setApprovalSubmitted(false)
     }
   }, [approval, approval1155, approvalSubmitted])
 
@@ -120,6 +121,12 @@ export default function Swap() {
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
   const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
   const [singleHopOnly] = useUserSingleHopOnly()
+
+  const slippageAdjustedAmounts = useMemo(
+    () => computeSlippageAdjustedAmounts(trade, allowedSlippage),
+    [trade, allowedSlippage]
+  )
+
   const handleSwap = useCallback(() => {
     if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
       return
@@ -164,8 +171,12 @@ export default function Swap() {
     !swapInputError &&
     (approval === ApprovalState.NOT_APPROVED ||
       approval === ApprovalState.PENDING ||
-      (approvalSubmitted && approval === ApprovalState.APPROVED) ||
-      approval1155 === ApprovalState.NOT_APPROVED ||
+      (approvalSubmitted && approval === ApprovalState.APPROVED)) &&
+    !(priceImpactSeverity > 3 && !isExpertMode)
+
+  const showApproveFlow1155 =
+    !swapInputError &&
+    (approval1155 === ApprovalState.NOT_APPROVED ||
       approval1155 === ApprovalState.PENDING ||
       (approvalSubmitted && approval1155 === ApprovalState.APPROVED)) &&
     !(priceImpactSeverity > 3 && !isExpertMode)
@@ -216,6 +227,8 @@ export default function Swap() {
         originalTrade={tradeToConfirm}
         onAcceptChanges={handleAcceptChanges}
         allowedSlippage={allowedSlippage}
+        priceImpact={priceImpactWithoutFee?.toFixed()}
+        slippageAdjustedAmounts={slippageAdjustedAmounts}
       />
       <AppBody width={'100%'} maxWidth={'680px'}>
         <Box
@@ -287,13 +300,13 @@ export default function Swap() {
               fromAsset={fromAsset ?? undefined}
               toAsset={toAsset ?? undefined}
               toVal={formattedAmounts[Field.OUTPUT]}
-              fromVal={formattedAmounts[Field.INPUT]}
+              price={v2Trade?.executionPrice.toFixed() ?? '-'}
               expanded={summaryExpanded}
               onChange={() => setSummaryExpanded(!summaryExpanded)}
               margin="20px 0 0"
               gasFee="8.23"
               slippage={allowedSlippage / 100}
-              minReceiveNftQty={'48'}
+              minReceiveQty={slippageAdjustedAmounts.OUTPUT?.toExact() ?? '-'}
             />
           )}
           <Box mt={40}>
@@ -311,7 +324,7 @@ export default function Swap() {
               </Button>
             ) : (
               <Box display="grid" gap="16px">
-                {showApproveFlow && (
+                {checkIs1155(currencies[Field.INPUT]) && showApproveFlow1155 && (
                   <ActionButton
                     onAction={handleApprove}
                     actionText={
@@ -320,11 +333,22 @@ export default function Swap() {
                         : `Allow the Ladder to use your ${currencies[Field.INPUT]?.symbol}`
                     }
                     error={error}
-                    disableAction={
-                      (approval !== ApprovalState.NOT_APPROVED && approval1155 !== ApprovalState.NOT_APPROVED) ||
-                      approvalSubmitted
+                    disableAction={approval1155 !== ApprovalState.NOT_APPROVED || approvalSubmitted}
+                    pending={approval1155 === ApprovalState.PENDING}
+                    pendingText="Approving"
+                  />
+                )}
+                {!checkIs1155(currencies[Field.INPUT]) && showApproveFlow && (
+                  <ActionButton
+                    onAction={handleApprove}
+                    actionText={
+                      approvalSubmitted && approval === ApprovalState.APPROVED
+                        ? 'Approved'
+                        : `Allow the Ladder to use your ${currencies[Field.INPUT]?.symbol}`
                     }
-                    pending={approval === ApprovalState.PENDING || approval1155 === ApprovalState.PENDING}
+                    error={error}
+                    disableAction={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
+                    pending={approval === ApprovalState.PENDING}
                     pendingText="Approving"
                   />
                 )}
