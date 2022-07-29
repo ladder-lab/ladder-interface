@@ -96,8 +96,8 @@ function RemoveLiquidityDetails({
         <Typography fontSize={16} fontWeight={500}>
           LP {token1?.symbol}: <span style={{ color: theme.palette.text.secondary }}>{token2?.symbol}...</span> Burned
         </Typography>
-        <Box display="flex" gap={8}>
-          <DoubleCurrencyLogo currency0={token1} currency1={token2} />
+        <Box display="flex" gap={8} alignItems="center">
+          <DoubleCurrencyLogo currency0={token1} currency1={token2} size={18} />
           <Typography fontSize={16} fontWeight={500}>
             {lpValue}
           </Typography>
