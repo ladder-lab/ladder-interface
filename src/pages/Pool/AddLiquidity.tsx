@@ -207,8 +207,8 @@ export default function AddLiquidy() {
             <>
               <PriceAndPoolShare
                 data={{
-                  [`${currencyA?.name} per ${currencyB?.name}`]: pair?.token0Price?.toFixed() ?? '',
-                  [`${currencyB?.name} per ${currencyA?.name}`]: pair?.token1Price?.toFixed() ?? '',
+                  [`${currencyA?.name} per ${currencyB?.name}`]: pair?.token0Price?.toFixed() ?? '-',
+                  [`${currencyB?.name} per ${currencyA?.name}`]: pair?.token1Price?.toFixed() ?? '-',
                   ['Share of pool']: ` ${shareOfPool}
                       %`
                 }}
