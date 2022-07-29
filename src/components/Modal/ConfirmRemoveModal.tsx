@@ -46,7 +46,7 @@ export default function ConfirmRemoveModal({
             70
           </Typography>
           <Typography fontSize={20} fontWeight={400}>
-            Tickets for  the community #56
+            Tickets for the community #56
           </Typography>
         </Box>
 
@@ -93,21 +93,25 @@ function RemoveLiquidityDetails({
       }}
     >
       <Box display="flex" justifyContent="space-between">
-        <Typography>
+        <Typography fontSize={16} fontWeight={500}>
           LP {token1?.symbol}: <span style={{ color: theme.palette.text.secondary }}>{token2?.symbol}...</span> Burned
         </Typography>
         <Box display="flex" gap={8}>
           <DoubleCurrencyLogo currency0={token1} currency1={token2} />
-          <Typography>{lpValue}</Typography>
+          <Typography fontSize={16} fontWeight={500}>
+            {lpValue}
+          </Typography>
         </Box>
       </Box>
       <Box display="flex" justifyContent="space-between">
-        <Typography>Price</Typography>
+        <Typography fontSize={16} fontWeight={500}>
+          Price
+        </Typography>
         <Box display="grid" gap={8}>
-          <Typography>
+          <Typography fontSize={16} fontWeight={400}>
             1 DAI = {rateToken1Token2} <span style={{ color: theme.palette.text.secondary }}>Tickets for the c...</span>
           </Typography>
-          <Typography>
+          <Typography fontSize={16} fontWeight={400}>
             1 <span style={{ color: theme.palette.text.secondary }}>Tickets for the c...</span>= {rateToken2Token1} DAI
           </Typography>
         </Box>
