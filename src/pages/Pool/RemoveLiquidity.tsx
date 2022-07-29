@@ -11,7 +11,6 @@ import { ReactComponent as ArrowCircle } from 'assets/svg/arrow_circle.svg'
 import { ReactComponent as AddCircle } from 'assets/svg/add_circle.svg'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import PositionCard from './PositionCard'
-import ConfirmRemoveModal from 'components/Modal/ConfirmRemoveModal'
 
 enum Mode {
   SIMPLE,
@@ -22,20 +21,9 @@ export default function RemoveLiquidity() {
   const [mode /*setMode*/] = useState(Mode.DETAIL)
   const navigate = useNavigate()
   const theme = useTheme()
-  const [showConfirm, setShowConfirm] = useState<boolean>(false)
 
   return (
     <>
-      <ConfirmRemoveModal
-        onConfirm={() => {}}
-        tokenA={ETHER}
-        tokenB={ETHER}
-        priceA={'123'}
-        priceB={'123'}
-        val={'123'}
-        isOpen={showConfirm}
-        onDismiss={() => setShowConfirm(false)}
-      />
       <AppBody
         width={'100%'}
         maxWidth={'680px'}
