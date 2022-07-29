@@ -151,3 +151,29 @@ export function useToken1155Balance(token?: Token1155 | null | undefined) {
 
   return token && balance.result ? new TokenAmount(token, balance.result[0]?.toString()) : undefined
 }
+
+export function useTokenTotalSupplies(tokens?: (Token | undefined)[]): {
+  [tokenAddress: string]: TokenAmount | undefined
+} {
+  const validatedTokens: Token[] = useMemo(
+    () => tokens?.filter((t?: Token): t is Token => isAddress(t?.address) !== false) ?? [],
+    [tokens]
+  )
+
+  const validatedTokenAddresses = useMemo(() => validatedTokens.map(vt => vt.address), [validatedTokens])
+
+  const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'totalSupply')
+
+  return useMemo(() => {
+    return validatedTokens.length > 0
+      ? validatedTokens.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, token, i) => {
+          const value = balances?.[i]?.result?.[0]
+          const amount = value ? JSBI.BigInt(value.toString()) : undefined
+          if (amount) {
+            memo[token.address] = new TokenAmount(token, amount)
+          }
+          return memo
+        }, {})
+      : {}
+  }, [validatedTokens, balances])
+}

@@ -1,9 +1,8 @@
-import { Percent, JSBI, WETH, ChainId } from '@uniswap/sdk'
+import { Percent, JSBI, WETH, ChainId, Token } from '@uniswap/sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { generateErc20 } from 'utils/getHashAddress'
 import { fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
 import { DEFAULT_1155_LIST } from './default1155List'
-import { Token } from './token'
 
 type ChainTokenList = {
   readonly [chainId in ChainId]: Token[]
@@ -60,7 +59,7 @@ export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } 
     [
       new Token(ChainId.RINKEBY, '0xD64b11169B87030EB5647Add8265d2F1D30cF2e6', 18, 'TEST', 'Test Coin'),
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      generateErc20(DEFAULT_1155_LIST[4]![0])!
+      DEFAULT_1155_LIST[4]![0]!
     ]
     // [USDC, USDT],
     // [DAI, USDT]

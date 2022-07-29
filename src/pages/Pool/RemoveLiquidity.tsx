@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import AppBody from 'components/AppBody'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { routes } from 'constants/routes'
 import { Box, useTheme, Typography, Button, Slider, styled, ButtonBase } from '@mui/material'
 import Card from 'components/Card'
@@ -21,6 +21,9 @@ export default function RemoveLiquidity() {
   const [mode /*setMode*/] = useState(Mode.DETAIL)
   const navigate = useNavigate()
   const theme = useTheme()
+  const { address0, address1, tokenIds } = useParams()
+  const [tokenId1, tokenId2] = tokenIds?.split('&') ?? ['', '']
+  console.log(address0, address1, tokenId1, tokenId2)
 
   return (
     <>

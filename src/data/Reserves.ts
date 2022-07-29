@@ -5,6 +5,7 @@ import { Interface } from '@ethersproject/abi'
 import { useActiveWeb3React } from '../hooks'
 import { useMultipleContractSingleData } from '../state/multicall/hooks'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
+import { generateErc20 } from 'utils/getHashAddress'
 
 const PAIR_INTERFACE = new Interface(IUniswapV2PairABI.abi)
 
@@ -20,10 +21,9 @@ export function usePairs(currencies: [Currency | undefined, Currency | undefined
 
   const tokens = useMemo(
     () =>
-      currencies.map(([currencyA, currencyB]) => [
-        wrappedCurrency(currencyA, chainId),
-        wrappedCurrency(currencyB, chainId)
-      ]),
+      currencies.map(([currencyA, currencyB]) => {
+        return [generateErc20(wrappedCurrency(currencyA, chainId)), generateErc20(wrappedCurrency(currencyB, chainId))]
+      }),
     [chainId, currencies]
   )
 

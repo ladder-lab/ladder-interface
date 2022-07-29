@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, ETHER, JSBI, Pair, Percent, Price, TokenAmount } from '@uniswap/sdk'
+import { Currency, CurrencyAmount, ETHER, JSBI, Pair, Percent, Price, Token, TokenAmount } from '@uniswap/sdk'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { checkIs1155 } from 'utils/checkIs1155'
@@ -67,12 +67,12 @@ export function useDerivedMintInfo(
   const dependentField = independentField === Field.CURRENCY_A ? Field.CURRENCY_B : Field.CURRENCY_A
 
   // tokens
-  const currencies: { [field in Field]?: Currency } = useMemo(
+  const currencies: { [field in Field]?: Token } = useMemo(
     () => ({
-      [Field.CURRENCY_A]: generateErc20(currencyA),
-      [Field.CURRENCY_B]: generateErc20(currencyB)
+      [Field.CURRENCY_A]: generateErc20(wrappedCurrency(currencyA, chainId)),
+      [Field.CURRENCY_B]: generateErc20(wrappedCurrency(currencyB, chainId))
     }),
-    [currencyA, currencyB]
+    [currencyA, currencyB, chainId]
   )
 
   // pair
@@ -106,10 +106,7 @@ export function useDerivedMintInfo(
     } else if (independentAmount) {
       // we wrap the currencies just to get the price in terms of the other token
       const wrappedIndependentAmount = wrappedCurrencyAmount(independentAmount, chainId)
-      const [tokenA, tokenB] = [
-        wrappedCurrency(currencies[Field.CURRENCY_A], chainId),
-        wrappedCurrency(currencies[Field.CURRENCY_B], chainId)
-      ]
+      const [tokenA, tokenB] = [currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B]]
       if (tokenA && tokenB && wrappedIndependentAmount && pair) {
         const dependentCurrency =
           dependentField === Field.CURRENCY_B ? currencies[Field.CURRENCY_B] : currencies[Field.CURRENCY_A]
@@ -124,6 +121,7 @@ export function useDerivedMintInfo(
       return undefined
     }
   }, [noLiquidity, otherTypedValue, currencies, dependentField, independentAmount, chainId, pair])
+
   const parsedAmounts: { [field in Field]: CurrencyAmount | undefined } = useMemo(
     () => ({
       [Field.CURRENCY_A]: independentField === Field.CURRENCY_A ? independentAmount : dependentAmount,
