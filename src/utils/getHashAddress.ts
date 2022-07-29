@@ -1,13 +1,12 @@
 import { Token } from '@uniswap/sdk'
 import { getAddress, keccak256, solidityPack } from 'ethers/lib/utils'
-import { AllTokens } from 'models/allTokens'
 import { filter1155 } from './checkIs1155'
 
 export function getHashAddress(token: string, id: number): string {
   return getAddress(`0x${keccak256(solidityPack(['address', 'uint256'], [token, id])).slice(-40)}`)
 }
 
-export function generateErc20(token: AllTokens | undefined) {
+export function generateErc20(token: Token | undefined) {
   if (!token) return undefined
   const token1155 = filter1155(token)
 
