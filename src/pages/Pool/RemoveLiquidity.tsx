@@ -55,7 +55,7 @@ export default function RemoveLiquidity() {
           </Box>
         </Box>
         <Box display="flex" gap={8}>
-          <Button sx={{ borderRadius: '12px', height: 59 }} onClick={() => setShowConfirm(true)}>
+          <Button sx={{ borderRadius: '12px', height: 59 }} onClick={() => {}}>
             Approve
           </Button>
           <Button
