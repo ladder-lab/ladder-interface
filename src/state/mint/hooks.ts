@@ -1,6 +1,7 @@
 import { Currency, CurrencyAmount, ETHER, JSBI, Pair, Percent, Price, TokenAmount } from '@uniswap/sdk'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { checkIs1155 } from 'utils/checkIs1155'
 import { generateErc20 } from 'utils/getHashAddress'
 import { PairState, usePair } from '../../data/Reserves'
 import { useTotalSupply } from '../../data/TotalSupply'
@@ -146,14 +147,24 @@ export function useDerivedMintInfo(
 
   // liquidity minted
   const liquidityMinted = useMemo(() => {
-    const { [Field.CURRENCY_A]: currencyAAmount, [Field.CURRENCY_B]: currencyBAmount } = parsedAmounts
-    const [tokenAmountA, tokenAmountB] = [
-      wrappedCurrencyAmount(currencyAAmount, chainId),
-      wrappedCurrencyAmount(currencyBAmount, chainId)
-    ]
-    if (pair && totalSupply && tokenAmountA && tokenAmountB) {
-      return pair.getLiquidityMinted(totalSupply, tokenAmountA, tokenAmountB)
-    } else {
+    try {
+      const { [Field.CURRENCY_A]: currencyAAmount, [Field.CURRENCY_B]: currencyBAmount } = parsedAmounts
+
+      const [tokenAmountA, tokenAmountB] = [
+        wrappedCurrencyAmount(currencyAAmount, chainId),
+        wrappedCurrencyAmount(currencyBAmount, chainId)
+      ]
+
+      if (pair && totalSupply && tokenAmountA && tokenAmountB) {
+        if (+tokenAmountA?.toExact() === 0 || +tokenAmountB?.toExact() === 0) {
+          return undefined
+        }
+        return pair.getLiquidityMinted(totalSupply, tokenAmountA, tokenAmountB)
+      } else {
+        return undefined
+      }
+    } catch (e) {
+      console.error(e)
       return undefined
     }
   }, [parsedAmounts, chainId, pair, totalSupply])
@@ -187,6 +198,16 @@ export function useDerivedMintInfo(
 
   if (currencyBAmount && currencyBalances?.[Field.CURRENCY_B]?.lessThan(currencyBAmount)) {
     error = 'Insufficient ' + currencies[Field.CURRENCY_B]?.symbol + ' balance'
+  }
+
+  if (!liquidityMinted) {
+    error = error ?? 'Insufficient Amount'
+  }
+
+  const isA1155 = checkIs1155(currencyA)
+  const isB1155 = checkIs1155(currencyB)
+  if (isA1155 && isB1155) {
+    error = error ?? 'Invalid pair'
   }
 
   return {
