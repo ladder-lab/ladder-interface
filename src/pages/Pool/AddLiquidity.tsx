@@ -19,7 +19,7 @@ import Card from 'components/Card'
 import useModal from 'hooks/useModal'
 import ConfirmSupplyModal from 'components/Modal/ConfirmSupplyModal'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/mint/hooks'
-import { usePoolCallback } from 'hooks/usePoolCallback'
+import { useMintCallback } from 'hooks/usePoolCallback'
 import { checkIs1155 } from 'utils/checkIs1155'
 import { ONE_BIPS } from 'constants/index'
 import { PairState } from 'data/Reserves'
@@ -40,7 +40,7 @@ export default function AddLiquidy() {
   const expertMode = useIsExpertMode()
   const addTransaction = useTransactionAdder()
 
-  const { addLiquidityCb } = usePoolCallback(currencyA, currencyB)
+  const { addLiquidityCb } = useMintCallback(currencyA, currencyB)
   const { independentField, typedValue, otherTypedValue } = useMintState()
   const {
     dependentField,

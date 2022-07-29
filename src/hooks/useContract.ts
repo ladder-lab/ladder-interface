@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { Contract } from '@ethersproject/contracts'
 import { ChainId, WETH } from '@uniswap/sdk'
+import IUniswapV2PairABI from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
 import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
@@ -12,6 +13,10 @@ import UNISOCKS_ABI from '../constants/abis/unisocks.json'
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
 import { getContract } from '../utils'
 import { useActiveWeb3React } from './index'
+import {
+  ARGENT_WALLET_DETECTOR_ABI,
+  ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS
+} from '../constants/abis/argent-wallet-detector'
 
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -41,6 +46,15 @@ export function useWETHContract(withSignerIfPossible?: boolean): Contract | null
   return useContract(chainId ? WETH[chainId].address : undefined, WETH_ABI, withSignerIfPossible)
 }
 
+export function useArgentWalletDetectorContract(): Contract | null {
+  const { chainId } = useActiveWeb3React()
+  return useContract(
+    chainId === ChainId.MAINNET ? ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS : undefined,
+    ARGENT_WALLET_DETECTOR_ABI,
+    false
+  )
+}
+
 export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contract | null {
   const { chainId } = useActiveWeb3React()
   let address: string | undefined
@@ -63,6 +77,10 @@ export function useENSResolverContract(address: string | undefined, withSignerIf
 
 export function useBytes32TokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
   return useContract(tokenAddress, ERC20_BYTES32_ABI, withSignerIfPossible)
+}
+
+export function usePairContract(pairAddress?: string, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(pairAddress, IUniswapV2PairABI.abi, withSignerIfPossible)
 }
 
 export function useMulticallContract(): Contract | null {
