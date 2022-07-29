@@ -3,5 +3,6 @@ export const routes = {
   pool: '/pool',
   importPool: '/import-pool',
   addLiquidity: '/add-liquidity',
-  removeLiquidity: '/remove-liquidity/:address0/:address1/:tokenIds'
+  removeLiquidity: '/remove-liquidity',
+  removeLiquidityParams: '/:currencyIdA/:currencyIdB/:tokenIds'
 }

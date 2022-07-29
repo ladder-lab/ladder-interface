@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Box, Typography, useTheme, Button, ButtonBase, Grid } from '@mui/material'
-import { Pair, Percent, Token } from '@uniswap/sdk'
+import { Percent, Token } from '@uniswap/sdk'
 import AppBody from 'components/AppBody'
 import { routes } from 'constants/routes'
 import Card from 'components/Card'
@@ -129,10 +129,8 @@ export default function Pool() {
                       onAdd={() => navigate(routes.addLiquidity)}
                       onRemove={() =>
                         navigate(
-                          routes.removeLiquidity.replace(
-                            '/:address0/:address1/:tokenIds',
+                          routes.removeLiquidity +
                             `/${pair.token0.address}/${pair.token1.address}/${token1Id ?? ''}&${token2Id ?? ''}`
-                          )
                         )
                       }
                     />

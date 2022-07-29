@@ -22,10 +22,11 @@ interface Props {
   selectActive?: boolean
   inputFocused?: boolean
   disableCurrencySelect?: boolean
-  onSelectCurrency: (cur: AllTokens) => void
+  onSelectCurrency?: (cur: AllTokens) => void
   selectedTokenType?: TokenType
   onMax?: () => void
   disableInput?: boolean
+  hideBalance?: boolean
 }
 
 const InputRow = styled('div')(({ theme }) => ({
@@ -76,7 +77,8 @@ export default function CurrencyInputPanel({
   onChange,
   selectedTokenType,
   onMax,
-  disableInput
+  disableInput,
+  hideBalance
 }: Props) {
   const { account } = useActiveWeb3React()
   const is1155 = checkIs1155(currency)
@@ -118,7 +120,7 @@ export default function CurrencyInputPanel({
       <SelectButton
         width={isDownMd ? '100%' : '346px'}
         onClick={showCurrencySearch}
-        disabled={disabled}
+        disabled={disableCurrencySelect || disabled}
         primary={selectActive}
       >
         {currency ? (
@@ -147,11 +149,13 @@ export default function CurrencyInputPanel({
             ~$568.23
           </Typography>
           <Box display="flex" alignItems={'center'}>
-            <Typography fontSize={12} sx={{ color: theme.palette.text.secondary }}>
-              Balance:{' '}
-              {!!currency && selectedCurrencyBalance ? trimBalance(selectedCurrencyBalance?.toSignificant(6)) : ''}
-              {!selectedCurrencyBalance && '-'}
-            </Typography>
+            {!hideBalance && (
+              <Typography fontSize={12} sx={{ color: theme.palette.text.secondary }}>
+                Balance:{' '}
+                {!!currency && selectedCurrencyBalance ? trimBalance(selectedCurrencyBalance?.toSignificant(6)) : ''}
+                {!selectedCurrencyBalance && '-'}
+              </Typography>
+            )}
             {currency && onMax && (
               <Button
                 variant="text"

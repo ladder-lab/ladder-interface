@@ -1,6 +1,7 @@
 import { Currency, CurrencyAmount, JSBI, Pair, Percent, TokenAmount } from '@uniswap/sdk'
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { generateErc20 } from 'utils/getHashAddress'
 import { usePair } from '../../data/Reserves'
 import { useTotalSupply } from '../../data/TotalSupply'
 
@@ -31,7 +32,6 @@ export function useDerivedBurnInfo(
   const { account, chainId } = useActiveWeb3React()
 
   const { independentField, typedValue } = useBurnState()
-
   // pair + totalsupply
   const [, pair] = usePair(currencyA, currencyB)
 
@@ -39,7 +39,10 @@ export function useDerivedBurnInfo(
   const relevantTokenBalances = useTokenBalances(account ?? undefined, [pair?.liquidityToken])
   const userLiquidity: undefined | TokenAmount = relevantTokenBalances?.[pair?.liquidityToken?.address ?? '']
 
-  const [tokenA, tokenB] = [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]
+  const [tokenA, tokenB] = [
+    generateErc20(wrappedCurrency(currencyA, chainId)),
+    generateErc20(wrappedCurrency(currencyB, chainId))
+  ]
   const tokens = {
     [Field.CURRENCY_A]: tokenA,
     [Field.CURRENCY_B]: tokenB,

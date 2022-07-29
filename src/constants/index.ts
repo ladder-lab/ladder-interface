@@ -1,6 +1,5 @@
 import { Percent, JSBI, WETH, ChainId, Token } from '@uniswap/sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
-import { generateErc20 } from 'utils/getHashAddress'
 import { fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
 import { DEFAULT_1155_LIST } from './default1155List'
 
