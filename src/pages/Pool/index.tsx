@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Box, Typography, useTheme, Button, ButtonBase, Grid } from '@mui/material'
-import { Pair } from '@uniswap/sdk'
+import { Pair, Percent, Token } from '@uniswap/sdk'
 import AppBody from 'components/AppBody'
 import { routes } from 'constants/routes'
 import Card from 'components/Card'
@@ -13,13 +13,10 @@ import { Dots } from 'theme/components'
 import { Loader } from 'components/AnimatedSvg/Loader'
 import { ExternalLink } from 'theme/components'
 import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
-import { useTokenBalancesWithLoadingIndicator } from 'state/wallet/hooks'
+import { useTokenBalancesWithLoadingIndicator, useTokenTotalSupplies } from 'state/wallet/hooks'
 import { usePairs } from 'data/Reserves'
-
 import { useActiveWeb3React } from 'hooks'
-
-// Dummy Data
-import { ETHER } from 'constants/token'
+import { getTokenText } from 'utils/checkIs1155'
 
 export default function Pool() {
   const theme = useTheme()
@@ -28,6 +25,7 @@ export default function Pool() {
 
   // fetch the user's balances of all tracked V2 LP tokens
   const trackedTokenPairs = useTrackedTokenPairs()
+
   const tokenPairsWithLiquidityTokens = useMemo(
     () => trackedTokenPairs.map(tokens => ({ liquidityToken: toV2LiquidityToken(tokens), tokens })),
     [trackedTokenPairs]
@@ -41,21 +39,24 @@ export default function Pool() {
     liquidityTokens
   )
 
+  const totalSupplies = useTokenTotalSupplies(liquidityTokens)
+
   // fetch the reserves for all V2 pools in which the user has a balance
   const liquidityTokensWithBalances = useMemo(
     () =>
-      tokenPairsWithLiquidityTokens.filter(({ liquidityToken }) =>
-        v2PairsBalances[liquidityToken.address]?.greaterThan('0')
-      ),
-    [tokenPairsWithLiquidityTokens, v2PairsBalances]
+      tokenPairsWithLiquidityTokens.reduce((acc, { liquidityToken }, idx) => {
+        if (v2PairsBalances[liquidityToken.address]?.greaterThan('0')) {
+          acc.push({ liquidityToken: liquidityToken, tokens: trackedTokenPairs[idx] })
+        }
+        return acc
+      }, [] as { liquidityToken: Token; tokens: [Token, Token] }[]),
+    [tokenPairsWithLiquidityTokens, trackedTokenPairs, v2PairsBalances]
   )
 
   const v2Pairs = usePairs(liquidityTokensWithBalances.map(({ tokens }) => tokens))
   const v2IsLoading =
     fetchingV2PairBalances || v2Pairs?.length < liquidityTokensWithBalances.length || v2Pairs?.some(V2Pair => !V2Pair)
 
-  const allV2PairsWithLiquidity = v2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair))
-  console.log(allV2PairsWithLiquidity)
   return (
     <>
       <AppBody width={'100%'} maxWidth={'1140px'}>
@@ -103,35 +104,41 @@ export default function Pool() {
             </Box>
           ) : (
             <Grid container mt={20} spacing={20}>
-              <Grid item xs={12} md={4}>
-                <PoolCard
-                  currency0={ETHER}
-                  currency1={ETHER}
-                  title="DAI/Tickets for the community #56"
-                  tokenAmount="123"
-                  shareAmount="456"
-                  onAdd={() => navigate(routes.addLiquidity)}
-                  onRemove={() => navigate(routes.removeLiquidity)}
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <PoolCard
-                  currency0={ETHER}
-                  currency1={ETHER}
-                  title="DAI/Tickets for the community #56"
-                  tokenAmount="123"
-                  shareAmount="456"
-                  onAdd={() => navigate(routes.addLiquidity)}
-                  onRemove={() =>
-                    navigate(
-                      routes.removeLiquidity.replace(
-                        '/:address0/:address1/:tokenIdA%tokenIdB',
-                        `/{cur0.address}/{cur1.address}/{filter1155(cur0)?.tokenId??''}%{filter1155(cur1)?.tokenId??''}`
-                      )
-                    )
-                  }
-                />
-              </Grid>
+              {v2Pairs.map(([, pair], idx) => {
+                if (!pair) return null
+                const [token0, token1] = liquidityTokensWithBalances[idx].tokens
+                const { token1Text, token2Text, token1Id, token2Id } = getTokenText(token0, token1)
+                const balance = v2PairsBalances?.[liquidityTokensWithBalances[idx].liquidityToken.address]
+                const totalSupply = totalSupplies?.[liquidityTokensWithBalances[idx].liquidityToken.address]
+                pair.reserveOf
+                const poolTokenPercentage =
+                  totalSupply && balance ? new Percent(balance.raw, totalSupply.raw).toFixed() + '%' : '-'
+
+                return (
+                  <Grid item xs={12} md={4} key={pair.liquidityToken.address}>
+                    <PoolCard
+                      currency0={token0}
+                      currency1={token1}
+                      title={`${token1Text}${token1Id ? ' #' + token1Id : ''}/${token2Text} ${
+                        token2Id ? ' #' + token2Id : ''
+                      }`}
+                      reserve0={pair.reserve0.toExact()}
+                      reserve1={pair.reserve1.toExact()}
+                      shareAmount={poolTokenPercentage}
+                      tokenAmount={balance?.toExact() ?? '-'}
+                      onAdd={() => navigate(routes.addLiquidity)}
+                      onRemove={() =>
+                        navigate(
+                          routes.removeLiquidity.replace(
+                            '/:address0/:address1/:tokenIds',
+                            `/${pair.token0.address}/${pair.token1.address}/${token1Id ?? ''}&${token2Id ?? ''}`
+                          )
+                        )
+                      }
+                    />
+                  </Grid>
+                )
+              })}
             </Grid>
           )}
         </Box>
@@ -160,16 +167,20 @@ function PoolCard({
   currency0,
   currency1,
   title,
-  tokenAmount,
+  reserve0,
+  reserve1,
   shareAmount,
+  tokenAmount,
   onAdd,
   onRemove
 }: {
   currency0: AllTokens
   currency1: AllTokens
   title: string
-  tokenAmount: string
+  reserve0: string
+  reserve1: string
   shareAmount: string
+  tokenAmount: string
   onAdd: () => void
   onRemove: () => void
 }) {
@@ -188,8 +199,8 @@ function PoolCard({
         {title}
       </Typography>
       <Box display="grid" gap={8}>
-        <PoolAssetCard currency={currency0} value={'568.003563'} />
-        <PoolAssetCard currency={currency1} value={'568.003563'} />
+        <PoolAssetCard currency={currency0} value={reserve0} />
+        <PoolAssetCard currency={currency1} value={reserve1} />
       </Box>
       <Box display="grid" gap={12} mt={16} mb={16}>
         <Box display="flex" justifyContent="space-between">
