@@ -40,7 +40,7 @@ export default function Modal(props: Props) {
     padding,
     background,
     backdropColor,
-    closeVariant
+    closeVariant = 'contained'
   } = props
   const { isOpen, hideModal } = useModal()
   const node = useRef<any>()
