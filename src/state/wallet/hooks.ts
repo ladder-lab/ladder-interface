@@ -177,3 +177,14 @@ export function useTokenTotalSupplies(tokens?: (Token | undefined)[]): {
       : {}
   }, [validatedTokens, balances])
 }
+
+export function useTokenTotalSupply(tokens?: Token | undefined) {
+  const arg = useMemo(() => [tokens], [tokens])
+
+  const result = useTokenTotalSupplies(arg)
+
+  return useMemo(() => {
+    console.log(result)
+    return result[tokens?.address as keyof typeof result]
+  }, [result, tokens?.address])
+}
