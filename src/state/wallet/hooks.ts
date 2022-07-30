@@ -184,7 +184,6 @@ export function useTokenTotalSupply(tokens?: Token | undefined) {
   const result = useTokenTotalSupplies(arg)
 
   return useMemo(() => {
-    console.log(result)
     return result[tokens?.address as keyof typeof result]
   }, [result, tokens?.address])
 }
