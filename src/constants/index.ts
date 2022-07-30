@@ -25,8 +25,8 @@ export const WBTC = new Token(ChainId.MAINNET, '0x2260FAC5E5542a773Aa44fBCfeDf7C
 const WETH_ONLY: ChainTokenList = {
   [ChainId.MAINNET]: [WETH[ChainId.MAINNET]],
   [ChainId.ROPSTEN]: [WETH[ChainId.ROPSTEN]],
-  [ChainId.RINKEBY]: [],
-  // [ChainId.RINKEBY]: [WETH[ChainId.RINKEBY]],
+  // [ChainId.RINKEBY]: [],
+  [ChainId.RINKEBY]: [WETH[ChainId.RINKEBY]],
   [ChainId.GÖRLI]: [WETH[ChainId.GÖRLI]],
   [ChainId.KOVAN]: [WETH[ChainId.KOVAN]]
 }
@@ -59,9 +59,9 @@ export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } 
       new Token(ChainId.RINKEBY, '0xD64b11169B87030EB5647Add8265d2F1D30cF2e6', 18, 'TEST', 'Test Coin'),
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       DEFAULT_1155_LIST[4]![0]!
-    ]
-    // [USDC, USDT],
-    // [DAI, USDT]
+    ],
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    [WETH[ChainId.RINKEBY], DEFAULT_1155_LIST[4]![0]!]
   ]
 }
 

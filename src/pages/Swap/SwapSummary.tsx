@@ -12,6 +12,7 @@ import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { HelperText } from 'constants/helperText'
 import { AllTokens } from 'models/allTokens'
 import useBreakpoint from 'hooks/useBreakpoint'
+import { getTokenText } from 'utils/checkIs1155'
 
 export function SwapSummary({
   fromAsset,
@@ -38,6 +39,7 @@ export function SwapSummary({
 }) {
   const theme = useTheme()
   const isDownMd = useBreakpoint('md')
+  const { Token1Text, Token2Text } = getTokenText(fromAsset, toAsset)
 
   const summary = useMemo(() => {
     return (
@@ -45,7 +47,7 @@ export function SwapSummary({
         <Box display="flex" gap={14} alignItems="center">
           <InfoIcon />
           <Typography color={theme.palette.text.secondary}>
-            1 {fromAsset?.name} = {price} {toAsset?.name}
+            1 <Token1Text /> = {price} <Token2Text />
             {/* (${currencyRate}) */}
           </Typography>
         </Box>
@@ -56,7 +58,7 @@ export function SwapSummary({
         </Box>
       </Box>
     )
-  }, [theme.palette.text.secondary, fromAsset?.name, price, toAsset?.name, gasFee])
+  }, [theme.palette.text.secondary, Token1Text, price, Token2Text, gasFee])
 
   const details = useMemo(() => {
     return (
