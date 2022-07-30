@@ -110,7 +110,7 @@ export default function Pool() {
               </Box>
             </Box>
           ) : (
-            <Grid container mt={20} spacing={20}>
+            <Grid container mt={20} spacing={20} alignItems="stretch">
               {v2Pairs.map(([, pair], idx) => {
                 if (!pair) return null
 
@@ -194,7 +194,7 @@ function PoolCard({
   const theme = useTheme()
 
   return (
-    <Card gray padding="32px 24px 24px" style={{ borderRadius: '20px' }}>
+    <Card gray padding="32px 24px 24px" style={{ borderRadius: '20px', height: '100%' }}>
       <Box display="flex" justifyContent="space-between">
         <DoubleCurrencyLogo currency0={currency0} currency1={currency1} size={28} />
         <Box display="flex" gap={16}>
@@ -211,8 +211,19 @@ function PoolCard({
       </Box>
       <Box display="grid" gap={12} mt={16} mb={16}>
         <Box display="flex" justifyContent="space-between">
-          <Typography sx={{ color: theme.palette.text.secondary, fontSize: 16 }}>Your pool tokens</Typography>
-          <Typography fontSize={16}>{tokenAmount}</Typography>
+          <Typography sx={{ color: theme.palette.text.secondary, fontSize: 16 }} whiteSpace="nowrap">
+            Your pool tokens
+          </Typography>
+          <Typography
+            fontSize={16}
+            style={{
+              textAlign: 'right',
+              whiteSpace: 'pre',
+              wordBreak: 'break-all'
+            }}
+          >
+            {tokenAmount}
+          </Typography>
         </Box>
         <Box display="flex" justifyContent="space-between">
           <Typography sx={{ color: theme.palette.text.secondary, fontSize: 16 }}>Your pool share</Typography>
