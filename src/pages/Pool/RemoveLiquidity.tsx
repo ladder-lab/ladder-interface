@@ -25,7 +25,7 @@ import useDebouncedChangeHandler from 'utils/useDebouncedChangeHandler'
 import ActionButton from 'components/Button/ActionButton'
 import { Token1155 } from 'constants/token/token1155'
 import ConfirmRemoveModal from 'components/Modal/ConfirmRemoveModal'
-import { useCurrencyBalance } from 'state/wallet/hooks'
+import { useCurrencyBalance, useTokenTotalSupply } from 'state/wallet/hooks'
 import { getTokenText } from 'utils/checkIs1155'
 import useModal from 'hooks/useModal'
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
@@ -64,6 +64,7 @@ export default function RemoveLiquidity() {
     currencyB
   )
   const balance = useCurrencyBalance(account ?? undefined, pair?.liquidityToken)
+  const totalSupply = useTokenTotalSupply(pair?.liquidityToken)
   const isValid = !error
 
   const formattedAmounts = {
@@ -81,6 +82,8 @@ export default function RemoveLiquidity() {
     [Field.CURRENCY_B]:
       independentField === Field.CURRENCY_B ? typedValue : parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? ''
   }
+
+  const poolTokenPercentage = totalSupply && balance ? new Percent(balance.raw, totalSupply.raw).toFixed() + '%' : '-'
 
   // wrapped onUserInput to clear signatures
   const onUserInput = useCallback(
@@ -308,8 +311,10 @@ export default function RemoveLiquidity() {
         <PositionCard
           from={currencyA}
           to={currencyB}
+          lpBalance={balance?.toExact()}
           liquidityA={pair?.reserve0.toExact()}
           liquidityB={pair?.reserve1.toExact()}
+          poolShare={poolTokenPercentage}
         />
       </Box>
     </>
