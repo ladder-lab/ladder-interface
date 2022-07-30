@@ -1,4 +1,4 @@
-import { useState, useCallback, ChangeEvent } from 'react'
+import { useState, useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { TransactionResponse } from '@ethersproject/providers'
 import { currencyEquals, Percent, WETH } from '@uniswap/sdk'
@@ -88,21 +88,6 @@ export default function RemoveLiquidity() {
     [_onUserInput, setSignatureData]
   )
 
-  const onLiquidityInput = useCallback(
-    (e: ChangeEvent<HTMLInputElement>): void => {
-      onUserInput(Field.LIQUIDITY, e.target.value)
-    },
-    [onUserInput]
-  )
-  const onCurrencyAInput = useCallback(
-    (e: ChangeEvent<HTMLInputElement>): void => onUserInput(Field.CURRENCY_A, e.target.value),
-    [onUserInput]
-  )
-  const onCurrencyBInput = useCallback(
-    (e: ChangeEvent<HTMLInputElement>): void => onUserInput(Field.CURRENCY_B, e.target.value),
-    [onUserInput]
-  )
-
   // tx sending
   const addTransaction = useTransactionAdder()
 
@@ -142,61 +127,16 @@ export default function RemoveLiquidity() {
     },
     [onUserInput]
   )
+  const [innterLiquidityPercentage, setInnerLiquidityPercentage] = useDebouncedChangeHandler(
+    Number.parseInt(parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0)) as any,
+    liquidityPercentChangeCallback
+  )
 
   const oneCurrencyIsETH = currencyA === ETHER || currencyB === ETHER
   const oneCurrencyIsWETH = Boolean(
     chainId &&
       ((currencyA && currencyEquals(WETH[chainId], currencyA)) ||
         (currencyB && currencyEquals(WETH[chainId], currencyB)))
-  )
-
-  const handleSelectCurrencyA = useCallback(
-    (currency: AllTokens) => {
-      if (currencyIdB && currencyId(currency) === currencyIdB) {
-        const route =
-          routes.removeLiquidity +
-          `/${currencyId(currency)}/${currencyIdA}/${'tokenId' in currency ? currency.tokenId : ''}&${tokenIdA ?? ''}`
-
-        navigate(route)
-      } else {
-        const route =
-          routes.removeLiquidity +
-          `/${currencyId(currency)}/${currencyIdB}/${'tokenId' in currency ? currency.tokenId : ''}&${tokenIdB ?? ''}`
-        navigate(route)
-      }
-    },
-    [currencyIdA, currencyIdB, navigate, tokenIdA, tokenIdB]
-  )
-  const handleSelectCurrencyB = useCallback(
-    (currency: AllTokens) => {
-      if (currencyIdA && currencyId(currency) === currencyIdA) {
-        navigate(
-          routes.removeLiquidity +
-            `/${currencyIdB}/${currencyId(currency)}/${tokenIdB}&${'tokenId' in currency ? currency.tokenId : ''}`
-        )
-      } else {
-        navigate(
-          routes.removeLiquidity +
-            `/${currencyIdA}/${currencyId(currency)}/${tokenIdA}&${'tokenId' in currency ? currency.tokenId : ''}`
-        )
-      }
-    },
-    [currencyIdA, currencyIdB, navigate, tokenIdA, tokenIdB]
-  )
-
-  const handleDismissConfirmation = useCallback(() => {
-    setShowConfirm(false)
-    setSignatureData(null) // important that we clear signature data to avoid bad sigs
-    // if there was a tx hash, we want to clear the input
-    if (txHash) {
-      onUserInput(Field.LIQUIDITY_PERCENT, '0')
-    }
-    setTxHash('')
-  }, [onUserInput, txHash])
-
-  const [innerLiquidityPercentage, setInnerLiquidityPercentage] = useDebouncedChangeHandler(
-    Number.parseInt(parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0)),
-    liquidityPercentChangeCallback
   )
 
   const handleMode = useCallback(() => {
@@ -215,7 +155,12 @@ export default function RemoveLiquidity() {
       >
         <Tips />
 
-        <NumericalCard mode={mode} onChangeMode={handleMode} />
+        <NumericalCard
+          mode={mode}
+          onChangeMode={handleMode}
+          sliderValue={innterLiquidityPercentage}
+          onSliderChange={setInnerLiquidityPercentage}
+        />
 
         {mode === Mode.SIMPLE && (
           <>
@@ -275,40 +220,16 @@ export default function RemoveLiquidity() {
             </Box>
           </>
         )}
-        <CurrencyInputPanel
-          value={formattedAmounts[Field.LIQUIDITY]}
-          onMax={() => {
-            onUserInput(Field.LIQUIDITY_PERCENT, '100')
-          }}
-          onChange={onLiquidityInput}
-          disableCurrencySelect
-          currency={pair?.liquidityToken}
-        />
         <InputCard value="0.91234" balance="1234.45678" currency0={ETHER} currency1={ETHER} />
         <Box sx={{ height: 76, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => {}}>
           <ArrowCircle />
         </Box>
-        <CurrencyInputPanel
-          hideBalance={true}
-          value={formattedAmounts[Field.CURRENCY_A]}
-          onMax={() => onUserInput(Field.LIQUIDITY_PERCENT, '100')}
-          onChange={onCurrencyAInput}
-          onSelectCurrency={handleSelectCurrencyA}
-          currency={currencyA}
-        />
-        <OutputCard value="0.91234" currency={ETHER} />
+        <OutputCard value={formattedAmounts[Field.CURRENCY_A]} currency={currencyA} />
         <Box sx={{ height: 76, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => {}}>
           <AddCircle />
         </Box>
-        <CurrencyInputPanel
-          hideBalance={true}
-          value={formattedAmounts[Field.CURRENCY_B]}
-          onChange={onCurrencyBInput}
-          onMax={() => onUserInput(Field.LIQUIDITY_PERCENT, '100')}
-          currency={currencyB}
-          onSelectCurrency={handleSelectCurrencyB}
-        />
-        <OutputCard value="70" currency={ETHER} />
+
+        <OutputCard value={formattedAmounts[Field.CURRENCY_B]} currency={currencyB} />
         <Box display="flex" justifyContent="space-between" mt={36} mb={52}>
           <Typography sx={{ fontSize: 18 }}>Price</Typography>
           <Box display="grid" gap={12}>
@@ -376,21 +297,43 @@ function Tips() {
   )
 }
 
-function NumericalCard({ mode, onChangeMode }: { mode: Mode; onChangeMode: () => void }) {
+function NumericalCard({
+  mode,
+  onChangeMode,
+  sliderValue,
+  onSliderChange
+}: {
+  mode: Mode
+  onChangeMode: () => void
+  sliderValue: number
+  onSliderChange: (val: number) => void
+}) {
   const theme = useTheme()
+  const onChange = useCallback(
+    (e: Event) => {
+      onSliderChange(parseInt(e.target.value))
+    },
+    [onSliderChange]
+  )
+  const onChangeFactory = useCallback(
+    (val: number) => () => {
+      onSliderChange(val)
+    },
+    [onSliderChange]
+  )
 
   return (
     <Card color={theme.palette.background.default} padding="24px 20px" style={{ position: 'relative' }}>
       <Box display="grid" gap={15}>
         <Typography sx={{ fontSize: 20, fontWeight: 400 }}>Remove Amount</Typography>
-        <Typography sx={{ fontSize: 40, fontWeight: 900 }}>50%</Typography>
+        <Typography sx={{ fontSize: 40, fontWeight: 900 }}>{sliderValue}%</Typography>
       </Box>
-      {mode === Mode.DETAIL && <StyledSlider />}
+      {mode === Mode.DETAIL && <StyledSlider onChange={onChange} value={sliderValue} />}
       <Box display="flex" gap={24} justifyContent="center">
-        <Option onClick={() => {}}>25%</Option>
-        <Option onClick={() => {}}> 50%</Option>
-        <Option onClick={() => {}}>75%</Option>
-        <Option onClick={() => {}}>MAX</Option>
+        <Option onClick={onChangeFactory(25)}>25%</Option>
+        <Option onClick={onChangeFactory(50)}>50%</Option>
+        <Option onClick={onChangeFactory(75)}>75%</Option>
+        <Option onClick={onChangeFactory(100)}>MAX</Option>
       </Box>
       <Box
         sx={{
@@ -422,8 +365,8 @@ function InputCard({
 }: {
   value: string
   balance: string
-  currency0: AllTokens
-  currency1: AllTokens
+  currency0: AllTokens | undefined
+  currency1: AllTokens | undefined
 }) {
   const theme = useTheme()
 
@@ -439,7 +382,7 @@ function InputCard({
           <Box display="flex" gap={11} alignItems="center">
             <DoubleCurrencyLogo currency0={currency0} currency1={currency1} />
             <Typography>
-              {currency0.symbol}: {currency1.symbol}
+              {currency0?.symbol}: {currency1?.symbol}
             </Typography>
           </Box>
         </Box>
@@ -448,7 +391,7 @@ function InputCard({
   )
 }
 
-function OutputCard({ value, currency }: { value: string; currency: AllTokens }) {
+function OutputCard({ value, currency }: { value: string; currency: AllTokens | undefined }) {
   const theme = useTheme()
 
   return (
@@ -459,8 +402,8 @@ function OutputCard({ value, currency }: { value: string; currency: AllTokens })
           <Typography sx={{ fontSize: 24, fontWeight: 900 }}>{value}</Typography>
         </Box>
         <Box display="flex" gap={12} width={180}>
-          <CurrencyLogo currency={currency} />
-          <Typography>{currency.symbol}</Typography>
+          {currency && <CurrencyLogo currency={currency} />}
+          <Typography>{currency?.symbol}</Typography>
         </Box>
       </Box>
     </Card>

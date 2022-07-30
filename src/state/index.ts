@@ -8,7 +8,7 @@ import transactions from './transactions/reducer'
 import multicall from './multicall/reducer'
 import swap from './swap/reducer'
 import mint from './mint/reducer'
-import burn from './mint/reducer'
+import burn from './burn/reducer'
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions']
 
