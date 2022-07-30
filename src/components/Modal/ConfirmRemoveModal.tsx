@@ -4,6 +4,7 @@ import ActionButton from 'components/Button/ActionButton'
 import { AllTokens } from 'models/allTokens'
 import AddIcon from '@mui/icons-material/Add'
 import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
+import Tag from 'components/Tag'
 
 export default function ConfirmRemoveModal({
   onConfirm,
@@ -29,9 +30,16 @@ export default function ConfirmRemoveModal({
   return (
     <Modal closeIcon customIsOpen={isOpen} customOnDismiss={onDismiss}>
       <Box padding="33px 32px">
-        <Typography fontSize={28} mb={39} fontWeight={500}>
-          You will receive
-        </Typography>
+        <Box display="flex" alignItems="center" mb={39}>
+          <Typography fontSize={28} fontWeight={500}>
+            You will receive
+          </Typography>
+          <Box ml={20} display="flex" gap={16}>
+            <Tag>ERC20</Tag>
+            <Tag>ERC1155</Tag>
+          </Box>
+        </Box>
+
         <Box display="flex" justifyContent="space-between" alignItems={'center'}>
           <Typography fontSize={32} fontWeight={900}>
             0.675
