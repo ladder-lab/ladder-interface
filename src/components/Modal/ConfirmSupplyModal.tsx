@@ -105,7 +105,7 @@ function AddLiquidityDetails({
     >
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center" gap={9}>
-          <Typography sx={{ color: token1Is1155 ? theme.palette.primary.main : undefined }}>
+          <Typography>
             {token1Text} <span style={{ color: theme.palette.text.primary }}>Deposited</span>
           </Typography>
         </Box>

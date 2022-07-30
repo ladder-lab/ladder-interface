@@ -5,12 +5,15 @@ import { AllTokens } from 'models/allTokens'
 import AddIcon from '@mui/icons-material/Add'
 import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
 import Tag from 'components/Tag'
+import { getTokenText } from 'utils/checkIs1155'
 
 export default function ConfirmRemoveModal({
   onConfirm,
   isOpen,
   onDismiss,
   val,
+  valA,
+  valB,
   tokenA,
   tokenB,
   priceA,
@@ -20,12 +23,15 @@ export default function ConfirmRemoveModal({
   isOpen: boolean
   onDismiss: () => void
   val: string
+  valA: string
+  valB: string
   tokenA?: AllTokens
   tokenB?: AllTokens
   priceA: string
   priceB: string
 }) {
   const theme = useTheme()
+  const { token1Text, token2Text } = getTokenText(tokenA, tokenB)
 
   return (
     <Modal closeIcon customIsOpen={isOpen} customOnDismiss={onDismiss}>
@@ -42,23 +48,23 @@ export default function ConfirmRemoveModal({
 
         <Box display="flex" justifyContent="space-between" alignItems={'center'}>
           <Typography fontSize={32} fontWeight={900}>
-            0.675
+            {valA}
           </Typography>
           <Typography fontSize={20} fontWeight={400}>
-            DAI
+            {token1Text}
           </Typography>
         </Box>
         <AddIcon sx={{ color: theme.palette.text.secondary, ml: 8 }} />
         <Box display="flex" justifyContent="space-between" alignItems={'center'}>
           <Typography fontSize={32} fontWeight={900}>
-            70
+            {valB}
           </Typography>
           <Typography fontSize={20} fontWeight={400}>
-            Tickets for the community #56
+            {token2Text}
           </Typography>
         </Box>
 
-        <Typography sx={{ fontSize: 16, color: theme.palette.text.secondary, mb: 24 }}>
+        <Typography sx={{ fontSize: 16, color: theme.palette.text.secondary, mb: 24 }} mt={20}>
           Output is estimated.If the price changes by more than 5% your transaction will revert.
         </Typography>
         <RemoveLiquidityDetails
@@ -88,6 +94,7 @@ function RemoveLiquidityDetails({
   rateToken2Token1: string
 }) {
   const theme = useTheme()
+  const { Token1Text, Token2Text } = getTokenText(token1, token2)
 
   return (
     <Box
@@ -102,9 +109,14 @@ function RemoveLiquidityDetails({
     >
       <Box display="flex" justifyContent="space-between">
         <Typography fontSize={16} fontWeight={500}>
-          LP {token1?.symbol}: <span style={{ color: theme.palette.text.secondary }}>{token2?.symbol}...</span> Burned
+          LP{' '}
+          {/* <Token1Text fontSize={16} />:{' '}
+          <span style={{ color: theme.palette.text.secondary }}>
+            <Token2Text />
+          </span>{' '} */}
+          Burned
         </Typography>
-        <Box display="flex" gap={8} alignItems="center">
+        <Box display="flex" gap={8} alignItems="center" justifyItems={'flex-end'}>
           <DoubleCurrencyLogo currency0={token1} currency1={token2} size={18} />
           <Typography fontSize={16} fontWeight={500}>
             {lpValue}
@@ -115,12 +127,12 @@ function RemoveLiquidityDetails({
         <Typography fontSize={16} fontWeight={500}>
           Price
         </Typography>
-        <Box display="grid" gap={8}>
+        <Box display="grid" gap={8} justifyItems={'flex-end'}>
           <Typography fontSize={16} fontWeight={400}>
-            1 DAI = {rateToken1Token2} <span style={{ color: theme.palette.text.secondary }}>Tickets for the c...</span>
+            1 <Token1Text fontSize={16} /> = {rateToken1Token2} <Token2Text fontSize={16} />
           </Typography>
           <Typography fontSize={16} fontWeight={400}>
-            1 <span style={{ color: theme.palette.text.secondary }}>Tickets for the c...</span>= {rateToken2Token1} DAI
+            1 <Token2Text fontSize={16} />= {rateToken2Token1} <Token1Text fontSize={16} />
           </Typography>
         </Box>
       </Box>

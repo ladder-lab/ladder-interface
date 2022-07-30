@@ -18,6 +18,9 @@ import { ApprovalState, useApproveCallback } from './useApproveCallback'
 import { usePairContract } from './useContract'
 import { ROUTER_ADDRESS } from 'constants/index'
 import useIsArgentWallet from 'hooks/useIsArgentWallet'
+import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
+import useModal from './useModal'
+import { generateErc20 } from 'utils/getHashAddress'
 
 export function useMintCallback(currencyA: AllTokens | undefined, currencyB: AllTokens | undefined) {
   const { chainId, library, account } = useActiveWeb3React()
@@ -98,6 +101,7 @@ export function useBurnCallback(currencyA: AllTokens | undefined, currencyB: All
   // allowance handling
   const [signatureData, setSignatureData] = useState<{ v: number; r: string; s: string; deadline: number } | null>(null)
 
+  const { showModal, hideModal } = useModal()
   const { chainId, library, account } = useActiveWeb3React()
   const [allowedSlippage] = useUserSlippageTolerance()
   const deadline = useTransactionDeadline()
@@ -129,7 +133,10 @@ export function useBurnCallback(currencyA: AllTokens | undefined, currencyB: All
     const currencyBIsETH = currencyB === ETHER
     const oneCurrencyIsETH = currencyA === ETHER || currencyBIsETH
 
-    const [tokenA, tokenB] = [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]
+    const [tokenA, tokenB] = [
+      generateErc20(wrappedCurrency(currencyA, chainId)),
+      generateErc20(wrappedCurrency(currencyB, chainId))
+    ]
 
     if (!tokenA || !tokenB) throw new Error('could not wrap')
 
@@ -224,7 +231,6 @@ export function useBurnCallback(currencyA: AllTokens | undefined, currencyB: All
       const methodName = methodNames[indexOfSuccessfulEstimation]
       const safeGasEstimate = safeGasEstimates[indexOfSuccessfulEstimation]
 
-      // setAttemptingTxn(true)
       return router[methodName](...args, {
         gasLimit: safeGasEstimate
       })
@@ -292,11 +298,12 @@ export function useBurnCallback(currencyA: AllTokens | undefined, currencyB: All
       primaryType: 'Permit',
       message
     })
-
+    showModal(<TransacitonPendingModal />)
     library
       .send('eth_signTypedData_v4', [account, data])
       .then(splitSignature)
       .then(signature => {
+        hideModal()
         setSignatureData({
           v: signature.v,
           r: signature.r,
@@ -316,11 +323,13 @@ export function useBurnCallback(currencyA: AllTokens | undefined, currencyB: All
     approveCallback,
     chainId,
     deadline,
+    hideModal,
     isArgentWallet,
     library,
     pair,
     pairContract,
-    parsedAmounts
+    parsedAmounts,
+    showModal
   ])
 
   return { burnCallback, burnApproveCallback, setSignatureData, approval, signatureData }

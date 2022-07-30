@@ -155,7 +155,7 @@ export default function ImportPool() {
             </Typography>
           )}
           <Box mt={error ? 40 : 0}>
-            <PosittionCard from={fromAsset} to={toAsset} price="25.1676" error={error} color="#F6F6F6" />
+            <PosittionCard from={fromAsset} to={toAsset} lpBalance="25.1676" error={error} color="#F6F6F6" />
           </Box>
         </Box>
       </AppBody>

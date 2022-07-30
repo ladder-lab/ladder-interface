@@ -21,11 +21,16 @@ import { Field } from 'state/burn/actions'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import { useBurnCallback } from 'hooks/usePoolCallback'
 import { useTransactionAdder } from 'state/transactions/hooks'
-import CurrencyInputPanel from 'components/Input/CurrencyInputPanel'
 import useDebouncedChangeHandler from 'utils/useDebouncedChangeHandler'
-import { currencyId } from 'utils/currencyId'
 import ActionButton from 'components/Button/ActionButton'
 import { Token1155 } from 'constants/token/token1155'
+import ConfirmRemoveModal from 'components/Modal/ConfirmRemoveModal'
+import { useCurrencyBalance } from 'state/wallet/hooks'
+import { getTokenText } from 'utils/checkIs1155'
+import useModal from 'hooks/useModal'
+import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
+import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
+import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 
 enum Mode {
   SIMPLE,
@@ -38,6 +43,7 @@ export default function RemoveLiquidity() {
 
   const navigate = useNavigate()
   const theme = useTheme()
+  const { showModal, hideModal } = useModal()
   const { currencyIdA, currencyIdB, tokenIds } = useParams()
   const [tokenIdA, tokenIdB] = tokenIds?.split('&') ?? ['', '']
 
@@ -48,7 +54,7 @@ export default function RemoveLiquidity() {
     useCurrency(currencyIdA, tokenIdA) ?? undefined,
     useCurrency(currencyIdB, tokenIdB) ?? undefined
   ]
-
+  const { Token1Text, Token2Text } = getTokenText(currencyA, currencyB)
   // burn state
   const { independentField, typedValue } = useBurnState()
   const { pair, parsedAmounts, error } = useDerivedBurnInfo(currencyA ?? undefined, currencyB ?? undefined)
@@ -57,10 +63,8 @@ export default function RemoveLiquidity() {
     currencyA,
     currencyB
   )
+  const balance = useCurrencyBalance(account ?? undefined, pair?.liquidityToken)
   const isValid = !error
-
-  // txn values
-  const [txHash, setTxHash] = useState<string>('')
 
   const formattedAmounts = {
     [Field.LIQUIDITY_PERCENT]: parsedAmounts[Field.LIQUIDITY_PERCENT].equalTo('0')
@@ -92,10 +96,12 @@ export default function RemoveLiquidity() {
   const addTransaction = useTransactionAdder()
 
   const handleRemove = useCallback(() => {
+    setShowConfirm(false)
+    showModal(<TransacitonPendingModal />)
     burnCallback()
       ?.then((response: TransactionResponse) => {
-        setAttemptingTxn(false)
-
+        hideModal()
+        showModal(<TransactionSubmittedModal />)
         addTransaction(response, {
           summary:
             'Remove ' +
@@ -107,15 +113,29 @@ export default function RemoveLiquidity() {
             ' ' +
             currencyB?.symbol
         })
-
-        setTxHash(response.hash)
+        onUserInput(Field.LIQUIDITY_PERCENT, '0')
       })
       .catch((error: Error) => {
-        setAttemptingTxn(false)
+        hideModal()
+        showModal(<MessageBox type="error">{error.message}</MessageBox>)
         // we only care if the error is something _other_ than the user rejected the tx
         console.error(error)
       })
-  }, [addTransaction, burnCallback, currencyA?.symbol, currencyB?.symbol, parsedAmounts])
+  }, [
+    addTransaction,
+    burnCallback,
+    currencyA?.symbol,
+    currencyB?.symbol,
+    hideModal,
+    onUserInput,
+    parsedAmounts,
+    showModal
+  ])
+
+  const handleDismissConfirmation = useCallback(() => {
+    setShowConfirm(false)
+    setSignatureData(null) // important that we clear signature data to avoid bad sigs
+  }, [setSignatureData])
 
   // const pendingText = `Removing ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} ${
   //   currencyA?.symbol
@@ -145,6 +165,18 @@ export default function RemoveLiquidity() {
 
   return (
     <>
+      <ConfirmRemoveModal
+        isOpen={showConfirm}
+        onConfirm={handleRemove}
+        onDismiss={handleDismissConfirmation}
+        val={formattedAmounts[Field.LIQUIDITY]}
+        priceA={pair?.token0Price?.toFixed() ?? '-'}
+        priceB={pair?.token1Price?.toFixed() ?? '-'}
+        tokenA={currencyA}
+        tokenB={currencyB}
+        valA={formattedAmounts[Field.CURRENCY_A]}
+        valB={formattedAmounts[Field.CURRENCY_B]}
+      />
       <AppBody
         width={'100%'}
         maxWidth={'680px'}
@@ -220,7 +252,12 @@ export default function RemoveLiquidity() {
             </Box>
           </>
         )}
-        <InputCard value="0.91234" balance="1234.45678" currency0={ETHER} currency1={ETHER} />
+        <InputCard
+          value={formattedAmounts[Field.LIQUIDITY]}
+          balance={balance?.toExact() ?? ''}
+          currency0={currencyA}
+          currency1={currencyB}
+        />
         <Box sx={{ height: 76, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => {}}>
           <ArrowCircle />
         </Box>
@@ -234,10 +271,10 @@ export default function RemoveLiquidity() {
           <Typography sx={{ fontSize: 18 }}>Price</Typography>
           <Box display="grid" gap={12}>
             <Typography sx={{ color: theme.palette.text.secondary, fontSize: 18 }}>
-              1 DAI = 0.02414876 Tickets for the com...
+              1 <Token1Text fontSize={18} /> = {pair?.token0Price?.toFixed()} <Token2Text fontSize={18} />
             </Typography>
             <Typography sx={{ color: theme.palette.text.secondary, fontSize: 18 }}>
-              1 Tickets for the com... = 4.1486 DAI
+              1 <Token2Text fontSize={18} /> = {pair?.token1Price?.toFixed() ?? '-'} <Token1Text fontSize={18} />
             </Typography>
           </Box>
         </Box>
@@ -260,7 +297,6 @@ export default function RemoveLiquidity() {
                   setShowConfirm(true)
                 }}
                 disabled={!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)}
-                // error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
               >
                 {error || 'Remove'}
               </Button>
@@ -269,7 +305,12 @@ export default function RemoveLiquidity() {
         </Box>
       </AppBody>
       <Box maxWidth={680} width="100%" mt={30}>
-        <PositionCard from={ETHER} to={ETHER} />
+        <PositionCard
+          from={currencyA}
+          to={currencyB}
+          liquidityA={pair?.reserve0.toExact()}
+          liquidityB={pair?.reserve1.toExact()}
+        />
       </Box>
     </>
   )
@@ -309,12 +350,15 @@ function NumericalCard({
   onSliderChange: (val: number) => void
 }) {
   const theme = useTheme()
+
   const onChange = useCallback(
     (e: Event) => {
-      onSliderChange(parseInt(e.target.value))
+      const val = (e.target as any)?.value
+      onSliderChange(val ? parseInt(val) : 0)
     },
     [onSliderChange]
   )
+
   const onChangeFactory = useCallback(
     (val: number) => () => {
       onSliderChange(val)
@@ -369,20 +413,27 @@ function InputCard({
   currency1: AllTokens | undefined
 }) {
   const theme = useTheme()
+  const { token1Text, token2Text, token1Is1155 } = getTokenText(currency0, currency1)
 
   return (
     <Card color={theme.palette.background.default} padding="24px" style={{ marginTop: 16 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box display="grid" gap={12}>
           <Typography sx={{ fontSize: 20, fontWeight: 400 }}>Input</Typography>
-          <Typography sx={{ fontSize: 24, fontWeight: 900 }}>{value}</Typography>
+          <Typography sx={{ fontSize: 24, fontWeight: 900 }}>{value ? value : '0'}</Typography>
         </Box>
         <Box display="grid" gap={14}>
-          <Typography sx={{ fontSize: 16, fontWeight: 400 }}>Balance: {balance}</Typography>
+          <Typography sx={{ fontSize: 16, fontWeight: 400 }}>Balance: {balance ?? '-'}</Typography>
           <Box display="flex" gap={11} alignItems="center">
             <DoubleCurrencyLogo currency0={currency0} currency1={currency1} />
             <Typography>
-              {currency0?.symbol}: {currency1?.symbol}
+              <Typography component="span" color={token1Is1155 ? 'primary' : undefined}>
+                {token1Text}
+              </Typography>
+              :
+              <Typography component="span" color={token1Is1155 ? undefined : 'primary'}>
+                {token2Text}
+              </Typography>
             </Typography>
           </Box>
         </Box>
@@ -394,6 +445,8 @@ function InputCard({
 function OutputCard({ value, currency }: { value: string; currency: AllTokens | undefined }) {
   const theme = useTheme()
 
+  const { token1Text } = getTokenText(currency)
+
   return (
     <Card color={theme.palette.background.default} padding="24px" style={{ marginTop: 16 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -401,9 +454,9 @@ function OutputCard({ value, currency }: { value: string; currency: AllTokens | 
           <Typography sx={{ fontSize: 20, fontWeight: 400 }}>Output</Typography>
           <Typography sx={{ fontSize: 24, fontWeight: 900 }}>{value}</Typography>
         </Box>
-        <Box display="flex" gap={12} width={180}>
+        <Box display="flex" gap={12} width={180} alignItems="center">
           {currency && <CurrencyLogo currency={currency} />}
-          <Typography>{currency?.symbol}</Typography>
+          <Typography>{token1Text}</Typography>
         </Box>
       </Box>
     </Card>

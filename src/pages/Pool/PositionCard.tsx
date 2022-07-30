@@ -3,25 +3,33 @@ import { AllTokens } from 'models/allTokens'
 import Card from 'components/Card'
 import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
 import Tag from 'components/Tag'
+import { getTokenText } from 'utils/checkIs1155'
 
 export default function PosittionCard({
   from,
   to,
-  price,
+  lpBalance,
   error,
-  color
+  color,
+  poolShare,
+  liquidityA,
+  liquidityB
 }: {
   from?: AllTokens
   to?: AllTokens
-  price?: string
   error?: string
   color?: string
+  lpBalance?: string
+  poolShare?: string
+  liquidityA?: string
+  liquidityB?: string
 }) {
   const theme = useTheme()
+  const { token1Text, token2Text } = getTokenText(from, to)
   const data = {
-    ['Your pool share']: '5.00 %',
-    ['DAI']: '0.2344887737787377',
-    ['Tickets for the community #56']: '30'
+    ['Your pool share']: poolShare ?? '-' + ' %',
+    [token1Text ?? '-']: liquidityA ?? '-',
+    [token2Text ?? '']: liquidityB ?? '-'
   }
   return (
     <>
@@ -55,7 +63,7 @@ export default function PosittionCard({
             <Box display="flex" justifyContent="space-between" mb={28}>
               <DoubleCurrencyLogo currency0={from} currency1={to} />
               <Typography fontSize={16} fontWeight={700}>
-                {price || '-'}{' '}
+                {lpBalance || '-'}{' '}
               </Typography>
             </Box>
             <Box sx={{ display: 'grid', gap: 12 }}>
