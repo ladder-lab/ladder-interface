@@ -129,9 +129,8 @@ export default function Pool() {
                     <PoolCard
                       currency0={token0}
                       currency1={token1}
-                      title={`${token1Text}${token1Id ? ' #' + token1Id : ''}/${token2Text} ${
-                        token2Id ? ' #' + token2Id : ''
-                      }`}
+                      title={`${token1Text} / ${token2Text}
+                      `}
                       reserve0={pair.reserve0.toExact()}
                       reserve1={pair.reserve1.toExact()}
                       shareAmount={poolTokenPercentage}
