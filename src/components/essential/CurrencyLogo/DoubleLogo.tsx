@@ -19,7 +19,7 @@ export default function DoubleCurrencyLogo({ currency0, currency1, size = 24, ma
   return (
     <Wrapper sx={{ marginRight: margin, width: (size * 14) / 8, height: size }}>
       {currency0 && (
-        <CurrencyLogo currency={currency0} size={size.toString() + 'px'} style={{ background: '#ffffff', zIndex: 2 }} />
+        <CurrencyLogo currency={currency0} size={size.toString() + 'px'} style={{ background: '#ffffff' }} />
       )}
       {currency1 && (
         <CurrencyLogo
@@ -28,7 +28,8 @@ export default function DoubleCurrencyLogo({ currency0, currency1, size = 24, ma
           style={{
             background: '#ffffff',
             position: 'absolute',
-            right: 0
+            right: 0,
+            zIndex: 2
           }}
         />
       )}

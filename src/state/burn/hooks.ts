@@ -1,5 +1,5 @@
-import { Currency, CurrencyAmount, JSBI, Pair, Percent, TokenAmount } from '@uniswap/sdk'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
+import { Currency, CurrencyAmount, JSBI, Pair, Percent, Token, TokenAmount } from '@uniswap/sdk'
 import { useDispatch, useSelector } from 'react-redux'
 import { generateErc20 } from 'utils/getHashAddress'
 import { usePair } from '../../data/Reserves'
@@ -31,19 +31,20 @@ export function useDerivedBurnInfo(
 } {
   const { account, chainId } = useActiveWeb3React()
 
+  const [tokenA, tokenB] = useMemo(
+    () => [generateErc20(wrappedCurrency(currencyA, chainId)), generateErc20(wrappedCurrency(currencyB, chainId))],
+    [chainId, currencyA, currencyB]
+  )
+
   const { independentField, typedValue } = useBurnState()
   // pair + totalsupply
-  const [, pair] = usePair(currencyA, currencyB)
+  const [, pair] = usePair(tokenA, tokenB)
 
   // balances
   const relevantTokenBalances = useTokenBalances(account ?? undefined, [pair?.liquidityToken])
   const userLiquidity: undefined | TokenAmount = relevantTokenBalances?.[pair?.liquidityToken?.address ?? '']
 
-  const [tokenA, tokenB] = [
-    generateErc20(wrappedCurrency(currencyA, chainId)),
-    generateErc20(wrappedCurrency(currencyB, chainId))
-  ]
-  const tokens = {
+  const tokens: { [key in Field]?: Token | undefined } = {
     [Field.CURRENCY_A]: tokenA,
     [Field.CURRENCY_B]: tokenB,
     [Field.LIQUIDITY]: pair?.liquidityToken
@@ -90,9 +91,9 @@ export function useDerivedBurnInfo(
   }
   // user specified a specific amount of token a or b
   else {
-    if (tokens[independentField]) {
-      const independentAmount = tryParseAmount(typedValue, tokens[independentField])
-      const liquidityValue = liquidityValues[independentField]
+    if (tokens[independentField as Field]) {
+      const independentAmount = tryParseAmount(typedValue, tokens[independentField as Field])
+      const liquidityValue = liquidityValues[independentField as keyof typeof liquidityValues]
       if (independentAmount && liquidityValue && !independentAmount.greaterThan(liquidityValue)) {
         percentToRemove = new Percent(independentAmount.raw, liquidityValue.raw)
       }

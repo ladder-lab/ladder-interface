@@ -26,10 +26,17 @@ export default function Pool() {
   // fetch the user's balances of all tracked V2 LP tokens
   const trackedTokenPairs = useTrackedTokenPairs()
 
-  const tokenPairsWithLiquidityTokens = useMemo(
-    () => trackedTokenPairs.map(tokens => ({ liquidityToken: toV2LiquidityToken(tokens), tokens })),
-    [trackedTokenPairs]
-  )
+  const [tokenPairsWithLiquidityTokens, trackedTokenPairMap] = useMemo(() => {
+    const tokensMap: { [key: string]: Token[] } = {}
+    const lpTokens = trackedTokenPairs.map(tokens => {
+      const lpToken = toV2LiquidityToken(tokens)
+      tokensMap[lpToken.address] = tokens
+      return { liquidityToken: toV2LiquidityToken(tokens), tokens }
+    })
+
+    return [lpTokens, tokensMap]
+  }, [trackedTokenPairs])
+
   const liquidityTokens = useMemo(
     () => tokenPairsWithLiquidityTokens.map(tpwlt => tpwlt.liquidityToken),
     [tokenPairsWithLiquidityTokens]
@@ -106,8 +113,11 @@ export default function Pool() {
             <Grid container mt={20} spacing={20}>
               {v2Pairs.map(([, pair], idx) => {
                 if (!pair) return null
-                const [token0, token1] = liquidityTokensWithBalances[idx].tokens
+
+                const [token0, token1] = trackedTokenPairMap[liquidityTokensWithBalances[idx].liquidityToken.address]
+
                 const { token1Text, token2Text, token1Id, token2Id } = getTokenText(token0, token1)
+
                 const balance = v2PairsBalances?.[liquidityTokensWithBalances[idx].liquidityToken.address]
                 const totalSupply = totalSupplies?.[liquidityTokensWithBalances[idx].liquidityToken.address]
                 pair.reserveOf
@@ -130,7 +140,7 @@ export default function Pool() {
                       onRemove={() =>
                         navigate(
                           routes.removeLiquidity +
-                            `/${pair.token0.address}/${pair.token1.address}/${token1Id ?? ''}&${token2Id ?? ''}`
+                            `/${token0.address}/${token1.address}/${token1Id ?? ''}&${token2Id ?? ''}`
                         )
                       }
                     />

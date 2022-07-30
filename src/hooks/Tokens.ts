@@ -159,7 +159,7 @@ export function useToken1155(tokenAddress?: string, tokenId?: string | number): 
     if (!chainId || !address || !tokenId) return undefined
     const list = DEFAULT_1155_LIST[chainId ?? NETWORK_CHAIN_ID]
     if (list) {
-      const token = list.find(token1155 => token1155.address === tokenAddress && token1155.tokenId === tokenId)
+      const token = list.find(token1155 => token1155.address === tokenAddress && token1155.tokenId == tokenId)
       if (token) return token
     }
     return new Token1155(chainId, address, tokenId)
