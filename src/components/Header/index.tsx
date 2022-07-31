@@ -5,14 +5,12 @@ import { ExternalLink } from 'theme/components'
 import Web3Status from './Web3Status'
 import { HideOnMobile, ShowOnMobile } from 'theme/index'
 import PlainSelect from 'components/Select/PlainSelect'
-import { ReactComponent as Ladder } from '../../assets/svg/ladder.svg'
-import { ReactComponent as LadderLogo } from '../../assets/svg/ladder_logo.svg'
 import { routes } from 'constants/routes'
 import MobileMenu from './MobileMenu'
 import NetworkSelect from './NetworkSelect'
 import SwitchToggle from 'components/SwitchToggle'
 import { useDarkModeManager } from 'state/user/hooks'
-import useBreakpoint from 'hooks/useBreakpoint'
+import MainLogo from 'components/MainLogo'
 
 interface TabContent {
   title: string
@@ -95,27 +93,6 @@ const Filler = styled('div')(({ theme }) => ({
   }
 }))
 
-const MainLogo = styled(Link, { shouldForwardProp: prop => !(prop === 'isDarkMode') })<{ isDarkMode?: boolean }>(
-  ({ theme, isDarkMode }) => ({
-    '& svg': {
-      width: 180.8,
-      height: 34.7,
-      fill: isDarkMode ? theme.palette.text.primary : '#232859'
-    },
-    '&:hover': {
-      cursor: 'pointer'
-    },
-    [theme.breakpoints.down('sm')]: {
-      '& img': { width: 100, height: 'auto' },
-      marginBottom: -10,
-      '& svg': {
-        width: 34,
-        height: 40
-      }
-    }
-  })
-)
-
 const LinksWrapper = muiStyled('div')(({ theme }) => ({
   marginLeft: 60,
   [theme.breakpoints.down('lg')]: {
@@ -125,7 +102,7 @@ const LinksWrapper = muiStyled('div')(({ theme }) => ({
 
 export default function Header() {
   const theme = useTheme()
-  const isDownMd = useBreakpoint('md')
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { pathname } = useLocation()
 
@@ -141,9 +118,7 @@ export default function Header() {
       <Filler />
       <StyledAppBar>
         <Box display="flex" alignItems="center">
-          <MainLogo id={'Ladder'} to={'/'} isDarkMode={darkMode}>
-            {isDownMd ? <LadderLogo /> : <Ladder />}
-          </MainLogo>
+          <MainLogo color={darkMode ? '#FFFFFF' : '#232859'} />
           <Box sx={{ display: { xs: 'none', md: 'block' } }}>
             <SwitchToggle checked={darkMode} onChange={toggleDarkMode} />{' '}
             <Typography color="#cccccc">Dark mode</Typography>
