@@ -43,8 +43,7 @@ const navLinkSX = ({ theme }: any) => ({
 const StyledNavLink = styled(Link)(navLinkSX)
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
-  // position: 'relative',
-  position: 'fixed',
+  position: 'relative',
   height: theme.height.header,
   backgroundColor: theme.palette.background.paper,
   flexDirection: 'row',
