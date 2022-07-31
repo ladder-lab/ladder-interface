@@ -175,7 +175,7 @@ export default function SelectCurrencyModal({
           value={searchQuery}
           onChange={handleInput}
           placeholder="Search name or paste address"
-          outlined
+          // outlined
           startAdornment={<SearchIcon />}
           onKeyDown={handleEnter}
           height={isDownMd ? 48 : 60}

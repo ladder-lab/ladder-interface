@@ -21,6 +21,7 @@ export interface InputProps {
   subStr?: string
   subStr2?: string
   helperText?: string
+  borderRadius?: string
 }
 
 export default function Input({
@@ -41,6 +42,7 @@ export default function Input({
   subStr,
   subStr2,
   helperText,
+  borderRadius = '8px',
   ...rest
 }: InputProps & Omit<InputHTMLAttributes<HTMLInputElement>, 'color' | 'outline' | 'size'>) {
   const theme = useTheme()
@@ -51,30 +53,51 @@ export default function Input({
       {label && <InputLabel helperText={helperText}>{label}</InputLabel>}
       <InputBase
         sx={{
-          height: height || 60,
-          borderRadius: '8px',
+          height: height || 52,
+          borderRadius,
           background: theme.palette.background.default,
-          padding: '0 22px',
+          padding: startAdornment ? 0 : '0 22px',
           '&.Mui-focused': {
-            background: isDarkMode ? theme.gradient.gradient1 : '#1F9898',
-            height: height || 60,
-            zIndex: 1,
-            borderRadius: '8px',
-            position: 'relative'
+            padding: 0,
+            zIndex: 1
           },
           '&.Mui-focused:before': {
-            height: height || 60,
+            display: 'none'
+          },
+          '&.Mui-focused .MuiInputBase-input': {
+            height: '100%',
+            width: '100%',
             background: theme.palette.background.default,
-            borderRadius: '8px',
-            borderColor: 'transparent',
+            padding: startAdornment ? 0 : '0 22px',
+            borderRadius: startAdornment ? `0 ${borderRadius} ${borderRadius} 0` : borderRadius,
             backgroundClip: 'padding-box',
+            boxSizing: 'border-box'
+          },
+          '&.Mui-focused:after': {
+            background: isDarkMode ? theme.gradient.gradient1 : '#1F9898',
+            borderRadius,
             position: 'absolute',
-            top: 1,
-            right: 1,
-            bottom: 1,
-            left: 1,
+            top: -1,
+            right: -1,
+            bottom: -1,
+            left: -1,
             zIndex: -1,
-            width: '100%'
+            content: '""'
+          },
+          '& span': {
+            height: '100%',
+            width: '60px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingRight: '0 !important'
+          },
+          '&.Mui-focused span': {
+            background: theme.palette.background.default,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: `${borderRadius} 0 0 ${borderRadius}`
           }
         }}
         color={error ? 'error' : 'primary'}
