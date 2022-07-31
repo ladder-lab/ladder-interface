@@ -35,8 +35,8 @@ export default function AppBody(props: Props) {
   return (
     <Root
       sx={{
-        width: width || 560,
-        maxWidth: maxWidth || 560,
+        width: width || 680,
+        maxWidth: { xs: 'calc(100% - 32px)', md: maxWidth || 680 },
         ...sx
       }}
     >
