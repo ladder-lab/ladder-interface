@@ -39,7 +39,9 @@ export function CloseIcon({
   if (variant === 'plain') {
     return (
       <ButtonBase onClick={onClick} sx={{ position: 'absolute', ...sx }}>
-        <MuiCloseIcon sx={{ color: theme => theme.palette.text.primary, size: 13 }} />
+        <MuiCloseIcon
+          sx={{ fontSize: 20, color: theme.palette.text.secondary, '&:hover': { color: theme.palette.text.primary } }}
+        />
       </ButtonBase>
     )
   }
@@ -60,7 +62,9 @@ export function CloseIcon({
         ...sx
       }}
     >
-      <MuiCloseIcon sx={{ color: theme => theme.palette.text.primary, size: 13 }} />
+      <MuiCloseIcon
+        sx={{ fontSize: 20, color: theme.palette.text.secondary, '&:hover': { color: theme.palette.text.primary } }}
+      />
     </IconButton>
   )
 }
