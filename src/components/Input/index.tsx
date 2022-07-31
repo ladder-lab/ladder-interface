@@ -64,11 +64,14 @@ export default function Input({
           '&.Mui-focused:before': {
             display: 'none'
           },
+          '& .MuiInputBase-input': {
+            padding: startAdornment ? '0 0 0 17px' : 0
+          },
           '&.Mui-focused .MuiInputBase-input': {
             height: '100%',
             width: '100%',
             background: theme.palette.background.default,
-            padding: startAdornment ? 0 : '0 22px',
+            padding: startAdornment ? '0 0 0 17px' : '0 22px',
             borderRadius: startAdornment ? `0 ${borderRadius} ${borderRadius} 0` : borderRadius,
             backgroundClip: 'padding-box',
             boxSizing: 'border-box'
@@ -86,10 +89,10 @@ export default function Input({
           },
           '& span': {
             height: '100%',
-            width: '60px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            paddingLeft: 22,
             paddingRight: '0 !important'
           },
           '&.Mui-focused span': {
