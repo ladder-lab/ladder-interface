@@ -233,7 +233,7 @@ export default function Swap() {
       <AppBody width={'100%'} maxWidth={'680px'}>
         <Box
           sx={{
-            padding: '33px 32px 30px',
+            padding: { xs: '24px 20px 20px', md: '33px 32px 30px' },
             position: 'relative'
           }}
         >
