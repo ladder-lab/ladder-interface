@@ -129,7 +129,7 @@ export default function SelectCurrencyModal({
         maxWidth="680px"
         closeIcon
         closeVariant="button"
-        padding={isDownMd ? '16px 28px' : '32px 32px'}
+        padding={isDownMd ? '28px 16px' : '32px 32px'}
       >
         <Box width="100%" display="flex" gap={14} alignItems="center">
           <Typography
@@ -146,7 +146,7 @@ export default function SelectCurrencyModal({
           <QuestionHelper
             text={mode === Mode.TOKEN ? HelperText.selectToken : HelperText.selectNft}
             size={isDownMd ? 18.33 : 22}
-            style={{ color: theme.palette.text.primary }}
+            style={{ color: theme.palette.text.secondary }}
           />
         </Box>
         <Box display="flex" gap={20} padding="31px 0 30px" alignItems="center">
