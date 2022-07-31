@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, KeyboardEvent, useRef, ChangeEvent, useEffect } from 'react'
+import React, { useState, useCallback, useMemo, KeyboardEvent, useRef, ChangeEvent, useEffect, useContext } from 'react'
 import { Box, Typography, ButtonBase, useTheme } from '@mui/material'
 import { FixedSizeList } from 'react-window'
 import Modal from 'components/Modal'
@@ -24,11 +24,21 @@ import { theme } from 'theme'
 import useBreakpoint from 'hooks/useBreakpoint'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { useIsDarkMode } from 'state/user/hooks'
+import { NFT } from 'models/nft'
 
 export enum Mode {
   TOKEN = 'token',
   NFT = 'nft'
 }
+interface SwapContextType {
+  selectedToken: NFT | undefined
+  setSelectedToken: (nft: NFT | undefined) => void
+}
+
+export const SwapContext = React.createContext<SwapContextType>({
+  selectedToken: undefined,
+  setSelectedToken: () => {}
+})
 
 export default function SelectCurrencyModal({
   onSelectCurrency,
@@ -51,6 +61,11 @@ export default function SelectCurrencyModal({
   // if they input an address, use it
   const searchToken = useToken(debouncedQuery)
   const searchTokenIsAdded = useIsUserAddedToken(searchToken)
+
+  const handleImport = useCallback(
+    (nft: NFT) => onSelectCurrency?.(nft),
+    [onSelectCurrency]
+  )
 
   const showETH: boolean = useMemo(() => {
     const s = debouncedQuery.toLowerCase().trim()
@@ -119,8 +134,8 @@ export default function SelectCurrencyModal({
   }, [selectedTokenType])
 
   const onImport = useCallback(() => {
-    showModal(<ImportModal />)
-  }, [showModal])
+    showModal(<ImportModal onImport={handleImport} onProceed={() => {}} />)
+  }, [showModal, handleImport])
 
   return (
     <>
