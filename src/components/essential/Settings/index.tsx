@@ -70,8 +70,8 @@ export default function Settings({ onlySlippage }: { onlySlippage?: boolean }) {
             background: '#484D50'
           },
           position: 'absolute',
-          top: 24,
-          right: 32
+          top: { xs: 20, md: 24 },
+          right: { xs: 20, md: 32 }
         }}
       >
         <StyledMenuIcon />
