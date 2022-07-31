@@ -124,7 +124,13 @@ export default function SelectCurrencyModal({
 
   return (
     <>
-      <Modal width="100%" maxWidth="680px" closeIcon padding={isDownMd ? '16px 28px' : '32px 32px'}>
+      <Modal
+        width="100%"
+        maxWidth="680px"
+        closeIcon
+        closeVariant="button"
+        padding={isDownMd ? '16px 28px' : '32px 32px'}
+      >
         <Box width="100%" display="flex" gap={14} alignItems="center">
           <Typography
             variant="h5"

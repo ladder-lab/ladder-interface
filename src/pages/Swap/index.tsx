@@ -1,5 +1,5 @@
 import { useCallback, useState, ChangeEvent, useMemo, useEffect } from 'react'
-import { Typography, Box, useTheme, Button } from '@mui/material'
+import { Typography, Box, Button } from '@mui/material'
 import { CurrencyAmount, JSBI, Trade } from '@uniswap/sdk'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
@@ -29,7 +29,7 @@ import { useApproveERC1155Callback } from 'hooks/useApproveERC1155Callback'
 import { checkIs1155, filter1155 } from 'utils/checkIs1155'
 
 export default function Swap() {
-  const theme = useTheme()
+  // const theme = useTheme()
   const { account } = useActiveWeb3React()
 
   const [summaryExpanded, setSummaryExpanded] = useState(false)
@@ -252,22 +252,8 @@ export default function Swap() {
           >
             SWAP
           </Typography>
-          <Box
-            sx={{
-              position: 'absolute',
-              right: 32,
-              top: 24,
-              background: theme.palette.background.default,
-              borderRadius: '8px',
-              width: 52,
-              height: 52,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <Settings />
-          </Box>
+
+          <Settings />
           <Box mb={fromAsset ? 16 : 0}>
             <CurrencyInputPanel
               value={formattedAmounts[Field.INPUT]}
