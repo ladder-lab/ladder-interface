@@ -56,25 +56,25 @@ export default function Input({
           height: height || 52,
           borderRadius,
           background: theme.palette.background.default,
-          padding: startAdornment ? 0 : '0 22px',
-          '&.Mui-focused': {
-            padding: 0,
-            zIndex: 1
-          },
+          padding: 0,
+          zIndex: 1,
           '&.Mui-focused:before': {
             display: 'none'
           },
           '& .MuiInputBase-input': {
-            padding: startAdornment ? '0 0 0 17px' : 0
+            height: '100%',
+            padding: startAdornment ? '0 0 0 60px' : '0 22px',
+            backgroundClip: 'padding-box',
+            boxSizing: 'border-box'
           },
           '&.Mui-focused .MuiInputBase-input': {
             height: '100%',
             width: '100%',
             background: theme.palette.background.default,
-            padding: startAdornment ? '0 0 0 17px' : '0 22px',
-            borderRadius: startAdornment ? `0 ${borderRadius} ${borderRadius} 0` : borderRadius,
-            backgroundClip: 'padding-box',
-            boxSizing: 'border-box'
+            padding: startAdornment ? '0 0 0 60px' : '0 22px',
+            borderRadius: borderRadius
+            // backgroundClip: 'padding-box'
+            // boxSizing: 'border-box'
           },
           '&.Mui-focused:after': {
             background: isDarkMode ? theme.gradient.gradient1 : '#1F9898',
@@ -88,12 +88,12 @@ export default function Input({
             content: '""'
           },
           '& span': {
-            height: '100%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             paddingLeft: 22,
-            paddingRight: '0 !important'
+            paddingRight: '0 !important',
+            position: 'absolute'
           },
           '&.Mui-focused span': {
             background: theme.palette.background.default,
