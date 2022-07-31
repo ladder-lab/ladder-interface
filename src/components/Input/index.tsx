@@ -1,6 +1,5 @@
 import React, { ChangeEvent, InputHTMLAttributes } from 'react'
-import { InputBase, styled, Typography, Box, useTheme } from '@mui/material'
-import { inputBaseClasses } from '@mui/material/InputBase'
+import { InputBase, Typography, Box, useTheme } from '@mui/material'
 import InputLabel from './InputLabel'
 
 export interface InputProps {
@@ -22,34 +21,6 @@ export interface InputProps {
   subStr2?: string
   helperText?: string
 }
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  [`&.${inputBaseClasses.root}`]: {
-    fontSize: 16,
-    color: theme.palette.text.primary,
-    fontWeight: 400,
-    backgroundColor: theme.palette.background.default,
-    paddingLeft: 20,
-    borderRadius: 14
-  },
-  [`&.${inputBaseClasses.focused}`]: { border: `1px solid ${theme.palette.primary.main} !important` },
-  [`& .${inputBaseClasses.input}`]: {
-    maxWidth: '100%',
-    '&::-webkit-outer-spin-button': {
-      WebkitAppearance: 'none'
-    },
-    '&::-webkit-inner-spin-button': {
-      WebkitAppearance: 'none'
-    },
-    '&.Mui-disabled': {
-      WebkitTextFillColor: theme.palette.text.secondary,
-      color: theme.palette.text.secondary
-    }
-  },
-  [`&.${inputBaseClasses.disabled}`]: {
-    cursor: 'not-allowed'
-  }
-}))
 
 export default function Input({
   focused,
@@ -75,24 +46,32 @@ export default function Input({
   return (
     <div style={{ width: '100%', maxWidth: maxWidth || 'unset' }}>
       {label && <InputLabel helperText={helperText}>{label}</InputLabel>}
-      <StyledInputBase
+      <InputBase
         sx={{
           height: height || 60,
-          [`&.${inputBaseClasses.root}`]: {
-            border: theme =>
-              `1px solid ${outlined ? 'rgba(255,255,255,.4)' : error ? theme.palette.error.main : 'transparent'}`
+          borderRadius: '8px',
+          background: theme.palette.background.default,
+          padding: '0 22px',
+          '&.Mui-focused': {
+            background: theme.gradient.gradient1,
+            height: height || 60,
+            zIndex: 1,
+            borderRadius: '8px',
+            position: 'relative'
           },
-          [`&.${inputBaseClasses.focused}`]: {
-            borderColor: theme =>
-              error ? `${theme.palette.error.main}!important` : `${theme.palette.primary.main}!important`
-          },
-          [`& .${inputBaseClasses.input}`]: {
-            '&::placeholder': {
-              fontSize: smallPlaceholder ? 13 : 16,
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden'
-            }
+          '&.Mui-focused:before': {
+            height: height || 60,
+            background: theme.palette.background.default,
+            borderRadius: '8px',
+            borderColor: 'transparent',
+            backgroundClip: 'padding-box',
+            position: 'absolute',
+            top: 1,
+            right: 1,
+            bottom: 1,
+            left: 1,
+            zIndex: -1,
+            width: '100%'
           }
         }}
         color={error ? 'error' : 'primary'}
