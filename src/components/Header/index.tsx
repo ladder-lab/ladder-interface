@@ -43,7 +43,8 @@ const navLinkSX = ({ theme }: any) => ({
 const StyledNavLink = styled(Link)(navLinkSX)
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
-  position: 'relative',
+  // position: 'relative',
+  position: 'fixed',
   height: theme.height.header,
   backgroundColor: theme.palette.background.paper,
   flexDirection: 'row',
@@ -70,11 +71,9 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
   },
   [theme.breakpoints.down('lg')]: {
     '& .link': { marginRight: 15 },
-    padding: '0 24px 0 0!important'
+    padding: '0 24px !important'
   },
-  [theme.breakpoints.down('md')]: {
-    position: 'fixed'
-  },
+  [theme.breakpoints.down('md')]: {},
   [theme.breakpoints.down('sm')]: {
     height: theme.height.mobileHeader,
     padding: '0 20px!important'
@@ -117,7 +116,7 @@ export default function Header() {
       <MobileMenu isOpen={mobileMenuOpen} onDismiss={handleMobileMenueDismiss} />
       <Filler />
       <StyledAppBar>
-        <Box display="flex" alignItems="center">
+        <Box display="flex" alignItems="center" gap={30}>
           <MainLogo color={darkMode ? '#FFFFFF' : '#232859'} />
           <Box sx={{ display: { xs: 'none', md: 'block' } }}>
             <SwitchToggle checked={darkMode} onChange={toggleDarkMode} />{' '}
