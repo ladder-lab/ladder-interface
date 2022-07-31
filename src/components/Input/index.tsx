@@ -1,6 +1,7 @@
 import React, { ChangeEvent, InputHTMLAttributes } from 'react'
 import { InputBase, Typography, Box, useTheme } from '@mui/material'
 import InputLabel from './InputLabel'
+import { useIsDarkMode } from 'state/user/hooks'
 
 export interface InputProps {
   placeholder?: string
@@ -43,6 +44,8 @@ export default function Input({
   ...rest
 }: InputProps & Omit<InputHTMLAttributes<HTMLInputElement>, 'color' | 'outline' | 'size'>) {
   const theme = useTheme()
+  const isDarkMode = useIsDarkMode()
+
   return (
     <div style={{ width: '100%', maxWidth: maxWidth || 'unset' }}>
       {label && <InputLabel helperText={helperText}>{label}</InputLabel>}
@@ -53,7 +56,7 @@ export default function Input({
           background: theme.palette.background.default,
           padding: '0 22px',
           '&.Mui-focused': {
-            background: theme.gradient.gradient1,
+            background: isDarkMode ? theme.gradient.gradient1 : '#1F9898',
             height: height || 60,
             zIndex: 1,
             borderRadius: '8px',
