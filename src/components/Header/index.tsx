@@ -43,7 +43,7 @@ const navLinkSX = ({ theme }: any) => ({
 const StyledNavLink = styled(Link)(navLinkSX)
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
-  position: 'relative',
+  position: 'fixed',
   height: theme.height.header,
   backgroundColor: theme.palette.background.paper,
   flexDirection: 'row',
@@ -80,14 +80,9 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
 }))
 
 const Filler = styled('div')(({ theme }) => ({
-  display: 'none',
-  [theme.breakpoints.down('md')]: {
-    height: theme.height.header,
-    display: 'block'
-  },
+  height: theme.height.header,
   [theme.breakpoints.down('sm')]: {
-    height: theme.height.mobileHeader,
-    padding: '0 20px'
+    height: theme.height.mobileHeader
   }
 }))
 
