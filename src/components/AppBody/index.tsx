@@ -57,24 +57,19 @@ export default function AppBody(props: Props) {
             </Typography>
           )}
         </Box>
-        {setting && (
-          <Box
-            sx={{
-              background: theme => theme.palette.background.default,
-              borderRadius: '8px',
-              width: 52,
-              height: 52,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <Settings />
-          </Box>
-        )}
+        {setting && <Settings />}
       </Box>
 
-      {closeIcon && <CloseIcon onClick={onReturnClick} />}
+      {closeIcon && (
+        <CloseIcon
+          onClick={onReturnClick}
+          sx={{
+            position: 'absolute',
+            top: 24,
+            right: 32
+          }}
+        />
+      )}
       {children}
     </Root>
   )
