@@ -192,6 +192,13 @@ export default function Swap() {
     [onUserInput]
   )
 
+  const handleToVal = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      onUserInput(Field.OUTPUT, e.target.value)
+    },
+    [onUserInput]
+  )
+
   const handleFromAsset = useCallback(
     (currency: AllTokens) => {
       setApprovalSubmitted(false) // reset 2 step UI for approvals
@@ -288,8 +295,7 @@ export default function Swap() {
             <CurrencyInputPanel
               selectedTokenType={fromAsset ? ('tokenId' in fromAsset ? 'erc1155' : 'erc20') : undefined}
               value={formattedAmounts[Field.OUTPUT]}
-              onChange={() => {}}
-              disableInput={true}
+              onChange={handleToVal}
               onSelectCurrency={handleToAsset}
               currency={toAsset}
             />

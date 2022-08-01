@@ -146,7 +146,7 @@ export default function CurrencyInputPanel({
         </InputRow>
         <Box display="flex" justifyContent="space-between" alignItems="center" mt={9}>
           <Typography fontSize={12} sx={{ color: theme.palette.text.secondary }}>
-            ~$568.23
+            {/* ~$568.23 */}
           </Typography>
           <Box display="flex" alignItems={'center'}>
             {!hideBalance && (
