@@ -40,9 +40,11 @@ export function AssetAccordion({ token }: { token?: AllTokens }) {
           <Typography color={theme.palette.text.secondary} sx={{ wordWrap: 'break-word' }}>
             Contract: {token && 'address' in token ? token?.address : '-'}
           </Typography>
-          <Typography color={theme.palette.text.secondary} sx={{ wordWrap: 'break-word' }}>
-            Token Id: {token && 'tokenId' in token ? token.tokenId : 'none'}
-          </Typography>
+          {is1155 && (
+            <Typography color={theme.palette.text.secondary} sx={{ wordWrap: 'break-word' }}>
+              Token Id: {token && 'tokenId' in token ? token.tokenId : 'none'}
+            </Typography>
+          )}
         </Box>
 
         <Tag sx={{ position: 'absolute', right: 0, top: 0 }}>{is1155 ? 'ERC1155' : 'ERC20'}</Tag>

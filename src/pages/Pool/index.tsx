@@ -80,6 +80,7 @@ export default function Pool() {
             <Typography sx={{ fontSize: 24 }}>Your Liquidity</Typography>
             <Box display={'flex'} gap={20}>
               <Button
+                onClick={() => navigate(routes.addLiquidity)}
                 sx={{
                   fontSize: 12,
                   height: 44,
