@@ -29,7 +29,7 @@ export const Tabs: Tab[] = [
   { title: 'Swap', route: routes.swap },
   { title: 'Pool', route: routes.pool },
   { title: 'Explore', link: 'https://www.google.com/' },
-  { title: 'Statistics', link: '' }
+  { title: 'Statistics', link: 'https://www.google.com/#' }
 ]
 
 const navLinkSX = ({ theme }: any) => ({

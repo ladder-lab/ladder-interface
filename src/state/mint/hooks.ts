@@ -198,9 +198,9 @@ export function useDerivedMintInfo(
     error = 'Insufficient ' + currencies[Field.CURRENCY_B]?.symbol + ' balance'
   }
 
-  if (!liquidityMinted) {
-    error = error ?? 'Insufficient Amount'
-  }
+  // if (!liquidityMinted) {
+  //   error = error ?? 'Insufficient Amount'
+  // }
 
   const isA1155 = checkIs1155(currencyA)
   const isB1155 = checkIs1155(currencyB)
