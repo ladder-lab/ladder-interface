@@ -121,7 +121,7 @@ export default function ImportPool() {
         maxWidth={'680px'}
         onReturnClick={() => navigate(routes.pool)}
         title="Import Pool"
-        sx={{ padding: '24px 32px' }}
+        sx={{ padding: { xs: '20px', md: '24px 32px' } }}
       >
         <Box mt={35}>
           <Box mb={fromAsset ? 16 : 0}>
@@ -155,7 +155,7 @@ export default function ImportPool() {
             </Typography>
           )}
           <Box mt={error ? 40 : 0}>
-            <PosittionCard from={fromAsset} to={toAsset} lpBalance="25.1676" error={error} color="#F6F6F6" />
+            <PosittionCard from={fromAsset} to={toAsset} lpBalance="25.1676" error={error} />
           </Box>
         </Box>
       </AppBody>

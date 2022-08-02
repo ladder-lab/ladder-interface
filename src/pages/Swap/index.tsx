@@ -1,5 +1,5 @@
 import { useCallback, useState, ChangeEvent, useMemo, useEffect } from 'react'
-import { Typography, Box, useTheme, Button } from '@mui/material'
+import { Typography, Box, Button } from '@mui/material'
 import { CurrencyAmount, JSBI, Trade } from '@uniswap/sdk'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
@@ -27,7 +27,7 @@ import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 
 export default function Swap() {
-  const theme = useTheme()
+  // const theme = useTheme()
   const { account } = useActiveWeb3React()
 
   const [summaryExpanded, setSummaryExpanded] = useState(false)
@@ -227,7 +227,7 @@ export default function Swap() {
       <AppBody width={'100%'} maxWidth={'680px'}>
         <Box
           sx={{
-            padding: '33px 32px 30px',
+            padding: { xs: '24px 20px 20px', md: '33px 32px 30px' },
             position: 'relative'
           }}
         >
@@ -246,22 +246,8 @@ export default function Swap() {
           >
             SWAP
           </Typography>
-          <Box
-            sx={{
-              position: 'absolute',
-              right: 32,
-              top: 24,
-              background: theme.palette.background.default,
-              borderRadius: '8px',
-              width: 52,
-              height: 52,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <Settings />
-          </Box>
+
+          <Settings />
           <Box mb={fromAsset ? 16 : 0}>
             <CurrencyInputPanel
               value={formattedAmounts[Field.INPUT]}

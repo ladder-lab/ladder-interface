@@ -1,5 +1,5 @@
 import { ChangeEvent, useCallback } from 'react'
-import { styled, Box, useTheme, Typography, Button } from '@mui/material'
+import { Box, useTheme, Typography, Button } from '@mui/material'
 import InputNumerical from 'components/Input/InputNumerical'
 import SelectButton from 'components/Button/SelectButton'
 import useModal from 'hooks/useModal'
@@ -28,34 +28,6 @@ interface Props {
   disableInput?: boolean
   hideBalance?: boolean
 }
-
-const InputRow = styled('div')(({ theme }) => ({
-  position: 'relative',
-  width: '100%',
-  height: 60,
-  display: 'flex',
-  justifyContent: 'flex-end',
-  // maxWidth: 254,
-  '& .Mui-focused': {
-    '&:before': {
-      content: '""',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: 'calc(100% + 2px)',
-      height: 'calc(100% + 2px)',
-      borderRadius: 14,
-      margin: -1,
-      border: '1px solid ' + theme.palette.primary.main,
-      zIndex: 10000
-    }
-  }
-}))
-
-const StyledInput = styled(InputNumerical)({
-  position: 'absolute',
-  width: '100%'
-})
 
 const trimBalance = (balance: string) => {
   if (balance.length > 11) {
@@ -122,6 +94,7 @@ export default function CurrencyInputPanel({
         onClick={showCurrencySearch}
         disabled={disableCurrencySelect || disabled}
         primary={selectActive}
+        height={isDownMd ? '48px' : '52px'}
       >
         {currency ? (
           <LogoText
@@ -133,17 +106,16 @@ export default function CurrencyInputPanel({
         )}
       </SelectButton>
       <Box flexGrow={1}>
-        <InputRow>
-          <StyledInput
-            placeholder={placeholder ?? 'Enter amount to swap'}
-            value={value.toString()}
-            onChange={onChange}
-            type={'number'}
-            disabled={disabled || disableInput}
-            focused={inputFocused}
-            integer={!!is1155}
-          />
-        </InputRow>
+        <InputNumerical
+          placeholder={placeholder ?? 'Enter amount to swap'}
+          value={value.toString()}
+          onChange={onChange}
+          type={'number'}
+          disabled={disabled || disableInput}
+          focused={inputFocused}
+          integer={!!is1155}
+          height={isDownMd ? 48 : 52}
+        />
         <Box display="flex" justifyContent="space-between" alignItems="center" mt={9}>
           <Typography fontSize={12} sx={{ color: theme.palette.text.secondary }}>
             {/* ~$568.23 */}
