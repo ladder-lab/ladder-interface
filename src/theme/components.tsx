@@ -62,9 +62,7 @@ export function CloseIcon({
         ...sx
       }}
     >
-      <MuiCloseIcon
-        sx={{ fontSize: 20, color: theme.palette.text.secondary, '&:hover': { color: theme.palette.text.primary } }}
-      />
+      <MuiCloseIcon sx={{ fontSize: 20, color: theme.palette.text.secondary }} />
     </IconButton>
   )
 }

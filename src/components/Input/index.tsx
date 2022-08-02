@@ -10,14 +10,14 @@ export interface InputProps {
   label?: string
   disabled?: boolean
   focused?: boolean
-  outlined?: boolean
+  // outlined?: boolean
   type?: string
   startAdornment?: React.ReactNode
   endAdornment?: React.ReactNode
   maxWidth?: string | number
   height?: string | number
   error?: boolean
-  smallPlaceholder?: boolean
+  // smallPlaceholder?: boolean
   subStr?: string
   subStr2?: string
   helperText?: string
@@ -31,14 +31,14 @@ export default function Input({
   value,
   disabled,
   type,
-  outlined,
+  // outlined,
   startAdornment,
   endAdornment,
   maxWidth,
   label,
   height,
   error,
-  smallPlaceholder,
+  // smallPlaceholder,
   subStr,
   subStr2,
   helperText,
