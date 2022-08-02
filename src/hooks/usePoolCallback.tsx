@@ -10,7 +10,7 @@ import { useDerivedBurnInfo } from 'state/burn/hooks'
 import { Field } from 'state/mint/actions'
 import { Field as BurnField } from 'state/burn/actions'
 import { useDerivedMintInfo } from 'state/mint/hooks'
-import { useUserSlippageTolerance } from 'state/user/hooks'
+import { useTokenPairAdder, useUserSlippageTolerance } from 'state/user/hooks'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'utils'
 import { checkIs1155, filter1155 } from 'utils/checkIs1155'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
@@ -28,9 +28,12 @@ export function useMintCallback(currencyA: AllTokens | undefined, currencyB: All
   const { parsedAmounts, noLiquidity } = useDerivedMintInfo(currencyA, currencyB)
   const [allowedSlippage] = useUserSlippageTolerance()
   const deadline = useTransactionDeadline()
+  const addTokenPair = useTokenPairAdder()
 
   const addLiquidityCb = useCallback(async () => {
-    if (!chainId || !library || !account) return
+    if (!chainId || !library || !account || !currencyA || !currencyB) return
+
+    addTokenPair(wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId))
 
     const router = getRouterContract(chainId, library, account)
 
@@ -87,7 +90,18 @@ export function useMintCallback(currencyA: AllTokens | undefined, currencyB: All
       ...(value ? { value } : {}),
       gasLimit: calculateGasMargin(estimatedGasLimit)
     })
-  }, [account, allowedSlippage, chainId, currencyA, currencyB, deadline, library, noLiquidity, parsedAmounts])
+  }, [
+    account,
+    addTokenPair,
+    allowedSlippage,
+    chainId,
+    currencyA,
+    currencyB,
+    deadline,
+    library,
+    noLiquidity,
+    parsedAmounts
+  ])
 
   return useMemo(
     () => ({
