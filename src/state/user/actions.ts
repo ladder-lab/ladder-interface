@@ -6,6 +6,7 @@ export interface SerializedToken {
   decimals: number
   symbol?: string
   name?: string
+  tokenId?: string | number
 }
 
 export interface SerializedPair {
@@ -22,6 +23,10 @@ export const updateUserDeadline = createAction<{ userDeadline: number }>('user/u
 export const addSerializedToken = createAction<{ serializedToken: SerializedToken }>('user/addSerializedToken')
 export const removeSerializedToken = createAction<{ chainId: number; address: string }>('user/removeSerializedToken')
 export const addSerializedPair = createAction<{ serializedPair: SerializedPair }>('user/addSerializedPair')
-export const removeSerializedPair = createAction<{ chainId: number; tokenAAddress: string; tokenBAddress: string }>(
-  'user/removeSerializedPair'
-)
+export const removeSerializedPair = createAction<{
+  chainId: number
+  tokenAAddress: string
+  tokenBAddress: string
+  tokenIdA: string | number
+  tokenIdB: string | number
+}>('user/removeSerializedPair')

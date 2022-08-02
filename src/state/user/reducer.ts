@@ -14,6 +14,9 @@ import {
   updateUserSingleHopOnly,
   updateUserDarkMode
 } from './actions'
+import { Token1155 } from 'constants/token/token1155'
+import { filter1155 } from 'utils/checkIs1155'
+import { Token } from '@uniswap/sdk'
 
 const currentTimestamp = () => new Date().getTime()
 
@@ -49,8 +52,16 @@ export interface UserState {
   URLWarningVisible: boolean
 }
 
-function pairKey(token0Address: string, token1Address: string) {
-  return `${token0Address};${token1Address}`
+export function pairKey(
+  token0Address: string,
+  token1Address: string,
+  token0TokenId?: string | number,
+  token1TokenId?: string | number
+) {
+  return `${token0Address};${token1Address}/${token0TokenId}$${token1TokenId}`
+}
+export function pairKeyToken(token0: Token | Token1155, token1: Token | Token1155) {
+  return `${token0.address};${token1.address}/${filter1155(token0)?.tokenId ?? ''}$${filter1155(token1)?.tokenId ?? ''}`
 }
 
 export const initialState: UserState = {
@@ -120,18 +131,28 @@ export default createReducer(initialState, builder =>
       ) {
         const chainId = serializedPair.token0.chainId
         state.pairs[chainId] = state.pairs[chainId] || {}
-        state.pairs[chainId][pairKey(serializedPair.token0.address, serializedPair.token1.address)] = serializedPair
+        state.pairs[chainId][
+          pairKey(
+            serializedPair.token0.address,
+            serializedPair.token1.address,
+            serializedPair.token0.tokenId,
+            serializedPair.token1.tokenId
+          )
+        ] = serializedPair
       }
       state.timestamp = currentTimestamp()
     })
-    .addCase(removeSerializedPair, (state, { payload: { chainId, tokenAAddress, tokenBAddress } }) => {
-      if (state.pairs[chainId]) {
-        // just delete both keys if either exists
-        delete state.pairs[chainId][pairKey(tokenAAddress, tokenBAddress)]
-        delete state.pairs[chainId][pairKey(tokenBAddress, tokenAAddress)]
+    .addCase(
+      removeSerializedPair,
+      (state, { payload: { chainId, tokenAAddress, tokenBAddress, tokenIdA, tokenIdB } }) => {
+        if (state.pairs[chainId]) {
+          // just delete both keys if either exists
+          delete state.pairs[chainId][pairKey(tokenAAddress, tokenBAddress, tokenIdA, tokenIdB)]
+          delete state.pairs[chainId][pairKey(tokenBAddress, tokenAAddress, tokenIdB, tokenIdA)]
+        }
+        state.timestamp = currentTimestamp()
       }
-      state.timestamp = currentTimestamp()
-    })
+    )
     .addCase(updateUserDarkMode, state => {
       const prev = state.userDarkMode
       state.userDarkMode = !prev

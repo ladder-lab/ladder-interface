@@ -111,7 +111,7 @@ export default function Pool() {
               </Box>
             </Box>
           ) : (
-            <Grid container mt={20} spacing={20} alignItems="stretch">
+            <Grid container mt={20} spacing={20} alignItems="stretch" minHeight={332}>
               {v2Pairs.map(([, pair], idx) => {
                 if (!pair) return null
 
