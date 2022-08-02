@@ -172,7 +172,7 @@ export default function AddLiquidy() {
         maxWidth={'680px'}
         onReturnClick={() => navigate(routes.pool)}
         title="Add Liquidity"
-        sx={{ padding: '24px 32px' }}
+        sx={{ padding: { xs: '20px', md: '24px 32px' } }}
         setting
       >
         <Box mt={35}>
@@ -272,9 +272,15 @@ function Tips() {
 
   return (
     <Box
-      sx={{ width: '100%', background: theme.gradient.gradient3, padding: '16px 20px', borderRadius: '8px', mb: 20 }}
+      sx={{
+        width: '100%',
+        background: theme.gradient.gradient3,
+        padding: { xs: '16px 10px', md: '16px 20px' },
+        borderRadius: '8px',
+        mb: 20
+      }}
     >
-      <Typography sx={{ fontSize: 16, fontWeight: 400 }}>
+      <Typography sx={{ fontSize: { xs: 14, md: 16 }, fontWeight: 400 }}>
         Tip: When you add liquidity, you will receive pool tokens representing your position. These tokens automatically
         earn fees proportional to your share of the pool, and can be redeemed at any time.
       </Typography>

@@ -73,7 +73,7 @@ export default function PopupItem({
 
   return (
     <Popup>
-      <CloseIcon onClick={removeThisPopup} variant="text" />
+      <CloseIcon onClick={removeThisPopup} variant="plain" sx={{ position: 'absolute', top: 20, right: 10 }} />
       {popupContent}
       {removeAfterMs !== null ? <AnimatedFader style={faderStyle} /> : null}
     </Popup>

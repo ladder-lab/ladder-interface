@@ -34,7 +34,7 @@ export default function PosittionCard({
   return (
     <>
       <Card
-        color={error ? theme.palette.action.disabledBackground : color ? color : theme.palette.background.paper}
+        color={error ? theme.palette.action.disabledBackground : color ? color : theme.palette.background.default}
         style={{
           padding: '16px 20px',
           minHeight: 200,

@@ -124,7 +124,13 @@ export default function SelectCurrencyModal({
 
   return (
     <>
-      <Modal width="100%" maxWidth="680px" closeIcon padding={isDownMd ? '16px 28px' : '32px 32px'}>
+      <Modal
+        width="100%"
+        maxWidth="680px"
+        closeIcon
+        closeVariant="button"
+        padding={isDownMd ? '28px 16px' : '32px 32px'}
+      >
         <Box width="100%" display="flex" gap={14} alignItems="center">
           <Typography
             variant="h5"
@@ -140,7 +146,7 @@ export default function SelectCurrencyModal({
           <QuestionHelper
             text={mode === Mode.TOKEN ? HelperText.selectToken : HelperText.selectNft}
             size={isDownMd ? 18.33 : 22}
-            style={{ color: theme.palette.text.primary }}
+            style={{ color: theme.palette.text.secondary }}
           />
         </Box>
         <Box display="flex" gap={20} padding="31px 0 30px" alignItems="center">
@@ -175,7 +181,7 @@ export default function SelectCurrencyModal({
           value={searchQuery}
           onChange={handleInput}
           placeholder="Search name or paste address"
-          outlined
+          // outlined
           startAdornment={<SearchIcon />}
           onKeyDown={handleEnter}
           height={isDownMd ? 48 : 60}
@@ -194,7 +200,10 @@ export default function SelectCurrencyModal({
                   sx={{
                     borderRadius: '8px',
                     background: theme => theme.palette.background.default,
-                    padding: '11px 23px'
+                    padding: '11px 23px',
+                    '&:hover': {
+                      opacity: 0.8
+                    }
                   }}
                 >
                   <LogoText logo={<CurrencyLogo currency={currency} />} text={currency.symbol} />
@@ -286,7 +295,11 @@ function ModeButton({
           ? 'none'
           : selected
           ? '0px 3px 10px rgba(0, 0, 0, 0.15)'
-          : 'inset 0px 2px 12px rgba(0, 0, 0, 0.1)'
+          : 'inset 0px 2px 12px rgba(0, 0, 0, 0.1)',
+
+        '&:hover': {
+          opacity: 0.8
+        }
       }}
     >
       <Typography
