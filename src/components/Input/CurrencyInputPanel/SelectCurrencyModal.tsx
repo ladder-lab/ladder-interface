@@ -200,7 +200,10 @@ export default function SelectCurrencyModal({
                   sx={{
                     borderRadius: '8px',
                     background: theme => theme.palette.background.default,
-                    padding: '11px 23px'
+                    padding: '11px 23px',
+                    '&:hover': {
+                      opacity: 0.8
+                    }
                   }}
                 >
                   <LogoText logo={<CurrencyLogo currency={currency} />} text={currency.symbol} />
@@ -292,7 +295,11 @@ function ModeButton({
           ? 'none'
           : selected
           ? '0px 3px 10px rgba(0, 0, 0, 0.15)'
-          : 'inset 0px 2px 12px rgba(0, 0, 0, 0.1)'
+          : 'inset 0px 2px 12px rgba(0, 0, 0, 0.1)',
+
+        '&:hover': {
+          opacity: 0.8
+        }
       }}
     >
       <Typography
