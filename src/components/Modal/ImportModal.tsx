@@ -34,7 +34,7 @@ export default function ImportModal({
       showModal(<ImportFailedModal />)
       return
     } */
-    onImport(nftRes.nft)
+    //onImport(nftRes.nft)
     onProceed()
   }, [nftRes, onImport, onProceed])
 
