@@ -9,7 +9,7 @@ import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { filter1155 } from 'utils/checkIs1155'
 import { generateErc20 } from 'utils/getHashAddress'
-import { pairKeyToken } from './reducer'
+import { pairKeyToken, token1155key } from './reducer'
 import { AppDispatch, AppState } from '../index'
 import {
   updateUserDeadline,
@@ -23,7 +23,8 @@ import {
   addSerializedPair,
   SerializedToken,
   addSerializedToken1155,
-  removeSerializedToken1155
+  removeSerializedToken1155,
+  SerializedToken1155
 } from './actions'
 import { NFT } from 'models/allTokens'
 
@@ -47,7 +48,7 @@ function serializeToken(token: Token | Token1155): SerializedToken {
       }
 }
 
-function deserializeToken(serializedToken: SerializedToken): Token {
+function deserializeToken(serializedToken: SerializedToken): Token | Token1155 {
   const hasTokenId = serializedToken?.tokenId
   return hasTokenId
     ? new Token1155(serializedToken.chainId, serializedToken.address, hasTokenId, {
@@ -61,6 +62,27 @@ function deserializeToken(serializedToken: SerializedToken): Token {
         serializedToken.symbol,
         serializedToken.name
       )
+}
+
+function serializeToken1155(token: Token1155): SerializedToken1155 {
+  return {
+    chainId: token.chainId,
+    address: token.address,
+    decimals: token.decimals,
+    symbol: token.symbol,
+    name: token.name,
+    tokenId: token.tokenId
+  }
+}
+
+function deserialize1155Token(serializedToken1155: SerializedToken1155): Token1155 {
+  const hasTokenId = serializedToken1155?.tokenId
+  return hasTokenId
+    ? new Token1155(serializedToken1155.chainId, serializedToken1155.address, hasTokenId, {
+        name: serializedToken1155.name,
+        symbol: serializedToken1155.symbol
+      })
+    : new Token1155(1, 'scrappy', 3)
 }
 
 export function useIsDarkMode(): boolean {
@@ -151,8 +173,22 @@ export function useAddUserToken(): (token: Token | NFT) => void {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
     token => {
+      /* if (filter1155(token)) {
+        dispatch(addSerializedToken1155({ serializedToken1155: serializeToken1155(token) }))
+        return
+      } */
+      dispatch(addSerializedToken({ serializedToken: serializeToken(token) }))
+    },
+    [dispatch]
+  )
+}
+
+export function useAddUserToken1155(): (token: Token1155) => void {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback(
+    token => {
       if (filter1155(token)) {
-        dispatch(addSerializedToken1155({ serializedToken: serializeToken(token) }))
+        dispatch(addSerializedToken1155({ serializedToken1155: serializeToken1155(token) }))
         return
       }
       dispatch(addSerializedToken({ serializedToken: serializeToken(token) }))
@@ -334,8 +370,36 @@ export function useTokenPairAdder(): (
 }
 
 export function useTrackedList() {
-  // const { chainId } = useActiveWeb3React()
-  // const serializedTokensMap = useSelector<AppState, AppState['user']['tokens1155']>(({ user: { tokens } }) => tokens)
-  // DEFAULT_1155_LIST + serializedTokensMap
-  // return
+  const { chainId } = useActiveWeb3React()
+  const serializedTokensMap = useSelector<AppState, AppState['user']['tokens1155']>(
+    ({ user: { tokens1155 } }) => tokens1155
+  )
+
+  const userList: Token1155[] = useMemo(() => {
+    if (!chainId || !serializedTokensMap) return []
+    const forChain = serializedTokensMap[chainId]
+    if (!forChain) return []
+
+    return Object.keys(forChain).map(idx => {
+      return deserialize1155Token(forChain[idx])
+    })
+  }, [serializedTokensMap, chainId])
+
+  const combinedList = useMemo(
+    () => (chainId ? userList.concat(DEFAULT_1155_LIST[chainId] ?? []) : []),
+    [userList, chainId]
+  )
+
+  return useMemo(() => {
+    // dedupes pairs of tokens in the combined list
+    const keyed = combinedList.reduce<{ [key: string]: Token1155 }>((memo, token) => {
+      const key = token1155key(token.address, token.tokenId)
+      if (memo[key]) return memo
+      memo[key] = token
+      return memo
+    }, {})
+    console.log(combinedList)
+
+    return Object.keys(keyed).map(key => keyed[key])
+  }, [combinedList])
 }
