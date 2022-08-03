@@ -67,25 +67,41 @@ export default function Pool() {
   return (
     <>
       <AppBody width={'100%'} maxWidth={'1140px'}>
-        <Box sx={{ padding: '30px 32px' }}>
+        <Box sx={{ padding: { xs: '20px', md: '30px 32px' } }}>
           <Box sx={{ padding: '16px 20px', background: theme.palette.background.default, borderRadius: '8px' }}>
-            <Typography sx={{ fontSize: 28, fontWeight: 500, mb: 12 }}>Liquid provider rewards</Typography>
-            <Typography sx={{ fontSize: 18, fontWeight: 500, color: theme.palette.text.secondary }}>
+            <Typography sx={{ fontSize: { xs: 18, md: 28 }, fontWeight: 500, mb: 12 }}>
+              Liquid provider rewards
+            </Typography>
+            <Typography sx={{ fontSize: { xs: 14, md: 18 }, fontWeight: 500, color: theme.palette.text.secondary }}>
               Liquidity providers earn a 0.3% fee on all trades proportional to their share of the pool. Fees are added
               to the pool, accrue in real time and can be claimed by withdrawing your liquidity. Read more about
               providing liquidity
             </Typography>
           </Box>
-          <Box display="flex" justifyContent="space-between" alignItems="center" mt={40}>
-            <Typography sx={{ fontSize: 24 }}>Your Liquidity</Typography>
-            <Box display={'flex'} gap={20}>
+          <Box
+            mt={40}
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              flexDirection: {
+                xs: 'column',
+                md: 'row'
+              },
+              gap: 24
+            }}
+          >
+            <Typography sx={{ fontSize: { xs: 14, md: 24 } }}>Your Liquidity</Typography>
+            <Box display={'flex'} gap={20} sx={{ width: { xs: '100%', md: 'fit-content' } }}>
               <Button
+                onClick={() => navigate(routes.addLiquidity)}
                 sx={{
                   fontSize: 12,
                   height: 44,
                   background: theme.palette.background.default,
                   whiteSpace: 'nowrap',
-                  minWidth: 'auto'
+                  minWidth: 'auto',
+                  color: theme.palette.text.secondary
                 }}
               >
                 Create a pair
@@ -110,7 +126,7 @@ export default function Pool() {
               </Box>
             </Box>
           ) : (
-            <Grid container mt={20} spacing={20} alignItems="stretch">
+            <Grid container mt={20} spacing={20} alignItems="stretch" minHeight={332}>
               {v2Pairs.map(([, pair], idx) => {
                 if (!pair) return null
 

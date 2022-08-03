@@ -1,7 +1,7 @@
 import React, { ChangeEvent, InputHTMLAttributes } from 'react'
-import { InputBase, styled, Typography, Box, useTheme } from '@mui/material'
-import { inputBaseClasses } from '@mui/material/InputBase'
+import { InputBase, Typography, Box, useTheme } from '@mui/material'
 import InputLabel from './InputLabel'
+import { useIsDarkMode } from 'state/user/hooks'
 
 export interface InputProps {
   placeholder?: string
@@ -10,46 +10,19 @@ export interface InputProps {
   label?: string
   disabled?: boolean
   focused?: boolean
-  outlined?: boolean
+  // outlined?: boolean
   type?: string
   startAdornment?: React.ReactNode
   endAdornment?: React.ReactNode
   maxWidth?: string | number
   height?: string | number
   error?: boolean
-  smallPlaceholder?: boolean
+  // smallPlaceholder?: boolean
   subStr?: string
   subStr2?: string
   helperText?: string
+  borderRadius?: string
 }
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  [`&.${inputBaseClasses.root}`]: {
-    fontSize: 16,
-    color: theme.palette.text.primary,
-    fontWeight: 400,
-    backgroundColor: theme.palette.background.default,
-    paddingLeft: 20,
-    borderRadius: 14
-  },
-  [`&.${inputBaseClasses.focused}`]: { border: `1px solid ${theme.palette.primary.main} !important` },
-  [`& .${inputBaseClasses.input}`]: {
-    maxWidth: '100%',
-    '&::-webkit-outer-spin-button': {
-      WebkitAppearance: 'none'
-    },
-    '&::-webkit-inner-spin-button': {
-      WebkitAppearance: 'none'
-    },
-    '&.Mui-disabled': {
-      WebkitTextFillColor: theme.palette.text.secondary,
-      color: theme.palette.text.secondary
-    }
-  },
-  [`&.${inputBaseClasses.disabled}`]: {
-    cursor: 'not-allowed'
-  }
-}))
 
 export default function Input({
   focused,
@@ -58,41 +31,76 @@ export default function Input({
   value,
   disabled,
   type,
-  outlined,
+  // outlined,
   startAdornment,
   endAdornment,
   maxWidth,
   label,
   height,
   error,
-  smallPlaceholder,
+  // smallPlaceholder,
   subStr,
   subStr2,
   helperText,
+  borderRadius = '8px',
   ...rest
 }: InputProps & Omit<InputHTMLAttributes<HTMLInputElement>, 'color' | 'outline' | 'size'>) {
   const theme = useTheme()
+  const isDarkMode = useIsDarkMode()
+
   return (
     <div style={{ width: '100%', maxWidth: maxWidth || 'unset' }}>
       {label && <InputLabel helperText={helperText}>{label}</InputLabel>}
-      <StyledInputBase
+      <InputBase
         sx={{
-          height: height || 60,
-          [`&.${inputBaseClasses.root}`]: {
-            border: theme =>
-              `1px solid ${outlined ? 'rgba(255,255,255,.4)' : error ? theme.palette.error.main : 'transparent'}`
+          height: height || 52,
+          borderRadius,
+          background: theme.palette.background.default,
+          padding: 0,
+          zIndex: 1,
+          '&.Mui-focused:before': {
+            display: 'none'
           },
-          [`&.${inputBaseClasses.focused}`]: {
-            borderColor: theme =>
-              error ? `${theme.palette.error.main}!important` : `${theme.palette.primary.main}!important`
+          '& .MuiInputBase-input': {
+            height: '100%',
+            padding: startAdornment ? '0 0 0 60px' : '0 22px',
+            backgroundClip: 'padding-box',
+            boxSizing: 'border-box'
           },
-          [`& .${inputBaseClasses.input}`]: {
-            '&::placeholder': {
-              fontSize: smallPlaceholder ? 13 : 16,
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden'
-            }
+          '&.Mui-focused .MuiInputBase-input': {
+            height: '100%',
+            width: '100%',
+            background: theme.palette.background.default,
+            padding: startAdornment ? '0 0 0 60px' : '0 22px',
+            borderRadius: borderRadius
+            // backgroundClip: 'padding-box'
+            // boxSizing: 'border-box'
+          },
+          '&.Mui-focused:after': {
+            background: isDarkMode ? theme.gradient.gradient1 : '#1F9898',
+            borderRadius,
+            position: 'absolute',
+            top: -1,
+            right: -1,
+            bottom: -1,
+            left: -1,
+            zIndex: -1,
+            content: '""'
+          },
+          '& span': {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingLeft: 22,
+            paddingRight: '0 !important',
+            position: 'absolute'
+          },
+          '&.Mui-focused span': {
+            background: theme.palette.background.default,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: `${borderRadius} 0 0 ${borderRadius}`
           }
         }}
         color={error ? 'error' : 'primary'}

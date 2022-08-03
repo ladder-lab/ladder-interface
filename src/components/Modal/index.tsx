@@ -18,7 +18,7 @@ interface Props {
   hasBorder?: boolean
   background?: string
   backdropColor?: string
-  closeVariant?: 'contained' | 'text'
+  closeVariant?: 'button' | 'plain'
 }
 
 const Transition = React.forwardRef<unknown, SlideProps | FadeProps>(function Transition(props, ref) {
@@ -40,7 +40,7 @@ export default function Modal(props: Props) {
     padding,
     background,
     backdropColor,
-    closeVariant = 'contained'
+    closeVariant
   } = props
   const { isOpen, hideModal } = useModal()
   const node = useRef<any>()
@@ -108,8 +108,33 @@ export default function Modal(props: Props) {
         onClose={hide}
       >
         <Box width="100%" height="100%" position="relative" padding={padding || 0}>
-          {onBack && <BackBtn onClick={onBack} sx={{ position: 'absolute', top: 24, left: 32 }} />}
-          {closeIcon && <CloseIcon onClick={hide} variant={closeVariant} />}
+          {onBack && (
+            <BackBtn
+              onClick={onBack}
+              sx={{
+                position: 'absolute',
+                top: 24,
+                left: 32
+              }}
+            />
+          )}
+          {closeIcon && (
+            <CloseIcon
+              onClick={hide}
+              variant={closeVariant}
+              sx={{
+                position: 'absolute',
+                top: {
+                  xs: 20,
+                  md: closeVariant === 'plain' ? 20 : 24
+                },
+                right: {
+                  xs: 20,
+                  md: closeVariant === 'plain' ? 20 : 32
+                }
+              }}
+            />
+          )}
           {children}
         </Box>
       </Dialog>

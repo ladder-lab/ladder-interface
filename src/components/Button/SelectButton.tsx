@@ -1,6 +1,7 @@
 import React from 'react'
 import { ButtonBase, useTheme } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { useIsDarkMode } from 'state/user/hooks'
 
 interface Props {
   onClick?: () => void
@@ -15,6 +16,7 @@ interface Props {
 export default function SelectButton(props: Props) {
   const { onClick, disabled, style = {}, width, height, primary, children } = props
   const theme = useTheme()
+  const isDarkMode = useIsDarkMode()
 
   return (
     <ButtonBase
@@ -23,7 +25,7 @@ export default function SelectButton(props: Props) {
       sx={Object.assign(
         {
           width: width || '100%',
-          height: height || 60,
+          height: height || 52,
           backgroundColor: primary ? theme.palette.primary.main : theme.palette.background.default,
           color: theme.palette.text.primary,
           borderRadius: 1,
@@ -33,7 +35,7 @@ export default function SelectButton(props: Props) {
           padding: '0 15.67px 0 20px',
           border: '1px solid transparent',
           '&:hover': {
-            border: `1px solid ${theme.palette.primary.main}`
+            background: isDarkMode ? '#484D50' : theme.palette.primary.main
           },
           display: 'flex',
           justifyContent: 'space-between'

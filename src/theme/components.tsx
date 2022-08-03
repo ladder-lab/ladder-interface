@@ -1,9 +1,10 @@
 import React, { HTMLProps, useCallback } from 'react'
 import MuiCloseIcon from '@mui/icons-material/Close'
-import { Link, IconButton, keyframes, styled, Theme } from '@mui/material'
+import { Link, IconButton, keyframes, styled, Theme, useTheme, ButtonBase } from '@mui/material'
 import { SxProps } from '@mui/system'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import { ReactComponent as ExternalArrow } from 'assets/svg/external_arrow.svg'
+import { useIsDarkMode } from 'state/user/hooks'
 
 export function BackBtn({ onClick, sx }: { onClick?: () => void; sx?: SxProps }) {
   return (
@@ -11,8 +12,8 @@ export function BackBtn({ onClick, sx }: { onClick?: () => void; sx?: SxProps })
       onClick={onClick}
       sx={{
         padding: 0,
-        width: 52,
-        height: 52,
+        width: { xs: 32, md: 52 },
+        height: { xs: 32, md: 52 },
         background: theme => theme.palette.background.default,
         borderRadius: '8px',
         ...sx
@@ -23,34 +24,45 @@ export function BackBtn({ onClick, sx }: { onClick?: () => void; sx?: SxProps })
   )
 }
 
-export function CloseIcon({ onClick, variant }: { onClick?: () => void; variant?: 'contained' | 'text' }) {
+export function CloseIcon({
+  onClick,
+  variant = 'button',
+  sx
+}: {
+  onClick?: () => void
+  variant?: 'button' | 'plain'
+  sx?: SxProps
+}) {
+  const isDarkMode = useIsDarkMode()
+  const theme = useTheme()
+
+  if (variant === 'plain') {
+    return (
+      <ButtonBase onClick={onClick} sx={{ position: 'absolute', ...sx }}>
+        <MuiCloseIcon
+          sx={{ fontSize: 20, color: theme.palette.text.secondary, '&:hover': { color: theme.palette.text.primary } }}
+        />
+      </ButtonBase>
+    )
+  }
+
   return (
     <IconButton
       onClick={onClick}
       sx={{
         padding: 0,
         position: 'absolute',
-        top: variant === 'contained' ? '24px' : '36.5px',
-        right: variant === 'contained' ? '32px' : '42.5px',
-        width: {
-          xs: variant === 'contained' ? 32 : 15,
-          md: variant === 'contained' ? 52 : 15
-        },
-        height: {
-          xs: variant === 'contained' ? 32 : 15,
-          md: variant === 'contained' ? 52 : 15
-        },
-        background: variant === 'contained' ? theme => theme.palette.background.default : 'transparent',
+        background: theme.palette.background.default,
         borderRadius: '8px',
+        width: { xs: 32, md: 52 },
+        height: { xs: 32, md: 52 },
         '&:hover': {
-          background: 'transparent'
+          background: isDarkMode ? '#484D50' : '#1F9898'
         },
-        '&:hover svg': {
-          color: theme => theme.palette.text.primary
-        }
+        ...sx
       }}
     >
-      <MuiCloseIcon sx={{ color: theme => theme.palette.grey[500], size: 13 }} />
+      <MuiCloseIcon sx={{ fontSize: 20, color: theme.palette.text.secondary }} />
     </IconButton>
   )
 }
