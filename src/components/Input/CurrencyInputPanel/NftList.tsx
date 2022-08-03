@@ -5,19 +5,15 @@ import { Token1155 } from 'constants/token/token1155'
 import { AllTokens } from 'models/allTokens'
 import { shortenAddress } from 'utils'
 import useModal from 'hooks/useModal'
-import { DEFAULT_1155_LIST } from 'constants/default1155List'
-import { useActiveWeb3React } from 'hooks'
-import { NETWORK_CHAIN_ID } from 'constants/chain'
-import { useIsDarkMode } from 'state/user/hooks'
+import { useIsDarkMode, useTrackedList } from 'state/user/hooks'
 
 export default function NftList({ onClick }: { onClick?: (token: AllTokens) => void }) {
   const { hideModal } = useModal()
-  const { chainId } = useActiveWeb3React()
-  // const list = useTrackedList()
+  const list = useTrackedList()
 
   return (
     <Grid container spacing={20} sx={{ overflow: 'auto', height: 480 }}>
-      {DEFAULT_1155_LIST[(chainId ?? NETWORK_CHAIN_ID) as keyof typeof DEFAULT_1155_LIST]?.map((token1155, idx) => (
+      {list?.map((token1155, idx) => (
         <Grid item xs={6} md={3} key={idx}>
           <NftCard
             key={idx}

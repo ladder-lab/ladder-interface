@@ -3,7 +3,7 @@ import Modal from 'components/Modal'
 import { Box, Typography } from '@mui/material'
 import Input from 'components/Input'
 import { NFT } from 'models/allTokens'
-import { useAddUserToken } from 'state/user/hooks'
+import { useAddUserToken1155 } from 'state/user/hooks'
 import { useActiveWeb3React } from 'hooks'
 import { useNFTDataCb } from 'hooks/useNFTDataCb'
 import { isAddress } from 'utils'
@@ -23,7 +23,7 @@ export default function ImportModal({
   const [error, setError] = useState('')
 
   const { account } = useActiveWeb3React()
-  const addToken = useAddUserToken()
+  const addToken = useAddUserToken1155()
 
   const nftRes = useNFTDataCb(contractAddress, tokenId)
 

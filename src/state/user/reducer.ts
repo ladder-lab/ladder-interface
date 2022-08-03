@@ -14,7 +14,8 @@ import {
   updateUserSingleHopOnly,
   updateUserDarkMode,
   addSerializedToken1155,
-  removeSerializedToken1155
+  removeSerializedToken1155,
+  SerializedToken1155
 } from './actions'
 import { Token1155 } from 'constants/token/token1155'
 import { filter1155 } from 'utils/checkIs1155'
@@ -44,7 +45,7 @@ export interface UserState {
   }
   tokens1155: {
     [chainId: number]: {
-      [address: string]: SerializedToken
+      [address: string]: SerializedToken1155
     }
   }
   pairs: {
@@ -135,13 +136,14 @@ export default createReducer(initialState, builder =>
       delete state.tokens[chainId][address]
       state.timestamp = currentTimestamp()
     })
-    .addCase(addSerializedToken1155, (state, { payload: { serializedToken } }) => {
+    .addCase(addSerializedToken1155, (state, { payload: { serializedToken1155 } }) => {
       if (!state.tokens1155) {
         state.tokens1155 = {}
       }
-      state.tokens1155[serializedToken.chainId] = state.tokens[serializedToken.chainId] || {}
-      state.tokens1155[serializedToken.chainId][token1155key(serializedToken.address, serializedToken.tokenId ?? '')] =
-        serializedToken
+      state.tokens1155[serializedToken1155.chainId] = state.tokens[serializedToken1155.chainId] || {}
+      state.tokens1155[serializedToken1155.chainId][
+        token1155key(serializedToken1155.address, serializedToken1155.tokenId ?? '')
+      ] = serializedToken1155
       state.timestamp = currentTimestamp()
     })
     .addCase(removeSerializedToken1155, (state, { payload: { address, tokenId, chainId } }) => {
