@@ -79,7 +79,7 @@ export default function App() {
                   <Route path={routes.removeLiquidity}>
                     <Route path={routes.removeLiquidity + routes.removeLiquidityParams} element={<RemoveLiquidity />} />
                   </Route>
-                  <Route path="/" element={<Swap />} />
+                  {/* <Route path="*" element={<Navigate to={routes.swap} replace />} /> */}
                 </Routes>
               </Web3ReactManager>
             </BodyWrapper>
