@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, KeyboardEvent, useRef, ChangeEvent, useEffect, useContext } from 'react'
+import React, { useState, useCallback, useMemo, KeyboardEvent, useRef, ChangeEvent, useEffect } from 'react'
 import { Box, Typography, ButtonBase, useTheme } from '@mui/material'
 import { FixedSizeList } from 'react-window'
 import Modal from 'components/Modal'
@@ -16,7 +16,7 @@ import { isAddress } from 'utils'
 import { Currency, ETHER, Token } from '@uniswap/sdk'
 import { filterTokens, useSortedTokensByQuery } from 'utils/swap/filtering'
 import { useTokenComparator } from 'utils/swap/sorting'
-import { AllTokens, TokenType } from 'models/allTokens'
+import { AllTokens, NFT, TokenType } from 'models/allTokens'
 import useModal from 'hooks/useModal'
 import ImportModal from 'components/Modal/ImportModal'
 import { HelperText } from 'constants/helperText'
@@ -24,7 +24,6 @@ import { theme } from 'theme'
 import useBreakpoint from 'hooks/useBreakpoint'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { useIsDarkMode } from 'state/user/hooks'
-import { NFT } from 'models/nft'
 
 export enum Mode {
   TOKEN = 'token',
@@ -48,13 +47,15 @@ export default function SelectCurrencyModal({
   selectedTokenType?: TokenType
 }) {
   const isDownMd = useBreakpoint('md')
+  const [isImportOpen, setIsInportOpen] = useState(false)
   const [mode, setMode] = useState(selectedTokenType === 'erc20' ? Mode.NFT : Mode.TOKEN)
   const [searchQuery, setSearchQuery] = useState<string>('')
-  const debouncedQuery = useDebounce(searchQuery, 200)
-  const fixedList = useRef<FixedSizeList>()
-  const { showModal, hideModal } = useModal()
-
   const [invertSearchOrder] = useState<boolean>(false)
+
+  const fixedList = useRef<FixedSizeList>()
+
+  const debouncedQuery = useDebounce(searchQuery, 200)
+  const { hideModal } = useModal()
 
   const allTokens = useAllTokens()
 
@@ -62,7 +63,15 @@ export default function SelectCurrencyModal({
   const searchToken = useToken(debouncedQuery)
   const searchTokenIsAdded = useIsUserAddedToken(searchToken)
 
-  const handleImport = useCallback((nft: NFT) => onSelectCurrency?.(nft), [onSelectCurrency])
+  const handleImport = useCallback(
+    (nft: NFT) => {
+      onSelectCurrency?.(nft)
+      console.log(nft)
+      hideModal()
+      setIsInportOpen(false)
+    },
+    [hideModal, onSelectCurrency]
+  )
 
   const showETH: boolean = useMemo(() => {
     const s = debouncedQuery.toLowerCase().trim()
@@ -131,11 +140,12 @@ export default function SelectCurrencyModal({
   }, [selectedTokenType])
 
   const onImport = useCallback(() => {
-    showModal(<ImportModal onImport={handleImport} onProceed={() => {}} />)
-  }, [showModal, handleImport])
+    setIsInportOpen(true)
+  }, [])
 
   return (
     <>
+      <ImportModal isOpen={isImportOpen} onImport={handleImport} onDismiss={() => setIsInportOpen(false)} />
       <Modal
         width="100%"
         maxWidth="680px"
@@ -188,7 +198,7 @@ export default function SelectCurrencyModal({
             </ButtonBase>
           </Box>
         )}
-
+        {/* separate erc20 /erc1155 input  */}
         <Input
           value={searchQuery}
           onChange={handleInput}

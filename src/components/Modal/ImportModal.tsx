@@ -3,7 +3,7 @@ import Modal from 'components/Modal'
 import { Box, Typography } from '@mui/material'
 import Input from 'components/Input'
 import { NFT } from 'models/allTokens'
-
+import { useAddUserToken } from 'state/user/hooks'
 import { useActiveWeb3React } from 'hooks'
 import { useNFTDataCb } from 'hooks/useNFTDataCb'
 import { isAddress } from 'utils'
@@ -12,21 +12,20 @@ import ActionButton from 'components/Button/ActionButton'
 export default function ImportModal({
   onImport,
   isOpen,
-  onDismiss,
-  onProceed
+  onDismiss
 }: {
   onImport: (nft: NFT) => void
   isOpen?: boolean
   onDismiss?: () => void
-  onProceed: () => void
 }) {
   const [tokenId, setTokenId] = useState('')
+  const [contractAddress, setContractAddress] = useState('')
+  const [error, setError] = useState('')
 
   const { account } = useActiveWeb3React()
-  const [contractAddress, setContractAddress] = useState('')
-  const nftRes = useNFTDataCb(contractAddress, tokenId)
+  const addToken = useAddUserToken()
 
-  const [error, setError] = useState('')
+  const nftRes = useNFTDataCb(contractAddress, tokenId)
 
   const handleImport = useCallback(() => {
     if (!nftRes) return
@@ -34,9 +33,11 @@ export default function ImportModal({
       showModal(<ImportFailedModal />)
       return
     } */
-    //onImport(nftRes.nft)
-    onProceed()
-  }, [nftRes, onImport, onProceed])
+    if (nftRes.nft) {
+      addToken(nftRes.nft)
+      onImport(nftRes.nft)
+    }
+  }, [addToken, nftRes, onImport])
 
   useEffect(() => {
     if (contractAddress === '') return setError('Enter token contract address')
@@ -44,12 +45,12 @@ export default function ImportModal({
     if (tokenId === '') return setError('Enter token ID')
     if (nftRes?.nft?.name === undefined) return setError(`Token doesnt exist`)
     // if (nftRes?.nft?.owner === NFT_BRIDGE_ADDRESS) return setError('')
-    if (nftRes?.nft?.owner !== account) return setError('NFT not in your possession')
+
     setError('')
-  }, [account, contractAddress, nftRes?.nft?.name, nftRes?.nft?.owner, tokenId])
+  }, [account, contractAddress, nftRes?.nft?.name, tokenId])
 
   return (
-    <Modal maxWidth="680px" width="100%" closeIcon onBack={() => {}}>
+    <Modal maxWidth="680px" width="100%" closeIcon onBack={() => {}} customIsOpen={isOpen} customOnDismiss={onDismiss}>
       <Box padding="24px 32px">
         <Typography fontSize={24} ml={72} mt={12} mb={40}>
           Import
@@ -68,7 +69,8 @@ export default function ImportModal({
           pendingText={'Importing'}
           actionText={'Import'}
           onAction={handleImport}
-          error={error || nftRes.error}
+          error={(error || nftRes.error) && 'Invalid NFT'}
+          disableAction={!nftRes.nft}
         />
       </Box>
     </Modal>

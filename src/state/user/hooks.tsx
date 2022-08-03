@@ -21,8 +21,11 @@ import {
   removeSerializedToken,
   SerializedPair,
   addSerializedPair,
-  SerializedToken
+  SerializedToken,
+  addSerializedToken1155,
+  removeSerializedToken1155
 } from './actions'
+import { NFT } from 'models/allTokens'
 
 function serializeToken(token: Token | Token1155): SerializedToken {
   const is1155 = filter1155(token)
@@ -143,21 +146,32 @@ export function useUserTransactionTTL(): [number, (slippage: number) => void] {
   return [userDeadline, setUserDeadline]
 }
 
-export function useAddUserToken(): (token: Token) => void {
+// add user token erc20,erc1155
+export function useAddUserToken(): (token: Token | NFT) => void {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
-    (token: Token) => {
+    token => {
+      if (filter1155(token)) {
+        dispatch(addSerializedToken1155({ serializedToken: serializeToken(token) }))
+        return
+      }
       dispatch(addSerializedToken({ serializedToken: serializeToken(token) }))
     },
     [dispatch]
   )
 }
 
-export function useRemoveUserAddedToken(): (chainId: number, address: string) => void {
+// remove user token erc20,erc1155
+export function useRemoveUserAddedToken(): (chainId: number, token: Token | NFT) => void {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
-    (chainId: number, address: string) => {
-      dispatch(removeSerializedToken({ chainId, address }))
+    (chainId, token) => {
+      const token1155 = filter1155(token)
+      if (token1155) {
+        dispatch(removeSerializedToken1155({ chainId, address: token.address, tokenId: token1155?.tokenId ?? '' }))
+        return
+      }
+      dispatch(removeSerializedToken({ chainId, address: token.address }))
     },
     [dispatch]
   )
@@ -317,4 +331,11 @@ export function useTokenPairAdder(): (
     },
     [allPairs, dispatch]
   )
+}
+
+export function useTrackedList() {
+  // const { chainId } = useActiveWeb3React()
+  // const serializedTokensMap = useSelector<AppState, AppState['user']['tokens1155']>(({ user: { tokens } }) => tokens)
+  // DEFAULT_1155_LIST + serializedTokensMap
+  // return
 }

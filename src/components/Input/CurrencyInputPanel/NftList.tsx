@@ -13,6 +13,7 @@ import { useIsDarkMode } from 'state/user/hooks'
 export default function NftList({ onClick }: { onClick?: (token: AllTokens) => void }) {
   const { hideModal } = useModal()
   const { chainId } = useActiveWeb3React()
+  // const list = useTrackedList()
 
   return (
     <Grid container spacing={20} sx={{ overflow: 'auto', height: 480 }}>
