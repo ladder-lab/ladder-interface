@@ -62,10 +62,7 @@ export default function SelectCurrencyModal({
   const searchToken = useToken(debouncedQuery)
   const searchTokenIsAdded = useIsUserAddedToken(searchToken)
 
-  const handleImport = useCallback(
-    (nft: NFT) => onSelectCurrency?.(nft),
-    [onSelectCurrency]
-  )
+  const handleImport = useCallback((nft: NFT) => onSelectCurrency?.(nft), [onSelectCurrency])
 
   const showETH: boolean = useMemo(() => {
     const s = debouncedQuery.toLowerCase().trim()
