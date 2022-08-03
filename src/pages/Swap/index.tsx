@@ -1,5 +1,5 @@
 import { useCallback, useState, ChangeEvent, useMemo, useEffect } from 'react'
-import { Typography, Box, useTheme, Button } from '@mui/material'
+import { Typography, Box, Button } from '@mui/material'
 import { CurrencyAmount, JSBI, Trade } from '@uniswap/sdk'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
@@ -16,7 +16,7 @@ import { useExpertModeManager, useUserSingleHopOnly, useUserSlippageTolerance } 
 import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
 import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
 import { Field } from 'state/swap/actions'
-import { ApprovalState, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
+import { ApprovalState, useAllTokenApproveCallback } from 'hooks/useApproveCallback'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { useSwapCallback } from 'hooks/useSwapCallback'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from 'utils/swap/prices'
@@ -25,11 +25,9 @@ import TransacitonPendingModal from 'components/Modal/TransactionModals/Transact
 import useModal from 'hooks/useModal'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
-import { useApproveERC1155Callback } from 'hooks/useApproveERC1155Callback'
-import { checkIs1155, filter1155 } from 'utils/checkIs1155'
 
 export default function Swap() {
-  const theme = useTheme()
+  // const theme = useTheme()
   const { account } = useActiveWeb3React()
 
   const [summaryExpanded, setSummaryExpanded] = useState(false)
@@ -87,6 +85,11 @@ export default function Swap() {
       : parsedAmounts[dependentField]?.toSignificant(6) ?? ''
   }
 
+  const slippageAdjustedAmounts = useMemo(
+    () => computeSlippageAdjustedAmounts(trade, allowedSlippage),
+    [trade, allowedSlippage]
+  )
+
   const route = trade?.route
   const userHasSpecifiedInputOutput = Boolean(
     currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
@@ -94,25 +97,21 @@ export default function Swap() {
   const noRoute = !route
 
   // approve work flow
-  const [approval1155, approve1155Callback] = useApproveERC1155Callback(filter1155(fromAsset))
-  const [approval, approveCallback] = useApproveCallbackFromTrade(trade, allowedSlippage)
+  // const [approval1155, approve1155Callback] = useApproveERC1155Callback(filter1155(fromAsset))
+  const [approval, approveCallback] = useAllTokenApproveCallback(fromAsset, slippageAdjustedAmounts[Field.INPUT])
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
   const handleApprove = useCallback(() => {
-    if (checkIs1155(fromAsset)) {
-      approve1155Callback()
-    } else {
-      approveCallback()
-    }
-  }, [approve1155Callback, approveCallback, fromAsset])
+    approveCallback()
+  }, [approveCallback])
 
   // mark when a user has submitted an approval, reset onTokenSelection for input field
   useEffect(() => {
-    if (approval === ApprovalState.PENDING || approval1155 === ApprovalState.PENDING) {
+    if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true)
     } else {
       setApprovalSubmitted(false)
     }
-  }, [approval, approval1155, approvalSubmitted])
+  }, [approval, approvalSubmitted])
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
 
@@ -121,11 +120,6 @@ export default function Swap() {
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
   const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
   const [singleHopOnly] = useUserSingleHopOnly()
-
-  const slippageAdjustedAmounts = useMemo(
-    () => computeSlippageAdjustedAmounts(trade, allowedSlippage),
-    [trade, allowedSlippage]
-  )
 
   const handleSwap = useCallback(() => {
     if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
@@ -174,13 +168,6 @@ export default function Swap() {
       (approvalSubmitted && approval === ApprovalState.APPROVED)) &&
     !(priceImpactSeverity > 3 && !isExpertMode)
 
-  const showApproveFlow1155 =
-    !swapInputError &&
-    (approval1155 === ApprovalState.NOT_APPROVED ||
-      approval1155 === ApprovalState.PENDING ||
-      (approvalSubmitted && approval1155 === ApprovalState.APPROVED)) &&
-    !(priceImpactSeverity > 3 && !isExpertMode)
-
   const handleMaxInput = useCallback(() => {
     maxAmountInput && onUserInput(Field.INPUT, maxAmountInput.toExact())
   }, [maxAmountInput, onUserInput])
@@ -188,6 +175,13 @@ export default function Swap() {
   const handleFromVal = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       onUserInput(Field.INPUT, e.target.value)
+    },
+    [onUserInput]
+  )
+
+  const handleToVal = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      onUserInput(Field.OUTPUT, e.target.value)
     },
     [onUserInput]
   )
@@ -233,7 +227,7 @@ export default function Swap() {
       <AppBody width={'100%'} maxWidth={'680px'}>
         <Box
           sx={{
-            padding: '33px 32px 30px',
+            padding: { xs: '24px 20px 20px', md: '33px 32px 30px' },
             position: 'relative'
           }}
         >
@@ -252,22 +246,8 @@ export default function Swap() {
           >
             SWAP
           </Typography>
-          <Box
-            sx={{
-              position: 'absolute',
-              right: 32,
-              top: 24,
-              background: theme.palette.background.default,
-              borderRadius: '8px',
-              width: 52,
-              height: 52,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <Settings />
-          </Box>
+
+          <Settings />
           <Box mb={fromAsset ? 16 : 0}>
             <CurrencyInputPanel
               value={formattedAmounts[Field.INPUT]}
@@ -288,8 +268,7 @@ export default function Swap() {
             <CurrencyInputPanel
               selectedTokenType={fromAsset ? ('tokenId' in fromAsset ? 'erc1155' : 'erc20') : undefined}
               value={formattedAmounts[Field.OUTPUT]}
-              onChange={() => {}}
-              disableInput={true}
+              onChange={handleToVal}
               onSelectCurrency={handleToAsset}
               currency={toAsset}
             />
@@ -324,21 +303,7 @@ export default function Swap() {
               </Button>
             ) : (
               <Box display="grid" gap="16px">
-                {checkIs1155(currencies[Field.INPUT]) && showApproveFlow1155 && (
-                  <ActionButton
-                    onAction={handleApprove}
-                    actionText={
-                      approvalSubmitted && approval === ApprovalState.APPROVED
-                        ? 'Approved'
-                        : `Allow the Ladder to use your ${currencies[Field.INPUT]?.symbol}`
-                    }
-                    error={error}
-                    disableAction={approval1155 !== ApprovalState.NOT_APPROVED || approvalSubmitted}
-                    pending={approval1155 === ApprovalState.PENDING}
-                    pendingText="Approving"
-                  />
-                )}
-                {!checkIs1155(currencies[Field.INPUT]) && showApproveFlow && (
+                {showApproveFlow && (
                   <ActionButton
                     onAction={handleApprove}
                     actionText={
@@ -370,7 +335,7 @@ export default function Swap() {
                     !isValid ||
                     (priceImpactSeverity > 3 && !isExpertMode) ||
                     !!swapCallbackError ||
-                    (showApproveFlow && approval !== ApprovalState.APPROVED && approval1155 !== ApprovalState.APPROVED)
+                    (showApproveFlow && approval !== ApprovalState.APPROVED)
                   }
                   error={
                     swapInputError

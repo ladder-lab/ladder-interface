@@ -58,7 +58,22 @@ export default function Settings({ onlySlippage }: { onlySlippage?: boolean }) {
 
   return (
     <>
-      <Button variant="text" onClick={toggle}>
+      <Button
+        variant="text"
+        onClick={toggle}
+        sx={{
+          background: theme.palette.background.default,
+          minWidth: { xs: 32, md: 52 },
+          width: { xs: 32, md: 52 },
+          height: { xs: 32, md: 52 },
+          '&:hover': {
+            background: '#484D50'
+          },
+          position: 'absolute',
+          top: { xs: 20, md: 24 },
+          right: { xs: 20, md: 32 }
+        }}
+      >
         <StyledMenuIcon />
         {expertMode ? (
           <EmojiWrapper>
@@ -73,7 +88,7 @@ export default function Settings({ onlySlippage }: { onlySlippage?: boolean }) {
         customOnDismiss={() => setShowConfirmation(false)}
         maxWidth="500px"
         closeIcon
-        closeVariant="text"
+        closeVariant="plain"
       >
         <Box display="grid" gap="8px" padding="24px">
           <Box display="flex" alignItems="center" justifyContent="space-between" padding="0 24px">
@@ -101,7 +116,7 @@ export default function Settings({ onlySlippage }: { onlySlippage?: boolean }) {
           </Box>
         </Box>
       </Modal>
-      <Modal customIsOpen={open} customOnDismiss={toggle} closeIcon maxWidth={'433px'}>
+      <Modal customIsOpen={open} customOnDismiss={toggle} maxWidth={'433px'} closeIcon closeVariant="plain">
         <Box
           display="flex"
           flexDirection={'column'}

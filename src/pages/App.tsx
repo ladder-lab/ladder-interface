@@ -5,8 +5,7 @@ import Header from '../components/Header'
 import Polling from '../components/essential/Polling'
 import Popups from '../components/essential/Popups'
 import Web3ReactManager from '../components/essential/Web3ReactManager'
-import WarningModal from '../components/Modal/WarningModal'
-import ComingSoon from './ComingSoon'
+// import WarningModal from '../components/Modal/WarningModal'
 import { ModalProvider } from 'context/ModalContext'
 import { routes } from 'constants/routes'
 import Swap from './Swap'
@@ -46,8 +45,8 @@ const BodyWrapper = styled('div')(({ theme }) => ({
   flexDirection: 'column',
   width: '100%',
   minHeight: `calc(100vh - ${theme.height.header})`,
-  padding: '50px 0 80px',
-  justifyContent: 'center',
+  padding: '54px 0 80px',
+  justifyContent: 'flex-start',
   alignItems: 'center',
   flex: 1,
   overflowY: 'auto',
@@ -70,7 +69,7 @@ export default function App() {
             <BodyWrapper id="body">
               <Popups />
               <Polling />
-              <WarningModal />
+              {/* <WarningModal /> */}
               <Web3ReactManager>
                 <Routes>
                   <Route path={routes.swap} element={<Swap />} />
@@ -80,7 +79,7 @@ export default function App() {
                   <Route path={routes.removeLiquidity}>
                     <Route path={routes.removeLiquidity + routes.removeLiquidityParams} element={<RemoveLiquidity />} />
                   </Route>
-                  <Route path="/" element={<ComingSoon />} />
+                  <Route path="/" element={<Swap />} />
                 </Routes>
               </Web3ReactManager>
             </BodyWrapper>

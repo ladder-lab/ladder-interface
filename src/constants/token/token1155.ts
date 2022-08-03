@@ -23,7 +23,7 @@ export class Token1155 extends Token {
     }
   ) {
     super(chainId, address, 0, metadata?.symbol, metadata?.name)
-    this.tokenId = tokenId
+    this.tokenId = tokenId + ''
     this.is1155 = true
     this.uri = metadata?.uri
 

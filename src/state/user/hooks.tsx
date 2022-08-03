@@ -1,12 +1,15 @@
 import { Pair, Token, ChainId } from '@uniswap/sdk'
-import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from 'constants/index'
+import { DEFAULT_1155_LIST } from 'constants/default1155List'
+import { /*BASES_TO_TRACK_LIQUIDITY_FOR,*/ PINNED_PAIRS } from 'constants/index'
+import { Token1155 } from 'constants/token/token1155'
 import { useActiveWeb3React } from 'hooks'
 import { useAllTokens } from 'hooks/Tokens'
 import flatMap from 'lodash.flatmap'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { filter1155 } from 'utils/checkIs1155'
 import { generateErc20 } from 'utils/getHashAddress'
-
+import { pairKeyToken } from './reducer'
 import { AppDispatch, AppState } from '../index'
 import {
   updateUserDeadline,
@@ -21,24 +24,40 @@ import {
   SerializedToken
 } from './actions'
 
-function serializeToken(token: Token): SerializedToken {
-  return {
-    chainId: token.chainId,
-    address: token.address,
-    decimals: token.decimals,
-    symbol: token.symbol,
-    name: token.name
-  }
+function serializeToken(token: Token | Token1155): SerializedToken {
+  const is1155 = filter1155(token)
+  return is1155
+    ? {
+        chainId: token.chainId,
+        address: token.address,
+        decimals: token.decimals,
+        symbol: token.symbol,
+        name: token.name,
+        tokenId: is1155.tokenId
+      }
+    : {
+        chainId: token.chainId,
+        address: token.address,
+        decimals: token.decimals,
+        symbol: token.symbol,
+        name: token.name
+      }
 }
 
 function deserializeToken(serializedToken: SerializedToken): Token {
-  return new Token(
-    serializedToken.chainId,
-    serializedToken.address,
-    serializedToken.decimals,
-    serializedToken.symbol,
-    serializedToken.name
-  )
+  const hasTokenId = serializedToken?.tokenId
+  return hasTokenId
+    ? new Token1155(serializedToken.chainId, serializedToken.address, hasTokenId, {
+        name: serializedToken.name,
+        symbol: serializedToken.symbol
+      })
+    : new Token(
+        serializedToken.chainId,
+        serializedToken.address,
+        serializedToken.decimals,
+        serializedToken.symbol,
+        serializedToken.name
+      )
 }
 
 export function useIsDarkMode(): boolean {
@@ -202,7 +221,8 @@ export function useTrackedTokenPairs(): [Token, Token][] {
             // for each token on the current chain,
             return (
               // loop though all bases on the current chain
-              (BASES_TO_TRACK_LIQUIDITY_FOR[chainId] ?? [])
+              // (BASES_TO_TRACK_LIQUIDITY_FOR[chainId] ?? [])
+              (DEFAULT_1155_LIST[chainId] ?? [])
                 // to construct pairs of the given token with each base
                 .map((base: Token) => {
                   if (base.address === token.address) {
@@ -238,14 +258,63 @@ export function useTrackedTokenPairs(): [Token, Token][] {
 
   return useMemo(() => {
     // dedupes pairs of tokens in the combined list
-    const keyed = combinedList.reduce<{ [key: string]: [Token, Token] }>((memo, [tokenA, tokenB]) => {
-      const sorted = tokenA.sortsBefore(tokenB)
-      const key = sorted ? `${tokenA.address}:${tokenB.address}` : `${tokenB.address}:${tokenA.address}`
-      if (memo[key]) return memo
-      memo[key] = sorted ? [tokenA, tokenB] : [tokenB, tokenA]
-      return memo
-    }, {})
+    const keyed = combinedList.reduce<{ [key: string]: [Token | Token1155, Token | Token1155] }>(
+      (memo, [tokenA, tokenB]) => {
+        const sorted = tokenA.sortsBefore(tokenB)
+        const key = sorted ? pairKeyToken(tokenA, tokenB) : pairKeyToken(tokenB, tokenA)
+        if (memo[key]) return memo
+        memo[key] = sorted ? [tokenA, tokenB] : [tokenB, tokenA]
+        return memo
+      },
+      {}
+    )
 
     return Object.keys(keyed).map(key => keyed[key])
   }, [combinedList])
+}
+
+export function useTokenPairAdder(): (
+  token0: Token | Token1155 | undefined,
+  token1: Token | Token1155 | undefined
+) => void {
+  const dispatch = useDispatch<AppDispatch>()
+  const allPairs = useTrackedTokenPairs()
+
+  return useCallback(
+    (token0: Token | Token1155 | undefined, token1: Token | Token1155 | undefined) => {
+      if (!token0 || !token1) return
+
+      const filtered = allPairs.filter(([tokenA, tokenB]) => {
+        if (tokenA.address === token0.address && tokenB.address === token1.address) {
+          if (
+            filter1155(tokenA)?.tokenId === filter1155(token0)?.tokenId &&
+            filter1155(tokenB)?.tokenId === filter1155(token1)?.tokenId
+          ) {
+            return true
+          }
+        }
+        if (tokenB.address === token0.address && tokenA.address === token1.address) {
+          if (
+            filter1155(tokenB)?.tokenId === filter1155(token0)?.tokenId &&
+            filter1155(tokenA)?.tokenId === filter1155(token1)?.tokenId
+          ) {
+            return true
+          }
+        }
+        return false
+      })
+
+      if (filtered.length === 0) {
+        dispatch(
+          addSerializedPair({
+            serializedPair: {
+              token0: serializeToken(token0),
+              token1: serializeToken(token1)
+            }
+          })
+        )
+      }
+    },
+    [allPairs, dispatch]
+  )
 }

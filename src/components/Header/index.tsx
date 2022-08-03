@@ -5,14 +5,12 @@ import { ExternalLink } from 'theme/components'
 import Web3Status from './Web3Status'
 import { HideOnMobile, ShowOnMobile } from 'theme/index'
 import PlainSelect from 'components/Select/PlainSelect'
-import { ReactComponent as Ladder } from '../../assets/svg/ladder.svg'
-import { ReactComponent as LadderLogo } from '../../assets/svg/ladder_logo.svg'
 import { routes } from 'constants/routes'
 import MobileMenu from './MobileMenu'
 import NetworkSelect from './NetworkSelect'
 import SwitchToggle from 'components/SwitchToggle'
 import { useDarkModeManager } from 'state/user/hooks'
-import useBreakpoint from 'hooks/useBreakpoint'
+import MainLogo from 'components/MainLogo'
 
 interface TabContent {
   title: string
@@ -29,7 +27,7 @@ export const Tabs: Tab[] = [
   { title: 'Swap', route: routes.swap },
   { title: 'Pool', route: routes.pool },
   { title: 'Explore', link: 'https://www.google.com/' },
-  { title: 'Statistics', link: 'https://www.google.com/' }
+  { title: 'Statistics', link: 'https://www.google.com/#' }
 ]
 
 const navLinkSX = ({ theme }: any) => ({
@@ -45,7 +43,7 @@ const navLinkSX = ({ theme }: any) => ({
 const StyledNavLink = styled(Link)(navLinkSX)
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
-  position: 'relative',
+  position: 'fixed',
   height: theme.height.header,
   backgroundColor: theme.palette.background.paper,
   flexDirection: 'row',
@@ -72,11 +70,9 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
   },
   [theme.breakpoints.down('lg')]: {
     '& .link': { marginRight: 15 },
-    padding: '0 24px 0 0!important'
+    padding: '0 24px !important'
   },
-  [theme.breakpoints.down('md')]: {
-    position: 'fixed'
-  },
+  [theme.breakpoints.down('md')]: {},
   [theme.breakpoints.down('sm')]: {
     height: theme.height.mobileHeader,
     padding: '0 20px!important'
@@ -84,37 +80,11 @@ const StyledAppBar = styled(AppBar)(({ theme }) => ({
 }))
 
 const Filler = styled('div')(({ theme }) => ({
-  display: 'none',
-  [theme.breakpoints.down('md')]: {
-    height: theme.height.header,
-    display: 'block'
-  },
+  height: theme.height.header,
   [theme.breakpoints.down('sm')]: {
-    height: theme.height.mobileHeader,
-    padding: '0 20px'
+    height: theme.height.mobileHeader
   }
 }))
-
-const MainLogo = styled(Link, { shouldForwardProp: prop => !(prop === 'isDarkMode') })<{ isDarkMode?: boolean }>(
-  ({ theme, isDarkMode }) => ({
-    '& svg': {
-      width: 180.8,
-      height: 34.7,
-      fill: isDarkMode ? theme.palette.text.primary : '#232859'
-    },
-    '&:hover': {
-      cursor: 'pointer'
-    },
-    [theme.breakpoints.down('sm')]: {
-      '& img': { width: 100, height: 'auto' },
-      marginBottom: -10,
-      '& svg': {
-        width: 34,
-        height: 40
-      }
-    }
-  })
-)
 
 const LinksWrapper = muiStyled('div')(({ theme }) => ({
   marginLeft: 60,
@@ -125,7 +95,7 @@ const LinksWrapper = muiStyled('div')(({ theme }) => ({
 
 export default function Header() {
   const theme = useTheme()
-  const isDownMd = useBreakpoint('md')
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { pathname } = useLocation()
 
@@ -140,10 +110,8 @@ export default function Header() {
       <MobileMenu isOpen={mobileMenuOpen} onDismiss={handleMobileMenueDismiss} />
       <Filler />
       <StyledAppBar>
-        <Box display="flex" alignItems="center">
-          <MainLogo id={'Ladder'} to={'/'} isDarkMode={darkMode}>
-            {isDownMd ? <LadderLogo /> : <Ladder />}
-          </MainLogo>
+        <Box display="flex" alignItems="center" gap={30}>
+          <MainLogo color={darkMode ? '#FFFFFF' : '#232859'} />
           <Box sx={{ display: { xs: 'none', md: 'block' } }}>
             <SwitchToggle checked={darkMode} onChange={toggleDarkMode} />{' '}
             <Typography color="#cccccc">Dark mode</Typography>
