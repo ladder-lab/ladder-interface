@@ -22,6 +22,10 @@ export const updateUserSlippageTolerance = createAction<{ userSlippageTolerance:
 export const updateUserDeadline = createAction<{ userDeadline: number }>('user/updateUserDeadline')
 export const addSerializedToken = createAction<{ serializedToken: SerializedToken }>('user/addSerializedToken')
 export const removeSerializedToken = createAction<{ chainId: number; address: string }>('user/removeSerializedToken')
+export const addSerializedToken1155 = createAction<{ serializedToken: SerializedToken }>('user/addSerializedToken1155')
+export const removeSerializedToken1155 = createAction<{ chainId: number; address: string; tokenId: string | number }>(
+  'user/removeSerializedToken1155'
+)
 export const addSerializedPair = createAction<{ serializedPair: SerializedPair }>('user/addSerializedPair')
 export const removeSerializedPair = createAction<{
   chainId: number

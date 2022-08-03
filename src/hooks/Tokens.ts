@@ -82,6 +82,7 @@ const testTokens = {
 }
 export function useAllTokens(): { [address: string]: Token } {
   const allTokens = useDefaultTokenList()
+  //add user added tokens
   const tokens = useTokensFromMap(allTokens, true)
   return useMemo(() => ({ ...tokens, ...(IS_TEST_NET ? testTokens : {}) }), [tokens])
 }

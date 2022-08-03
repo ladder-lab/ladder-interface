@@ -12,7 +12,9 @@ import {
   updateUserSlippageTolerance,
   updateUserDeadline,
   updateUserSingleHopOnly,
-  updateUserDarkMode
+  updateUserDarkMode,
+  addSerializedToken1155,
+  removeSerializedToken1155
 } from './actions'
 import { Token1155 } from 'constants/token/token1155'
 import { filter1155 } from 'utils/checkIs1155'
@@ -40,7 +42,11 @@ export interface UserState {
       [address: string]: SerializedToken
     }
   }
-
+  tokens1155: {
+    [chainId: number]: {
+      [address: string]: SerializedToken
+    }
+  }
   pairs: {
     [chainId: number]: {
       // keyed by token0Address:token1Address
@@ -50,6 +56,10 @@ export interface UserState {
 
   timestamp: number
   URLWarningVisible: boolean
+}
+
+export function token1155key(tokenAddress: string, tokenId: string | number) {
+  return `${tokenAddress}#${tokenId}`
 }
 
 export function pairKey(
@@ -71,6 +81,7 @@ export const initialState: UserState = {
   userSlippageTolerance: INITIAL_ALLOWED_SLIPPAGE,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
   tokens: {},
+  tokens1155: {},
   pairs: {},
   timestamp: currentTimestamp(),
   URLWarningVisible: true
@@ -122,6 +133,23 @@ export default createReducer(initialState, builder =>
       }
       state.tokens[chainId] = state.tokens[chainId] || {}
       delete state.tokens[chainId][address]
+      state.timestamp = currentTimestamp()
+    })
+    .addCase(addSerializedToken1155, (state, { payload: { serializedToken } }) => {
+      if (!state.tokens1155) {
+        state.tokens1155 = {}
+      }
+      state.tokens1155[serializedToken.chainId] = state.tokens[serializedToken.chainId] || {}
+      state.tokens1155[serializedToken.chainId][token1155key(serializedToken.address, serializedToken.tokenId ?? '')] =
+        serializedToken
+      state.timestamp = currentTimestamp()
+    })
+    .addCase(removeSerializedToken1155, (state, { payload: { address, tokenId, chainId } }) => {
+      if (!state.tokens1155) {
+        state.tokens1155 = {}
+      }
+      state.tokens1155[chainId] = state.tokens1155[chainId] || {}
+      delete state.tokens1155[chainId][token1155key(address, tokenId)]
       state.timestamp = currentTimestamp()
     })
     .addCase(addSerializedPair, (state, { payload: { serializedPair } }) => {
