@@ -24,7 +24,7 @@ export default function ImportPool() {
   const { independentField, typedValue } = useSwapState()
 
   const { v2Trade, currencyBalances, parsedAmount, currencies } = useDerivedSwapInfo()
-  const { [Field.INPUT]: fromAsset, [Field.OUTPUT]: toAsset } = currencies
+  const { [Field.INPUT]: assetA, [Field.OUTPUT]: assetB } = currencies
   const { wrapType } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue)
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
 
@@ -97,19 +97,19 @@ export default function ImportPool() {
   )
 
   const error = useMemo(() => {
-    if (!fromAsset || !toAsset) {
+    if (!assetA || !assetB) {
       return 'Select a token to find your liquidity'
     }
 
     return undefined
-  }, [fromAsset, toAsset])
+  }, [assetA, assetB])
 
   return (
     <>
       {/* <ConfirmSupplyModal
         onConfirm={() => {}}
-        from={fromAsset ?? undefined}
-        to={toAsset ?? undefined}
+        from={assetA ?? undefined}
+        to={assetB ?? undefined}
         fromVal={fromVal}
         toVal={toVal}
         isOpen={false}
@@ -124,38 +124,38 @@ export default function ImportPool() {
         sx={{ padding: { xs: '20px', md: '24px 32px' } }}
       >
         <Box mt={35}>
-          <Box mb={fromAsset ? 16 : 0}>
+          <Box mb={assetA ? 16 : 0}>
             <CurrencyInputPanel
-              selectedTokenType={toAsset ? ('tokenId' in toAsset ? 'erc1155' : 'erc20') : undefined}
+              selectedTokenType={assetB ? ('tokenId' in assetB ? 'erc1155' : 'erc20') : undefined}
               value={fromVal}
               onChange={handleFromVal}
               onSelectCurrency={handleFromAsset}
-              currency={fromAsset}
+              currency={assetA}
               onMax={handleMaxInput}
             />
           </Box>
-          {fromAsset && <AssetAccordion token={fromAsset} />}
+          {assetA && <AssetAccordion token={assetA} />}
           <Box sx={{ height: 76, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <ArrowCircle />
           </Box>
 
-          <Box mb={toAsset ? 16 : 0}>
+          <Box mb={assetB ? 16 : 0}>
             <CurrencyInputPanel
-              selectedTokenType={fromAsset ? ('tokenId' in fromAsset ? 'erc1155' : 'erc20') : undefined}
+              selectedTokenType={assetA ? ('tokenId' in assetA ? 'erc1155' : 'erc20') : undefined}
               value={toVal}
               onChange={handleToVal}
               onSelectCurrency={handleToAsset}
-              currency={toAsset}
+              currency={assetB}
             />
           </Box>
-          {toAsset && <AssetAccordion token={toAsset} />}
+          {assetB && <AssetAccordion token={assetB} />}
           {!error && (
             <Typography sx={{ textAlign: 'center', mt: 20, mb: 8, color: theme.palette.text.secondary }}>
               Pool Found!
             </Typography>
           )}
           <Box mt={error ? 40 : 0}>
-            <PosittionCard from={fromAsset} to={toAsset} lpBalance="25.1676" error={error} />
+            <PosittionCard assetA={assetA} assetB={assetB} lpBalance="25.1676" error={error} />
           </Box>
         </Box>
       </AppBody>
