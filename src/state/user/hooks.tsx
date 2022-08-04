@@ -23,8 +23,7 @@ import {
   addSerializedPair,
   SerializedToken,
   addSerializedToken1155,
-  removeSerializedToken1155,
-  SerializedToken1155
+  removeSerializedToken1155
 } from './actions'
 import { NFT } from 'models/allTokens'
 
@@ -64,26 +63,12 @@ function deserializeToken(serializedToken: SerializedToken): Token | Token1155 {
       )
 }
 
-function serializeToken1155(token: Token1155): SerializedToken1155 {
-  return {
-    chainId: token.chainId,
-    address: token.address,
-    decimals: token.decimals,
-    symbol: token.symbol,
-    name: token.name,
-    tokenId: token.tokenId
-  }
-}
-
-function deserialize1155Token(serializedToken1155: SerializedToken1155): Token1155 {
-  const hasTokenId = serializedToken1155?.tokenId
-  return hasTokenId
-    ? new Token1155(serializedToken1155.chainId, serializedToken1155.address, hasTokenId, {
-        name: serializedToken1155.name,
-        symbol: serializedToken1155.symbol
-      })
-    : new Token1155(1, 'scrappy', 3)
-}
+/* function deserialize1155Token(serializedToken1155: SerializedToken1155): Token1155 {
+  return new Token1155(serializedToken1155.chainId, serializedToken1155.address, serializedToken1155.tokenId, {
+    name: serializedToken1155.name,
+    symbol: serializedToken1155.symbol
+  })
+} */
 
 export function useIsDarkMode(): boolean {
   const { userDarkMode } = useSelector<AppState, { userDarkMode: boolean | null }>(({ user: { userDarkMode } }) => ({
@@ -173,22 +158,9 @@ export function useAddUserToken(): (token: Token | NFT) => void {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
     token => {
-      /* if (filter1155(token)) {
-        dispatch(addSerializedToken1155({ serializedToken1155: serializeToken1155(token) }))
-        return
-      } */
-      dispatch(addSerializedToken({ serializedToken: serializeToken(token) }))
-    },
-    [dispatch]
-  )
-}
-
-export function useAddUserToken1155(): (token: Token1155) => void {
-  const dispatch = useDispatch<AppDispatch>()
-  return useCallback(
-    token => {
-      if (filter1155(token)) {
-        dispatch(addSerializedToken1155({ serializedToken1155: serializeToken1155(token) }))
+      const token1155 = filter1155(token)
+      if (token1155) {
+        dispatch(addSerializedToken1155({ serializedToken: serializeToken(token1155) }))
         return
       }
       dispatch(addSerializedToken({ serializedToken: serializeToken(token) }))
@@ -369,7 +341,7 @@ export function useTokenPairAdder(): (
   )
 }
 
-export function useTrackedList() {
+export function useTrackedToken1155List() {
   const { chainId } = useActiveWeb3React()
   const serializedTokensMap = useSelector<AppState, AppState['user']['tokens1155']>(
     ({ user: { tokens1155 } }) => tokens1155
@@ -381,7 +353,7 @@ export function useTrackedList() {
     if (!forChain) return []
 
     return Object.keys(forChain).map(idx => {
-      return deserialize1155Token(forChain[idx])
+      return deserializeToken(forChain[idx]) as Token1155
     })
   }, [serializedTokensMap, chainId])
 
