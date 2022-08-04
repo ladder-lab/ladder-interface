@@ -9,14 +9,6 @@ export interface SerializedToken {
   tokenId?: string | number
 }
 
-export interface SerializedToken1155 {
-  chainId: number
-  address: string
-  decimals: number
-  symbol?: string
-  name?: string
-  tokenId?: string | number
-}
 export interface SerializedPair {
   token0: SerializedToken
   token1: SerializedToken
@@ -30,9 +22,7 @@ export const updateUserSlippageTolerance = createAction<{ userSlippageTolerance:
 export const updateUserDeadline = createAction<{ userDeadline: number }>('user/updateUserDeadline')
 export const addSerializedToken = createAction<{ serializedToken: SerializedToken }>('user/addSerializedToken')
 export const removeSerializedToken = createAction<{ chainId: number; address: string }>('user/removeSerializedToken')
-export const addSerializedToken1155 = createAction<{ serializedToken1155: SerializedToken1155 }>(
-  'user/addSerializedToken1155'
-)
+export const addSerializedToken1155 = createAction<{ serializedToken: SerializedToken }>('user/addSerializedToken1155')
 export const removeSerializedToken1155 = createAction<{ chainId: number; address: string; tokenId: string | number }>(
   'user/removeSerializedToken1155'
 )

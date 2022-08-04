@@ -5,11 +5,11 @@ import { Token1155 } from 'constants/token/token1155'
 import { AllTokens } from 'models/allTokens'
 import { shortenAddress } from 'utils'
 import useModal from 'hooks/useModal'
-import { useIsDarkMode, useTrackedList } from 'state/user/hooks'
+import { useIsDarkMode, useTrackedToken1155List } from 'state/user/hooks'
 
 export default function NftList({ onClick }: { onClick?: (token: AllTokens) => void }) {
   const { hideModal } = useModal()
-  const list = useTrackedList()
+  const list = useTrackedToken1155List()
 
   return (
     <Grid container spacing={20} sx={{ overflow: 'auto', height: 480 }}>

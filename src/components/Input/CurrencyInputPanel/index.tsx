@@ -97,10 +97,7 @@ export default function CurrencyInputPanel({
         height={isDownMd ? '48px' : '52px'}
       >
         {currency ? (
-          <LogoText
-            logo={<CurrencyLogo currency={currency} />}
-            text={checkIs1155(currency) ? currency.name : currency.symbol}
-          />
+          <LogoText logo={<CurrencyLogo currency={currency} />} text={is1155 ? currency.name : currency.symbol} />
         ) : (
           <>Select Token</>
         )}

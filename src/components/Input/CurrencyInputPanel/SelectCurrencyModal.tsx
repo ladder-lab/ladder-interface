@@ -66,7 +66,6 @@ export default function SelectCurrencyModal({
   const handleImport = useCallback(
     (nft: NFT) => {
       onSelectCurrency?.(nft)
-      console.log(nft)
       hideModal()
       setIsInportOpen(false)
     },
