@@ -130,7 +130,10 @@ export default function Pool() {
               {v2Pairs.map(([, pair], idx) => {
                 if (!pair) return null
 
-                const [token0, token1] = trackedTokenPairMap[liquidityTokensWithBalances[idx].liquidityToken.address]
+                const tokens = trackedTokenPairMap[liquidityTokensWithBalances[idx].liquidityToken.address]
+                const [token0, token1] = tokens[0].sortsBefore(tokens[1])
+                  ? [tokens[0], tokens[1]]
+                  : [tokens[1], tokens[0]]
 
                 const { token1Text, token2Text, token1Id, token2Id } = getTokenText(token0, token1)
 

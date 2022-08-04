@@ -1,4 +1,4 @@
-import { createTheme, styled, ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
+import { createTheme, darken, styled, ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
 import { useIsDarkMode } from 'state/user/hooks'
 
 export type PaletteMode = 'light' | 'dark'
@@ -67,7 +67,7 @@ export const themeColors = {
   primary: {
     light: '#ADDFB5',
     main: '#1F9898',
-    dark: '#CAF400',
+    dark: darken('#1F9898', 0.3),
     contrastText: '#1A1C1E'
   },
   secondary: {

@@ -6,8 +6,8 @@ import Tag from 'components/Tag'
 import { getTokenText } from 'utils/checkIs1155'
 
 export default function PosittionCard({
-  from,
-  to,
+  assetA,
+  assetB,
   lpBalance,
   error,
   color,
@@ -15,9 +15,9 @@ export default function PosittionCard({
   liquidityA,
   liquidityB
 }: {
-  from?: AllTokens
-  to?: AllTokens
-  error?: string
+  assetA?: AllTokens | null
+  assetB?: AllTokens | null
+  error?: string | JSX.Element
   color?: string
   lpBalance?: string
   poolShare?: string
@@ -25,7 +25,7 @@ export default function PosittionCard({
   liquidityB?: string
 }) {
   const theme = useTheme()
-  const { token1Text, token2Text } = getTokenText(from, to)
+  const { token1Text, token2Text } = getTokenText(assetA ?? undefined, assetB ?? undefined)
   const data = {
     ['Your pool share']: poolShare ?? '-' + ' %',
     [token1Text ?? '-']: liquidityA ?? '-',
@@ -43,7 +43,11 @@ export default function PosittionCard({
           justifyContent: 'center'
         }}
       >
-        {error && <Typography>{error}</Typography>}
+        {error && (
+          <Typography component="div" fontSize={16} fontWeight={500} color={theme.palette.text.secondary}>
+            {error}
+          </Typography>
+        )}
         {!error && (
           <Box sx={{ width: '100%' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center', mb: 12 }}>
@@ -61,7 +65,7 @@ export default function PosittionCard({
             </Box>
 
             <Box display="flex" justifyContent="space-between" mb={28}>
-              <DoubleCurrencyLogo currency0={from} currency1={to} />
+              <DoubleCurrencyLogo currency0={assetA ?? undefined} currency1={assetB ?? undefined} />
               <Typography fontSize={16} fontWeight={700}>
                 {lpBalance || '-'}{' '}
               </Typography>

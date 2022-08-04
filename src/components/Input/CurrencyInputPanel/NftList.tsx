@@ -6,13 +6,15 @@ import { AllTokens } from 'models/allTokens'
 import { shortenAddress } from 'utils'
 import useModal from 'hooks/useModal'
 import { useIsDarkMode, useTrackedToken1155List } from 'state/user/hooks'
+import useBreakpoint from 'hooks/useBreakpoint'
 
 export default function NftList({ onClick }: { onClick?: (token: AllTokens) => void }) {
   const { hideModal } = useModal()
   const list = useTrackedToken1155List()
+  const isDownMd = useBreakpoint('md')
 
   return (
-    <Grid container spacing={20} sx={{ overflow: 'auto', height: 480 }}>
+    <Grid container spacing={20} sx={{ overflow: 'auto', height: isDownMd ? 357 : 517, pb: 100 }}>
       {list?.map((token1155, idx) => (
         <Grid item xs={6} md={3} key={idx}>
           <NftCard
