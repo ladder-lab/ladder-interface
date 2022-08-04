@@ -19,7 +19,7 @@ import {
   updateUserDarkMode,
   addSerializedToken,
   removeSerializedToken,
-  SerializedPair,
+  // SerializedPair,
   addSerializedPair,
   SerializedToken,
   addSerializedToken1155,
@@ -195,23 +195,23 @@ export function useUserAddedTokens(): Token[] {
   }, [serializedTokensMap, chainId])
 }
 
-function serializePair(pair: Pair): SerializedPair {
-  return {
-    token0: serializeToken(pair.token0),
-    token1: serializeToken(pair.token1)
-  }
-}
+// function serializePair(pair: Pair): SerializedPair {
+//   return {
+//     token0: serializeToken(pair.token0),
+//     token1: serializeToken(pair.token1)
+//   }
+// }
 
-export function usePairAdder(): (pair: Pair) => void {
-  const dispatch = useDispatch<AppDispatch>()
+// export function usePairAdder(): (pair: Pair) => void {
+//   const dispatch = useDispatch<AppDispatch>()
 
-  return useCallback(
-    (pair: Pair) => {
-      dispatch(addSerializedPair({ serializedPair: serializePair(pair) }))
-    },
-    [dispatch]
-  )
-}
+//   return useCallback(
+//     (pair: Pair) => {
+//       dispatch(addSerializedPair({ serializedPair: serializePair(pair) }))
+//     },
+//     [dispatch]
+//   )
+// }
 
 export function toV2LiquidityToken([tokenA, tokenB]: [Token, Token]): Token {
   return new Token(

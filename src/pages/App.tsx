@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, Navigate } from 'react-router-dom'
 import { styled } from '@mui/material'
 import Header from '../components/Header'
 import Polling from '../components/essential/Polling'
@@ -75,11 +75,13 @@ export default function App() {
                   <Route path={routes.swap} element={<Swap />} />
                   <Route path={routes.pool} element={<Pool />} />
                   <Route path={routes.importPool} element={<ImportPool />} />
-                  <Route path={routes.addLiquidity} element={<AddLiquidity />} />
+                  <Route path={routes.addLiquidity} element={<AddLiquidity />}>
+                    <Route path={routes.removeLiquidityParams.slice(1)} element={<AddLiquidity />} />
+                  </Route>
                   <Route path={routes.removeLiquidity}>
                     <Route path={routes.removeLiquidity + routes.removeLiquidityParams} element={<RemoveLiquidity />} />
                   </Route>
-                  <Route path="/" element={<Swap />} />
+                  <Route path="*" element={<Navigate to={routes.swap} replace />} />
                 </Routes>
               </Web3ReactManager>
             </BodyWrapper>

@@ -47,15 +47,19 @@ export function usePairs(currencies: [Currency | undefined, Currency | undefined
       if (!tokenA || !tokenB || tokenA.equals(tokenB)) return [PairState.INVALID, null]
       if (!reserves) return [PairState.NOT_EXISTS, null]
       const { reserve0, reserve1 } = reserves
-      const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]
+      const wrappedA = wrappedCurrency(currencies[i][0], chainId)
+      const wrappedB = wrappedCurrency(currencies[i][1], chainId)
+      const [token0, token1] =
+        wrappedA && wrappedB && wrappedA.sortsBefore(wrappedB) ? [tokenA, tokenB] : [tokenB, tokenA]
       return [
         PairState.EXISTS,
         new Pair(new TokenAmount(token0, reserve0.toString()), new TokenAmount(token1, reserve1.toString()))
       ]
     })
-  }, [results, tokens])
+  }, [chainId, currencies, results, tokens])
 }
 
 export function usePair(tokenA?: Currency, tokenB?: Currency): [PairState, Pair | null] {
-  return usePairs([[tokenA, tokenB]])[0]
+  const arg: [Currency | undefined, Currency | undefined][] = useMemo(() => [[tokenA, tokenB]], [tokenA, tokenB])
+  return usePairs(arg)[0]
 }
