@@ -1,121 +1,110 @@
-import { useCallback, useState, ChangeEvent, useMemo, useEffect } from 'react'
-import { routes } from 'constants/routes'
-import { Box, useTheme, Typography } from '@mui/material'
-import { CurrencyAmount } from '@uniswap/sdk'
+import { useCallback, useState, useMemo, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { ETHER, JSBI, Percent, TokenAmount } from '@uniswap/sdk'
+import { Box, Button, Typography } from '@mui/material'
 import AppBody from 'components/AppBody'
+import { routes } from 'constants/routes'
 import { ReactComponent as ArrowCircle } from 'assets/svg/arrow_circle.svg'
 import { AssetAccordion } from '../Swap/AssetAccordion'
 import CurrencyInputPanel from 'components/Input/CurrencyInputPanel'
 import { AllTokens } from 'models/allTokens'
-import { useUserSlippageTolerance } from 'state/user/hooks'
-import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
-import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
-import { Field } from 'state/swap/actions'
-import { ApprovalState, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
-import { maxAmountSpend } from 'utils/maxAmountSpend'
-import { useNavigate } from 'react-router-dom'
-import PosittionCard from './PositionCard'
+import { useTokenPairAdder } from 'state/user/hooks'
+import { PairState, usePair } from 'data/Reserves'
+import PositionCard from './PositionCard'
+import { useActiveWeb3React } from 'hooks'
+import { useTokenBalance, useTokenTotalSupply } from 'state/wallet/hooks'
+import { wrappedCurrency } from 'utils/wrappedCurrency'
 
 export default function ImportPool() {
   const navigate = useNavigate()
-  const theme = useTheme()
+  const { account, chainId } = useActiveWeb3React()
 
-  const [allowedSlippage] = useUserSlippageTolerance()
-  const { independentField, typedValue } = useSwapState()
+  const [assetA, setAssetA] = useState<AllTokens | null>(ETHER)
+  const [assetB, setAssetB] = useState<AllTokens | null>(null)
 
-  const { v2Trade, currencyBalances, parsedAmount, currencies } = useDerivedSwapInfo()
-  const { [Field.INPUT]: assetA, [Field.OUTPUT]: assetB } = currencies
-  const { wrapType } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue)
-  const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
-
-  const trade = showWrap ? undefined : v2Trade
-
-  const parsedAmounts = showWrap
-    ? {
-        [Field.INPUT]: parsedAmount,
-        [Field.OUTPUT]: parsedAmount
-      }
-    : {
-        [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-        [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount
-      }
-
-  const { onCurrencySelection, onUserInput } = useSwapActionHandlers()
-
-  const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
-
-  const formattedAmounts = {
-    [independentField]: typedValue,
-    [dependentField]: showWrap
-      ? parsedAmounts[independentField]?.toExact() ?? ''
-      : parsedAmounts[dependentField]?.toSignificant(6) ?? ''
-  }
-  const { [independentField]: fromVal, [dependentField]: toVal } = formattedAmounts
-
-  const [approval] = useApproveCallbackFromTrade(trade, allowedSlippage)
-  const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
+  const [pairState, pair] = usePair(assetA ?? undefined, assetB ?? undefined)
+  const addPair = useTokenPairAdder()
 
   useEffect(() => {
-    if (approval === ApprovalState.PENDING) {
-      setApprovalSubmitted(true)
+    if (pair) {
+      const wrappedA = wrappedCurrency(assetA ?? undefined, chainId)
+      const wrappedB = wrappedCurrency(assetB ?? undefined, chainId)
+      const [token0, token1] =
+        wrappedA && wrappedB && wrappedA.sortsBefore(wrappedB) ? [wrappedA, wrappedB] : [wrappedB, wrappedA]
+      addPair(token0, token1)
     }
-  }, [approval, approvalSubmitted])
+  }, [pair, addPair, assetA, chainId, assetB])
 
-  const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
+  const validPairNoLiquidity: boolean =
+    pairState === PairState.NOT_EXISTS ||
+    Boolean(
+      pairState === PairState.EXISTS &&
+        pair &&
+        JSBI.equal(pair.reserve0.raw, JSBI.BigInt(0)) &&
+        JSBI.equal(pair.reserve1.raw, JSBI.BigInt(0))
+    )
 
-  const handleMaxInput = useCallback(() => {
-    maxAmountInput && onUserInput(Field.INPUT, maxAmountInput.toExact())
-  }, [maxAmountInput, onUserInput])
+  const position: TokenAmount | undefined = useTokenBalance(account ?? undefined, pair?.liquidityToken)
+  const hasPosition = Boolean(position && JSBI.greaterThan(position.raw, JSBI.BigInt(0)))
+  const totalSupply = useTokenTotalSupply(pair?.liquidityToken)
+  const poolTokenPercentage = totalSupply && position ? new Percent(position.raw, totalSupply.raw).toFixed() + '%' : '-'
 
-  const handleFromVal = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      onUserInput(Field.INPUT, e.target.value)
-    },
-    [onUserInput]
-  )
+  const handleAssetA = useCallback((currency: AllTokens) => {
+    setAssetA(currency)
+  }, [])
 
-  const handleToVal = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      onUserInput(Field.OUTPUT, e.target.value)
-    },
-    [onUserInput]
-  )
-
-  const handleFromAsset = useCallback(
-    (currency: AllTokens) => {
-      setApprovalSubmitted(false) // reset 2 step UI for approvals
-      onCurrencySelection(Field.INPUT, currency)
-    },
-    [onCurrencySelection]
-  )
-
-  const handleToAsset = useCallback(
-    (currency: AllTokens) => {
-      onCurrencySelection(Field.OUTPUT, currency)
-    },
-    [onCurrencySelection]
-  )
+  const handleAssetB = useCallback((currency: AllTokens) => {
+    setAssetB(currency)
+  }, [])
 
   const error = useMemo(() => {
+    if (!account) {
+      return 'Connect to a wallet to find pools'
+    }
     if (!assetA || !assetB) {
       return 'Select a token to find your liquidity'
     }
 
+    if (pairState === PairState.INVALID) {
+      return 'Invalid pair'
+    }
+
+    if (validPairNoLiquidity) {
+      return (
+        <>
+          No pool found <br />
+          <Button
+            color="primary"
+            variant="text"
+            sx={{ padding: 0, height: 'auto' }}
+            onClick={() => navigate(routes.addLiquidity)}
+          >
+            Create Pool
+          </Button>
+        </>
+      )
+    }
+
+    if (!hasPosition) {
+      return (
+        <>
+          You don’t have liquidity in this pool yet <br />
+          <Button color="primary" variant="text" sx={{ padding: 0, height: 'auto' }}>
+            Add liquidity
+          </Button>
+        </>
+      )
+    }
+
     return undefined
-  }, [assetA, assetB])
+  }, [account, assetA, assetB, hasPosition, navigate, pairState, validPairNoLiquidity])
+
+  const assets = useMemo(() => {
+    return pair?.token0.address === ((assetA as any)?.address ?? '') ? [assetA, assetB] : [assetB, assetA]
+  }, [assetA, assetB, pair?.token0.address])
 
   return (
     <>
-      {/* <ConfirmSupplyModal
-        onConfirm={() => {}}
-        from={assetA ?? undefined}
-        to={assetB ?? undefined}
-        fromVal={fromVal}
-        toVal={toVal}
-        isOpen={false}
-        onDismiss={() => {}}
-      /> */}
-
       <AppBody
         width={'100%'}
         maxWidth={'680px'}
@@ -127,11 +116,11 @@ export default function ImportPool() {
           <Box mb={assetA ? 16 : 0}>
             <CurrencyInputPanel
               selectedTokenType={assetB ? ('tokenId' in assetB ? 'erc1155' : 'erc20') : undefined}
-              value={fromVal}
-              onChange={handleFromVal}
-              onSelectCurrency={handleFromAsset}
+              value={'0'}
+              onChange={() => {}}
+              onSelectCurrency={handleAssetA}
               currency={assetA}
-              onMax={handleMaxInput}
+              disableInput
             />
           </Box>
           {assetA && <AssetAccordion token={assetA} />}
@@ -142,20 +131,29 @@ export default function ImportPool() {
           <Box mb={assetB ? 16 : 0}>
             <CurrencyInputPanel
               selectedTokenType={assetA ? ('tokenId' in assetA ? 'erc1155' : 'erc20') : undefined}
-              value={toVal}
-              onChange={handleToVal}
-              onSelectCurrency={handleToAsset}
+              value={'0'}
+              onChange={() => {}}
+              onSelectCurrency={handleAssetB}
               currency={assetB}
+              disableInput
             />
           </Box>
           {assetB && <AssetAccordion token={assetB} />}
           {!error && (
-            <Typography sx={{ textAlign: 'center', mt: 20, mb: 8, color: theme.palette.text.secondary }}>
+            <Typography sx={{ textAlign: 'center', mt: 20, mb: 8 }} color="primary" fontWeight={500}>
               Pool Found!
             </Typography>
           )}
           <Box mt={error ? 40 : 0}>
-            <PosittionCard assetA={assetA} assetB={assetB} lpBalance="25.1676" error={error} />
+            <PositionCard
+              assetA={assets[0]}
+              assetB={assets[1]}
+              lpBalance={position?.toExact()}
+              error={error}
+              liquidityA={pair?.reserve0.toExact()}
+              liquidityB={pair?.reserve1.toExact()}
+              poolShare={poolTokenPercentage}
+            />
           </Box>
         </Box>
       </AppBody>

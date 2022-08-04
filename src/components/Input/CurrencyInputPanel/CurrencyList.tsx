@@ -8,6 +8,7 @@ import { Token, Currency } from '@uniswap/sdk'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks'
 import Spinner from 'components/Spinner'
+import useBreakpoint from 'hooks/useBreakpoint'
 
 const StyledBalanceText = styled(Typography)(`
   white-space: nowrap;
@@ -63,6 +64,7 @@ function Row({ currency, onClick }: { currency: Currency; onClick: () => void })
 
 export function CurrencyListComponent({ onSelectCurrency, currencyOptions, fixedListRef, showETH }: Props) {
   const { hideModal } = useModal()
+  const isDownMd = useBreakpoint('md')
 
   const currencyKey = useCallback((currency: Currency): string => {
     return currency ? currency.symbol || '' : ''
@@ -91,7 +93,7 @@ export function CurrencyListComponent({ onSelectCurrency, currencyOptions, fixed
 
   return (
     <FixedSizeList
-      height={290}
+      height={isDownMd ? 290 : 450}
       width="100%"
       itemCount={itemData.length}
       itemSize={56}

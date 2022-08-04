@@ -20,7 +20,6 @@ import { AllTokens, TokenType } from 'models/allTokens'
 import useModal from 'hooks/useModal'
 import ImportModal from 'components/Modal/ImportModal'
 import { HelperText } from 'constants/helperText'
-import { theme } from 'theme'
 import useBreakpoint from 'hooks/useBreakpoint'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { useIsDarkMode } from 'state/user/hooks'
@@ -38,6 +37,7 @@ export default function SelectCurrencyModal({
   selectedTokenType?: TokenType
 }) {
   const isDownMd = useBreakpoint('md')
+  const theme = useTheme()
   const [mode, setMode] = useState(selectedTokenType === 'erc20' ? Mode.NFT : Mode.TOKEN)
   const [searchQuery, setSearchQuery] = useState<string>('')
   const debouncedQuery = useDebounce(searchQuery, 200)
@@ -214,7 +214,7 @@ export default function SelectCurrencyModal({
           </>
         )}
 
-        <Box paddingTop={'24px'}>
+        <Box paddingTop={'24px'} position="relative">
           {mode === Mode.TOKEN ? (
             <CurrencyList
               mode={mode}
@@ -228,6 +228,16 @@ export default function SelectCurrencyModal({
           ) : (
             <NftList onClick={onSelectCurrency} />
           )}
+          <Box
+            sx={{
+              pointerEvents: 'none',
+              position: 'absolute',
+              bottom: 0,
+              height: 200,
+              width: '100%',
+              background: `linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, ${theme.palette.background.paper} 100%);`
+            }}
+          ></Box>
         </Box>
         {/* <Divider />
         <Box height="55px" justifyContent="center" display="flex">
