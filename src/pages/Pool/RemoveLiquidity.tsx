@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { TransactionResponse } from '@ethersproject/providers'
 import { currencyEquals, Percent, WETH } from '@uniswap/sdk'
 import { Box, useTheme, Typography, Button, Slider, styled, ButtonBase } from '@mui/material'
-import { routes } from 'constants/routes'
+import { liquidityParamBuilder, routes } from 'constants/routes'
 import AppBody from 'components/AppBody'
 import Card from 'components/Card'
 import { ETHER } from 'constants/token'
@@ -23,7 +23,6 @@ import { useBurnCallback } from 'hooks/usePoolCallback'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import useDebouncedChangeHandler from 'utils/useDebouncedChangeHandler'
 import ActionButton from 'components/Button/ActionButton'
-import { Token1155 } from 'constants/token/token1155'
 import ConfirmRemoveModal from 'components/Modal/ConfirmRemoveModal'
 import { useCurrencyBalance, useTokenTotalSupply } from 'state/wallet/hooks'
 import { getTokenText } from 'utils/checkIs1155'
@@ -223,11 +222,10 @@ export default function RemoveLiquidity() {
                         onClick={() => {
                           navigate(
                             routes.removeLiquidity +
-                              `/${currencyA === ETHER ? WETH[chainId].address : currencyIdA}/${
-                                currencyB === ETHER ? WETH[chainId].address : currencyIdB
-                              }/${currencyA && 'tokenId' in currencyA ? (currencyA as Token1155).tokenId : ''}&${
-                                currencyB && 'tokenId' in currencyB ? (currencyB as Token1155).tokenId : ''
-                              }`
+                              liquidityParamBuilder(
+                                currencyA === ETHER ? WETH[chainId] : currencyB,
+                                currencyB === ETHER ? WETH[chainId] : currencyB
+                              )
                           )
                         }}
                       >
@@ -236,14 +234,7 @@ export default function RemoveLiquidity() {
                     ) : oneCurrencyIsWETH ? (
                       <Box
                         onClick={() => {
-                          navigate(
-                            routes.removeLiquidity +
-                              `/${currencyA && currencyEquals(currencyA, WETH[chainId]) ? 'ETH' : currencyIdA}/${
-                                currencyB && currencyEquals(currencyB, WETH[chainId]) ? 'ETH' : currencyIdB
-                              }/${currencyA && 'tokenId' in currencyA ? (currencyA as Token1155).tokenId : ''}&${
-                                currencyB && 'tokenId' in currencyB ? (currencyB as Token1155).tokenId : ''
-                              }`
-                          )
+                          navigate(routes.removeLiquidity + liquidityParamBuilder(currencyA, currencyB))
                         }}
                       >
                         Receive ETH

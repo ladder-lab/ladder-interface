@@ -1,5 +1,5 @@
-import { useCallback, useState, ChangeEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useCallback, useState, ChangeEvent, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { routes } from 'constants/routes'
 import { Typography, Box, useTheme, Button } from '@mui/material'
 import { TokenAmount } from '@uniswap/sdk'
@@ -27,12 +27,19 @@ import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import { useTransactionAdder } from 'state/transactions/hooks'
+import { useCurrency } from 'hooks/Tokens'
 
 export default function AddLiquidy() {
   const [currencyA, setCurrencyA] = useState<undefined | AllTokens>(undefined)
   const [currencyB, setCurrencyB] = useState<undefined | AllTokens>(undefined)
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
 
+  const { currencyIdA, currencyIdB, tokenIds } = useParams()
+  const [tokenIdA, tokenIdB] = tokenIds?.split('&') ?? ['', '']
+  const [currency0, currency1] = [
+    useCurrency(currencyIdA, tokenIdA) ?? undefined,
+    useCurrency(currencyIdB, tokenIdB) ?? undefined
+  ]
   const { account } = useActiveWeb3React()
   const navigate = useNavigate()
   const { showModal, hideModal } = useModal()
@@ -150,6 +157,15 @@ export default function AddLiquidy() {
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false)
   }, [])
+
+  useEffect(() => {
+    if (currency0) {
+      setCurrencyA(currency0)
+    }
+    if (currency1) {
+      setCurrencyB(currency1)
+    }
+  }, [currency0, currency1])
 
   return (
     <>

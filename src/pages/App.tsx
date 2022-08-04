@@ -75,7 +75,9 @@ export default function App() {
                   <Route path={routes.swap} element={<Swap />} />
                   <Route path={routes.pool} element={<Pool />} />
                   <Route path={routes.importPool} element={<ImportPool />} />
-                  <Route path={routes.addLiquidity} element={<AddLiquidity />} />
+                  <Route path={routes.addLiquidity} element={<AddLiquidity />}>
+                    <Route path={routes.removeLiquidityParams.slice(1)} element={<AddLiquidity />} />
+                  </Route>
                   <Route path={routes.removeLiquidity}>
                     <Route path={routes.removeLiquidity + routes.removeLiquidityParams} element={<RemoveLiquidity />} />
                   </Route>

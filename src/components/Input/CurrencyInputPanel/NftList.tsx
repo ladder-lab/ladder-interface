@@ -9,13 +9,15 @@ import { DEFAULT_1155_LIST } from 'constants/default1155List'
 import { useActiveWeb3React } from 'hooks'
 import { NETWORK_CHAIN_ID } from 'constants/chain'
 import { useIsDarkMode } from 'state/user/hooks'
+import useBreakpoint from 'hooks/useBreakpoint'
 
 export default function NftList({ onClick }: { onClick?: (token: AllTokens) => void }) {
   const { hideModal } = useModal()
   const { chainId } = useActiveWeb3React()
+  const isDownMd = useBreakpoint('md')
 
   return (
-    <Grid container spacing={20} sx={{ overflow: 'auto', height: 480 }}>
+    <Grid container spacing={20} sx={{ overflow: 'auto', height: isDownMd ? 357 : 517, pb: 100 }}>
       {DEFAULT_1155_LIST[(chainId ?? NETWORK_CHAIN_ID) as keyof typeof DEFAULT_1155_LIST]?.map((token1155, idx) => (
         <Grid item xs={6} md={3} key={idx}>
           <NftCard
