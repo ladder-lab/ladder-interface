@@ -309,8 +309,8 @@ export default function RemoveLiquidity() {
       </AppBody>
       <Box maxWidth={680} width="100%" mt={30}>
         <PositionCard
-          from={currencyA}
-          to={currencyB}
+          assetA={currencyA}
+          assetB={currencyB}
           lpBalance={balance?.toExact()}
           liquidityA={pair?.reserve0.toExact()}
           liquidityB={pair?.reserve1.toExact()}

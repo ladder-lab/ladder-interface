@@ -6,8 +6,8 @@ import Tag from 'components/Tag'
 import { getTokenText } from 'utils/checkIs1155'
 
 export default function PosittionCard({
-  from,
-  to,
+  assetA,
+  assetB,
   lpBalance,
   error,
   color,
@@ -15,8 +15,8 @@ export default function PosittionCard({
   liquidityA,
   liquidityB
 }: {
-  from?: AllTokens
-  to?: AllTokens
+  assetA?: AllTokens
+  assetB?: AllTokens
   error?: string
   color?: string
   lpBalance?: string
@@ -25,7 +25,7 @@ export default function PosittionCard({
   liquidityB?: string
 }) {
   const theme = useTheme()
-  const { token1Text, token2Text } = getTokenText(from, to)
+  const { token1Text, token2Text } = getTokenText(assetA, assetB)
   const data = {
     ['Your pool share']: poolShare ?? '-' + ' %',
     [token1Text ?? '-']: liquidityA ?? '-',
@@ -61,7 +61,7 @@ export default function PosittionCard({
             </Box>
 
             <Box display="flex" justifyContent="space-between" mb={28}>
-              <DoubleCurrencyLogo currency0={from} currency1={to} />
+              <DoubleCurrencyLogo currency0={assetA} currency1={assetB} />
               <Typography fontSize={16} fontWeight={700}>
                 {lpBalance || '-'}{' '}
               </Typography>
