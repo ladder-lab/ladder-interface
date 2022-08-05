@@ -21,22 +21,28 @@ const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMo
   ({ theme, isDarkMode }) => ({
     display: 'flex',
     alignItems: 'flex-start',
-    overflowX: 'hidden',
-    backgroundImage: `url(${isDarkMode ? darkBg : lightBg})`,
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: isDarkMode ? 'bottom' : 'top',
-    backgroundSize: isDarkMode ? '100% auto' : '100% 100%',
+    position: 'relative',
+    minWidth: theme.width.minContent,
+    '&:after': {
+      content: '""',
+      width: '100%',
+      height: '100%',
+      bottom: 0,
+      zIndex: -1,
+      position: 'absolute',
+      backgroundImage: `url(${isDarkMode ? darkBg : lightBg})`,
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: isDarkMode ? 'bottom' : 'top',
+      backgroundSize: isDarkMode ? '100% auto' : '100% 100%'
+    },
     [theme.breakpoints.down('md')]: {
-      flexDirection: 'column',
-      height: '100vh'
+      flexDirection: 'column'
     }
   })
 )
 
 const ContentWrapper = styled('div')({
   width: '100%',
-  maxHeight: '100vh',
-  overflow: 'auto',
   alignItems: 'center'
 })
 
@@ -49,8 +55,6 @@ const BodyWrapper = styled('div')(({ theme }) => ({
   justifyContent: 'flex-start',
   alignItems: 'center',
   flex: 1,
-  overflowY: 'auto',
-  overflowX: 'hidden',
   position: 'relative',
   [theme.breakpoints.down('md')]: {
     minHeight: `calc(100vh - ${theme.height.header})`,

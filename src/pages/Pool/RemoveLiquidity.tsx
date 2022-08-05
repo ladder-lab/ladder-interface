@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { TransactionResponse } from '@ethersproject/providers'
 import { currencyEquals, Percent, WETH } from '@uniswap/sdk'
@@ -165,6 +165,12 @@ export default function RemoveLiquidity() {
     setMode(prev => (prev === Mode.DETAIL ? Mode.SIMPLE : Mode.DETAIL))
   }, [])
 
+  const assets = useMemo(() => {
+    return pair?.token0.address === ((currencyA as any)?.address ?? '')
+      ? [currencyA, currencyB]
+      : [currencyB, currencyA]
+  }, [currencyA, currencyB, pair?.token0.address])
+
   return (
     <>
       <ConfirmRemoveModal
@@ -300,8 +306,8 @@ export default function RemoveLiquidity() {
       </AppBody>
       <Box maxWidth={680} width="100%" mt={30}>
         <PositionCard
-          assetA={currencyA}
-          assetB={currencyB}
+          assetA={assets[0]}
+          assetB={assets[1]}
           lpBalance={balance?.toExact()}
           liquidityA={pair?.reserve0.toExact()}
           liquidityB={pair?.reserve1.toExact()}
