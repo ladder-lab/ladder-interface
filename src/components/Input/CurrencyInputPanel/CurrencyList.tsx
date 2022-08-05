@@ -108,6 +108,7 @@ export function CurrencyListComponent({ onSelectCurrency, currencyOptions, fixed
 
 export default function CurrencyList({ searchToken, searchTokenIsAdded, ...props }: Props) {
   const { hideModal } = useModal()
+  const isDownMd = useBreakpoint('md')
 
   const onClick = useCallback(() => {
     props.onSelectCurrency && searchToken && props.onSelectCurrency(searchToken)
@@ -115,7 +116,7 @@ export default function CurrencyList({ searchToken, searchTokenIsAdded, ...props
   }, [hideModal, props, searchToken])
 
   return (
-    <Box>
+    <Box height={isDownMd ? 290 : 450}>
       {searchToken && !searchTokenIsAdded ? (
         <ListItem onClick={onClick}>
           <Box display="flex">

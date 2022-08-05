@@ -255,12 +255,19 @@ export default function Swap() {
               onSelectCurrency={handleFromAsset}
               currency={fromAsset}
               onMax={handleMaxInput}
+              disabled={!account}
             />
           </Box>
           {fromAsset && <AssetAccordion token={fromAsset} />}
           <Box
-            sx={{ height: 76, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            onClick={onSwitchTokens}
+            sx={{
+              height: 76,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: account ? 'pointer' : 'auto'
+            }}
+            onClick={account ? onSwitchTokens : undefined}
           >
             <ArrowCircle />
           </Box>
@@ -271,6 +278,7 @@ export default function Swap() {
               onChange={handleToVal}
               onSelectCurrency={handleToAsset}
               currency={toAsset}
+              disabled={!account}
             />
           </Box>
           {toAsset && <AssetAccordion token={toAsset} />}
