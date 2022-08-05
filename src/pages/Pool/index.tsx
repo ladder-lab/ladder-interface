@@ -18,6 +18,7 @@ import { usePairs } from 'data/Reserves'
 import { useActiveWeb3React } from 'hooks'
 import { getTokenText } from 'utils/checkIs1155'
 import { useWalletModalToggle } from 'state/application/hooks'
+import { generateErc20 } from 'utils/getHashAddress'
 
 export default function Pool() {
   const theme = useTheme()
@@ -129,16 +130,20 @@ export default function Pool() {
             </Box>
           ) : account ? (
             <Grid container mt={20} spacing={20} alignItems="stretch" minHeight={332}>
+              {v2Pairs.length === 0 && (
+                <Grid item xs={12} justifyContent="center" alignItems={'center'}>
+                  <Typography textAlign={'center'} paddingTop={100} color={theme.palette.text.secondary} fontSize={16}>
+                    No Liquidity found
+                  </Typography>
+                </Grid>
+              )}
               {v2Pairs.map(([, pair], idx) => {
                 if (!pair) return null
 
                 const tokens = trackedTokenPairMap[liquidityTokensWithBalances[idx].liquidityToken.address]
-                // const [token0, token1] = tokens[0].sortsBefore(tokens[1])
-                //   ? [tokens[0], tokens[1]]
-                //   : [tokens[1], tokens[0]]
 
                 const [token0, token1] =
-                  pair?.token0.address === ((tokens[0] as any)?.address ?? '')
+                  pair?.token0.address === ((generateErc20(tokens[0]) as any)?.address ?? '')
                     ? [tokens[0], tokens[1]]
                     : [tokens[1], tokens[0]]
 
@@ -243,14 +248,14 @@ function PoolCard({
       </Box>
       <Box display="grid" gap={12} mt={16} mb={16}>
         <Box display="flex" justifyContent="space-between">
-          <Typography sx={{ color: theme.palette.text.secondary, fontSize: 16 }} whiteSpace="nowrap">
+          <Typography sx={{ color: theme.palette.text.secondary, fontSize: 16, mr: 5 }} whiteSpace="nowrap">
             Your pool tokens
           </Typography>
           <Typography
             fontSize={16}
             style={{
               textAlign: 'right',
-              whiteSpace: 'pre',
+              whiteSpace: 'normal',
               wordBreak: 'break-all'
             }}
           >

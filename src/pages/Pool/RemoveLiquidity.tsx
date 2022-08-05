@@ -30,6 +30,8 @@ import useModal from 'hooks/useModal'
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
+import { generateErc20 } from 'utils/getHashAddress'
+import { wrappedCurrency } from 'utils/wrappedCurrency'
 
 enum Mode {
   SIMPLE,
@@ -166,10 +168,10 @@ export default function RemoveLiquidity() {
   }, [])
 
   const assets = useMemo(() => {
-    return pair?.token0.address === ((currencyA as any)?.address ?? '')
+    return pair?.token0.address === ((generateErc20(wrappedCurrency(currencyA, chainId)) as any)?.address ?? '')
       ? [currencyA, currencyB]
       : [currencyB, currencyA]
-  }, [currencyA, currencyB, pair?.token0.address])
+  }, [currencyA, currencyB, pair?.token0.address, chainId])
 
   return (
     <>
