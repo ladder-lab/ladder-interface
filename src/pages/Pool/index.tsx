@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Box, Typography, useTheme, Button, ButtonBase, Grid } from '@mui/material'
 import { Percent, Token } from '@uniswap/sdk'
 import AppBody from 'components/AppBody'
-import { routes } from 'constants/routes'
+import { liquidityParamBuilder, routes } from 'constants/routes'
 import Card from 'components/Card'
 import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
 import { AllTokens } from 'models/allTokens'
@@ -17,11 +17,13 @@ import { useTokenBalancesWithLoadingIndicator, useTokenTotalSupplies } from 'sta
 import { usePairs } from 'data/Reserves'
 import { useActiveWeb3React } from 'hooks'
 import { getTokenText } from 'utils/checkIs1155'
+import { useWalletModalToggle } from 'state/application/hooks'
 
 export default function Pool() {
   const theme = useTheme()
   const navigate = useNavigate()
   const { account } = useActiveWeb3React()
+  const toggleWallet = useWalletModalToggle()
 
   // fetch the user's balances of all tracked V2 LP tokens
   const trackedTokenPairs = useTrackedTokenPairs()
@@ -125,17 +127,22 @@ export default function Pool() {
                 <Loader size={90} />
               </Box>
             </Box>
-          ) : (
+          ) : account ? (
             <Grid container mt={20} spacing={20} alignItems="stretch" minHeight={332}>
               {v2Pairs.map(([, pair], idx) => {
                 if (!pair) return null
 
                 const tokens = trackedTokenPairMap[liquidityTokensWithBalances[idx].liquidityToken.address]
-                const [token0, token1] = tokens[0].sortsBefore(tokens[1])
-                  ? [tokens[0], tokens[1]]
-                  : [tokens[1], tokens[0]]
+                // const [token0, token1] = tokens[0].sortsBefore(tokens[1])
+                //   ? [tokens[0], tokens[1]]
+                //   : [tokens[1], tokens[0]]
 
-                const { token1Text, token2Text, token1Id, token2Id } = getTokenText(token0, token1)
+                const [token0, token1] =
+                  pair?.token0.address === ((tokens[0] as any)?.address ?? '')
+                    ? [tokens[0], tokens[1]]
+                    : [tokens[1], tokens[0]]
+
+                const { token1Text, token2Text } = getTokenText(token0, token1)
 
                 const balance = v2PairsBalances?.[liquidityTokensWithBalances[idx].liquidityToken.address]
                 const totalSupply = totalSupplies?.[liquidityTokensWithBalances[idx].liquidityToken.address]
@@ -154,18 +161,24 @@ export default function Pool() {
                       reserve1={pair.reserve1.toExact()}
                       shareAmount={poolTokenPercentage}
                       tokenAmount={balance?.toExact() ?? '-'}
-                      onAdd={() => navigate(routes.addLiquidity)}
-                      onRemove={() =>
-                        navigate(
-                          routes.removeLiquidity +
-                            `/${token0.address}/${token1.address}/${token1Id ?? ''}&${token2Id ?? ''}`
-                        )
-                      }
+                      onAdd={() => navigate(routes.addLiquidity + liquidityParamBuilder(token0, token1))}
+                      onRemove={() => navigate(routes.removeLiquidity + liquidityParamBuilder(token0, token1))}
                     />
                   </Grid>
                 )
               })}
             </Grid>
+          ) : (
+            <Box minHeight={332} display="flex" alignItems="center" justifyContent="center">
+              <Button
+                onClick={() => toggleWallet()}
+                style={{
+                  maxWidth: '400px'
+                }}
+              >
+                Connect Wallet
+              </Button>
+            </Box>
           )}
         </Box>
       </AppBody>
