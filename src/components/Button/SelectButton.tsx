@@ -27,7 +27,7 @@ export default function SelectButton(props: Props) {
           width: width || '100%',
           height: height || 52,
           backgroundColor: primary ? theme.palette.primary.main : theme.palette.background.default,
-          color: theme.palette.text.primary,
+          color: theme.palette.text.secondary,
           borderRadius: 1,
           fontSize: 16,
           fontWeight: 400,
@@ -52,7 +52,11 @@ export default function SelectButton(props: Props) {
             content: '""'
           },
           display: 'flex',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
+          '&.Mui-disabled': {
+            cursor: 'not-allowed',
+            opacity: theme.palette.action.disabledOpacity
+          }
         },
         style
       )}
