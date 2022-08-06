@@ -26,7 +26,7 @@ import { ReactComponent as AboutIcon } from 'assets/svg/menu/about.svg'
 import { ReactComponent as HelpCenterIcon } from 'assets/svg/menu/help_center.svg'
 import { ReactComponent as RequestFeatureIcon } from 'assets/svg/menu/request_feature.svg'
 import { ReactComponent as DiscordIcon } from 'assets/svg/menu/discord.svg'
-import { ReactComponent as LanguageIcon } from 'assets/svg/menu/language.svg'
+// import { ReactComponent as LanguageIcon } from 'assets/svg/menu/language.svg'
 import { ReactComponent as DarkThemeIcon } from 'assets/svg/menu/dark_theme.svg'
 import { ReactComponent as DocsIcon } from 'assets/svg/menu/docs.svg'
 import { ReactComponent as LegalPrivacyIcon } from 'assets/svg/menu/legal_privacy.svg'
@@ -298,7 +298,7 @@ function DesktopMenu() {
       { title: 'Help Center', link: '#', icon: <HelpCenterIcon /> },
       { title: 'Request Features', link: '#', icon: <RequestFeatureIcon /> },
       { title: 'Discord', link: '#', icon: <DiscordIcon /> },
-      { title: 'Language', link: '#', icon: <LanguageIcon /> },
+      // { title: 'Language', link: '#', icon: <LanguageIcon /> },
       { title: darkMode ? 'LightMode' : 'Dark Theme', action: toggleDarkMode, icon: <DarkThemeIcon /> },
       { title: 'Docs', link: '#', icon: <DocsIcon /> },
       { title: 'Legal&Privacy', link: '#', icon: <LegalPrivacyIcon /> }
