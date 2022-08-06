@@ -73,13 +73,13 @@ export default function Input({
             width: '100%',
             background: theme.palette.background.default,
             padding: startAdornment ? '0 0 0 60px' : '0 22px',
-            borderRadius: borderRadius
+            borderRadius
             // backgroundClip: 'padding-box'
             // boxSizing: 'border-box'
           },
           '&.Mui-focused:after': {
             background: isDarkMode ? theme.gradient.gradient1 : '#1F9898',
-            borderRadius,
+            borderRadius: `calc(${borderRadius} + 1px)`,
             position: 'absolute',
             top: -1,
             right: -1,
