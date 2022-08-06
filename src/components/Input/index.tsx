@@ -58,6 +58,7 @@ export default function Input({
           background: theme.palette.background.default,
           padding: 0,
           zIndex: 1,
+          color: theme.palette.text.secondary,
           '&.Mui-focused:before': {
             display: 'none'
           },
@@ -101,6 +102,9 @@ export default function Input({
             alignItems: 'center',
             justifyContent: 'center',
             borderRadius: `${borderRadius} 0 0 ${borderRadius}`
+          },
+          '&.Mui-disabled': {
+            opacity: theme.palette.action.disabledOpacity
           }
         }}
         color={error ? 'error' : 'primary'}
