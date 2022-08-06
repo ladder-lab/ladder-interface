@@ -5,7 +5,7 @@ import { Typography, Box, useTheme, Button } from '@mui/material'
 import { TokenAmount } from '@uniswap/sdk'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
-import { ReactComponent as ArrowCircle } from 'assets/svg/arrow_circle.svg'
+import { ReactComponent as AddCircle } from 'assets/svg/add_circle.svg'
 import { AssetAccordion } from '../Swap/AssetAccordion'
 import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
@@ -204,7 +204,7 @@ export default function AddLiquidy() {
           </Box>
           {currencyA && <AssetAccordion token={currencyA} />}
           <Box sx={{ height: 76, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <ArrowCircle />
+            <AddCircle />
           </Box>
 
           <Box mb={currencyB ? 16 : 0}>
