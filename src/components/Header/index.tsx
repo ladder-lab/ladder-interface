@@ -18,7 +18,7 @@ import PlainSelect from 'components/Select/PlainSelect'
 import { routes } from 'constants/routes'
 import MobileMenu from './MobileMenu'
 import NetworkSelect from './NetworkSelect'
-import SwitchToggle from 'components/SwitchToggle'
+// import SwitchToggle from 'components/SwitchToggle'
 import { useDarkModeManager } from 'state/user/hooks'
 import MainLogo from 'components/MainLogo'
 import useBreakpoint from 'hooks/useBreakpoint'
@@ -118,7 +118,7 @@ export default function Header() {
   const { pathname } = useLocation()
   const isDownMd = useBreakpoint('md')
 
-  const [darkMode, toggleDarkMode] = useDarkModeManager()
+  const [darkMode] = useDarkModeManager()
 
   const handleMobileMenueDismiss = useCallback(() => {
     setMobileMenuOpen(false)
@@ -131,10 +131,10 @@ export default function Header() {
       <StyledAppBar>
         <Box display="flex" alignItems="center" gap={30}>
           <MainLogo color={darkMode ? '#FFFFFF' : '#232859'} />
-          <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-            <SwitchToggle checked={darkMode} onChange={toggleDarkMode} />{' '}
-            <Typography color="#cccccc">Dark mode</Typography>
-          </Box>
+          {/* <Box sx={{ display: { xs: 'none', md: 'block' } }}> */}
+          {/* <SwitchToggle checked={darkMode} onChange={toggleDarkMode} /> */}
+          {/* <Typography color="#cccccc">Dark mode</Typography> */}
+          {/* </Box> */}
         </Box>
 
         <HideOnMobile breakpoint="md">
@@ -313,7 +313,7 @@ function DesktopMenu() {
         width: 180,
         position: 'absolute',
         right: 0,
-        top: `calc(${theme.height.header} + 18px)`,
+        top: '87px',
         padding: '10px 0'
       }}
     >
