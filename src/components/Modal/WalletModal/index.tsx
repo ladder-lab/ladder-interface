@@ -269,7 +269,13 @@ export default function WalletModal({
   }
 
   return (
-    <Modal customIsOpen={walletModalOpen} customOnDismiss={toggleWalletModal} maxWidth="560px" closeIcon={true}>
+    <Modal
+      customIsOpen={walletModalOpen}
+      customOnDismiss={toggleWalletModal}
+      maxWidth="560px"
+      closeIcon={true}
+      closeVariant="plain"
+    >
       <Box width={'100%'} padding="32px" display="flex" flexDirection="column" alignItems="center" gap={20}>
         {getModalContent()}
       </Box>
