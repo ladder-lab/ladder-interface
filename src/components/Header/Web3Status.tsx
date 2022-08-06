@@ -14,7 +14,6 @@ import useBreakpoint from 'hooks/useBreakpoint'
 
 const ActionButton = styled(Button)(({ theme }) => ({
   fontSize: '14px',
-  marginBottom: 15,
   [theme.breakpoints.down('sm')]: {
     maxWidth: 320,
     width: '100%',
