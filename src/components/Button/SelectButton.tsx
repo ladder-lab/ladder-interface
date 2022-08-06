@@ -43,7 +43,7 @@ export default function SelectButton(props: Props) {
           '&:hover:after': {
             background: theme.palette.background.default,
             position: 'absolute',
-            borderRadius: '10px',
+            borderRadius: '9px',
             top: 1,
             right: 1,
             bottom: 1,
