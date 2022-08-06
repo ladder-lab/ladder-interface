@@ -1,9 +1,19 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { AppBar, Box, IconButton, MenuItem, styled as muiStyled, styled, Typography, useTheme } from '@mui/material'
+import {
+  AppBar,
+  Box,
+  ButtonBase,
+  IconButton,
+  MenuItem,
+  styled as muiStyled,
+  styled,
+  Typography,
+  useTheme
+} from '@mui/material'
 import { ExternalLink } from 'theme/components'
 import Web3Status from './Web3Status'
-import { HideOnMobile, ShowOnMobile } from 'theme/index'
+import { HideOnMobile } from 'theme/index'
 import PlainSelect from 'components/Select/PlainSelect'
 import { routes } from 'constants/routes'
 import MobileMenu from './MobileMenu'
@@ -11,6 +21,15 @@ import NetworkSelect from './NetworkSelect'
 import SwitchToggle from 'components/SwitchToggle'
 import { useDarkModeManager } from 'state/user/hooks'
 import MainLogo from 'components/MainLogo'
+import useBreakpoint from 'hooks/useBreakpoint'
+import { ReactComponent as AboutIcon } from 'assets/svg/menu/about.svg'
+import { ReactComponent as HelpCenterIcon } from 'assets/svg/menu/help_center.svg'
+import { ReactComponent as RequestFeatureIcon } from 'assets/svg/menu/request_feature.svg'
+import { ReactComponent as DiscordIcon } from 'assets/svg/menu/discord.svg'
+import { ReactComponent as LanguageIcon } from 'assets/svg/menu/language.svg'
+import { ReactComponent as DarkThemeIcon } from 'assets/svg/menu/dark_theme.svg'
+import { ReactComponent as DocsIcon } from 'assets/svg/menu/docs.svg'
+import { ReactComponent as LegalPrivacyIcon } from 'assets/svg/menu/legal_privacy.svg'
 
 interface TabContent {
   title: string
@@ -94,10 +113,10 @@ const LinksWrapper = muiStyled('div')(({ theme }) => ({
 }))
 
 export default function Header() {
-  const theme = useTheme()
-
+  const [menuOpen, setMenuOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { pathname } = useLocation()
+  const isDownMd = useBreakpoint('md')
 
   const [darkMode, toggleDarkMode] = useDarkModeManager()
 
@@ -207,54 +226,118 @@ export default function Header() {
         <Box display="flex" alignItems="center" gap={{ xs: '8px', sm: '20px' }}>
           <NetworkSelect />
           <Web3Status />
-
-          <ShowOnMobile breakpoint="md">
-            <IconButton
-              sx={{
-                height: 46,
-                width: 46,
-                padding: '4px',
-                borderRadius: '8px',
-                background: theme => theme.palette.background.default
-              }}
+          <Box sx={{ position: 'relative' }}>
+            <MenuButton
               onClick={() => {
-                setMobileMenuOpen(open => !open)
+                isDownMd ? setMobileMenuOpen(open => !open) : setMenuOpen(open => !open)
               }}
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M21 10.7825H7"
-                  stroke={theme.palette.text.primary}
-                  strokeWidth="1.7"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M21 6H3"
-                  stroke={theme.palette.text.primary}
-                  strokeWidth="1.7"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M21 15.5652H3"
-                  stroke={theme.palette.text.primary}
-                  strokeWidth="1.7"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M21 20.3479H7"
-                  stroke={theme.palette.text.primary}
-                  strokeWidth="1.7"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </IconButton>
-          </ShowOnMobile>
+            />
+            {menuOpen && !isDownMd && <DesktopMenu />}
+          </Box>
         </Box>
       </StyledAppBar>
     </>
+  )
+}
+
+function MenuButton({ onClick }: { onClick: () => void }) {
+  const theme = useTheme()
+
+  return (
+    <IconButton
+      sx={{
+        height: 46,
+        width: 46,
+        padding: '4px',
+        borderRadius: '8px',
+        background: theme => theme.palette.background.default
+      }}
+      onClick={onClick}
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M21 10.7825H7"
+          stroke={theme.palette.text.primary}
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M21 6H3"
+          stroke={theme.palette.text.primary}
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M21 15.5652H3"
+          stroke={theme.palette.text.primary}
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M21 20.3479H7"
+          stroke={theme.palette.text.primary}
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </IconButton>
+  )
+}
+
+function DesktopMenu() {
+  const theme = useTheme()
+  const [darkMode, toggleDarkMode] = useDarkModeManager()
+
+  const options = useMemo(() => {
+    return [
+      { title: 'About', link: '#', icon: <AboutIcon /> },
+      { title: 'Help Center', link: '#', icon: <HelpCenterIcon /> },
+      { title: 'Request Features', link: '#', icon: <RequestFeatureIcon /> },
+      { title: 'Discord', link: '#', icon: <DiscordIcon /> },
+      { title: 'Language', link: '#', icon: <LanguageIcon /> },
+      { title: darkMode ? 'LightMode' : 'Dark Theme', action: toggleDarkMode, icon: <DarkThemeIcon /> },
+      { title: 'Docs', link: '#', icon: <DocsIcon /> },
+      { title: 'Legal&Privacy', link: '#', icon: <LegalPrivacyIcon /> }
+    ]
+  }, [darkMode])
+
+  return (
+    <Box
+      sx={{
+        background: theme.palette.background.default,
+        borderRadius: '10px',
+        width: 180,
+        position: 'absolute',
+        right: 0,
+        top: `calc(${theme.height.header} + 18px)`,
+        padding: '10px 0'
+      }}
+    >
+      {options.map(({ title, link, action, icon }) => {
+        return link ? (
+          <MenuItem key={title} sx={{ height: 33 }}>
+            <ExternalLink href={link} sx={{ width: '100%', height: '100%' }}>
+              <Box display="flex" alignItems="center" justifyContent="space-between" height="100%" width="100%">
+                <Typography color={theme.palette.text.primary}>{title}</Typography>
+                {icon}
+              </Box>
+            </ExternalLink>
+          </MenuItem>
+        ) : action ? (
+          <MenuItem key={title} sx={{ height: 33 }}>
+            <ButtonBase onClick={action} sx={{ width: '100%', height: '100%', padding: 0 }}>
+              <Box display="flex" alignItems="center" justifyContent="space-between" height="100%" width="100%">
+                <Typography color={theme.palette.text.primary}>{title}</Typography>
+                {icon}
+              </Box>
+            </ButtonBase>
+          </MenuItem>
+        ) : undefined
+      })}
+    </Box>
   )
 }
