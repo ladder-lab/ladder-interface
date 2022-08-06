@@ -33,9 +33,23 @@ export default function SelectButton(props: Props) {
           fontWeight: 400,
           transition: '.3s',
           padding: '0 15.67px 0 20px',
-          border: '1px solid transparent',
+          position: 'relative',
           '&:hover': {
-            background: isDarkMode ? '#484D50' : theme.palette.primary.main
+            borderRadius: '10px',
+            background: isDarkMode ? theme.gradient.gradient1 : '#1F9898',
+            backgroundClip: 'padding-box',
+            zIndex: 1
+          },
+          '&:hover:after': {
+            background: theme.palette.background.default,
+            position: 'absolute',
+            borderRadius: '10px',
+            top: 1,
+            right: 1,
+            bottom: 1,
+            left: 1,
+            zIndex: -1,
+            content: '""'
           },
           display: 'flex',
           justifyContent: 'space-between'
