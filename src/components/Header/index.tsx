@@ -303,7 +303,7 @@ function DesktopMenu() {
       { title: 'Docs', link: '#', icon: <DocsIcon /> },
       { title: 'Legal&Privacy', link: '#', icon: <LegalPrivacyIcon /> }
     ]
-  }, [darkMode])
+  }, [darkMode, toggleDarkMode])
 
   return (
     <Box
