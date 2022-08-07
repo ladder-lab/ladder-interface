@@ -55,10 +55,8 @@ export default function Input({
         sx={{
           height: height || 52,
           borderRadius,
-          background: theme.palette.background.default,
           padding: 0,
           zIndex: 1,
-          color: theme.palette.text.secondary,
           '&.Mui-focused:before': {
             display: 'none'
           },
@@ -66,18 +64,22 @@ export default function Input({
             height: '100%',
             padding: startAdornment ? '0 0 0 60px' : '0 22px',
             backgroundClip: 'padding-box',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            background: theme.palette.background.default,
+            borderRadius
           },
-          '&.Mui-focused .MuiInputBase-input': {
+          '& .MuiInputBase-input.Mui-disabled': {
+            WebkitTextFillColor: theme.palette.text.secondary,
+            opacity: theme.palette.action.disabledOpacity
+          },
+          '&.Mui-focused .MuiInputBase-input, &:hover .MuiInputBase-input': {
             height: '100%',
             width: '100%',
             background: theme.palette.background.default,
             padding: startAdornment ? '0 0 0 60px' : '0 22px',
             borderRadius
-            // backgroundClip: 'padding-box'
-            // boxSizing: 'border-box'
           },
-          '&.Mui-focused:after': {
+          '&.Mui-focused:after, &:hover:after': {
             background: isDarkMode ? theme.gradient.gradient1 : '#1F9898',
             borderRadius: `calc(${borderRadius} + 1px)`,
             position: 'absolute',
@@ -87,6 +89,9 @@ export default function Input({
             left: -1,
             zIndex: -1,
             content: '""'
+          },
+          '&.Mui-disabled:hover:after': {
+            background: 'unset'
           },
           '& span': {
             display: 'flex',
@@ -102,9 +107,6 @@ export default function Input({
             alignItems: 'center',
             justifyContent: 'center',
             borderRadius: `${borderRadius} 0 0 ${borderRadius}`
-          },
-          '&.Mui-disabled': {
-            opacity: theme.palette.action.disabledOpacity
           }
         }}
         color={error ? 'error' : 'primary'}

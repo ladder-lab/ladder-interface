@@ -49,12 +49,12 @@ export default function SelectButton(props: Props) {
             bottom: 1,
             left: 1,
             zIndex: -1,
-            content: '""'
+            content: '""',
+            pointerEvents: 'none !important'
           },
           display: 'flex',
           justifyContent: 'space-between',
-          '&.Mui-disabled': {
-            cursor: 'not-allowed',
+          '&.MuiButtonBase-root.Mui-disabled': {
             opacity: theme.palette.action.disabledOpacity
           }
         },

@@ -102,8 +102,8 @@ export const themeColors = {
     disabled: '#828282'
   },
   action: {
-    disabledOpacity: 0.8,
-    disabledBackground: '#DADADA'
+    disabledOpacity: 0.6,
+    disabledBackground: '#F7F7F7'
   }
 }
 
@@ -144,7 +144,7 @@ export const themeDarkColors = {
   },
   action: {
     disabledOpacity: 0.6,
-    disabledBackground: '#282B2E'
+    disabledBackground: '#343739'
   }
 }
 
