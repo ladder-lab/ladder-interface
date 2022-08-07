@@ -17,6 +17,7 @@ interface Height {
 interface Width {
   sidebar: string
   maxContent: string
+  minContent: string
 }
 
 declare module '@mui/material/styles' {
@@ -54,7 +55,8 @@ const themeConstants = {
   },
   width: {
     sidebar: '250px',
-    maxContent: '1110px'
+    maxContent: '1110px',
+    minContent: '350px'
   },
   shape: {
     border: '1px solid',
