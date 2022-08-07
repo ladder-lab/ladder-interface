@@ -57,7 +57,7 @@ export function SwapSummary({
         </Box>
       </Box>
     )
-  }, [theme.palette.text.secondary, Token1Text, price, Token2Text, gasFee])
+  }, [theme.palette.text.primary, theme.palette.text.secondary, Token1Text, price, Token2Text, gasFee])
 
   const details = useMemo(() => {
     return (
