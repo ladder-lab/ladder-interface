@@ -14,6 +14,7 @@ import PositionCard from './PositionCard'
 import { useActiveWeb3React } from 'hooks'
 import { useTokenBalance, useTokenTotalSupply } from 'state/wallet/hooks'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
+import { generateErc20 } from 'utils/getHashAddress'
 
 export default function ImportPool() {
   const navigate = useNavigate()
@@ -100,8 +101,11 @@ export default function ImportPool() {
   }, [account, assetA, assetB, hasPosition, navigate, pairState, validPairNoLiquidity])
 
   const assets = useMemo(() => {
-    return pair?.token0.address === ((assetA as any)?.address ?? '') ? [assetA, assetB] : [assetB, assetA]
-  }, [assetA, assetB, pair?.token0.address])
+    return pair?.token0.address ===
+      ((generateErc20(wrappedCurrency(assetA ?? undefined, chainId)) as any)?.address ?? '')
+      ? [assetA, assetB]
+      : [assetB, assetA]
+  }, [assetA, assetB, chainId, pair?.token0.address])
 
   return (
     <>

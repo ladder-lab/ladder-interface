@@ -63,9 +63,7 @@ export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } 
       new Token(ChainId.RINKEBY, '0xD64b11169B87030EB5647Add8265d2F1D30cF2e6', 18, 'TEST', 'Test Coin'),
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       DEFAULT_1155_LIST[4]![0]!
-    ],
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    [WETH[ChainId.RINKEBY], DEFAULT_1155_LIST[4]![0]!]
+    ]
   ]
 }
 
