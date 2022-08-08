@@ -1,12 +1,11 @@
 import { useState, useCallback, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { TransactionResponse } from '@ethersproject/providers'
-import { currencyEquals, Percent, WETH } from '@uniswap/sdk'
+import { currencyEquals, Percent, WETH, ETHER } from '@uniswap/sdk'
 import { Box, useTheme, Typography, Button, Slider, styled, ButtonBase } from '@mui/material'
 import { liquidityParamBuilder, routes } from 'constants/routes'
 import AppBody from 'components/AppBody'
 import Card from 'components/Card'
-import { ETHER } from 'constants/token'
 import { AllTokens } from 'models/allTokens'
 import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
 import { ReactComponent as ArrowCircle } from 'assets/svg/arrow_circle.svg'
@@ -204,6 +203,39 @@ export default function RemoveLiquidity() {
           onSliderChange={setInnerLiquidityPercentage}
         />
 
+        {chainId && (oneCurrencyIsWETH || oneCurrencyIsETH) ? (
+          <Box style={{ justifyContent: 'flex-end' }} mt={20}>
+            {oneCurrencyIsETH ? (
+              <Button
+                onClick={() => {
+                  navigate(
+                    routes.removeLiquidity +
+                      liquidityParamBuilder(
+                        currencyA === ETHER ? WETH[chainId] : currencyB,
+                        currencyB === ETHER ? WETH[chainId] : currencyB
+                      )
+                  )
+                }}
+              >
+                Receive WETH
+              </Button>
+            ) : oneCurrencyIsWETH ? (
+              <Button
+                onClick={() => {
+                  const isCurAEther = currencyA?.symbol === 'WETH'
+
+                  navigate(
+                    routes.removeLiquidity +
+                      liquidityParamBuilder(isCurAEther ? ETHER : currencyA, isCurAEther ? currencyB : ETHER)
+                  )
+                }}
+              >
+                Receive ETH
+              </Button>
+            ) : null}
+          </Box>
+        ) : null}
+
         {mode === Mode.SIMPLE && (
           <>
             <Box>
@@ -223,33 +255,6 @@ export default function RemoveLiquidity() {
                     {currencyB?.symbol}
                   </Box>
                 </Box>
-                {chainId && (oneCurrencyIsWETH || oneCurrencyIsETH) ? (
-                  <Box style={{ justifyContent: 'flex-end' }}>
-                    {oneCurrencyIsETH ? (
-                      <Box
-                        onClick={() => {
-                          navigate(
-                            routes.removeLiquidity +
-                              liquidityParamBuilder(
-                                currencyA === ETHER ? WETH[chainId] : currencyB,
-                                currencyB === ETHER ? WETH[chainId] : currencyB
-                              )
-                          )
-                        }}
-                      >
-                        Receive WETH
-                      </Box>
-                    ) : oneCurrencyIsWETH ? (
-                      <Box
-                        onClick={() => {
-                          navigate(routes.removeLiquidity + liquidityParamBuilder(currencyA, currencyB))
-                        }}
-                      >
-                        Receive ETH
-                      </Box>
-                    ) : null}
-                  </Box>
-                ) : null}
               </Box>
             </Box>
           </>

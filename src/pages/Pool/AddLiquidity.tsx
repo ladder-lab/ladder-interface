@@ -2,7 +2,7 @@ import { useCallback, useState, ChangeEvent, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { routes } from 'constants/routes'
 import { Typography, Box, useTheme, Button } from '@mui/material'
-import { TokenAmount } from '@uniswap/sdk'
+import { ETHER, TokenAmount } from '@uniswap/sdk'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
 import { ReactComponent as AddCircle } from 'assets/svg/add_circle.svg'
@@ -160,10 +160,18 @@ export default function AddLiquidy() {
 
   useEffect(() => {
     if (currency0) {
-      setCurrencyA(currency0)
+      if (currency0.symbol === 'WETH') {
+        setCurrencyA(ETHER)
+      } else {
+        setCurrencyA(currency0)
+      }
     }
     if (currency1) {
-      setCurrencyB(currency1)
+      if (currency1.symbol === 'WETH') {
+        setCurrencyB(ETHER)
+      } else {
+        setCurrencyB(currency1)
+      }
     }
   }, [currency0, currency1])
 
