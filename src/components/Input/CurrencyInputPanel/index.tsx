@@ -95,6 +95,7 @@ export default function CurrencyInputPanel({
         disabled={disableCurrencySelect || disabled}
         primary={selectActive}
         height={isDownMd ? '48px' : '52px'}
+        selected={!!currency}
       >
         {currency ? (
           <LogoText logo={<CurrencyLogo currency={currency} />} text={is1155 ? currency.name : currency.symbol} />

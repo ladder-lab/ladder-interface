@@ -1,12 +1,11 @@
 import { useState, useCallback, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { TransactionResponse } from '@ethersproject/providers'
-import { currencyEquals, Percent, WETH } from '@uniswap/sdk'
+import { currencyEquals, Percent, WETH, ETHER } from '@uniswap/sdk'
 import { Box, useTheme, Typography, Button, Slider, styled, ButtonBase } from '@mui/material'
 import { liquidityParamBuilder, routes } from 'constants/routes'
 import AppBody from 'components/AppBody'
 import Card from 'components/Card'
-import { ETHER } from 'constants/token'
 import { AllTokens } from 'models/allTokens'
 import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
 import { ReactComponent as ArrowCircle } from 'assets/svg/arrow_circle.svg'
@@ -204,6 +203,39 @@ export default function RemoveLiquidity() {
           onSliderChange={setInnerLiquidityPercentage}
         />
 
+        {chainId && (oneCurrencyIsWETH || oneCurrencyIsETH) ? (
+          <Box style={{ justifyContent: 'flex-end' }} mt={20}>
+            {oneCurrencyIsETH ? (
+              <Button
+                onClick={() => {
+                  navigate(
+                    routes.removeLiquidity +
+                      liquidityParamBuilder(
+                        currencyA === ETHER ? WETH[chainId] : currencyB,
+                        currencyB === ETHER ? WETH[chainId] : currencyB
+                      )
+                  )
+                }}
+              >
+                Receive WETH
+              </Button>
+            ) : oneCurrencyIsWETH ? (
+              <Button
+                onClick={() => {
+                  const isCurAEther = currencyA?.symbol === 'WETH'
+
+                  navigate(
+                    routes.removeLiquidity +
+                      liquidityParamBuilder(isCurAEther ? ETHER : currencyA, isCurAEther ? currencyB : ETHER)
+                  )
+                }}
+              >
+                Receive ETH
+              </Button>
+            ) : null}
+          </Box>
+        ) : null}
+
         {mode === Mode.SIMPLE && (
           <>
             <Box>
@@ -223,33 +255,6 @@ export default function RemoveLiquidity() {
                     {currencyB?.symbol}
                   </Box>
                 </Box>
-                {chainId && (oneCurrencyIsWETH || oneCurrencyIsETH) ? (
-                  <Box style={{ justifyContent: 'flex-end' }}>
-                    {oneCurrencyIsETH ? (
-                      <Box
-                        onClick={() => {
-                          navigate(
-                            routes.removeLiquidity +
-                              liquidityParamBuilder(
-                                currencyA === ETHER ? WETH[chainId] : currencyB,
-                                currencyB === ETHER ? WETH[chainId] : currencyB
-                              )
-                          )
-                        }}
-                      >
-                        Receive WETH
-                      </Box>
-                    ) : oneCurrencyIsWETH ? (
-                      <Box
-                        onClick={() => {
-                          navigate(routes.removeLiquidity + liquidityParamBuilder(currencyA, currencyB))
-                        }}
-                      >
-                        Receive ETH
-                      </Box>
-                    ) : null}
-                  </Box>
-                ) : null}
               </Box>
             </Box>
           </>
@@ -467,16 +472,22 @@ function OutputCard({ value, currency }: { value: string; currency: AllTokens | 
   )
 }
 
-const StyledSlider = styled(Slider)({
+export const StyledSlider = styled(Slider)(({ theme }) => ({
   // color: 'linear-gradient(19.49deg, #CAF400 -1.57%, #00E4DD 88.47%)',
   height: 4,
+  color: theme.palette.info.main,
   '& .MuiSlider-track': {
-    border: 'none'
+    border: 'none',
+    background: theme.gradient.gradient1
+  },
+  '& .MuiSlider-rail': {
+    background: theme.palette.text.secondary,
+    opacity: 1
   },
   '& .MuiSlider-thumb': {
-    height: 24,
-    width: 24,
-    backgroundColor: '#fff',
+    height: 28,
+    width: 28,
+    backgroundColor: theme.palette.info.main,
     border: '2px solid currentColor',
     '&:focus, &:hover, &.Mui-active, &.Mui-focusVisible': {
       boxShadow: 'inherit'
@@ -484,27 +495,8 @@ const StyledSlider = styled(Slider)({
     '&:before': {
       display: 'none'
     }
-  },
-  '& .MuiSlider-valueLabel': {
-    lineHeight: 1.2,
-    fontSize: 12,
-    background: 'unset',
-    padding: 0,
-    width: 32,
-    height: 32,
-    borderRadius: '50% 50% 50% 0',
-    backgroundColor: 'black',
-    transformOrigin: 'bottom left',
-    transform: 'translate(50%, -100%) rotate(-45deg) scale(0)',
-    '&:before': { display: 'none' },
-    '&.MuiSlider-valueLabelOpen': {
-      transform: 'translate(50%, -100%) rotate(-45deg) scale(1)'
-    },
-    '& > *': {
-      transform: 'rotate(45deg)'
-    }
   }
-})
+}))
 
 const Option = styled(ButtonBase)(({ theme }) => ({
   width: 76,

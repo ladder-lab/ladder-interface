@@ -2,10 +2,10 @@ import { useCallback, useState, ChangeEvent, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { routes } from 'constants/routes'
 import { Typography, Box, useTheme, Button } from '@mui/material'
-import { TokenAmount } from '@uniswap/sdk'
+import { ETHER, TokenAmount } from '@uniswap/sdk'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
-import { ReactComponent as ArrowCircle } from 'assets/svg/arrow_circle.svg'
+import { ReactComponent as AddCircle } from 'assets/svg/add_circle.svg'
 import { AssetAccordion } from '../Swap/AssetAccordion'
 import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
@@ -160,10 +160,18 @@ export default function AddLiquidy() {
 
   useEffect(() => {
     if (currency0) {
-      setCurrencyA(currency0)
+      if (currency0.symbol === 'WETH') {
+        setCurrencyA(ETHER)
+      } else {
+        setCurrencyA(currency0)
+      }
     }
     if (currency1) {
-      setCurrencyB(currency1)
+      if (currency1.symbol === 'WETH') {
+        setCurrencyB(ETHER)
+      } else {
+        setCurrencyB(currency1)
+      }
     }
   }, [currency0, currency1])
 
@@ -204,7 +212,7 @@ export default function AddLiquidy() {
           </Box>
           {currencyA && <AssetAccordion token={currencyA} />}
           <Box sx={{ height: 76, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <ArrowCircle />
+            <AddCircle />
           </Box>
 
           <Box mb={currencyB ? 16 : 0}>
@@ -225,7 +233,7 @@ export default function AddLiquidy() {
                 data={{
                   [`${currencyA?.name} per ${currencyB?.name}`]: pair?.token0Price?.toFixed() ?? '-',
                   [`${currencyB?.name} per ${currencyA?.name}`]: pair?.token1Price?.toFixed() ?? '-',
-                  ['Share of pool']: ` ${shareOfPool}
+                  ['Share of pool']: `${shareOfPool}
                       %`
                 }}
               />

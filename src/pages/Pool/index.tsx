@@ -278,8 +278,8 @@ function PoolCard({
           sx={{
             borderRadius: '16px',
             height: 44,
-            background: theme.palette.action.disabledBackground,
-            color: theme.palette.text.secondary
+            background: '#DADADA',
+            color: '#828282'
           }}
           onClick={onRemove}
         >
