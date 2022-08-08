@@ -45,7 +45,7 @@ export function useNFTDataCb(
         setNftResLoading(false)
         setNftError(false)
       } catch (e: any) {
-        console.log('load error: _ownerRes', e)
+        console.error('load error: _ownerRes', e)
         setNftError(e.message)
         setNftResLoading(false)
       }

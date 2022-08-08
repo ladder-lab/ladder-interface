@@ -233,7 +233,7 @@ export default function AddLiquidy() {
                 data={{
                   [`${currencyA?.name} per ${currencyB?.name}`]: pair?.token0Price?.toFixed() ?? '-',
                   [`${currencyB?.name} per ${currencyA?.name}`]: pair?.token1Price?.toFixed() ?? '-',
-                  ['Share of pool']: ` ${shareOfPool}
+                  ['Share of pool']: `${shareOfPool}
                       %`
                 }}
               />
