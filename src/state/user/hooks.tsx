@@ -195,6 +195,17 @@ export function useUserAddedTokens(): Token[] {
   }, [serializedTokensMap, chainId])
 }
 
+export function useUserAddedTokens1155(): Token[] {
+  const { chainId } = useActiveWeb3React()
+  const serializedTokensMap = useSelector<AppState, AppState['user']['tokens1155']>(
+    ({ user: { tokens1155 } }) => tokens1155
+  )
+
+  return useMemo(() => {
+    if (!chainId) return []
+    return Object.values(serializedTokensMap?.[chainId as ChainId] ?? {}).map(deserializeToken)
+  }, [serializedTokensMap, chainId])
+}
 // function serializePair(pair: Pair): SerializedPair {
 //   return {
 //     token0: serializeToken(pair.token0),

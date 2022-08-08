@@ -9,7 +9,7 @@ import { useBytes32TokenContract, useTokenContract } from './useContract'
 import { arrayify } from 'ethers/lib/utils'
 import { TokenList, WrappedTokenInfo } from 'models/tokenList'
 import { listToTokenMap } from 'utils/swap/listUtils'
-import { useUserAddedTokens } from 'state/user/hooks'
+import { useUserAddedTokens, useUserAddedTokens1155 } from 'state/user/hooks'
 import { Token1155 } from 'constants/token/token1155'
 import { IS_TEST_NET, NETWORK_CHAIN_ID } from 'constants/chain'
 import { DEFAULT_1155_LIST } from 'constants/default1155List'
@@ -23,6 +23,16 @@ export function useIsUserAddedToken(currency: Currency | undefined | null): bool
   }
 
   return !!userAddedTokens.find(token => currencyEquals(currency, token))
+}
+
+export function useIsUserAddedToken1155(currency: Currency | undefined | null): boolean {
+  const userAddedTokens = useUserAddedTokens1155()
+
+  if (!currency) {
+    return false
+  }
+
+  return !!userAddedTokens.find(token1155 => currencyEquals(currency, token1155))
 }
 
 export type TokenAddressMap = Readonly<{

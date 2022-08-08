@@ -5,29 +5,62 @@ import { Token1155 } from 'constants/token/token1155'
 import { AllTokens } from 'models/allTokens'
 import { shortenAddress } from 'utils'
 import useModal from 'hooks/useModal'
-import { useIsDarkMode, useTrackedToken1155List } from 'state/user/hooks'
+import { useIsDarkMode } from 'state/user/hooks'
 import useBreakpoint from 'hooks/useBreakpoint'
+import { Mode } from './SelectCurrencyModal'
+import { Currency } from '@uniswap/sdk'
 
-export default function NftList({ onClick }: { onClick?: (token: AllTokens) => void }) {
+interface Props {
+  selectedCurrency?: Currency | null
+  mode?: Mode
+  onSelectCurrency?: (currency: Currency) => void
+  currencyOptions: Token1155[]
+  searchToken?: Token1155 | null | undefined
+  searchTokenIsAdded?: boolean
+  onClick?: (token: AllTokens) => void
+}
+
+export default function NftList({ onClick, searchToken, searchTokenIsAdded, ...props }: Props) {
   const { hideModal } = useModal()
-  const list = useTrackedToken1155List()
   const isDownMd = useBreakpoint('md')
 
   return (
-    <Grid container spacing={20} sx={{ overflow: 'auto', height: isDownMd ? 357 : 517, pb: 100 }}>
-      {list?.map((token1155, idx) => (
-        <Grid item xs={6} md={3} key={idx}>
-          <NftCard
-            key={idx}
-            token={token1155}
-            onClick={() => {
-              onClick && onClick(token1155)
-              hideModal()
-            }}
-          />
+    <Box>
+      {searchToken && !searchTokenIsAdded ? (
+        <Grid container spacing={20} sx={{ overflow: 'auto', height: isDownMd ? 357 : 517, pb: 100 }}>
+          <Grid item xs={6} md={3}>
+            <NftCard
+              token={searchToken}
+              onClick={() => {
+                onClick && onClick(searchToken)
+                hideModal()
+              }}
+            />
+          </Grid>
         </Grid>
-      ))}
-    </Grid>
+      ) : props.currencyOptions?.length > 0 ? (
+        <Grid container spacing={20} sx={{ overflow: 'auto', height: isDownMd ? 357 : 517, pb: 100 }}>
+          {props.currencyOptions.map((token1155, idx) => (
+            <Grid item xs={6} md={3} key={idx}>
+              <NftCard
+                key={idx}
+                token={token1155}
+                onClick={() => {
+                  onClick && onClick(token1155)
+                  hideModal()
+                }}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      ) : (
+        <Box style={{ padding: '20px', height: '100%' }}>
+          <Typography textAlign="center" mb="20px">
+            No results found.
+          </Typography>
+        </Box>
+      )}
+    </Box>
   )
 }
 
