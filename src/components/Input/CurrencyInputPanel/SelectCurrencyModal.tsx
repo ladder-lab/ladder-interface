@@ -10,7 +10,7 @@ import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
 import LogoText from 'components/LogoText'
 import NftList from './NftList'
 import { COMMON_CURRENCIES } from 'constants/currencies'
-import { useAllTokens, useIsUserAddedToken, useToken } from 'hooks/Tokens'
+import { useAllTokens, useIsUserAddedToken, useIsUserAddedToken1155, useToken, useToken1155 } from 'hooks/Tokens'
 import useDebounce from 'hooks/useDebounce'
 import { isAddress } from 'utils'
 import { Currency, ETHER, Token } from '@uniswap/sdk'
@@ -22,7 +22,8 @@ import ImportModal from 'components/Modal/ImportModal'
 import { HelperText } from 'constants/helperText'
 import useBreakpoint from 'hooks/useBreakpoint'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
-import { useIsDarkMode } from 'state/user/hooks'
+import { useIsDarkMode, useTrackedToken1155List } from 'state/user/hooks'
+import { Token1155 } from 'constants/token/token1155'
 
 export enum Mode {
   TOKEN = 'token',
@@ -50,18 +51,24 @@ export default function SelectCurrencyModal({
   const theme = useTheme()
   const [mode, setMode] = useState(selectedTokenType === 'erc20' ? Mode.NFT : Mode.TOKEN)
   const [searchQuery, setSearchQuery] = useState<string>('')
+  const [searchQueryNFT, setSearchQueryNFT] = useState<string>('')
   const [invertSearchOrder] = useState<boolean>(false)
 
   const fixedList = useRef<FixedSizeList>()
 
   const debouncedQuery = useDebounce(searchQuery, 200)
+  const debouncedQueryNFT = useDebounce(searchQueryNFT, 200)
   const { hideModal } = useModal()
 
   const allTokens = useAllTokens()
+  const allToken1155 = useTrackedToken1155List()
 
   // if they input an address, use it
   const searchToken = useToken(debouncedQuery)
   const searchTokenIsAdded = useIsUserAddedToken(searchToken)
+
+  const searchTokenNFT = useToken1155(debouncedQueryNFT)
+  const searchTokenIsAddedNFT = useIsUserAddedToken1155(searchTokenNFT)
 
   const handleImport = useCallback(
     (nft: NFT) => {
@@ -83,11 +90,16 @@ export default function SelectCurrencyModal({
     return filterTokens(Object.values(allTokens), debouncedQuery)
   }, [allTokens, debouncedQuery])
 
+  const filteredTokens1155: Token[] | Token1155[] = useMemo(() => {
+    return filterTokens(Object.values(allToken1155), debouncedQueryNFT)
+  }, [allToken1155, debouncedQueryNFT])
+
   const sortedTokens: Token[] = useMemo(() => {
     return filteredTokens.sort(tokenComparator)
   }, [filteredTokens, tokenComparator])
 
   const filteredSortedTokens = useSortedTokensByQuery(sortedTokens, debouncedQuery)
+  //const filteredSortedTokensNFT = useSortedTokensByQuery(sortedTokens, debouncedQueryNFT)
 
   const commonCur = useMemo(() => {
     const curList: Currency[] = [ETHER]
@@ -105,6 +117,7 @@ export default function SelectCurrencyModal({
     const input = event.target.value
     const checksummedInput = isAddress(input)
     setSearchQuery(checksummedInput || input)
+    setSearchQueryNFT(checksummedInput || input)
     fixedList.current?.scrollTo(0)
   }, [])
 
@@ -115,6 +128,22 @@ export default function SelectCurrencyModal({
         if (s === 'eth') {
           onSelectCurrency && onSelectCurrency(ETHER)
         } else if (filteredSortedTokens.length > 0) {
+          if (
+            filteredSortedTokens[0].symbol?.toLowerCase() === debouncedQuery.trim().toLowerCase() ||
+            filteredSortedTokens.length === 1
+          ) {
+            onSelectCurrency && onSelectCurrency(filteredSortedTokens[0])
+          }
+        }
+      }
+    },
+    [filteredSortedTokens, onSelectCurrency, debouncedQuery]
+  )
+
+  const handleEnter1155 = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        if (filteredSortedTokens.length > 0) {
           if (
             filteredSortedTokens[0].symbol?.toLowerCase() === debouncedQuery.trim().toLowerCase() ||
             filteredSortedTokens.length === 1
@@ -197,16 +226,29 @@ export default function SelectCurrencyModal({
             </ButtonBase>
           </Box>
         )}
-        {/* separate erc20 /erc1155 input  */}
-        <Input
-          value={searchQuery}
-          onChange={handleInput}
-          placeholder="Search name or paste address"
-          // outlined
-          startAdornment={<SearchIcon />}
-          onKeyDown={handleEnter}
-          height={isDownMd ? 48 : 60}
-        />
+
+        {mode === Mode.TOKEN && (
+          <Input
+            value={searchQuery}
+            onChange={handleInput}
+            placeholder="Search name or paste address"
+            // outlined
+            startAdornment={<SearchIcon />}
+            onKeyDown={handleEnter}
+            height={isDownMd ? 48 : 60}
+          />
+        )}
+        {mode === Mode.NFT && (
+          <Input
+            value={searchQueryNFT}
+            onChange={handleInput}
+            placeholder="Search name or paste address"
+            // outlined
+            startAdornment={<SearchIcon />}
+            onKeyDown={handleEnter1155}
+            height={isDownMd ? 48 : 60}
+          />
+        )}
 
         {mode === Mode.TOKEN && (
           <>
@@ -247,7 +289,14 @@ export default function SelectCurrencyModal({
               searchTokenIsAdded={searchTokenIsAdded}
             />
           ) : (
-            <NftList onClick={onSelectCurrency} />
+            <NftList
+              mode={mode}
+              currencyOptions={filteredTokens1155 as Token1155[]}
+              onSelectCurrency={onSelectCurrency}
+              searchToken={searchTokenNFT}
+              searchTokenIsAdded={searchTokenIsAddedNFT}
+              onClick={onSelectCurrency}
+            />
           )}
           <Box
             sx={{
