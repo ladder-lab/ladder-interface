@@ -11,10 +11,11 @@ interface Props {
   primary?: boolean
   disabled?: boolean
   style?: React.CSSProperties
+  selected?: boolean
 }
 
 export default function SelectButton(props: Props) {
-  const { onClick, disabled, style = {}, width, height, primary, children } = props
+  const { onClick, disabled, style = {}, width, height, primary, children, selected } = props
   const theme = useTheme()
   const isDarkMode = useIsDarkMode()
 
@@ -27,7 +28,7 @@ export default function SelectButton(props: Props) {
           width: width || '100%',
           height: height || 52,
           backgroundColor: primary ? theme.palette.primary.main : theme.palette.background.default,
-          color: theme.palette.text.secondary,
+          color: selected ? theme.palette.text.primary : theme.palette.text.secondary,
           borderRadius: 1,
           fontSize: 16,
           fontWeight: 400,
