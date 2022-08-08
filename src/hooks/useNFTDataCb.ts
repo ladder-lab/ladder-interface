@@ -34,7 +34,7 @@ export function useNFTDataCb(
     const getNftData = async () => {
       try {
         if (!chainId || !tokenId || !nftContract) return
-
+        setNftResLoading(true)
         const allRes = await Promise.all([nftContract.name(), nftContract.symbol(), nftContract.uri(tokenId ?? '')])
         const userToken = new Token1155(chainId, contractAddress, tokenId, {
           name: allRes[0],
@@ -42,8 +42,10 @@ export function useNFTDataCb(
           uri: allRes[2]
         })
         setToken(userToken)
+        setNftResLoading(false)
+        setNftError(false)
       } catch (e: any) {
-        console.log('load error: _ownerRes', e)
+        console.error('load error: _ownerRes', e)
         setNftError(e.message)
         setNftResLoading(false)
       }

@@ -306,8 +306,9 @@ export default function Swap() {
               </Button>
             ) : noRoute && userHasSpecifiedInputOutput ? (
               <Button disabled style={{ textAlign: 'center' }}>
-                <Typography mb="4px">Insufficient liquidity for this trade.</Typography>
-                {singleHopOnly && <Typography mb="4px">Try enabling multi-hop trades.</Typography>}
+                <Typography mb="4px">
+                  Insufficient liquidity for this trade. {singleHopOnly && 'Try enabling multi-hop trades.'}
+                </Typography>
               </Button>
             ) : (
               <Box display="grid" gap="16px">

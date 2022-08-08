@@ -381,7 +381,6 @@ export function useTrackedToken1155List() {
       memo[key] = token
       return memo
     }, {})
-    console.log(combinedList)
 
     return Object.keys(keyed).map(key => keyed[key])
   }, [combinedList])

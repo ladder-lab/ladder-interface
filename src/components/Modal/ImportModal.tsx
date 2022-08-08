@@ -42,11 +42,11 @@ export default function ImportModal({
   }, [addToken, nftRes, onImport])
 
   useEffect(() => {
+    if (!account) return setError('Please connect to wallet first')
     if (contractAddress === '') return setError('Enter token contract address')
     if (!isAddress(contractAddress)) return setError('Invalid contract address')
     if (tokenId === '') return setError('Enter token ID')
-    if (nftRes?.nft?.name === undefined) return setError(`Token doesn't exist`)
-    // if (nftRes?.nft?.owner === NFT_BRIDGE_ADDRESS) return setError('')
+    if (nftRes?.nft?.name === undefined) return setError(`Token doesnt exist`)
 
     setError('')
   }, [account, contractAddress, nftRes?.nft?.name, tokenId])
@@ -71,7 +71,7 @@ export default function ImportModal({
           pendingText={'Importing'}
           actionText={'Import'}
           onAction={handleImport}
-          error={(error || nftRes.error) && 'Invalid NFT'}
+          error={error || nftRes.error || undefined}
           disableAction={!nftRes.nft || !account}
         />
       </Box>

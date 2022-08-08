@@ -5,7 +5,7 @@ import { useMemo } from 'react'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
 import { isAddress } from '../utils'
 import { useActiveWeb3React } from './index'
-import { useBytes32TokenContract, useTokenContract } from './useContract'
+import { use1155Contract, useBytes32TokenContract, useTokenContract } from './useContract'
 import { arrayify } from 'ethers/lib/utils'
 import { TokenList, WrappedTokenInfo } from 'models/tokenList'
 import { listToTokenMap } from 'utils/swap/listUtils'
@@ -165,6 +165,9 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
 export function useToken1155(tokenAddress?: string, tokenId?: string | number): Token1155 | undefined | null {
   const { chainId } = useActiveWeb3React()
   const address = isAddress(tokenAddress)
+  const nftContract = use1155Contract(address ? address : undefined)
+  const nameRes = useSingleCallResult(nftContract, 'name')
+  const symbolRes = useSingleCallResult(nftContract, 'symbol')
 
   return useMemo(() => {
     if (!chainId || !address || !tokenId) return undefined
@@ -173,8 +176,8 @@ export function useToken1155(tokenAddress?: string, tokenId?: string | number): 
       const token = list.find(token1155 => token1155.address === tokenAddress && token1155.tokenId == tokenId)
       if (token) return token
     }
-    return new Token1155(chainId, address, tokenId)
-  }, [address, chainId, tokenAddress, tokenId])
+    return new Token1155(chainId, address, tokenId, { name: nameRes.result?.[0], symbol: symbolRes.result?.[0] })
+  }, [address, chainId, nameRes.result, symbolRes.result, tokenAddress, tokenId])
 }
 
 export function useCurrency(currencyId: string | undefined, tokenId?: string | number): Currency | null | undefined {

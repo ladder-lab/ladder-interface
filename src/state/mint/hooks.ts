@@ -10,7 +10,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { wrappedCurrency, wrappedCurrencyAmount } from '../../utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
 import { tryParseAmount } from '../swap/hooks'
-import { useCurrencyBalance } from '../wallet/hooks'
+import { useCurrencyBalance, useTokenBalance } from '../wallet/hooks'
 import { Field, typeInput } from './actions'
 
 const ZERO = JSBI.BigInt(0)
@@ -78,6 +78,7 @@ export function useDerivedMintInfo(
   // pair
   const [pairState, pair] = usePair(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
   const totalSupply = useTotalSupply(pair?.liquidityToken)
+  const lpBalance = useTokenBalance(account ?? undefined, pair?.liquidityToken)
 
   const noLiquidity: boolean =
     pairState === PairState.NOT_EXISTS || Boolean(totalSupply && JSBI.equal(totalSupply.raw, ZERO))
@@ -171,12 +172,15 @@ export function useDerivedMintInfo(
   }, [parsedAmounts, chainId, pair, totalSupply])
 
   const poolTokenPercentage = useMemo(() => {
-    if (liquidityMinted && totalSupply) {
-      return new Percent(liquidityMinted.raw, totalSupply.add(liquidityMinted).raw)
+    if (totalSupply && pair?.liquidityToken) {
+      const balance = lpBalance ?? new TokenAmount(pair?.liquidityToken, JSBI.BigInt(0))
+      const amount = liquidityMinted ? balance?.add(liquidityMinted) : balance
+      const totalSupplyAmount = liquidityMinted ? totalSupply?.add(liquidityMinted) : totalSupply
+      return new Percent(amount.raw, totalSupplyAmount.raw)
     } else {
       return undefined
     }
-  }, [liquidityMinted, totalSupply])
+  }, [liquidityMinted, lpBalance, pair?.liquidityToken, totalSupply])
 
   let error: string | undefined
   if (!account) {

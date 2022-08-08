@@ -11,10 +11,11 @@ interface Props {
   primary?: boolean
   disabled?: boolean
   style?: React.CSSProperties
+  selected?: boolean
 }
 
 export default function SelectButton(props: Props) {
-  const { onClick, disabled, style = {}, width, height, primary, children } = props
+  const { onClick, disabled, style = {}, width, height, primary, children, selected } = props
   const theme = useTheme()
   const isDarkMode = useIsDarkMode()
 
@@ -27,18 +28,36 @@ export default function SelectButton(props: Props) {
           width: width || '100%',
           height: height || 52,
           backgroundColor: primary ? theme.palette.primary.main : theme.palette.background.default,
-          color: theme.palette.text.primary,
+          color: selected ? theme.palette.text.primary : theme.palette.text.secondary,
           borderRadius: 1,
           fontSize: 16,
           fontWeight: 400,
           transition: '.3s',
           padding: '0 15.67px 0 20px',
-          border: '1px solid transparent',
+          position: 'relative',
           '&:hover': {
-            background: isDarkMode ? '#484D50' : theme.palette.primary.main
+            borderRadius: '10px',
+            background: isDarkMode ? theme.gradient.gradient1 : '#1F9898',
+            backgroundClip: 'padding-box',
+            zIndex: 1
+          },
+          '&:hover:after': {
+            background: theme.palette.background.default,
+            position: 'absolute',
+            borderRadius: '9px',
+            top: 1,
+            right: 1,
+            bottom: 1,
+            left: 1,
+            zIndex: -1,
+            content: '""',
+            pointerEvents: 'none !important'
           },
           display: 'flex',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
+          '&.MuiButtonBase-root.Mui-disabled': {
+            opacity: theme.palette.action.disabledOpacity
+          }
         },
         style
       )}

@@ -14,7 +14,6 @@ import useBreakpoint from 'hooks/useBreakpoint'
 
 const ActionButton = styled(Button)(({ theme }) => ({
   fontSize: '14px',
-  marginBottom: 15,
   [theme.breakpoints.down('sm')]: {
     maxWidth: 320,
     width: '100%',
@@ -68,7 +67,7 @@ function Web3StatusInner() {
         >
           <Box>
             {hasPendingTransactions ? (
-              <Box sx={{ display: 'flex', alignItems: 'center', mr: { xs: 10, sm: 17 }, ml: { xs: 10, sm: 20 } }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mr: { xs: 10, sm: 17 } }}>
                 <Spinner color={theme.palette.text.primary} size={isDownSm ? '10px' : '16px'} />
                 <Box component="span" sx={{ ml: 3 }}>
                   <Typography sx={{ fontSize: { xs: 9, sm: 14 }, ml: 8, color: theme.palette.text.primary }} noWrap>

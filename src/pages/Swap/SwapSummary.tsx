@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import { Typography, Box, useTheme, styled } from '@mui/material'
-import { ReactComponent as InfoIcon } from 'assets/svg/info.svg'
 import { ReactComponent as GasStationIcon } from 'assets/svg/gas_station.svg'
 import Accordion from 'components/Accordion'
 import QuestionHelper from 'components/essential/QuestionHelper'
@@ -44,8 +43,8 @@ export function SwapSummary({
   const summary = useMemo(() => {
     return (
       <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
-        <Box display="flex" gap={14} alignItems="center">
-          <InfoIcon />
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 10, md: 13 } }}>
+          <InfoIcon color={theme.palette.text.primary} />
           <Typography color={theme.palette.text.secondary}>
             1 <Token1Text /> = {price} <Token2Text />
             {/* (${currencyRate}) */}
@@ -58,7 +57,7 @@ export function SwapSummary({
         </Box>
       </Box>
     )
-  }, [theme.palette.text.secondary, Token1Text, price, Token2Text, gasFee])
+  }, [theme.palette.text.primary, theme.palette.text.secondary, Token1Text, price, Token2Text, gasFee])
 
   const details = useMemo(() => {
     return (
@@ -67,7 +66,12 @@ export function SwapSummary({
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Box display="flex" alignItems="center" gap={9}>
               <Typography>Expected Output</Typography>
-              {!isDownMd && <QuestionHelper text={HelperText.expectedOuptut} />}
+              {!isDownMd && (
+                <QuestionHelper
+                  text={HelperText.expectedOuptut}
+                  style={{ color: theme.palette.text.secondary, background: 'transparent' }}
+                />
+              )}
             </Box>
 
             <Typography>
@@ -77,7 +81,12 @@ export function SwapSummary({
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Box display="flex" alignItems="center" gap={9}>
               <Typography>Price Impact</Typography>
-              {!isDownMd && <QuestionHelper text={HelperText.priceImpact} />}
+              {!isDownMd && (
+                <QuestionHelper
+                  text={HelperText.priceImpact}
+                  style={{ color: theme.palette.text.secondary, background: 'transparent' }}
+                />
+              )}
             </Box>
 
             <Typography sx={{ color: theme.palette.text.secondary }}>{slippage}%</Typography>
@@ -88,7 +97,12 @@ export function SwapSummary({
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Box display="flex" alignItems="center" gap={9} sx={{ maxWidth: { xs: 154, md: 'unset' } }}>
               <Typography>Minimum received after slippage ({slippage}%)</Typography>
-              {!isDownMd && <QuestionHelper text={HelperText.minReceived} />}
+              {!isDownMd && (
+                <QuestionHelper
+                  text={HelperText.minReceived}
+                  style={{ color: theme.palette.text.secondary, background: 'transparent' }}
+                />
+              )}
             </Box>
 
             <Typography>
@@ -98,7 +112,12 @@ export function SwapSummary({
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Box display="flex" alignItems="center" gap={9}>
               <Typography>Network Fee</Typography>
-              {!isDownMd && <QuestionHelper text={HelperText.networkFee} />}
+              {!isDownMd && (
+                <QuestionHelper
+                  text={HelperText.networkFee}
+                  style={{ color: theme.palette.text.secondary, background: 'transparent' }}
+                />
+              )}
             </Box>
 
             <Typography sx={{ color: theme.palette.text.secondary }}>~${gasFee || '-'}</Typography>
@@ -134,8 +153,7 @@ function RouterGraph({ logo1, logo2, fee }: { logo1: string | JSX.Element; logo2
   const Dashline = styled(Box)({
     borderBottom: `1px dashed ${theme.palette.text.secondary}`,
     position: 'absolute',
-    width: '496px',
-    left: 'calc(50% - 248px)'
+    width: 'calc(100% - 64px)'
   })
 
   return (
@@ -162,7 +180,9 @@ function RouterGraph({ logo1, logo2, fee }: { logo1: string | JSX.Element; logo2
         <Typography>{fee}</Typography>
       </Box>
       {typeof logo2 === 'string' ? <Image src={logo2 as string} alt={`to-asset-logo`} style={{ width: 24 }} /> : logo2}
-      <Dashline />
+      <Box sx={{ position: 'absolute', width: '100%', display: 'flex', justifyContent: 'center' }}>
+        <Dashline />
+      </Box>
     </Box>
   )
 }
@@ -194,5 +214,16 @@ function DualLogo({ logo1, logo2 }: { logo1: string | JSX.Element; logo2: string
         </Box>
       )}
     </Box>
+  )
+}
+
+function InfoIcon({ color }: { color: string }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <path
+        d="M8.16406 4.52311H9.83073V6.18978H8.16406V4.52311ZM8.16406 7.85645H9.83073V12.8564H8.16406V7.85645ZM8.9974 0.356445C4.3974 0.356445 0.664062 4.08978 0.664062 8.68978C0.664062 13.2898 4.3974 17.0231 8.9974 17.0231C13.5974 17.0231 17.3307 13.2898 17.3307 8.68978C17.3307 4.08978 13.5974 0.356445 8.9974 0.356445ZM8.9974 15.3564C5.3224 15.3564 2.33073 12.3648 2.33073 8.68978C2.33073 5.01478 5.3224 2.02311 8.9974 2.02311C12.6724 2.02311 15.6641 5.01478 15.6641 8.68978C15.6641 12.3648 12.6724 15.3564 8.9974 15.3564Z"
+        fill={color}
+      />
+    </svg>
   )
 }
