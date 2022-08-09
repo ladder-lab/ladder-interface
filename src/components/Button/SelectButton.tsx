@@ -1,5 +1,5 @@
 import React from 'react'
-import { ButtonBase, useTheme } from '@mui/material'
+import { ButtonBase, useTheme, Box } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useIsDarkMode } from 'state/user/hooks'
 
@@ -35,13 +35,16 @@ export default function SelectButton(props: Props) {
           transition: '.3s',
           padding: '0 15.67px 0 20px',
           position: 'relative',
-          '&:hover': {
+          '& *': {
+            zIndex: 2
+          },
+          '&:hover, :active': {
             borderRadius: '10px',
             background: isDarkMode ? theme.gradient.gradient1 : '#1F9898',
             backgroundClip: 'padding-box',
             zIndex: 1
           },
-          '&:hover:after': {
+          '&:before': {
             background: theme.palette.background.default,
             position: 'absolute',
             borderRadius: '9px',
@@ -49,7 +52,6 @@ export default function SelectButton(props: Props) {
             right: 1,
             bottom: 1,
             left: 1,
-            zIndex: -1,
             content: '""',
             pointerEvents: 'none !important'
           },
@@ -62,7 +64,7 @@ export default function SelectButton(props: Props) {
         style
       )}
     >
-      {children}
+      <Box>{children}</Box>
       <ExpandMoreIcon />
     </ButtonBase>
   )
