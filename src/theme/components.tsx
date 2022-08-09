@@ -59,6 +59,9 @@ export function CloseIcon({
         '&:hover': {
           background: isDarkMode ? '#484D50' : '#1F9898'
         },
+        '&:hover path': {
+          fill: isDarkMode ? '#E6EAEE' : '#FFFFFF'
+        },
         ...sx
       }}
     >
