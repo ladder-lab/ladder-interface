@@ -273,7 +273,7 @@ export default function Swap() {
           </Box>
           <Box mb={toAsset ? 16 : 0}>
             <CurrencyInputPanel
-              selectedTokenType={fromAsset ? ('tokenId' in fromAsset ? 'erc1155' : 'erc20') : undefined}
+              // selectedTokenType={fromAsset ? ('tokenId' in fromAsset ? 'erc1155' : 'erc20') : undefined}
               value={formattedAmounts[Field.OUTPUT]}
               onChange={handleToVal}
               onSelectCurrency={handleToAsset}
