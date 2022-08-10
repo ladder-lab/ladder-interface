@@ -1,6 +1,6 @@
 import { Pair, Token, ChainId } from '@uniswap/sdk'
 import { DEFAULT_1155_LIST } from 'constants/default1155List'
-import { /*BASES_TO_TRACK_LIQUIDITY_FOR,*/ PINNED_PAIRS } from 'constants/index'
+import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from 'constants/index'
 import { Token1155 } from 'constants/token/token1155'
 import { useActiveWeb3React } from 'hooks'
 import { useAllTokens } from 'hooks/Tokens'
@@ -219,8 +219,8 @@ export function toV2LiquidityToken([tokenA, tokenB]: [Token, Token]): Token {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     Pair.getAddress(generateErc20(tokenA)!, generateErc20(tokenB)!),
     18,
-    'UNI-V2',
-    'Uniswap V2'
+    'LADDER-LP',
+    'Ladder Lquidity Provider'
   )
 }
 
@@ -231,6 +231,7 @@ export function useTrackedTokenPairs(): [Token, Token][] {
   const { chainId } = useActiveWeb3React()
   const tokens = useAllTokens()
   const nfts = useTrackedToken1155List()
+  const userTokens = useUserAddedTokens()
 
   // pinned pairs
   const pinnedPairs = useMemo(() => (chainId ? PINNED_PAIRS[chainId] ?? [] : []), [chainId])
@@ -244,8 +245,11 @@ export function useTrackedTokenPairs(): [Token, Token][] {
             // for each token on the current chain,
             return (
               // loop though all bases on the current chain
-              // (BASES_TO_TRACK_LIQUIDITY_FOR[chainId] ?? [])
-              (nfts ?? [])
+              (
+                nfts
+                  ? (nfts as any[]).concat(userTokens).concat(BASES_TO_TRACK_LIQUIDITY_FOR[chainId] ?? [])
+                  : [...(BASES_TO_TRACK_LIQUIDITY_FOR[chainId] ?? []), userTokens]
+              )
                 // to construct pairs of the given token with each base
                 .map((base: Token) => {
                   if (base.address === token.address) {
@@ -258,7 +262,7 @@ export function useTrackedTokenPairs(): [Token, Token][] {
             )
           })
         : [],
-    [chainId, tokens, nfts]
+    [chainId, tokens, nfts, userTokens]
   )
 
   // pairs saved by users

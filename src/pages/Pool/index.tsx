@@ -146,7 +146,10 @@ export default function Pool() {
                   new TokenAmount(token1, pair.reserve1.raw)
                 ]
 
-                const [amountA, amountB] = checkIs1155(token0) ? [amount1, amount0] : [amount0, amount1]
+                const [amountA, amountB] =
+                  checkIs1155(token0) || token0.symbol === 'WETH' || token0.symbol === 'ETH'
+                    ? [amount1, amount0]
+                    : [amount0, amount1]
 
                 const { token1Text, token2Text } = getTokenText(amountA.token, amountB.token)
 

@@ -14,14 +14,6 @@ export const DEFAULT_1155_LIST: { [chainId in ChainId]?: Token1155[] } = {
       name: 'Standard ERC1155',
       symbol: 'ERC1155',
       uri: SampleNftImg
-    }),
-    ...[...Array(16).keys()].map(
-      num =>
-        new Token1155(4, '0x971f0b66c231a785E79EE9200E9D3479cC460604', num, {
-          name: 'ERC1155',
-          symbol: 'ERC1155',
-          uri: SampleNftImg
-        })
-    )
+    })
   ]
 }

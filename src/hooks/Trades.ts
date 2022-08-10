@@ -7,10 +7,11 @@ import { PairState, usePairs } from '../data/Reserves'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
 
 import { useActiveWeb3React } from './index'
-import { useUserSingleHopOnly } from 'state/user/hooks'
+import { useUserAddedTokens, useUserSingleHopOnly } from 'state/user/hooks'
 
 function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): Pair[] {
   const { chainId } = useActiveWeb3React()
+  const userAddedTokens = useUserAddedTokens()
 
   const [tokenA, tokenB] = chainId
     ? [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]
@@ -21,8 +22,8 @@ function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): Pair[] {
 
     const common = BASES_TO_CHECK_TRADES_AGAINST[chainId] ?? []
 
-    return [...common]
-  }, [chainId])
+    return [...common, ...userAddedTokens]
+  }, [chainId, userAddedTokens])
 
   const basePairs: [Token, Token][] = useMemo(
     () => flatMap(bases, (base): [Token, Token][] => bases.map(otherBase => [base, otherBase])),
@@ -95,7 +96,7 @@ export function useTradeExactIn(currencyAmountIn?: CurrencyAmount, currencyOut?:
     if (currencyAmountIn && currencyOut && allowedPairs.length > 0) {
       if (singleHopOnly) {
         return (
-          Trade.bestTradeExactIn(allowedPairs, currencyAmountIn, currencyOut, { maxHops: 1, maxNumResults: 1 })[0] ??
+          Trade.bestTradeExactIn(allowedPairs, currencyAmountIn, currencyOut, { maxHops: 5, maxNumResults: 1 })[0] ??
           null
         )
       }
