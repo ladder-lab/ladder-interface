@@ -230,6 +230,7 @@ export function toV2LiquidityToken([tokenA, tokenB]: [Token, Token]): Token {
 export function useTrackedTokenPairs(): [Token, Token][] {
   const { chainId } = useActiveWeb3React()
   const tokens = useAllTokens()
+  const nfts = useTrackedToken1155List()
 
   // pinned pairs
   const pinnedPairs = useMemo(() => (chainId ? PINNED_PAIRS[chainId] ?? [] : []), [chainId])
@@ -244,7 +245,7 @@ export function useTrackedTokenPairs(): [Token, Token][] {
             return (
               // loop though all bases on the current chain
               // (BASES_TO_TRACK_LIQUIDITY_FOR[chainId] ?? [])
-              (DEFAULT_1155_LIST[chainId] ?? [])
+              (nfts ?? [])
                 // to construct pairs of the given token with each base
                 .map((base: Token) => {
                   if (base.address === token.address) {
@@ -257,7 +258,7 @@ export function useTrackedTokenPairs(): [Token, Token][] {
             )
           })
         : [],
-    [tokens, chainId]
+    [chainId, tokens, nfts]
   )
 
   // pairs saved by users
@@ -341,7 +342,7 @@ export function useTokenPairAdder(): (
   )
 }
 
-export function useTrackedToken1155List() {
+export function useTrackedToken1155List(): Token1155[] {
   const { chainId } = useActiveWeb3React()
   const serializedTokensMap = useSelector<AppState, AppState['user']['tokens1155']>(
     ({ user: { tokens1155 } }) => tokens1155

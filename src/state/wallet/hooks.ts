@@ -1,13 +1,15 @@
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
+import ERC21155_ABI from 'constants/abis/erc1155.json'
 import { use1155Contract, useMulticallContract } from '../../hooks/useContract'
-import { isAddress } from '../../utils'
+import { getContract, isAddress } from '../../utils'
 import { useSingleContractMultipleData, useMultipleContractSingleData, useSingleCallResult } from '../multicall/hooks'
 import { Currency, ETHER, Token, JSBI, CurrencyAmount, TokenAmount } from '@uniswap/sdk'
 import { useActiveWeb3React } from 'hooks'
 import { useAllTokens } from 'hooks/Tokens'
 import { Token1155 } from 'constants/token/token1155'
 import { checkIs1155 } from 'utils/checkIs1155'
+import { useBlockNumber } from 'state/application/hooks'
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -137,6 +139,48 @@ export function useAllTokenBalances(): { [tokenAddress: string]: TokenAmount | u
   const allTokensArray = useMemo(() => Object.values(allTokens ?? {}), [allTokens])
   const balances = useTokenBalances(account ?? undefined, allTokensArray)
   return useMemo(() => balances ?? {}, [balances])
+}
+
+export function useToken1155Balances(tokens?: Token1155[] | null | undefined) {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(undefined)
+  const [balances, setBalances] = useState<TokenAmount[] | undefined>(undefined)
+  const { account, library } = useActiveWeb3React()
+  const blockNumber = useBlockNumber()
+
+  const calls = useMemo(() => {
+    if (!tokens || !library) return undefined
+    return Promise.all(
+      tokens.map(({ tokenId, address }) => {
+        const contract = getContract(address, ERC21155_ABI, library, account ?? undefined)
+        if (!contract) return undefined
+        return contract.balanceOf(account, tokenId)
+      })
+    )
+  }, [account, library, tokens])
+
+  useEffect(() => {
+    ;(async () => {
+      setError(undefined)
+      setLoading(true)
+      try {
+        const callRes = await calls
+
+        setLoading(false)
+
+        const res = tokens?.map((token, idx) => new TokenAmount(token, callRes?.[idx]?.toString() ?? '0'))
+        setBalances(res)
+      } catch (e: any) {
+        setLoading(false)
+        setError(e.message)
+        console.error(e.message)
+        setBalances(undefined)
+      }
+    })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [calls, blockNumber, tokens])
+
+  return { loading, error, balances }
 }
 
 export function useToken1155Balance(token?: Token1155 | null | undefined) {
