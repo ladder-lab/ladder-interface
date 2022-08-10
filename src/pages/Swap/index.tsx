@@ -294,6 +294,7 @@ export default function Swap() {
               gasFee="8.23"
               slippage={allowedSlippage / 100}
               minReceiveQty={slippageAdjustedAmounts.OUTPUT?.toExact() ?? '-'}
+              routerTokens={trade?.route.path.slice(1, -1)}
             />
           )}
           <Box mt={40}>
