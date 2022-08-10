@@ -123,7 +123,7 @@ export default function AddLiquidy() {
         // error than the user rejected the tx
         if (error?.code !== 4001) {
           console.error(error)
-          showModal(<MessageBox type="error">{error.message}</MessageBox>)
+          showModal(<MessageBox type="error">Contract Error</MessageBox>)
         }
       })
   }, [addLiquidityCb, addTransaction, currencies, hideModal, onFieldAInput, parsedAmounts, showModal])
