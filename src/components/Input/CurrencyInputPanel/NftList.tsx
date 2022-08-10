@@ -24,7 +24,11 @@ export default function NftList({ onClick }: { onClick?: (token: AllTokens) => v
 
   return (
     <Grid container spacing={20} sx={{ overflow: 'auto', height: isDownMd ? 357 : 517, pb: 100 }}>
-      {loading && <Loader />}
+      {loading && (
+        <Box width={'100%'} display="flex" alignItems="center" justifyContent="center">
+          <Loader />
+        </Box>
+      )}
       {!loading &&
         sortedList?.map(({ token }, idx) => (
           <Grid item xs={6} md={3} key={idx}>

@@ -9,7 +9,6 @@ import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
 import { AllTokens } from 'models/allTokens'
 import Tag from 'components/Tag'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
-import { Dots } from 'theme/components'
 import { Loader } from 'components/AnimatedSvg/Loader'
 import { ExternalLink } from 'theme/components'
 import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
@@ -121,13 +120,7 @@ export default function Pool() {
 
           {v2IsLoading ? (
             <Box minHeight={332} display="flex" justifyContent="center" alignItems="center">
-              <Box display="grid" gap={19}>
-                <Typography sx={{ color: theme.palette.text.secondary, fontSize: 20 }}>
-                  Loading
-                  <Dots />
-                </Typography>
-                <Loader size={90} />
-              </Box>
+              <Loader size={90} />
             </Box>
           ) : account ? (
             <Grid container mt={20} spacing={20} alignItems="stretch" minHeight={332}>
