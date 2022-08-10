@@ -31,5 +31,5 @@ export default function Logo({ srcs, alt, style }: LogoProps) {
     )
   }
 
-  return <HelpOutlineOutlinedIcon sx={{ ...style }} />
+  return <HelpOutlineOutlinedIcon sx={{ ...style, background: '#ffffff' }} />
 }
