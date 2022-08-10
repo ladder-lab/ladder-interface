@@ -9,7 +9,7 @@ export const Popup = styled('div')(({ theme }) => ({
   display: 'inlineBlock',
   width: '100%',
   backgroundColor: theme.palette.background.paper,
-  border: '1px solid rgba(255, 255, 255, 0.2)',
+  border: '1px solid rgba(255, 255, 255, 0.3)',
   position: 'relative',
   borderRadius: '4px',
   padding: '20px',
