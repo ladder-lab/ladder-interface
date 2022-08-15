@@ -24,13 +24,7 @@ const FancyButton = styled('button')(({ theme }) => ({
   border: `1px solid ${theme.palette.text.primary}`,
   outline: 'none',
   padding: '14px',
-  background: theme.palette.background.default,
-  '&:hover': {
-    border: `1px solid ${theme.palette.text.secondary}`
-  },
-  '&:focus': {
-    border: `1px solid ${theme.palette.text.secondary}`
-  }
+  background: theme.palette.background.default
 }))
 
 const Option = styled(FancyButton, {
@@ -38,10 +32,14 @@ const Option = styled(FancyButton, {
 })<{ active?: boolean }>(({ theme, active }) => ({
   marginRight: '8px',
   '&:hover': {
-    cursor: 'pointer'
+    cursor: 'pointer',
+    border: `1px solid ${active ? '#1F9898' : theme.palette.text.secondary}`
   },
-  border: `1px solid ${active ? theme.palette.primary.main : 'transparent'}`,
-  color: active ? theme.palette.primary.main : theme.palette.text.primary
+  border: `1px solid ${active ? '#1F9898' : 'transparent'}`,
+  color: active ? '#1F9898' : theme.palette.text.primary,
+  '&:focus': {
+    border: `1px solid ${active ? '#1F9898' : theme.palette.text.secondary}`
+  }
 }))
 
 const Input = styled('input', {
@@ -63,11 +61,9 @@ const OptionCustom = styled(FancyButton, {
 })<{ active?: boolean; warning?: boolean }>(({ theme, active, warning }) => ({
   position: 'relative',
   flex: 1,
-  border: active ? `1px solid ${warning ? theme.palette.error : theme.palette.primary.main}` : 'none',
+  border: active ? `1px solid ${warning ? theme.palette.error : '#1F9898'}` : '1px solid transparent',
   '&:hover': {
-    border: active
-      ? `1px solid ${warning ? darken(theme.palette.error.main, 0.1) : darken(theme.palette.primary.main, 0.1)}`
-      : 'none'
+    border: `1px solid ${warning ? darken(theme.palette.error.main, 0.1) : darken('#1F9898', 0.1)}`
   },
   '& input': {
     width: '100%',
@@ -78,7 +74,7 @@ const OptionCustom = styled(FancyButton, {
 }))
 
 const SlippageEmojiContainer = styled('span')(({ theme }) => ({
-  color: '#f3841e',
+  color: theme.palette.warning.main,
   [theme.breakpoints.down('sm')]: {
     display: 'none'
   }
@@ -209,14 +205,14 @@ export default function TransactionSettings({
                   parseCustomSlippage((rawSlippage / 100).toFixed(2))
                 }}
                 onChange={e => parseCustomSlippage(e.target.value)}
-                color={!slippageInputIsValid ? 'red' : ''}
+                color={!slippageInputIsValid ? '#E0417F' : ''}
               />
               %
             </Box>
           </OptionCustom>
         </Box>
         {!!slippageError && (
-          <Box
+          <Typography
             display="flex"
             alignItems="center"
             justifyContent="space-between"
@@ -224,7 +220,7 @@ export default function TransactionSettings({
             style={{
               fontSize: '14px',
               paddingTop: '7px',
-              color: slippageError === SlippageError.InvalidInput ? 'red' : '#F3841E'
+              color: slippageError === SlippageError.InvalidInput ? '#E0417F' : theme.palette.warning.main
             }}
           >
             {slippageError === SlippageError.InvalidInput
@@ -232,7 +228,7 @@ export default function TransactionSettings({
               : slippageError === SlippageError.RiskyLow
               ? 'Your transaction may fail'
               : 'Your transaction may be frontrun'}
-          </Box>
+          </Typography>
         )}
       </Box>
 
