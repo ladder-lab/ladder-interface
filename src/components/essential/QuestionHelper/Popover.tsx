@@ -1,17 +1,17 @@
 import { Placement } from '@popperjs/core'
 import React, { useCallback, useState } from 'react'
 import { usePopper } from 'react-popper'
-import { styled } from '@mui/material'
+import { lighten, styled } from '@mui/material'
 import useInterval from '../../../hooks/useInterval'
 import Portal from '@reach/portal'
 
 const PopoverContainer = styled('div')(({ theme }) => ({
   zIndex: 9999,
   transition: 'visibility 150ms linear, opacity 150ms linear',
-  background: theme.palette.background.paper,
+  background: lighten(theme.palette.background.paper, 0.1),
   border: 'none',
-  // boxShadow: '0 4px 8px 0 #424242',
-  color: theme.palette.primary.contrastText,
+  boxShadow: '0 4px 8px 0 #33333320',
+  color: theme.palette.text.primary,
   borderRadius: ' 8px'
 }))
 
@@ -29,7 +29,7 @@ const Arrow = styled('div')(({ theme }) => ({
     height: '8px',
     zIndex: 9998,
     content: "''",
-    // border: '1px solid #424242',
+    boxShadow: '1px solid #33333320',
     transform: 'rotate(45deg)',
     background: theme.palette.background.paper
   },

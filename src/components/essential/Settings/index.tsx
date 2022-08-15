@@ -143,7 +143,10 @@ export default function Settings({ onlySlippage }: { onlySlippage?: boolean }) {
                     <Typography fontWeight={400} fontSize={14} color={theme.palette.text.secondary}>
                       Expert Mode
                     </Typography>
-                    <QuestionHelper text="Bypasses confirmation modals and allows high slippage trades. Use at your own risk." />
+                    <QuestionHelper
+                      text="Bypasses confirmation modals and allows high slippage trades. Use at your own risk."
+                      style={{ marginLeft: 5 }}
+                    />
                   </Box>
                   <SwitchToggle
                     checked={expertMode}
@@ -165,7 +168,7 @@ export default function Settings({ onlySlippage }: { onlySlippage?: boolean }) {
                     <Typography fontWeight={400} fontSize={14} color={theme.palette.text.secondary}>
                       Disable Multihops
                     </Typography>
-                    <QuestionHelper text="Restricts swaps to direct pairs only." />
+                    <QuestionHelper text="Restricts swaps to direct pairs only." style={{ marginLeft: 5 }} />
                   </Box>
                   <SwitchToggle
                     checked={singleHopOnly}
