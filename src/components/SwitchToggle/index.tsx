@@ -1,6 +1,7 @@
 import { ChangeEvent } from 'react'
 import { Switch, styled } from '@mui/material'
 import { switchClasses } from '@mui/material/Switch'
+import { useIsDarkMode } from 'state/user/hooks'
 
 const StyledSwitch = styled(Switch)(() => ({
   [`&.${switchClasses.root}`]: {
@@ -20,7 +21,7 @@ const StyledSwitch = styled(Switch)(() => ({
     width: 80,
     height: 24,
     opacity: '1 !important',
-    backgroundColor: '#DADADA',
+    // backgroundColor: '#DADADA',
     // border: '1px solid #cccccc',
     borderRadius: '30px',
     position: 'relative'
@@ -51,7 +52,7 @@ const StyledSwitch = styled(Switch)(() => ({
       backgroundColor: '#FFFFFF'
     },
     [`& + .${switchClasses.track}`]: {
-      background: '#1F9898'
+      backgroundColor: '#1F9898'
       // opacity: '1 !important',
       // border: '1px solid #cccccc'
       // borderRadius: '49px'
@@ -72,5 +73,16 @@ export default function SwitchToggle({
   checked: boolean
   onChange: (e: ChangeEvent<HTMLInputElement>) => void
 }) {
-  return <StyledSwitch checked={checked} onChange={onChange} />
+  const isDarkMode = useIsDarkMode()
+  return (
+    <StyledSwitch
+      checked={checked}
+      onChange={onChange}
+      sx={{
+        [`& .${switchClasses.track}`]: {
+          backgroundColor: isDarkMode ? '#484D50' : '#DADADA'
+        }
+      }}
+    />
+  )
 }
