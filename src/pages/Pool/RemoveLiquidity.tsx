@@ -387,7 +387,7 @@ function NumericalCard({
           width: 103,
           height: 41,
           borderRadius: '12px',
-          background: theme.palette.background.paper,
+          background: isDarkMode ? '#484D50' : '#FFFFFF',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
