@@ -54,7 +54,7 @@ export default function RemoveLiquidity() {
     useCurrency(currencyIdA, tokenIdA) ?? undefined,
     useCurrency(currencyIdB, tokenIdB) ?? undefined
   ]
-  const { Token1Text, Token2Text } = getTokenText(currencyA, currencyB)
+
   // burn state
   const { independentField, typedValue } = useBurnState()
   const { pair, parsedAmounts, error } = useDerivedBurnInfo(currencyA ?? undefined, currencyB ?? undefined)
@@ -172,6 +172,8 @@ export default function RemoveLiquidity() {
       : [currencyB, currencyA]
   }, [currencyA, currencyB, pair?.token0.address, chainId])
 
+  const { Token1Text, Token2Text } = getTokenText(assets[0], assets[1])
+
   return (
     <>
       <ConfirmRemoveModal
@@ -204,7 +206,7 @@ export default function RemoveLiquidity() {
         />
 
         {chainId && (oneCurrencyIsWETH || oneCurrencyIsETH) ? (
-          <Box style={{ justifyContent: 'flex-end' }} mt={20}>
+          <Box style={{ justifyContent: 'flex-end' }} margin={'30px 0'}>
             {oneCurrencyIsETH ? (
               <Button
                 onClick={() => {
@@ -236,29 +238,6 @@ export default function RemoveLiquidity() {
           </Box>
         ) : null}
 
-        {mode === Mode.SIMPLE && (
-          <>
-            <Box>
-              <Box gap="10px">
-                <Box display="flex">
-                  {formattedAmounts[Field.CURRENCY_A] || '-'}
-
-                  <Box>
-                    <CurrencyLogo currency={currencyA} style={{ marginRight: '12px' }} />
-                    {currencyA?.symbol}
-                  </Box>
-                </Box>
-                <Box>
-                  {formattedAmounts[Field.CURRENCY_B] || '-'}
-                  <Box display="flex">
-                    <CurrencyLogo currency={currencyB} style={{ marginRight: '12px' }} />
-                    {currencyB?.symbol}
-                  </Box>
-                </Box>
-              </Box>
-            </Box>
-          </>
-        )}
         <InputCard
           value={formattedAmounts[Field.LIQUIDITY]}
           balance={balance?.toExact() ?? ''}
@@ -381,13 +360,18 @@ function NumericalCard({
         <Typography sx={{ fontSize: 20, fontWeight: 400 }}>Remove Amount</Typography>
         <Typography sx={{ fontSize: 40, fontWeight: 900 }}>{sliderValue}%</Typography>
       </Box>
-      {mode === Mode.DETAIL && <StyledSlider onChange={onChange} value={sliderValue} />}
-      <Box display="flex" gap={24} justifyContent="center">
-        <Option onClick={onChangeFactory(25)}>25%</Option>
-        <Option onClick={onChangeFactory(50)}>50%</Option>
-        <Option onClick={onChangeFactory(75)}>75%</Option>
-        <Option onClick={onChangeFactory(100)}>MAX</Option>
-      </Box>
+      {mode === Mode.DETAIL && (
+        <>
+          <StyledSlider onChange={onChange} value={sliderValue} />
+          <Box display="flex" gap={24} justifyContent="center">
+            <Option onClick={onChangeFactory(25)}>25%</Option>
+            <Option onClick={onChangeFactory(50)}>50%</Option>
+            <Option onClick={onChangeFactory(75)}>75%</Option>
+            <Option onClick={onChangeFactory(100)}>MAX</Option>
+          </Box>
+        </>
+      )}
+
       <Box
         sx={{
           width: 103,
@@ -422,7 +406,7 @@ function InputCard({
   currency1: AllTokens | undefined
 }) {
   const theme = useTheme()
-  const { token1Text, token2Text, token1Is1155 } = getTokenText(currency0, currency1)
+  const { Token1Text, Token2Text } = getTokenText(currency0, currency1)
 
   return (
     <Card color={theme.palette.background.default} padding="24px" style={{ marginTop: 16 }}>
@@ -436,13 +420,15 @@ function InputCard({
           <Box display="flex" gap={11} alignItems="center">
             <DoubleCurrencyLogo currency0={currency0} currency1={currency1} />
             <Typography>
-              <Typography component="span" color={token1Is1155 ? 'primary' : undefined}>
+              <Token1Text />
+              {/* <Typography component="span" color={token1Is1155 ? 'primary' : undefined}>
                 {token1Text}
-              </Typography>
+              </Typography> */}
               :
-              <Typography component="span" color={token1Is1155 ? undefined : 'primary'}>
+              <Token2Text />
+              {/* <Typography component="span" color={token1Is1155 ? undefined : 'primary'}>
                 {token2Text}
-              </Typography>
+              </Typography> */}
             </Typography>
           </Box>
         </Box>
@@ -457,7 +443,7 @@ function OutputCard({ value, currency }: { value: string; currency: AllTokens | 
   const { token1Text } = getTokenText(currency)
 
   return (
-    <Card color={theme.palette.background.default} padding="24px" style={{ marginTop: 16 }}>
+    <Card color={theme.palette.background.default} padding="24px">
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Box display="grid" gap={12}>
           <Typography sx={{ fontSize: 20, fontWeight: 400 }}>Output</Typography>
