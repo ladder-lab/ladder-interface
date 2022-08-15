@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Grid, Box, Typography, useTheme } from '@mui/material'
+import { Grid, Box, Typography, useTheme, Button } from '@mui/material'
 import Image from 'components/Image'
 import SampleNftImg from 'assets/images/sample-nft.png'
 import { Token1155 } from 'constants/token/token1155'
@@ -55,8 +55,20 @@ export default function NftList({ onClick, searchToken, searchTokenIsAdded, curr
           />
         ) : currencyOptions.length === 0 ? (
           <Box width={'100%'} display="flex" alignItems="center" justifyContent="center">
-            <Typography textAlign="center" mb="20px" fontSize={16} fontWeight={500}>
-              No results found.
+            <Typography
+              textAlign="center"
+              mb="20px"
+              fontSize={16}
+              fontWeight={500}
+              component="div"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              No results found. &nbsp;
+              <Button variant="text" sx={{ display: 'inline', width: 'unset', padding: 0, height: 'max-content' }}>
+                Import token
+              </Button>
             </Typography>
           </Box>
         ) : (
