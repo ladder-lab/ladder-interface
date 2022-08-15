@@ -265,7 +265,12 @@ export default function Swap() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              cursor: account ? 'pointer' : 'auto'
+              cursor: account ? 'pointer' : 'auto',
+              margin: '0 auto',
+              width: 'max-content',
+              '&:hover': {
+                opacity: 0.8
+              }
             }}
             onClick={account ? onSwitchTokens : undefined}
           >

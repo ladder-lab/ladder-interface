@@ -297,7 +297,7 @@ function DesktopMenu() {
       { title: 'About', link: '#', icon: <AboutIcon /> },
       { title: 'Help Center', link: '#', icon: <HelpCenterIcon /> },
       { title: 'Request Features', link: '#', icon: <RequestFeatureIcon /> },
-      { title: 'Discord', link: '#', icon: <DiscordIcon /> },
+      { title: 'Discord', link: 'https://discord.gg/KWgkFMt9qZ', icon: <DiscordIcon /> },
       // { title: 'Language', link: '#', icon: <LanguageIcon /> },
       { title: darkMode ? 'LightMode' : 'Dark Theme', action: toggleDarkMode, icon: <DarkThemeIcon /> },
       { title: 'Docs', link: '#', icon: <DocsIcon /> },
