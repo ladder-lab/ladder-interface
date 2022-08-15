@@ -167,9 +167,9 @@ export default function CurrencyList({
         ) : props.currencyOptions?.length > 0 || props.currencyOptions?.length > 0 ? (
           <CurrencyListComponent {...props} onSelectCurrency={onSelectCurrency} />
         ) : (
-          <Box style={{ padding: '20px', height: '100%' }}>
-            <Typography textAlign="center" mb="20px">
-              No results found.
+          <Box width={'100%'} display="flex" alignItems="center" justifyContent="center" height="60%">
+            <Typography textAlign="center" mb="20px" fontSize={16} fontWeight={500}>
+              No results found
             </Typography>
           </Box>
         )}

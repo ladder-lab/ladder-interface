@@ -199,14 +199,22 @@ export default function SelectCurrencyModal({
         <Box display="flex" gap={20} padding="31px 0 30px" alignItems="center">
           <ModeButton
             selected={mode === Mode.TOKEN}
-            onClick={() => setMode(Mode.TOKEN)}
+            onClick={() => {
+              setMode(Mode.TOKEN)
+              setSearchQuery('')
+              setSearchQueryNFT('')
+            }}
             disabled={selectedTokenType === 'erc20'}
           >
             ERC20
           </ModeButton>
           <ModeButton
             selected={mode === Mode.NFT}
-            onClick={() => setMode(Mode.NFT)}
+            onClick={() => {
+              setMode(Mode.NFT)
+              setSearchQuery('')
+              setSearchQueryNFT('')
+            }}
             disabled={selectedTokenType === 'erc1155'}
           >
             ERC1155

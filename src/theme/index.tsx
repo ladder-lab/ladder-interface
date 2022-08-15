@@ -111,7 +111,7 @@ export const themeDarkColors = {
   primary: {
     light: '#ADDFB5',
     main: '#D8FF20',
-    dark: '#CAF400',
+    dark: darken('#D8FF20', 0.2),
     contrastText: '#1A1C1E'
   },
   secondary: {
