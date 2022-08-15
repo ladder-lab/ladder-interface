@@ -4,8 +4,7 @@ import { ReactComponent as GasStationIcon } from 'assets/svg/gas_station.svg'
 import Accordion from 'components/Accordion'
 import QuestionHelper from 'components/essential/QuestionHelper'
 import Divider from 'components/Divider'
-import AddIcon from '@mui/icons-material/Add'
-import Image from 'components/Image'
+// import AddIcon from '@mui/icons-material/Add'
 import { useIsDarkMode } from 'state/user/hooks'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { HelperText } from 'constants/helperText'
@@ -23,8 +22,10 @@ export function SwapSummary({
   price,
   minReceiveQty,
   slippage,
-  toVal
+  toVal,
+  routerTokens
 }: {
+  routerTokens?: AllTokens[]
   fromAsset?: AllTokens
   toAsset?: AllTokens
   expanded: boolean
@@ -127,13 +128,9 @@ export function SwapSummary({
         <Box padding="12px 0">
           <Box display="flex" alignItems="center" justifyContent="space-between">
             <Typography>Router</Typography>
-            <AddIcon />
+            {/* <AddIcon /> */}
           </Box>
-          <RouterGraph
-            logo1={<CurrencyLogo currency={fromAsset} style={{ width: 24 }} />}
-            logo2={<CurrencyLogo currency={toAsset} style={{ width: 24 }} />}
-            fee="0.05%"
-          />
+          <RouterGraph tokens={routerTokens} fromAsset={fromAsset} toAsset={toAsset} fee="0.3%" />
           <Typography sx={{ color: theme.palette.text.secondary, opacity: 0.5 }}>
             Best price route costs ~${gasFee} in gas.This route optimizes your total output by considering aplit
             routes,multiple hops,and the gas cost of each step.
@@ -141,12 +138,22 @@ export function SwapSummary({
         </Box>
       </>
     )
-  }, [isDownMd, toVal, theme.palette.text.secondary, toAsset, slippage, minReceiveQty, gasFee, fromAsset])
+  }, [isDownMd, theme.palette.text.secondary, toVal, toAsset, slippage, minReceiveQty, gasFee, routerTokens, fromAsset])
 
   return <Accordion summary={summary} details={details} expanded={expanded} onChange={onChange} margin={margin} />
 }
 
-function RouterGraph({ logo1, logo2, fee }: { logo1: string | JSX.Element; logo2: string | JSX.Element; fee: string }) {
+function RouterGraph({
+  fromAsset,
+  toAsset,
+  fee,
+  tokens
+}: {
+  tokens?: AllTokens[]
+  fromAsset?: AllTokens
+  toAsset?: AllTokens
+  fee: string
+}) {
   const theme = useTheme()
   const darkMode = useIsDarkMode()
 
@@ -158,16 +165,11 @@ function RouterGraph({ logo1, logo2, fee }: { logo1: string | JSX.Element; logo2
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between" padding="16px 0" position="relative">
-      {/* <Image src={logo1} alt={'swap-from-logo'} style={{ width: 24 }} /> */}
-      {typeof logo1 === 'string' ? (
-        <Image src={logo1 as string} alt={`from-asset-logo`} style={{ width: 24 }} />
-      ) : (
-        logo1
-      )}
+      {fromAsset && <CurrencyLogo currency={toAsset} style={{ width: 24 }} />}
       <Box
         sx={{
           background: darkMode ? '#484D50' : '#ffffff',
-          width: 125,
+          minWidth: 125,
           height: 38,
           display: 'flex',
           justifyContent: 'center',
@@ -176,43 +178,25 @@ function RouterGraph({ logo1, logo2, fee }: { logo1: string | JSX.Element; logo2
           zIndex: 1
         }}
       >
-        <DualLogo logo1={logo1} logo2={logo2} />
-        <Typography>{fee}</Typography>
+        <Box sx={{ display: 'flex' }}>
+          {fromAsset && <CurrencyLogo currency={toAsset} style={{ width: 24 }} />}
+          {tokens?.map((token, idx) => {
+            return (
+              <CurrencyLogo
+                currency={token}
+                style={{ width: 24, marginLeft: -5 * (idx + 1), zIndex: 2 }}
+                key={token?.symbol ?? '' + idx}
+              />
+            )
+          })}
+          {toAsset && <CurrencyLogo currency={toAsset} style={{ width: 24, marginLeft: -5, zIndex: 2 }} />}
+        </Box>
+        <Typography ml={10}>{fee}</Typography>
       </Box>
-      {typeof logo2 === 'string' ? <Image src={logo2 as string} alt={`to-asset-logo`} style={{ width: 24 }} /> : logo2}
+      {toAsset && <CurrencyLogo currency={toAsset} style={{ width: 24 }} />}
       <Box sx={{ position: 'absolute', width: '100%', display: 'flex', justifyContent: 'center' }}>
         <Dashline />
       </Box>
-    </Box>
-  )
-}
-
-function DualLogo({ logo1, logo2 }: { logo1: string | JSX.Element; logo2: string | JSX.Element }) {
-  return (
-    <Box sx={{ display: 'flex' }}>
-      {typeof logo1 === 'string' ? (
-        <Image src={logo1 as string} alt={`to-asset-logo`} style={{ width: 24, transform: 'translate(-7px)' }} />
-      ) : (
-        logo1
-      )}
-      {typeof logo2 === 'string' ? (
-        <Image src={logo2 as string} alt={`to-asset-logo`} style={{ width: 24, transform: 'translate(-7px)' }} />
-      ) : (
-        <Box
-          sx={{
-            width: 24,
-            height: 24,
-            transform: 'translate(-7px)',
-            background: '#ffffff',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          {logo2}
-        </Box>
-      )}
     </Box>
   )
 }

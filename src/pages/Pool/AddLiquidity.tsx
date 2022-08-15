@@ -20,7 +20,6 @@ import useModal from 'hooks/useModal'
 import ConfirmSupplyModal from 'components/Modal/ConfirmSupplyModal'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/mint/hooks'
 import { useMintCallback } from 'hooks/usePoolCallback'
-import { checkIs1155 } from 'utils/checkIs1155'
 import { ONE_BIPS } from 'constants/index'
 import { PairState } from 'data/Reserves'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
@@ -123,7 +122,7 @@ export default function AddLiquidy() {
         // error than the user rejected the tx
         if (error?.code !== 4001) {
           console.error(error)
-          showModal(<MessageBox type="error">{error.message}</MessageBox>)
+          showModal(<MessageBox type="error">Contract Error</MessageBox>)
         }
       })
   }, [addLiquidityCb, addTransaction, currencies, hideModal, onFieldAInput, parsedAmounts, showModal])
@@ -217,7 +216,7 @@ export default function AddLiquidy() {
 
           <Box mb={currencyB ? 16 : 0}>
             <CurrencyInputPanel
-              selectedTokenType={currencyA ? (checkIs1155(currencyA) ? 'erc1155' : 'erc20') : undefined}
+              // selectedTokenType={currencyA ? (checkIs1155(currencyA) ? 'erc1155' : 'erc20') : undefined}
               value={formattedAmounts[Field.CURRENCY_B]}
               onChange={handleAssetBVal}
               onSelectCurrency={handleAssetB}

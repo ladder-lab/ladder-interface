@@ -3,6 +3,8 @@ import { useTheme, Box, Typography } from '@mui/material'
 import { styled, Button } from '@mui/material'
 import { ApplicationModal } from '../../../state/application/actions'
 import { useModalOpen, useSettingsModalToggle } from '../../../state/application/hooks'
+import { useIsDarkMode } from 'state/user/hooks'
+
 import {
   useExpertModeManager,
   useUserTransactionTTL,
@@ -14,14 +16,6 @@ import QuestionHelper from 'components/essential/QuestionHelper'
 import TransactionSettings from './TransactionSettings'
 import { ReactComponent as SettingsIcon } from 'assets/componentsIcon/setting.svg'
 import SwitchToggle from 'components/SwitchToggle'
-
-const StyledMenuIcon = styled(SettingsIcon)(() => ({
-  height: '20px',
-  width: '20px',
-  '&:hover': {
-    opacity: 0.7
-  }
-}))
 
 const EmojiWrapper = styled('div')({
   position: 'absolute',
@@ -56,6 +50,8 @@ export default function Settings({ onlySlippage }: { onlySlippage?: boolean }) {
   // show confirmation view before turning on
   const [showConfirmation, setShowConfirmation] = useState(false)
 
+  const isDarkMode = useIsDarkMode()
+
   return (
     <>
       <Button
@@ -67,14 +63,17 @@ export default function Settings({ onlySlippage }: { onlySlippage?: boolean }) {
           width: { xs: 32, md: 52 },
           height: { xs: 32, md: 52 },
           '&:hover': {
-            background: '#484D50'
+            background: isDarkMode ? '#484D50' : '#1F9898'
+          },
+          '&:hover path': {
+            fill: isDarkMode ? '#E6EAEE' : '#FFFFFF'
           },
           position: 'absolute',
           top: { xs: 20, md: 24 },
           right: { xs: 20, md: 32 }
         }}
       >
-        <StyledMenuIcon />
+        <SettingsIcon />
         {expertMode ? (
           <EmojiWrapper>
             <span role="img" aria-label="wizard-icon">

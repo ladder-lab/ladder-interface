@@ -1,8 +1,10 @@
 import { Select as MuiSelect, InputLabel as MuiInputLabel, styled, InputBase, useTheme, Theme } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import SelectedIcon from 'assets/componentsIcon/selected_icon.svg'
+import SelectedIconDark from 'assets/componentsIcon/selected_icon_dark.svg'
 import React from 'react'
 import { SxProps } from '@mui/system'
+import { useIsDarkMode } from 'state/user/hooks'
 interface Props {
   children?: React.ReactNode
   onChange?: (e: any) => void
@@ -36,10 +38,10 @@ const StyledSelect = styled(MuiSelect)(({ theme }) => ({
   '& .MuiSelect-icon': {
     color: theme.palette.primary.contrastText,
     right: '10px'
-  },
-  '&.Mui-focused': {
-    borderColor: theme.palette.primary.main
   }
+  // '&.Mui-focused': {
+  //   borderColor: theme.palette.primary.main
+  // }
 }))
 
 export default function Select(props: Props) {
@@ -58,6 +60,7 @@ export default function Select(props: Props) {
     style = {}
   } = props
   const theme = useTheme()
+  const isDarkMode = useIsDarkMode()
 
   return (
     <div>
@@ -78,7 +81,7 @@ export default function Select(props: Props) {
               fontWeight: 400
             },
             '&:hover': {
-              backgroundColor: disabled ? theme.palette.background.paper : theme.palette.primary.main
+              backgroundColor: disabled ? theme.palette.background.paper : isDarkMode ? '#484D50' : '#1F9898'
             },
             '& .MuiSelect-icon': {
               display: disabled ? 'none' : 'block',
@@ -114,7 +117,8 @@ export default function Select(props: Props) {
                 }
               },
               '& li:hover': {
-                backgroundColor: theme => theme.palette.primary.light
+                background: isDarkMode ? '#484D50' : '#1F9898',
+                color: isDarkMode ? '#E6EAEE' : '#FFFFFF'
               },
               '& li:last-child': {
                 borderBottom: 'none'
@@ -126,7 +130,7 @@ export default function Select(props: Props) {
                 gap: 8,
                 padding: 15,
                 '&.Mui-selected::after': {
-                  content: `url(${SelectedIcon})`,
+                  content: `url(${isDarkMode ? SelectedIconDark : SelectedIcon})`,
                   width: 30,
                   height: 20,
                   display: 'flex',
