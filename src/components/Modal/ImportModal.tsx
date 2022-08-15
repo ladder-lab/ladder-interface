@@ -8,6 +8,7 @@ import { useActiveWeb3React } from 'hooks'
 import { useNFTDataCb } from 'hooks/useNFTDataCb'
 import { isAddress } from 'utils'
 import ActionButton from 'components/Button/ActionButton'
+import useModal from 'hooks/useModal'
 
 export default function ImportModal({
   onImport,
@@ -22,6 +23,7 @@ export default function ImportModal({
   const [contractAddress, setContractAddress] = useState('')
   const [error, setError] = useState('')
 
+  const { hideModal } = useModal()
   const { account } = useActiveWeb3React()
   const addToken = useAddUserToken()
 
@@ -50,7 +52,7 @@ export default function ImportModal({
   }, [account, contractAddress, nftRes?.nft?.name, tokenId])
 
   return (
-    <Modal maxWidth="680px" width="100%" closeIcon onBack={() => {}} customIsOpen={isOpen} customOnDismiss={onDismiss}>
+    <Modal maxWidth="680px" width="100%" closeIcon onBack={hideModal} customIsOpen={isOpen} customOnDismiss={onDismiss}>
       <Box padding="24px 32px">
         <Typography fontSize={24} ml={72} mt={12} mb={40}>
           Import

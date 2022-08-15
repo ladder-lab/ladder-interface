@@ -1,8 +1,9 @@
 import { useMemo } from 'react'
 import { isAddress } from '..'
 import { Token } from '@uniswap/sdk'
+import { Token1155 } from 'constants/token/token1155'
 
-export function filterTokens(tokens: Token[], search: string): Token[] {
+export function filterTokens(tokens: Token[] | Token1155[], search: string): Token[] {
   if (search.length === 0) return tokens
 
   const searchingAddress = isAddress(search)

@@ -1,6 +1,6 @@
-import { MutableRefObject, useCallback, useMemo } from 'react'
+import React, { MutableRefObject, useCallback, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
-import { Box, Typography, styled } from '@mui/material'
+import { Box, Typography, styled, ButtonBase } from '@mui/material'
 import { Mode } from './SelectCurrencyModal'
 import useModal from 'hooks/useModal'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
@@ -9,6 +9,8 @@ import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks'
 import Spinner from 'components/Spinner'
 import useBreakpoint from 'hooks/useBreakpoint'
+import LogoText from 'components/LogoText'
+import Divider from 'components/Divider'
 
 const StyledBalanceText = styled(Typography)(`
   white-space: nowrap;
@@ -26,6 +28,8 @@ interface Props {
   showETH?: boolean
   searchToken?: Currency | Token | null | undefined
   searchTokenIsAdded?: boolean
+  commonCurlist?: Currency[]
+  children?: React.ReactNode
 }
 
 const ListItem = styled('div')({
@@ -106,37 +110,70 @@ export function CurrencyListComponent({ onSelectCurrency, currencyOptions, fixed
   )
 }
 
-export default function CurrencyList({ searchToken, searchTokenIsAdded, ...props }: Props) {
+export default function CurrencyList({
+  searchToken,
+  searchTokenIsAdded,
+  commonCurlist,
+  onSelectCurrency,
+  children,
+  ...props
+}: Props) {
   const { hideModal } = useModal()
   const isDownMd = useBreakpoint('md')
 
   const onClick = useCallback(() => {
-    props.onSelectCurrency && searchToken && props.onSelectCurrency(searchToken)
+    onSelectCurrency && searchToken && onSelectCurrency(searchToken)
     hideModal()
-  }, [hideModal, props, searchToken])
+  }, [hideModal, onSelectCurrency, searchToken])
 
   return (
-    <Box height={isDownMd ? 290 : 450}>
-      {searchToken && !searchTokenIsAdded ? (
-        <ListItem onClick={onClick}>
-          <Box display="flex">
-            <CurrencyLogo currency={searchToken} style={{ width: '30px', height: '30px' }} />
-            <Box display="flex" flexDirection="column" marginLeft="16px">
-              <Typography variant="inherit">{searchToken?.symbol}</Typography>
-              <Typography variant="caption">{searchToken?.name}</Typography>
+    <>
+      {children}
+      <Box display="flex" gap={20} margin="20px 0">
+        {commonCurlist?.map((currency: Currency) => (
+          <ButtonBase
+            onClick={() => {
+              onSelectCurrency && onSelectCurrency(currency)
+              hideModal()
+            }}
+            key={currency.symbol}
+            sx={{
+              borderRadius: '8px',
+              background: theme => theme.palette.background.default,
+              padding: '11px 23px',
+              '&:hover': {
+                opacity: 0.8
+              }
+            }}
+          >
+            <LogoText logo={<CurrencyLogo currency={currency} />} text={currency.symbol} />
+          </ButtonBase>
+        ))}
+      </Box>
+      <Divider />
+
+      <Box height={isDownMd ? 290 : 450} paddingTop={'24px'} position="relative">
+        {searchToken && !searchTokenIsAdded ? (
+          <ListItem onClick={onClick}>
+            <Box display="flex">
+              <CurrencyLogo currency={searchToken} style={{ width: '30px', height: '30px' }} />
+              <Box display="flex" flexDirection="column" marginLeft="16px">
+                <Typography variant="inherit">{searchToken?.symbol}</Typography>
+                <Typography variant="caption">{searchToken?.name}</Typography>
+              </Box>
             </Box>
+            <span style={{ fontWeight: 500 }}>{0}</span>
+          </ListItem>
+        ) : props.currencyOptions?.length > 0 || props.currencyOptions?.length > 0 ? (
+          <CurrencyListComponent {...props} />
+        ) : (
+          <Box style={{ padding: '20px', height: '100%' }}>
+            <Typography textAlign="center" mb="20px">
+              No results found.
+            </Typography>
           </Box>
-          <span style={{ fontWeight: 500 }}>{0}</span>
-        </ListItem>
-      ) : props.currencyOptions?.length > 0 || props.currencyOptions?.length > 0 ? (
-        <CurrencyListComponent {...props} />
-      ) : (
-        <Box style={{ padding: '20px', height: '100%' }}>
-          <Typography textAlign="center" mb="20px">
-            No results found.
-          </Typography>
-        </Box>
-      )}
-    </Box>
+        )}
+      </Box>
+    </>
   )
 }
