@@ -21,9 +21,10 @@ interface Props {
   searchToken?: Token1155 | null | undefined
   searchTokenIsAdded?: boolean
   onClick?: (token: AllTokens) => void
+  children?: React.ReactNode
 }
 
-export default function NftList({ onClick, searchToken, searchTokenIsAdded, currencyOptions }: Props) {
+export default function NftList({ onClick, searchToken, searchTokenIsAdded, currencyOptions, children }: Props) {
   const { hideModal } = useModal()
   const isDownMd = useBreakpoint('md')
   const { balances, loading } = useToken1155Balances(currencyOptions)
@@ -34,45 +35,55 @@ export default function NftList({ onClick, searchToken, searchTokenIsAdded, curr
   }, [balances])
 
   return (
-    <Grid container spacing={20} sx={{ overflow: 'auto', height: isDownMd ? 357 : 517, pb: 100 }}>
-      {searchToken && !searchTokenIsAdded ? (
-        <NftCard
-          token={searchToken}
-          onClick={() => {
-            onClick && onClick(searchToken)
-            hideModal()
-          }}
-        />
-      ) : currencyOptions.length === 0 ? (
-        <Box width={'100%'} display="flex" alignItems="center" justifyContent="center">
-          <Typography textAlign="center" mb="20px" fontSize={16} fontWeight={500}>
-            No results found.
-          </Typography>
-        </Box>
-      ) : (
-        <>
-          {loading && (
-            <Box width={'100%'} display="flex" alignItems="center" justifyContent="center">
-              <Loader />
-            </Box>
-          )}
-          {!loading &&
-            sortedList?.map(({ token }, idx) => (
-              <Grid item xs={6} md={3} key={idx}>
-                <NftCard
-                  key={idx}
-                  token={token as Token1155}
-                  onClick={() => {
-                    onClick && onClick(token)
+    <>
+      {children}
 
-                    hideModal()
-                  }}
-                />
-              </Grid>
-            ))}
-        </>
-      )}
-    </Grid>
+      <Grid
+        container
+        spacing={20}
+        sx={{ overflow: 'auto', height: isDownMd ? 357 : 517, pb: 100 }}
+        paddingTop={'24px'}
+        position="relative"
+      >
+        {searchToken && !searchTokenIsAdded ? (
+          <NftCard
+            token={searchToken}
+            onClick={() => {
+              onClick && onClick(searchToken)
+              hideModal()
+            }}
+          />
+        ) : currencyOptions.length === 0 ? (
+          <Box width={'100%'} display="flex" alignItems="center" justifyContent="center">
+            <Typography textAlign="center" mb="20px" fontSize={16} fontWeight={500}>
+              No results found.
+            </Typography>
+          </Box>
+        ) : (
+          <>
+            {loading && (
+              <Box width={'100%'} display="flex" alignItems="center" justifyContent="center">
+                <Loader />
+              </Box>
+            )}
+            {!loading &&
+              sortedList?.map(({ token }, idx) => (
+                <Grid item xs={6} md={3} key={idx}>
+                  <NftCard
+                    key={idx}
+                    token={token as Token1155}
+                    onClick={() => {
+                      onClick && onClick(token)
+
+                      hideModal()
+                    }}
+                  />
+                </Grid>
+              ))}
+          </>
+        )}
+      </Grid>
+    </>
   )
 }
 
