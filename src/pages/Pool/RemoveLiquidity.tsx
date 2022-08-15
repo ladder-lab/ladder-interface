@@ -397,7 +397,10 @@ function NumericalCard({
           cursor: 'pointer'
         }}
       >
-        <Typography sx={{ color: theme.palette.text.secondary }} onClick={onChangeMode}>
+        <Typography
+          sx={{ color: isDarkMode ? theme.palette.text.primary : theme.palette.text.primary + '90' }}
+          onClick={onChangeMode}
+        >
           {mode === Mode.SIMPLE ? 'Simple' : 'Detailed'}
         </Typography>
       </Box>
