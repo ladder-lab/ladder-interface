@@ -20,7 +20,7 @@ export default function Logo({ srcs, alt, style }: LogoProps) {
   if (src) {
     return (
       <img
-        style={{ ...style }}
+        style={{ ...style, background: '#ffffff' }}
         alt={alt}
         src={src}
         onError={() => {
