@@ -393,7 +393,8 @@ function NumericalCard({
           justifyContent: 'center',
           position: 'absolute',
           top: 16,
-          right: 20
+          right: 20,
+          cursor: 'pointer'
         }}
       >
         <Typography sx={{ color: theme.palette.text.secondary }} onClick={onChangeMode}>
