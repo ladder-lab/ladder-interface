@@ -51,13 +51,18 @@ export function useMintCallback(currencyA: AllTokens | undefined, currencyB: All
       method: (...args: any) => Promise<TransactionResponse>,
       args: Array<string | string[] | number>,
       value: BigNumber | null
+    const isA1155 = checkIs1155(currencyA)
+    const isB1155 = checkIs1155(currencyB)
+
     if (currencyA === ETHER || currencyB === ETHER) {
       const tokenBIsETH = currencyB === ETHER
-      estimate = router.estimateGas.addLiquidityETH1155
-      method = router.addLiquidityETH1155
+      const noNft = !isA1155 && !isB1155
+      const methodName = noNft ? 'addLiquidityETH' : 'addLiquidityETH1155'
+      estimate = router.estimateGas[methodName]
+      method = router[methodName]
       args = [
         wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', // token
-        tokenBIsETH ? filter1155(currencyA)?.tokenId ?? '' : filter1155(currencyB)?.tokenId ?? '', //tokenId
+        ...(noNft ? [] : [tokenBIsETH ? filter1155(currencyA)?.tokenId ?? '' : filter1155(currencyB)?.tokenId ?? '']), //tokenId
         (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
         amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
         amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // eth min
@@ -67,13 +72,15 @@ export function useMintCallback(currencyA: AllTokens | undefined, currencyB: All
       value = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString())
     } else {
       const tokenAIs1155 = checkIs1155(currencyA)
+      const noNft = !isA1155 && !isB1155
+      const methodName = noNft ? 'addLiquidity' : 'addLiquidity1155'
       const token1155 = filter1155(tokenAIs1155 ? currencyA : currencyB)
       const token = tokenAIs1155 ? currencyB : currencyA
-      estimate = router.estimateGas.addLiquidity1155
-      method = router.addLiquidity1155
+      estimate = router.estimateGas[methodName]
+      method = router[methodName]
       args = [
         token1155?.address ?? '',
-        token1155?.tokenId ?? '',
+        ...(noNft ? [] : [token1155?.tokenId ?? '']),
         wrappedCurrency(token, chainId)?.address ?? '',
         (tokenAIs1155 ? parsedAmountA : parsedAmountB).raw.toString(),
         (tokenAIs1155 ? parsedAmountB : parsedAmountA).raw.toString(),

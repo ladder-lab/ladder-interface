@@ -11,7 +11,7 @@ import Tag from 'components/Tag'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { Loader } from 'components/AnimatedSvg/Loader'
 import { ExternalLink } from 'theme/components'
-import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
+import { toV2LiquidityToken, useIsDarkMode, useTrackedTokenPairs } from 'state/user/hooks'
 import { useTokenBalancesWithLoadingIndicator, useTokenTotalSupplies } from 'state/wallet/hooks'
 import { usePairs } from 'data/Reserves'
 import { useActiveWeb3React } from 'hooks'
@@ -235,6 +235,7 @@ function PoolCard({
   onRemove: () => void
 }) {
   const theme = useTheme()
+  const isDarkMode = useIsDarkMode()
 
   return (
     <Card
@@ -288,8 +289,11 @@ function PoolCard({
           sx={{
             borderRadius: '16px',
             height: 44,
-            background: '#DADADA',
-            color: '#828282'
+            background: isDarkMode ? '#282B2E' : '#DADADA',
+            color: '#828282',
+            '&:hover': {
+              background: isDarkMode ? '#25282B' : '#CACACA'
+            }
           }}
           onClick={onRemove}
         >

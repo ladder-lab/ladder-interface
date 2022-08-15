@@ -39,15 +39,15 @@ export function getTokenText(token1: AllTokens | undefined, token2?: AllTokens |
       token2Id: ''
     }
   }
-
-  const token2Text = token1Is1155 ? token2?.symbol : token2?.name + ' #' + (token2 as Token1155).tokenId ?? '-'
-  const Token2Text = token1Is1155
-    ? () => <> {token2Text}</>
-    : ({ fontSize, color }: { fontSize?: string | number; color?: string | undefined }) => (
+  const token2Is1155 = checkIs1155(token1)
+  const token2Text = token2Is1155 ? token2?.name + ' #' + (token2 as Token1155).tokenId ?? '-' : token2?.symbol
+  const Token2Text = token2Is1155
+    ? ({ fontSize, color }: { fontSize?: string | number; color?: string | undefined }) => (
         <Typography component="span" color={color ?? 'primary'} fontSize={fontSize}>
-          {token2Text}
+          {token2?.name + ' #' + (token2 as Token1155).tokenId ?? '-'}{' '}
         </Typography>
       )
+    : () => <> {token2Text}</>
 
   return {
     token1Text,

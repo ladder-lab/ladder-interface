@@ -90,7 +90,7 @@ function AddLiquidityDetails({
   shareOfPool: string
 }) {
   const theme = useTheme()
-  const { token1Text, token2Text, token1Is1155 } = getTokenText(token1, token2)
+  const { token1Text, token2Text, Token2Text, Token1Text } = getTokenText(token1, token2)
 
   return (
     <Box
@@ -106,7 +106,7 @@ function AddLiquidityDetails({
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center" gap={9}>
           <Typography>
-            {token1Text} <span style={{ color: theme.palette.text.primary }}>Deposited</span>
+            <Token1Text /> <span style={{ color: theme.palette.text.primary }}> Deposited</span>
           </Typography>
         </Box>
 
@@ -117,8 +117,8 @@ function AddLiquidityDetails({
       </Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center" gap={9}>
-          <Typography sx={{ color: token1Is1155 ? undefined : theme.palette.primary.main }}>
-            {token2Text} <span style={{ color: theme.palette.text.primary }}>Deposited</span>
+          <Typography>
+            <Token2Text /> <span style={{ color: theme.palette.text.primary }}>Deposited</span>
           </Typography>
         </Box>
 
