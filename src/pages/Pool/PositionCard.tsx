@@ -25,7 +25,7 @@ export default function PosittionCard({
   liquidityB?: string
 }) {
   const theme = useTheme()
-  const { token1Text, token2Text } = getTokenText(assetA ?? undefined, assetB ?? undefined)
+  const { token1Text, token2Text, token1Is1155, token2Is1155 } = getTokenText(assetA ?? undefined, assetB ?? undefined)
   const data = {
     ['Your pool share']: poolShare ?? '-' + ' %',
     [token1Text ?? '-']: liquidityA ?? '-',
@@ -34,7 +34,7 @@ export default function PosittionCard({
   return (
     <>
       <Card
-        color={error ? theme.palette.action.disabledBackground : color ? color : theme.palette.background.default}
+        color={error ? theme.palette.action.disabledBackground : color ? color : theme.palette.background.paper}
         style={{
           padding: '16px 20px',
           minHeight: 200,
@@ -50,8 +50,8 @@ export default function PosittionCard({
         )}
         {!error && (
           <Box sx={{ width: '100%' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center', mb: 12 }}>
-              <Typography sx={{ fontSize: 20 }}>Your position</Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+              <Typography sx={{ fontSize: 20, fontWeight: 500 }}>Your position</Typography>
               <Box
                 sx={{
                   display: 'flex',
@@ -59,13 +59,18 @@ export default function PosittionCard({
                   gap: 8
                 }}
               >
-                <Tag>ERC20</Tag>
-                <Tag>ERC1155</Tag>
+                <Tag>{token1Is1155 ? 'ERC1155' : 'ERC20'}</Tag>
+                <Tag>{token2Is1155 ? 'ERC1155' : 'ERC20'}</Tag>
               </Box>
             </Box>
 
-            <Box display="flex" justifyContent="space-between" mb={28}>
-              <DoubleCurrencyLogo currency0={assetA ?? undefined} currency1={assetB ?? undefined} />
+            <Box display="flex" justifyContent="space-between" mt={22} mb={28} alignItems="center">
+              <Box display="flex" gap={15} alignItems="center">
+                <DoubleCurrencyLogo currency0={assetA ?? undefined} currency1={assetB ?? undefined} size={24} />
+                <Typography fontWeight={500} fontSize={16}>
+                  {token1Text + '/' + token2Text}
+                </Typography>
+              </Box>
               <Typography fontSize={16} fontWeight={700}>
                 {lpBalance || '-'}{' '}
               </Typography>
