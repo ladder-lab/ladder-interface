@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box } from '@mui/material'
-import { ReactComponent as CopyIcon } from 'assets/componentsIcon/copy_icon.svg'
+import { ContentCopy } from '@mui/icons-material'
 import CheckIcon from '@mui/icons-material/Check'
 import useCopyClipboard from 'hooks/useCopyClipboard'
 
@@ -20,13 +20,19 @@ export default function Copy(props: Props) {
         cursor: 'pointer',
         height: 17,
         '& svg': {
-          width: 14,
           mr: '10px'
         }
       }}
-      onClick={() => setCopied(toCopy)}
+      onClick={e => {
+        e.stopPropagation()
+        setCopied(toCopy)
+      }}
     >
-      {isCopied ? <CheckIcon sx={{ opacity: 0.6, fontSize: 16 }} /> : <CopyIcon />}
+      {isCopied ? (
+        <CheckIcon sx={{ opacity: 0.6, fontSize: 16 }} />
+      ) : (
+        <ContentCopy sx={{ opacity: 0.6, fontSize: 16 }} />
+      )}
       {children}
     </Box>
   )

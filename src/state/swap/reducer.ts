@@ -50,7 +50,7 @@ export default createReducer<SwapState>(initialState, builder =>
     // )
     .addCase(selectCurrency, (state, { payload: { currencyId, field, tokenId } }) => {
       const otherField = field === Field.INPUT ? Field.OUTPUT : Field.INPUT
-      if (currencyId === state[otherField].currencyId) {
+      if (currencyId === state[otherField].currencyId && tokenId === state[otherField].tokenId) {
         // the case where we have to swap the order
         return {
           ...state,

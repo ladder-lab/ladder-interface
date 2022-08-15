@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { Grid, Box, Typography, useTheme } from '@mui/material'
 import Image from 'components/Image'
 import SampleNftImg from 'assets/images/sample-nft.png'
@@ -9,6 +10,8 @@ import { useIsDarkMode } from 'state/user/hooks'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { Mode } from './SelectCurrencyModal'
 import { Currency } from '@uniswap/sdk'
+import { useToken1155Balance, useToken1155Balances } from 'state/wallet/hooks'
+import { Loader } from 'components/AnimatedSvg/Loader'
 
 interface Props {
   selectedCurrency?: Currency | null
@@ -20,53 +23,63 @@ interface Props {
   onClick?: (token: AllTokens) => void
 }
 
-export default function NftList({ onClick, searchToken, searchTokenIsAdded, ...props }: Props) {
+export default function NftList({ onClick, searchToken, searchTokenIsAdded, currencyOptions }: Props) {
   const { hideModal } = useModal()
   const isDownMd = useBreakpoint('md')
+  const { balances, loading } = useToken1155Balances(currencyOptions)
+  const sortedList = useMemo(() => {
+    return balances?.sort((amount1, amount2) => {
+      return amount1.greaterThan(amount2) ? -1 : 1
+    })
+  }, [balances])
 
   return (
-    <Box>
+    <Grid container spacing={20} sx={{ overflow: 'auto', height: isDownMd ? 357 : 517, pb: 100 }}>
       {searchToken && !searchTokenIsAdded ? (
-        <Grid container spacing={20} sx={{ overflow: 'auto', height: isDownMd ? 357 : 517, pb: 100 }}>
-          <Grid item xs={6} md={3}>
-            <NftCard
-              token={searchToken}
-              onClick={() => {
-                onClick && onClick(searchToken)
-                hideModal()
-              }}
-            />
-          </Grid>
-        </Grid>
-      ) : props.currencyOptions?.length > 0 ? (
-        <Grid container spacing={20} sx={{ overflow: 'auto', height: isDownMd ? 357 : 517, pb: 100 }}>
-          {props.currencyOptions.map((token1155, idx) => (
-            <Grid item xs={6} md={3} key={idx}>
-              <NftCard
-                key={idx}
-                token={token1155}
-                onClick={() => {
-                  onClick && onClick(token1155)
-                  hideModal()
-                }}
-              />
-            </Grid>
-          ))}
-        </Grid>
-      ) : (
-        <Box style={{ padding: '20px', height: '100%' }}>
-          <Typography textAlign="center" mb="20px">
+        <NftCard
+          token={searchToken}
+          onClick={() => {
+            onClick && onClick(searchToken)
+            hideModal()
+          }}
+        />
+      ) : currencyOptions.length === 0 ? (
+        <Box width={'100%'} display="flex" alignItems="center" justifyContent="center">
+          <Typography textAlign="center" mb="20px" fontSize={16} fontWeight={500}>
             No results found.
           </Typography>
         </Box>
+      ) : (
+        <>
+          {loading && (
+            <Box width={'100%'} display="flex" alignItems="center" justifyContent="center">
+              <Loader />
+            </Box>
+          )}
+          {!loading &&
+            sortedList?.map(({ token }, idx) => (
+              <Grid item xs={6} md={3} key={idx}>
+                <NftCard
+                  key={idx}
+                  token={token as Token1155}
+                  onClick={() => {
+                    onClick && onClick(token)
+
+                    hideModal()
+                  }}
+                />
+              </Grid>
+            ))}
+        </>
       )}
-    </Box>
+    </Grid>
   )
 }
 
 function NftCard({ token, onClick }: { token: Token1155; onClick: () => void }) {
   const theme = useTheme()
   const isDarkMode = useIsDarkMode()
+  const balance = useToken1155Balance(token)
 
   return (
     <Box
@@ -89,14 +102,30 @@ function NftCard({ token, onClick }: { token: Token1155; onClick: () => void }) 
       }}
     >
       <Image src={token?.uri ?? SampleNftImg} style={{ borderRadius: '8px', overflow: 'hidden', width: '100%' }} />
-      <Typography sx={{ color: theme.palette.text.secondary, fontSize: 12, fontWeight: 600, mt: 8, mb: 8 }}>
-        {token.name} #{token.tokenId}
+      <Typography
+        sx={{
+          color: theme.palette.text.secondary,
+          fontSize: 12,
+          fontWeight: 600,
+          mt: 8,
+
+          width: '100%',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          textAlign: 'center',
+          whiteSpace: 'nowrap'
+        }}
+      >
+        {token.name}
+      </Typography>
+      <Typography sx={{ color: theme.palette.text.secondary, fontSize: 12, fontWeight: 600, mb: 8 }}>
+        #{token.tokenId}
       </Typography>
       <Typography sx={{ color: theme.palette.text.secondary, fontSize: 10, fontWeight: 400, mb: 4 }}>
         {shortenAddress(token.address)}
       </Typography>
       <Typography sx={{ fontSize: 10, fontWeight: 600 }}>
-        12 /<span style={{ color: theme.palette.text.secondary }}>1 M</span>
+        {balance?.toFixed(0)} /<span style={{ color: theme.palette.text.secondary }}>1 M</span>
       </Typography>
     </Box>
   )

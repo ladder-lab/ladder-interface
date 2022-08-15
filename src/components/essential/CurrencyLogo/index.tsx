@@ -61,7 +61,8 @@ export default function CurrencyLogo({
         width: size,
         height: size,
         borderRadius: size,
-        boxShadow: ' 0px 6px 10px rgba(0, 0, 0, 0.075)'
+        boxShadow: ' 0px 6px 10px rgba(0, 0, 0, 0.075)',
+        objectFit: 'contain'
       }}
       srcs={srcs}
       alt={`${currency?.symbol ?? 'token'} logo`}

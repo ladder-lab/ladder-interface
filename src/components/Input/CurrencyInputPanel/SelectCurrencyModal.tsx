@@ -221,7 +221,18 @@ export default function SelectCurrencyModal({
             <Typography fontSize={16} fontWeight={500}>
               Don&apos;t see your NFT ?
             </Typography>
-            <ButtonBase sx={{ color: theme => theme.palette.text.secondary, fontSize: 16 }} onClick={onImport}>
+            <ButtonBase
+              sx={{
+                color: theme => theme.palette.primary.main,
+                fontSize: 16,
+                fontWeight: 500,
+                ml: 10,
+                '&:hover': {
+                  color: theme => theme.palette.primary.dark
+                }
+              }}
+              onClick={onImport}
+            >
               Import it
             </ButtonBase>
           </Box>

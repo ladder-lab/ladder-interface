@@ -205,6 +205,14 @@ export function useDerivedMintInfo(
     error = 'Insufficient ' + currencies[Field.CURRENCY_B]?.symbol + ' balance'
   }
 
+  if (currencyBAmount?.equalTo('0')) {
+    error = 'Insufficient ' + currencies[Field.CURRENCY_B]?.symbol + ' amount'
+  }
+
+  if (currencyAAmount?.equalTo('0')) {
+    error = 'Insufficient ' + currencies[Field.CURRENCY_A]?.symbol + ' amount'
+  }
+
   // if (!liquidityMinted) {
   //   error = error ?? 'Insufficient Amount'
   // }

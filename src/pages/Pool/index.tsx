@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Box, Typography, useTheme, Button, ButtonBase, Grid } from '@mui/material'
-import { Percent, Token } from '@uniswap/sdk'
+import { Percent, Token, TokenAmount } from '@uniswap/sdk'
 import AppBody from 'components/AppBody'
 import { liquidityParamBuilder, routes } from 'constants/routes'
 import Card from 'components/Card'
@@ -9,16 +9,16 @@ import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
 import { AllTokens } from 'models/allTokens'
 import Tag from 'components/Tag'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
-import { Dots } from 'theme/components'
 import { Loader } from 'components/AnimatedSvg/Loader'
 import { ExternalLink } from 'theme/components'
 import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
 import { useTokenBalancesWithLoadingIndicator, useTokenTotalSupplies } from 'state/wallet/hooks'
 import { usePairs } from 'data/Reserves'
 import { useActiveWeb3React } from 'hooks'
-import { getTokenText } from 'utils/checkIs1155'
+import { checkIs1155, getTokenText } from 'utils/checkIs1155'
 import { useWalletModalToggle } from 'state/application/hooks'
 import { generateErc20 } from 'utils/getHashAddress'
+import { trimNumberString } from 'utils/trimNumberString'
 
 export default function Pool() {
   const theme = useTheme()
@@ -120,13 +120,7 @@ export default function Pool() {
 
           {v2IsLoading ? (
             <Box minHeight={332} display="flex" justifyContent="center" alignItems="center">
-              <Box display="grid" gap={19}>
-                <Typography sx={{ color: theme.palette.text.secondary, fontSize: 20 }}>
-                  Loading
-                  <Dots />
-                </Typography>
-                <Loader size={90} />
-              </Box>
+              <Loader size={90} />
             </Box>
           ) : account ? (
             <Grid container mt={20} spacing={20} alignItems="stretch" minHeight={332}>
@@ -147,7 +141,17 @@ export default function Pool() {
                     ? [tokens[0], tokens[1]]
                     : [tokens[1], tokens[0]]
 
-                const { token1Text, token2Text } = getTokenText(token0, token1)
+                const [amount0, amount1] = [
+                  new TokenAmount(token0, pair.reserve0.raw),
+                  new TokenAmount(token1, pair.reserve1.raw)
+                ]
+
+                const [amountA, amountB] =
+                  checkIs1155(token0) || token0.symbol === 'WETH' || token0.symbol === 'ETH'
+                    ? [amount1, amount0]
+                    : [amount0, amount1]
+
+                const { token1Text, token2Text } = getTokenText(amountA.token, amountB.token)
 
                 const balance = v2PairsBalances?.[liquidityTokensWithBalances[idx].liquidityToken.address]
                 const totalSupply = totalSupplies?.[liquidityTokensWithBalances[idx].liquidityToken.address]
@@ -158,16 +162,18 @@ export default function Pool() {
                 return (
                   <Grid item xs={12} md={4} key={pair.liquidityToken.address}>
                     <PoolCard
-                      currency0={token0}
-                      currency1={token1}
+                      currency0={amountA.token}
+                      currency1={amountB.token}
                       title={`${token1Text} / ${token2Text}
                       `}
-                      reserve0={pair.reserve0.toExact()}
-                      reserve1={pair.reserve1.toExact()}
+                      reserve0={amountA.toExact()}
+                      reserve1={amountB.toExact()}
                       shareAmount={poolTokenPercentage}
-                      tokenAmount={balance?.toExact() ?? '-'}
-                      onAdd={() => navigate(routes.addLiquidity + liquidityParamBuilder(token0, token1))}
-                      onRemove={() => navigate(routes.removeLiquidity + liquidityParamBuilder(token0, token1))}
+                      tokenAmount={balance ? trimNumberString(balance?.toExact(), 12) : '-'}
+                      onAdd={() => navigate(routes.addLiquidity + liquidityParamBuilder(amountA.token, amountB.token))}
+                      onRemove={() =>
+                        navigate(routes.removeLiquidity + liquidityParamBuilder(amountA.token, amountB.token))
+                      }
                     />
                   </Grid>
                 )
@@ -231,7 +237,11 @@ function PoolCard({
   const theme = useTheme()
 
   return (
-    <Card gray padding="32px 24px 24px" style={{ borderRadius: '20px', height: '100%' }}>
+    <Card
+      gray
+      padding="32px 24px 24px"
+      style={{ borderRadius: '20px', height: '100%', display: 'flex', flexDirection: 'column' }}
+    >
       <Box display="flex" justifyContent="space-between">
         <DoubleCurrencyLogo currency0={currency0} currency1={currency1} size={28} />
         <Box display="flex" gap={16}>
@@ -267,10 +277,10 @@ function PoolCard({
           <Typography fontSize={16}>{shareAmount}</Typography>
         </Box>
       </Box>
-      <ExternalLink href="#" showIcon>
+      <ExternalLink href="#" showIcon style={{ marginBottom: 28, display: 'block' }}>
         View accrued fees and analytics
       </ExternalLink>
-      <Box display="flex" gap={8} mt={28}>
+      <Box display="flex" gap={8} mt={'auto'}>
         <Button sx={{ borderRadius: '16px', height: 44 }} onClick={onAdd}>
           Add
         </Button>
@@ -301,7 +311,7 @@ function PoolAssetCard({ currency, value }: { currency: AllTokens; value: string
             Pooled {currency.symbol}
           </Typography>
           <Typography fontSize={16} fontWeight={500}>
-            {value}
+            {trimNumberString(value, 12)}
           </Typography>
         </Box>
         <CurrencyLogo currency={currency} size={'36px'} />
