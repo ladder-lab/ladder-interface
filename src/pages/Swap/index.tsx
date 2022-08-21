@@ -25,6 +25,7 @@ import TransacitonPendingModal from 'components/Modal/TransactionModals/Transact
 import useModal from 'hooks/useModal'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
+import { Currency } from 'constants/token'
 
 export default function Swap() {
   // const theme = useTheme()
@@ -258,7 +259,7 @@ export default function Swap() {
               disabled={!account}
             />
           </Box>
-          {fromAsset && <AssetAccordion token={fromAsset} />}
+          {/* {fromAsset && <AssetAccordion token={fromAsset} />} */}
           <Box
             sx={{
               height: 76,
@@ -286,7 +287,7 @@ export default function Swap() {
               disabled={!account}
             />
           </Box>
-          {toAsset && <AssetAccordion token={toAsset} />}
+          {/* {toAsset && <AssetAccordion token={toAsset} />} */}
           {isValid && !swapCallbackError && (
             <SwapSummary
               fromAsset={fromAsset ?? undefined}
@@ -365,6 +366,28 @@ export default function Swap() {
           </Box>
         </Box>
       </AppBody>
+      {(fromAsset || toAsset) && <TokenInfo fromAsset={fromAsset} toAsset={toAsset} />}
     </>
+  )
+}
+
+function TokenInfo({ fromAsset, toAsset }: { fromAsset?: Currency; toAsset?: Currency }) {
+  return (
+    <AppBody width={'100%'} maxWidth={'680px'} sx={{ marginTop: 33 }}>
+      <Box
+        sx={{
+          padding: { xs: '24px 20px 20px', md: '33px 32px 30px' },
+          position: 'relative'
+        }}
+      >
+        <Typography fontSize={28} fontWeight={500} mb={20}>
+          Token Info
+        </Typography>
+        <Box display="flex" flexDirection="column" gap={12}>
+          {fromAsset && <AssetAccordion token={fromAsset} />}
+          {toAsset && <AssetAccordion token={toAsset} />}
+        </Box>
+      </Box>
+    </AppBody>
   )
 }
