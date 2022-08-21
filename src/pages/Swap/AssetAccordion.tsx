@@ -41,12 +41,12 @@ export function AssetAccordion({ token }: { token?: AllTokens }) {
           <Typography
             color={theme.palette.text.secondary}
             component="div"
-            sx={{ wordWrap: 'break-word', display: 'flex', alignItems: 'center', gap: 5 }}
+            sx={{ wordWrap: 'break-word', display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap' }}
           >
             Contract:{' '}
             {token && 'address' in token ? (
               <>
-                {token?.address}
+                <Typography sx={{ wordWrap: 'break-word', maxWidth: '100%' }}>{token?.address}</Typography>
                 <Copy toCopy={token?.address} />
               </>
             ) : (
