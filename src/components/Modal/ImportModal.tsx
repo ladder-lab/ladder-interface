@@ -49,7 +49,7 @@ export default function ImportModal({
     if (nftRes?.nft?.name === undefined) return setError(`Token doesnt exist`)
 
     setError('')
-  }, [account, contractAddress, nftRes?.nft?.name, tokenId])
+  }, [account, contractAddress, nftRes.incorrectToken, nftRes?.nft?.name, tokenId])
 
   return (
     <Modal maxWidth="680px" width="100%" closeIcon onBack={hideModal} customIsOpen={isOpen} customOnDismiss={onDismiss}>
@@ -58,12 +58,21 @@ export default function ImportModal({
           Import
         </Typography>
         <Box display="grid" gap={30} mb={40}>
-          <Input
-            label="Token Contract Address"
-            value={contractAddress}
-            onChange={e => setContractAddress(e.target.value)}
-            helperText="..."
-          />
+          <Box>
+            <Input
+              label="Token Contract Address"
+              value={contractAddress}
+              onChange={e => setContractAddress(e.target.value)}
+              helperText="..."
+              error={nftRes?.incorrectToken}
+              // if (nftRes.incorrectToken) return setError('Contract types other than ERC-1155 are temporarily not supported')
+            />
+            {nftRes?.incorrectToken && (
+              <Typography color="error" mt={6}>
+                Contract types other than ERC-1155 are temporarily not supported
+              </Typography>
+            )}
+          </Box>
           <Input label="Token ID" value={tokenId} onChange={e => setTokenId(e.target.value)} helperText="..." />
         </Box>
         <ActionButton

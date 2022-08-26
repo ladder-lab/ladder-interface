@@ -34,7 +34,7 @@ export default function ConfirmSupplyModal({
 }) {
   const theme = useTheme()
 
-  const { token1Text, token2Text, token1Id, token2Id } = getTokenText(tokenA, tokenB)
+  const { Token1Text, Token2Text } = getTokenText(tokenA, tokenB)
 
   return (
     <Modal closeIcon customIsOpen={isOpen} customOnDismiss={onDismiss}>
@@ -50,9 +50,7 @@ export default function ConfirmSupplyModal({
         </Box>
 
         <Typography fontSize={16} mt={4} mb={12}>
-          {token1Text ?? ''}
-          {token1Id ? `#${token1Id}` : ''} / {token2Text ?? ''}
-          {token2Id ? ` #${token2Id}` : ''}
+          <Token1Text fontSize={16} /> /<Token2Text fontSize={16} />
         </Typography>
         <Typography sx={{ fontSize: 16, color: theme.palette.text.secondary, mb: 24 }}>
           Output is estimated.If the price changes by more than 5% your transaction will revert.
@@ -90,7 +88,7 @@ function AddLiquidityDetails({
   shareOfPool: string
 }) {
   const theme = useTheme()
-  const { token1Text, token2Text, Token2Text, Token1Text } = getTokenText(token1, token2)
+  const { Token2Text, Token1Text } = getTokenText(token1, token2)
 
   return (
     <Box
@@ -133,10 +131,10 @@ function AddLiquidityDetails({
         </Box>
         <Box display="grid" gap={8}>
           <Typography>
-            1 {token1Text} = {rateToken1Token2} {token2Text}
+            1 <Token1Text /> = {rateToken1Token2} <Token2Text />
           </Typography>
           <Typography>
-            1 {token2Text} = {rateToken2Token1} {token1Text}
+            1 <Token2Text /> = {rateToken2Token1} <Token1Text />
           </Typography>
         </Box>
       </Box>

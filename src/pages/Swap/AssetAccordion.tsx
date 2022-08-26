@@ -79,7 +79,7 @@ export function AssetAccordion({ token }: { token?: AllTokens }) {
       details={details}
       expanded={expanded}
       onChange={handleChange}
-      disabled={!is1155}
+      disabled={true}
       margin={'0'}
       iconCssOverride={{ right: 0, bottom: 0, position: 'absolute' }}
     />

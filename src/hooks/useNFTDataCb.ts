@@ -1,15 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
-//import ERC1155_ABI from 'constants/abis/erc1155.json'
 import { use1155Contract } from 'hooks/useContract'
 import { useActiveWeb3React } from 'hooks'
-//import { useSingleCallResult } from 'state/multicall/hooks'
 import { isAddress } from 'utils'
 import { useBlockNumber } from 'state/application/hooks'
-// import { getOtherNetworkLibrary } from 'connectors/MultiNetworkConnector'
-// import NFT_BRIDGE_ABI from 'constants/abis/nft_bridge.json'
 import { Token1155 } from 'constants/token/token1155'
 import { NFT } from 'models/allTokens'
-// import { NFT_BRIDGE_ADDRESS } from '../constants'
+
+const ERC1155InterfaceId = '0xd9b67a26'
 
 export function useNFTDataCb(
   contractAddress: string,
@@ -18,10 +15,12 @@ export function useNFTDataCb(
   loading: boolean
   error: string
   nft: NFT | null
+  incorrectToken: boolean
 } {
   const { chainId } = useActiveWeb3React()
   const blockNumber = useBlockNumber()
   const [nftError, setNftError] = useState(false)
+  const [incorrectToken, setIncorrenctToken] = useState(false)
 
   const [nftResLoading, setNftResLoading] = useState(false)
   const [token, setToken] = useState<Token1155 | null>(null)
@@ -32,9 +31,13 @@ export function useNFTDataCb(
 
   useEffect(() => {
     const getNftData = async () => {
+      let is1155 = false
       try {
         if (!chainId || !tokenId || !nftContract) return
         setNftResLoading(true)
+
+        const supports1155 = await nftContract.supportsInterface?.(ERC1155InterfaceId)
+        is1155 = supports1155
         const allRes = await Promise.all([nftContract.name(), nftContract.symbol(), nftContract.uri(tokenId ?? '')])
         const userToken = new Token1155(chainId, contractAddress, tokenId, {
           name: allRes[0],
@@ -43,10 +46,13 @@ export function useNFTDataCb(
         })
         setToken(userToken)
         setNftResLoading(false)
-        setNftError(false)
+        setNftError(!is1155)
+        setIncorrenctToken(!is1155)
       } catch (e: any) {
-        console.error('load error: _ownerRes', e)
-        setNftError(e.message)
+        if (!is1155) {
+          setIncorrenctToken(true)
+        }
+        setNftError(true)
         setNftResLoading(false)
       }
     }
@@ -57,9 +63,10 @@ export function useNFTDataCb(
     () => ({
       loading: nftResLoading,
       error: nftError ? 'Contract Error' : '',
-      nft: token
+      nft: token,
+      incorrectToken
     }),
-    [nftError, nftResLoading, token]
+    [incorrectToken, nftError, nftResLoading, token]
   )
 
   return response

@@ -57,6 +57,7 @@ export default function Input({
           borderRadius,
           padding: 0,
           zIndex: 1,
+          // background: error ? 'red' : 'transparent',
           '&.Mui-focused:before': {
             display: 'none'
           },
@@ -79,16 +80,19 @@ export default function Input({
             padding: startAdornment ? '0 0 0 60px' : '0 22px',
             borderRadius
           },
-          '&.Mui-focused:after, &:hover:after': {
-            background: isDarkMode ? theme.gradient.gradient1 : '#1F9898',
-            borderRadius: `calc(${borderRadius} + 1px)`,
-            position: 'absolute',
+          '&:after': {
             top: -1,
             right: -1,
             bottom: -1,
             left: -1,
             zIndex: -1,
-            content: '""'
+            content: '""',
+            borderRadius: `calc(${borderRadius} + 1px)`,
+            position: 'absolute',
+            background: error ? `${theme.palette.error.main}!important` : 'transparent'
+          },
+          '&.Mui-focused:after, &:hover:after': {
+            background: isDarkMode ? theme.gradient.gradient1 : '#1F9898'
           },
           '&.Mui-disabled:hover:after': {
             background: 'unset'

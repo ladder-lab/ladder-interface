@@ -61,3 +61,8 @@ export function getTokenText(token1: AllTokens | undefined, token2?: AllTokens |
     token2Id: filter1155(token2)?.tokenId ?? ''
   }
 }
+
+export function checkTokenType(token: AllTokens): 'ERC1155' | 'ERC721' | 'ERC20' {
+  const token1Is1155 = checkIs1155(token)
+  return token1Is1155 ? 'ERC1155' : 'ERC20'
+}

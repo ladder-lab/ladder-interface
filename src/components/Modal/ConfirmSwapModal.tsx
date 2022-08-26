@@ -11,7 +11,7 @@ import { AllTokens } from 'models/allTokens'
 import { CurrencyAmount, currencyEquals, Trade } from '@uniswap/sdk'
 import { Field } from 'state/swap/actions'
 import Tag from 'components/Tag'
-import { checkIs1155, filter1155 } from 'utils/checkIs1155'
+import { checkIs1155, checkTokenType, filter1155 } from 'utils/checkIs1155'
 
 /**
  * Returns true if the trade requires a confirmation of details before we can submit it
@@ -109,7 +109,7 @@ function SwapPanelRow({
 }: {
   asset?: AllTokens
   value: string
-  approx: string
+  approx?: string
   type: string
 }) {
   const is1155 = checkIs1155(asset)
@@ -119,7 +119,9 @@ function SwapPanelRow({
         <CurrencyLogo currency={asset} size="36px" />
         <Box display="grid" gap={5}>
           <Typography fontSize={24}>{value}</Typography>
-          <Typography sx={{ fontSize: 12, color: theme => theme.palette.text.secondary }}>~${approx}</Typography>
+          {approx && (
+            <Typography sx={{ fontSize: 12, color: theme => theme.palette.text.secondary }}>~${approx}</Typography>
+          )}
         </Box>
       </Box>
       <Box display="flex" flexDirection="column" gap={8} alignItems="flex-end" width="50%">
@@ -138,9 +140,9 @@ function SwapPanel({ from, to, fromVal, toVal }: { from?: AllTokens; to?: AllTok
 
   return (
     <Box sx={{ background: theme.palette.background.default, padding: '12px 20px', borderRadius: '8px' }}>
-      <SwapPanelRow asset={from} value={fromVal} approx={'123'} type="ERC20" />
+      <SwapPanelRow asset={from} value={fromVal} type={from ? checkTokenType(from) : '-'} />
       <ArrowDownwardIcon />
-      <SwapPanelRow asset={to} value={toVal} approx={'123'} type="ERC1155" />
+      <SwapPanelRow asset={to} value={toVal} type={to ? checkTokenType(to) : '-'} />
     </Box>
   )
 }
