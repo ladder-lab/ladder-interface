@@ -22,6 +22,7 @@ import useBreakpoint from 'hooks/useBreakpoint'
 import { useIsDarkMode, useTrackedToken1155List } from 'state/user/hooks'
 import { Token1155 } from 'constants/token/token1155'
 import ERC721List from './ERC721List'
+import { Collection } from './ListComponent'
 
 export enum Mode {
   ERC20 = 'erc20',
@@ -52,7 +53,7 @@ export default function SelectCurrencyModal({
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [searchQueryNFT, setSearchQueryNFT] = useState<string>('')
   const [invertSearchOrder] = useState<boolean>(false)
-  const [collection, setCollection] = useState<string | null>(null)
+  const [collection, setCollection] = useState<Collection | null>(null)
 
   const fixedList = useRef<FixedSizeList>()
 
@@ -111,6 +112,23 @@ export default function SelectCurrencyModal({
     })
     return curList
   }, [allTokens])
+
+  const commonCollectionList = useMemo(() => {
+    return [
+      {
+        logo: undefined,
+        title: 'Jack Paul'
+      },
+      {
+        logo: undefined,
+        title: 'OK Bear'
+      },
+      {
+        logo: undefined,
+        title: 'Love Death Robot'
+      }
+    ]
+  }, [])
 
   // manage focus on modal show
   const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
@@ -306,7 +324,8 @@ export default function SelectCurrencyModal({
               searchToken={searchTokenNFT}
               searchTokenIsAdded={searchTokenIsAddedNFT}
               onClick={onSelectCurrency}
-              commonCollectionList={['Jack Paul', 'OK Bear', 'Love Death Robot']}
+              commonCollectionList={commonCollectionList}
+              collectionOptions={commonCollectionList}
               selectedCollection={collection}
               onSelectCollection={setCollection}
             >

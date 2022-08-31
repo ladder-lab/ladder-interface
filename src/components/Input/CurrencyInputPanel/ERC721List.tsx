@@ -1,4 +1,5 @@
-import { useMemo } from 'react'
+import { MutableRefObject, useMemo } from 'react'
+import { FixedSizeList } from 'react-window'
 import { Grid, Box, Typography, useTheme, Button, ButtonBase } from '@mui/material'
 import Image from 'components/Image'
 import SampleNftImg from 'assets/images/sample-nft.png'
@@ -11,21 +12,8 @@ import useBreakpoint from 'hooks/useBreakpoint'
 import { Currency } from '@uniswap/sdk'
 import { useToken1155Balance, useToken1155Balances } from 'state/wallet/hooks'
 import { Loader } from 'components/AnimatedSvg/Loader'
-// import LogoText from 'components/LogoText'
 import Divider from 'components/Divider'
-
-interface Props {
-  selectedCurrency?: Currency | null
-  onSelectCurrency?: (currency: Currency) => void
-  currencyOptions: Token1155[]
-  searchToken?: Token1155 | null | undefined
-  searchTokenIsAdded?: boolean
-  onClick?: (token: AllTokens) => void
-  children?: React.ReactNode
-  commonCollectionList?: string[]
-  onSelectCollection?: (collection: string) => void
-  selectedCollection?: string | null
-}
+import { CollectionListComponent, Collection } from './ListComponent'
 
 export default function ERC721List({
   onClick,
@@ -35,8 +23,23 @@ export default function ERC721List({
   children,
   commonCollectionList,
   onSelectCollection,
-  selectedCollection
-}: Props) {
+  selectedCollection,
+  collectionOptions,
+  fixedListRef
+}: {
+  selectedCurrency?: Currency | null
+  onSelectCurrency?: (currency: Currency) => void
+  currencyOptions: Token1155[]
+  searchToken?: Token1155 | null | undefined
+  searchTokenIsAdded?: boolean
+  onClick?: (token: AllTokens) => void
+  children?: React.ReactNode
+  commonCollectionList?: Collection[]
+  onSelectCollection?: (collection: Collection) => void
+  selectedCollection?: Collection | null
+  collectionOptions?: Collection[]
+  fixedListRef?: MutableRefObject<FixedSizeList | undefined>
+}) {
   const { hideModal } = useModal()
   const isDownMd = useBreakpoint('md')
   const { balances, loading } = useToken1155Balances(currencyOptions)
@@ -51,10 +54,10 @@ export default function ERC721List({
       {children}
       <Box display="flex" gap={20} margin="20px 0">
         {!selectedCollection &&
-          commonCollectionList?.map((collection: string) => (
+          commonCollectionList?.map((collection: Collection) => (
             <ButtonBase
               onClick={() => onSelectCollection && onSelectCollection(collection)}
-              key={collection}
+              key={collection.title}
               sx={{
                 borderRadius: '8px',
                 background: theme => theme.palette.background.default,
@@ -64,12 +67,17 @@ export default function ERC721List({
                 }
               }}
             >
-              {collection}
-              {/* <LogoText logo={<CurrencyLogo currency={currency} />} text={currency.symbol} /> */}
+              {collection.title}
             </ButtonBase>
           ))}
       </Box>
       <Divider />
+
+      {collectionOptions && !selectedCollection && (
+        <Box height={isDownMd ? 290 : 450} paddingTop={'24px'} position="relative">
+          <CollectionListComponent onSelect={() => {}} options={collectionOptions} fixedListRef={fixedListRef} />
+        </Box>
+      )}
 
       {selectedCollection && (
         <Grid
