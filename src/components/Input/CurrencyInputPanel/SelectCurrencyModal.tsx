@@ -21,10 +21,12 @@ import { HelperText } from 'constants/helperText'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { useIsDarkMode, useTrackedToken1155List } from 'state/user/hooks'
 import { Token1155 } from 'constants/token/token1155'
+import ERC721List from './ERC721List'
 
 export enum Mode {
-  TOKEN = 'token',
-  NFT = 'nft'
+  ERC20 = 'erc20',
+  ERC1155 = 'erc1155',
+  ERC721 = 'erc721'
 }
 interface SwapContextType {
   selectedToken: NFT | undefined
@@ -46,10 +48,11 @@ export default function SelectCurrencyModal({
   const isDownMd = useBreakpoint('md')
   const [isImportOpen, setIsInportOpen] = useState(false)
   const theme = useTheme()
-  const [mode, setMode] = useState(selectedTokenType === 'erc20' ? Mode.NFT : Mode.TOKEN)
+  const [mode, setMode] = useState(selectedTokenType === 'erc20' ? Mode.ERC1155 : Mode.ERC20)
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [searchQueryNFT, setSearchQueryNFT] = useState<string>('')
   const [invertSearchOrder] = useState<boolean>(false)
+  const [collection, setCollection] = useState<string | null>(null)
 
   const fixedList = useRef<FixedSizeList>()
 
@@ -158,9 +161,9 @@ export default function SelectCurrencyModal({
   // }, [])
   useEffect(() => {
     if (selectedTokenType === 'erc20') {
-      setMode(Mode.NFT)
+      setMode(Mode.ERC1155)
     } else {
-      setMode(Mode.TOKEN)
+      setMode(Mode.ERC20)
     }
   }, [selectedTokenType])
 
@@ -188,19 +191,19 @@ export default function SelectCurrencyModal({
               }
             }}
           >
-            {mode === Mode.TOKEN ? 'Select a Token' : 'Select a NFT'}
+            {mode === Mode.ERC20 ? 'Select a Token' : 'Select a NFT'}
           </Typography>
           <QuestionHelper
-            text={mode === Mode.TOKEN ? HelperText.selectToken : HelperText.selectNft}
+            text={mode === Mode.ERC20 ? HelperText.selectToken : HelperText.selectNft}
             size={isDownMd ? 18.33 : 22}
             style={{ color: theme.palette.text.secondary }}
           />
         </Box>
         <Box display="flex" gap={20} padding="31px 0 30px" alignItems="center">
           <ModeButton
-            selected={mode === Mode.TOKEN}
+            selected={mode === Mode.ERC20}
             onClick={() => {
-              setMode(Mode.TOKEN)
+              setMode(Mode.ERC20)
               setSearchQuery('')
               setSearchQueryNFT('')
             }}
@@ -209,9 +212,9 @@ export default function SelectCurrencyModal({
             ERC20
           </ModeButton>
           <ModeButton
-            selected={mode === Mode.NFT}
+            selected={mode === Mode.ERC1155}
             onClick={() => {
-              setMode(Mode.NFT)
+              setMode(Mode.ERC1155)
               setSearchQuery('')
               setSearchQueryNFT('')
             }}
@@ -219,12 +222,22 @@ export default function SelectCurrencyModal({
           >
             ERC1155
           </ModeButton>
+          <ModeButton
+            selected={mode === Mode.ERC721}
+            onClick={() => {
+              setMode(Mode.ERC721)
+              setSearchQuery('')
+              setSearchQueryNFT('')
+            }}
+            disabled={false}
+          >
+            ERC721
+          </ModeButton>
         </Box>
 
         <Box paddingTop={'24px'} position="relative">
-          {mode === Mode.TOKEN ? (
+          {mode === Mode.ERC20 && (
             <CurrencyList
-              mode={mode}
               currencyOptions={filteredSortedTokens}
               onSelectCurrency={onSelectCurrency}
               fixedListRef={fixedList}
@@ -242,9 +255,10 @@ export default function SelectCurrencyModal({
                 height={isDownMd ? 48 : 60}
               />
             </CurrencyList>
-          ) : (
+          )}
+
+          {mode === Mode.ERC1155 && (
             <NftList
-              mode={mode}
               currencyOptions={filteredTokens1155 as Token1155[]}
               onSelectCurrency={onSelectCurrency}
               searchToken={searchTokenNFT}
@@ -284,6 +298,53 @@ export default function SelectCurrencyModal({
               </>
             </NftList>
           )}
+
+          {mode === Mode.ERC721 && (
+            <ERC721List
+              currencyOptions={filteredTokens1155 as Token1155[]}
+              onSelectCurrency={onSelectCurrency}
+              searchToken={searchTokenNFT}
+              searchTokenIsAdded={searchTokenIsAddedNFT}
+              onClick={onSelectCurrency}
+              commonCollectionList={['Jack Paul', 'OK Bear', 'Love Death Robot']}
+              selectedCollection={collection}
+              onSelectCollection={setCollection}
+            >
+              <>
+                {/* <Box display="flex" alignItems="center" gap={3} mb={16}> */}
+                {/* <Typography fontSize={16} fontWeight={500}>
+                    Don&apos;t see your NFT ?
+                  </Typography> */}
+                {/* <ButtonBase
+                    sx={{
+                      color: theme => theme.palette.primary.main,
+                      fontSize: 16,
+                      fontWeight: 500,
+                      ml: 10,
+                      '&:hover': {
+                        color: theme => theme.palette.primary.dark
+                      }
+                    }}
+                    onClick={onImport}
+                  >
+                    Import it
+                  </ButtonBase> */}
+                {/* </Box> */}
+
+                <Input
+                  value={searchQueryNFT}
+                  onChange={handleInput}
+                  placeholder="Search name or paste address"
+                  // outlined
+                  startAdornment={<SearchIcon />}
+                  onKeyDown={handleEnter1155}
+                  height={isDownMd ? 48 : 60}
+                />
+              </>
+              <Box sx={{ display: 'flex' }}></Box>
+            </ERC721List>
+          )}
+
           <Box
             sx={{
               pointerEvents: 'none',
