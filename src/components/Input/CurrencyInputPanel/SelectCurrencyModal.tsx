@@ -323,11 +323,11 @@ export default function SelectCurrencyModal({
               onSelectCurrency={onSelectCurrency}
               searchToken={searchTokenNFT}
               searchTokenIsAdded={searchTokenIsAddedNFT}
-              onClick={onSelectCurrency}
               commonCollectionList={commonCollectionList}
               collectionOptions={commonCollectionList}
               selectedCollection={collection}
               onSelectCollection={setCollection}
+              selectedCurrencies={filteredTokens1155}
             >
               <>
                 {/* <Box display="flex" alignItems="center" gap={3} mb={16}> */}
