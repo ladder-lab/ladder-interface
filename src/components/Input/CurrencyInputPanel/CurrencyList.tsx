@@ -1,7 +1,6 @@
 import React, { MutableRefObject, useCallback, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
 import { Box, Typography, styled, ButtonBase } from '@mui/material'
-import { Mode } from './SelectCurrencyModal'
 import useModal from 'hooks/useModal'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { Token, Currency } from '@uniswap/sdk'
@@ -21,7 +20,6 @@ const StyledBalanceText = styled(Typography)(`
 
 interface Props {
   selectedCurrency?: Currency | null
-  mode?: Mode
   onSelectCurrency?: (currency: Currency) => void
   currencyOptions: Currency[]
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>
