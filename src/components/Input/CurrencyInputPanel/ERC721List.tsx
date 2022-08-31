@@ -1,6 +1,6 @@
 import { MutableRefObject, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
-import { Grid, Box, Typography, useTheme, Button, ButtonBase } from '@mui/material'
+import { Grid, Box, Typography, useTheme, Button, ButtonBase, IconButton } from '@mui/material'
 import Image from 'components/Image'
 import SampleNftImg from 'assets/images/sample-nft.png'
 import { Token1155 } from 'constants/token/token1155'
@@ -14,9 +14,12 @@ import { useToken1155Balance, useToken1155Balances } from 'state/wallet/hooks'
 import { Loader } from 'components/AnimatedSvg/Loader'
 import Divider from 'components/Divider'
 import { CollectionListComponent, Collection } from './ListComponent'
+import LogoText from 'components/LogoText'
+import { ExternalLink } from 'theme/components'
+import { ReactComponent as Xcircle } from 'assets/svg/xcircle.svg'
 
 export default function ERC721List({
-  onClick,
+  onSelectCurrency,
   searchToken,
   searchTokenIsAdded,
   currencyOptions,
@@ -25,14 +28,14 @@ export default function ERC721List({
   onSelectCollection,
   selectedCollection,
   collectionOptions,
-  fixedListRef
+  fixedListRef,
+  selectedCurrencies
 }: {
-  selectedCurrency?: Currency | null
-  onSelectCurrency?: (currency: Currency) => void
+  selectedCurrencies: Currency[]
   currencyOptions: Token1155[]
   searchToken?: Token1155 | null | undefined
   searchTokenIsAdded?: boolean
-  onClick?: (token: AllTokens) => void
+  onSelectCurrency?: (token: AllTokens) => void
   children?: React.ReactNode
   commonCollectionList?: Collection[]
   onSelectCollection?: (collection: Collection) => void
@@ -52,8 +55,34 @@ export default function ERC721List({
   return (
     <>
       {children}
+      {selectedCurrencies && (
+        <Box width="100%" mt={28}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <Typography>Collection:</Typography>
+            <Box
+              sx={{
+                borderRadius: '8px',
+                background: theme => theme.palette.background.default,
+                padding: '11px 23px'
+              }}
+            >
+              SelectedCollectionTitle
+            </Box>
+          </Box>
+          {selectedCurrencies.map(currency => (
+            <Box key={currency.symbol} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <LogoText logo={SampleNftImg} text={currency.name} />
+              <ExternalLink href={'#'}>address.....</ExternalLink>
+              <Typography>Quantity: 1</Typography>
+              <IconButton onClick={() => {}}>
+                <Xcircle />
+              </IconButton>
+            </Box>
+          ))}
+        </Box>
+      )}
       <Box display="flex" gap={20} margin="20px 0">
-        {!selectedCollection &&
+        {!selectedCollection ? (
           commonCollectionList?.map((collection: Collection) => (
             <ButtonBase
               onClick={() => onSelectCollection && onSelectCollection(collection)}
@@ -69,8 +98,23 @@ export default function ERC721List({
             >
               {collection.title}
             </ButtonBase>
-          ))}
+          ))
+        ) : (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <Typography>Collection:</Typography>
+            <Box
+              sx={{
+                borderRadius: '8px',
+                background: theme => theme.palette.background.default,
+                padding: '11px 23px'
+              }}
+            >
+              {selectedCollection.title}
+            </Box>
+          </Box>
+        )}
       </Box>
+
       <Divider />
 
       {collectionOptions && !selectedCollection && (
@@ -91,7 +135,7 @@ export default function ERC721List({
             <NftCard
               token={searchToken}
               onClick={() => {
-                onClick && onClick(searchToken)
+                onSelectCurrency && onSelectCurrency(searchToken)
                 hideModal()
               }}
             />
@@ -127,9 +171,7 @@ export default function ERC721List({
                       key={idx}
                       token={token as Token1155}
                       onClick={() => {
-                        onClick && onClick(token)
-
-                        hideModal()
+                        onSelectCurrency && onSelectCurrency(token)
                       }}
                     />
                   </Grid>
