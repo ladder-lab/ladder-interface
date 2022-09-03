@@ -7,8 +7,11 @@ import CurrencyLogo from 'components/essential/CurrencyLogo'
 import Tag from 'components/Tag'
 import { checkIs1155 } from 'utils/checkIs1155'
 import Copy from 'components/essential/Copy'
+import SampleNftImg from 'assets/images/sample-nft.png'
+import LogoText from 'components/LogoText'
+import { ExternalLink } from 'theme/components'
 
-export function AssetAccordion({ token }: { token?: AllTokens }) {
+export function AssetAccordion({ token, disabled }: { token?: AllTokens; disabled?: boolean }) {
   const [expanded, setExpanded] = useState(false)
   const theme = useTheme()
 
@@ -66,10 +69,21 @@ export function AssetAccordion({ token }: { token?: AllTokens }) {
   }, [token, theme.palette.text.secondary, is1155])
 
   const details = (
-    <Box pt={12}>
-      <Typography color={theme.palette.text.secondary}>Supply/Holder: 20000/500</Typography>
+    <Box sx={{ display: 'grid', gap: 12, pt: 12 }}>
+      {/* <Typography color={theme.palette.text.secondary}>Supply/Holder: 20000/500</Typography> */}
       {/* Graph */}
       {/* View accrued fees and analytics or NFTscan */}
+
+      {token &&
+        [token, token, token, token, token].map((token, idx) => (
+          <Box key={idx} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <LogoText logo={SampleNftImg} text={token.name} />
+            <ExternalLink sx={{ color: theme.palette.text.secondary }} href={'#'} showIcon>
+              address.....
+            </ExternalLink>
+            <Typography sx={{ color: theme.palette.text.secondary }}>Quantity: 1</Typography>
+          </Box>
+        ))}
     </Box>
   )
 
@@ -79,8 +93,8 @@ export function AssetAccordion({ token }: { token?: AllTokens }) {
       details={details}
       expanded={expanded}
       onChange={handleChange}
-      disabled={true}
       margin={'0'}
+      disabled={disabled}
       iconCssOverride={{ right: 0, bottom: 0, position: 'absolute' }}
     />
   )
