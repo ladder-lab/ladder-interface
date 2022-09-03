@@ -94,147 +94,155 @@ export default function ERC721List({
   return (
     <>
       {children}
-
-      {!collection ? (
-        <>
-          <Box display="flex" gap={20} margin="20px 0">
-            {commonCollectionList.map((collection: Token1155, idx) => (
-              <ButtonBase
-                onClick={() => setCollection(collection)}
-                key={`collection-${idx}`}
-                sx={{
-                  borderRadius: '8px',
-                  background: theme => theme.palette.background.default,
-                  padding: '11px 23px',
-                  '&:hover': {
-                    opacity: 0.8
-                  }
-                }}
-              >
-                {collection.name}
-              </ButtonBase>
-            ))}
-          </Box>
-          <Box height={isDownMd ? 290 : 450} paddingTop={'24px'} position="relative">
-            <CollectionListComponent onSelect={setCollection} options={collectionOptions} fixedListRef={fixedListRef} />
-          </Box>
-        </>
-      ) : (
-        <Box margin="20px 0">
-          {currencies.length > 0 && (
-            <Box width="100%" mt={28}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 12, mb: 24 }}>
-                <Typography>Collection:</Typography>
-                <Box
+      <Box sx={{ height: '480px', overflow: 'scroll' }}>
+        {!collection ? (
+          <>
+            <Box display="flex" gap={20} margin="20px 0">
+              {commonCollectionList.map((collection: Token1155, idx) => (
+                <ButtonBase
+                  onClick={() => setCollection(collection)}
+                  key={`collection-${idx}`}
                   sx={{
                     borderRadius: '8px',
                     background: theme => theme.palette.background.default,
-                    padding: '11px 18px',
-                    display: 'flex',
-                    gap: 8,
-                    alignItems: 'center',
-                    height: 52
+                    padding: '11px 23px',
+                    '&:hover': {
+                      opacity: 0.8
+                    }
                   }}
                 >
-                  <Typography sx={{ fontSize: 16, fontWeight: 500 }}>
-                    {collection?.name} <ExternalIcon />
-                  </Typography>
-                  <XcircleSm onClick={onRemoveCollection} style={{ cursor: 'pointer' }} />
-                </Box>
-              </Box>
-              {currencies.map((currency, idx) => (
-                <Box
-                  key={`${currency.symbol}-${idx}`}
-                  sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
-                >
-                  <LogoText logo={<CurrencyLogo currency={currency} />} text={currency.name} fontSize={12} />
-                  <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
-                    {currency.address}
-                  </ExternalLink>
-                  <Typography sx={{ fontSize: 12 }}>Quantity: 1</Typography>
-                  <IconButton onClick={() => onRemoveCur(currency)}>
-                    <Xcircle />
-                  </IconButton>
-                </Box>
+                  {collection.name}
+                </ButtonBase>
               ))}
-              <Box margin="28px 0" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Button onClick={() => {}} sx={{ height: 60, width: 300 }}>
-                  Confirm
-                </Button>
-              </Box>
             </Box>
-          )}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <Typography>Collection:</Typography>
-            <Box
-              sx={{
-                borderRadius: '8px',
-                background: theme => theme.palette.background.default,
-                padding: '11px 23px'
-              }}
-            >
-              {collection.name}
-            </Box>
-            <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
-              {collection.address}
-            </ExternalLink>
-          </Box>
-          <Grid
-            container
-            spacing={20}
-            sx={{ overflow: 'auto', height: isDownMd ? 357 : 517, pb: 100 }}
-            paddingTop={'24px'}
-            position="relative"
-          >
-            {searchToken && !searchTokenIsAdded ? (
-              <NftCard
-                token={searchToken}
-                onClick={() => {
-                  addCurrency(searchToken)
-                }}
+            <Box height={isDownMd ? 290 : 450} paddingTop={'24px'} position="relative">
+              <CollectionListComponent
+                onSelect={setCollection}
+                options={collectionOptions}
+                fixedListRef={fixedListRef}
               />
-            ) : currencyOptions.length === 0 ? (
-              <Box width={'100%'} display="flex" alignItems="center" justifyContent="center">
-                <Typography
-                  textAlign="center"
-                  mb="20px"
-                  fontSize={16}
-                  fontWeight={500}
-                  component="div"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  No results found. &nbsp;
-                  <Button variant="text" sx={{ display: 'inline', width: 'unset', padding: 0, height: 'max-content' }}>
-                    Import token
-                  </Button>
-                </Typography>
-              </Box>
-            ) : (
-              <>
-                {loading && (
-                  <Box width={'100%'} display="flex" alignItems="center" justifyContent="center">
-                    <Loader />
+            </Box>
+          </>
+        ) : (
+          <Box margin="20px 0">
+            {currencies.length > 0 && (
+              <Box width="100%" mt={28}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 12, mb: 24 }}>
+                  <Typography>Collection:</Typography>
+                  <Box
+                    sx={{
+                      borderRadius: '8px',
+                      background: theme => theme.palette.background.default,
+                      padding: '11px 18px',
+                      display: 'flex',
+                      gap: 8,
+                      alignItems: 'center',
+                      height: 52
+                    }}
+                  >
+                    <Typography sx={{ fontSize: 16, fontWeight: 500 }}>
+                      {collection?.name} <ExternalIcon />
+                    </Typography>
+                    <XcircleSm onClick={onRemoveCollection} style={{ cursor: 'pointer' }} />
                   </Box>
-                )}
-                {!loading &&
-                  sortedList?.map(({ token }, idx) => (
-                    <Grid item xs={6} md={3} key={idx}>
-                      <NftCard
-                        key={idx}
-                        token={token as Token1155}
-                        onClick={() => {
-                          addCurrency(token as Token1155)
-                        }}
-                      />
-                    </Grid>
-                  ))}
-              </>
+                </Box>
+                {currencies.map((currency, idx) => (
+                  <Box
+                    key={`${currency.symbol}-${idx}`}
+                    sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                  >
+                    <LogoText logo={<CurrencyLogo currency={currency} />} text={currency.name} fontSize={12} />
+                    <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
+                      {currency.address}
+                    </ExternalLink>
+                    <Typography sx={{ fontSize: 12 }}>Quantity: 1</Typography>
+                    <IconButton onClick={() => onRemoveCur(currency)}>
+                      <Xcircle />
+                    </IconButton>
+                  </Box>
+                ))}
+                <Box margin="28px 0" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Button onClick={() => {}} sx={{ height: 60, width: 300 }}>
+                    Confirm
+                  </Button>
+                </Box>
+              </Box>
             )}
-          </Grid>
-        </Box>
-      )}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <Typography>Collection:</Typography>
+              <Box
+                sx={{
+                  borderRadius: '8px',
+                  background: theme => theme.palette.background.default,
+                  padding: '11px 23px'
+                }}
+              >
+                {collection.name}
+              </Box>
+              <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
+                {collection.address}
+              </ExternalLink>
+            </Box>
+            <Grid
+              container
+              spacing={20}
+              sx={{ overflow: 'auto', height: isDownMd ? 357 : 517, pb: 100 }}
+              paddingTop={'24px'}
+              position="relative"
+            >
+              {searchToken && !searchTokenIsAdded ? (
+                <NftCard
+                  token={searchToken}
+                  onClick={() => {
+                    addCurrency(searchToken)
+                  }}
+                />
+              ) : currencyOptions.length === 0 ? (
+                <Box width={'100%'} display="flex" alignItems="center" justifyContent="center">
+                  <Typography
+                    textAlign="center"
+                    mb="20px"
+                    fontSize={16}
+                    fontWeight={500}
+                    component="div"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    No results found. &nbsp;
+                    <Button
+                      variant="text"
+                      sx={{ display: 'inline', width: 'unset', padding: 0, height: 'max-content' }}
+                    >
+                      Import token
+                    </Button>
+                  </Typography>
+                </Box>
+              ) : (
+                <>
+                  {loading && (
+                    <Box width={'100%'} display="flex" alignItems="center" justifyContent="center">
+                      <Loader />
+                    </Box>
+                  )}
+                  {!loading &&
+                    sortedList?.map(({ token }, idx) => (
+                      <Grid item xs={6} md={3} key={idx}>
+                        <NftCard
+                          key={idx}
+                          token={token as Token1155}
+                          onClick={() => {
+                            addCurrency(token as Token1155)
+                          }}
+                        />
+                      </Grid>
+                    ))}
+                </>
+              )}
+            </Grid>
+          </Box>
+        )}
+      </Box>
     </>
   )
 }
