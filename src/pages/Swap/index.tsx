@@ -403,7 +403,7 @@ function TokenInfo({ fromAsset, toAsset }: { fromAsset?: Currency; toAsset?: Cur
           Token Info
         </Typography>
         <Box display="flex" flexDirection="column" gap={12}>
-          {fromAsset && <AssetAccordion token={fromAsset} />}
+          {fromAsset && <AssetAccordion token={fromAsset} disabled />}
           {toAsset && <AssetAccordion token={toAsset} />}
         </Box>
       </Box>
