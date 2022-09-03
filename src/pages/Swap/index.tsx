@@ -27,6 +27,7 @@ import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import { Currency } from 'constants/token'
 import QuestionHelper from 'components/essential/QuestionHelper'
+import { Token1155 } from 'constants/token/token1155'
 
 enum SwapType {
   AUTO = 'auto',
@@ -59,6 +60,11 @@ export default function Swap() {
   const [allowedSlippage] = useUserSlippageTolerance()
   const [isExpertMode] = useExpertModeManager()
   const { independentField, typedValue, recipient } = useSwapState()
+
+  // Use Swap State to manage
+  const [erc721Currencies, setErc721Currencies] = useState<Token1155[]>([])
+
+  console.log(erc721Currencies)
 
   const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
   const { [Field.INPUT]: fromAsset, [Field.OUTPUT]: toAsset } = currencies
@@ -264,6 +270,7 @@ export default function Swap() {
               currency={fromAsset}
               onMax={handleMaxInput}
               disabled={!account}
+              updateERC721Currencies={setErc721Currencies}
             />
           </Box>
           {/* {fromAsset && <AssetAccordion token={fromAsset} />} */}
@@ -304,6 +311,7 @@ export default function Swap() {
               onSelectCurrency={handleToAsset}
               currency={toAsset}
               disabled={!account}
+              updateERC721Currencies={setErc721Currencies}
             />
           </Box>
           {/* {toAsset && <AssetAccordion token={toAsset} />} */}
@@ -403,7 +411,7 @@ function TokenInfo({ fromAsset, toAsset }: { fromAsset?: Currency; toAsset?: Cur
           Token Info
         </Typography>
         <Box display="flex" flexDirection="column" gap={12}>
-          {fromAsset && <AssetAccordion token={fromAsset} disabled />}
+          {fromAsset && <AssetAccordion token={fromAsset} />}
           {toAsset && <AssetAccordion token={toAsset} />}
         </Box>
       </Box>

@@ -40,10 +40,12 @@ export const SwapContext = React.createContext<SwapContextType>({
 
 export default function SelectCurrencyModal({
   onSelectCurrency,
-  selectedTokenType
+  selectedTokenType,
+  updateERC721Currencies
 }: {
   onSelectCurrency?: (currency: AllTokens) => void
   selectedTokenType?: TokenType
+  updateERC721Currencies?: (currencies: Token1155[]) => void
 }) {
   const isDownMd = useBreakpoint('md')
   const [isImportOpen, setIsInportOpen] = useState(false)
@@ -304,6 +306,7 @@ export default function SelectCurrencyModal({
               // onSelectCurrency={onSelectCurrency}
               searchToken={searchTokenNFT}
               searchTokenIsAdded={searchTokenIsAddedNFT}
+              updateERC721Currencies={updateERC721Currencies}
               // commonCollectionList={commonCollectionList}
               // collectionOptions={commonCollectionList}
               // selectedCollection={collection}

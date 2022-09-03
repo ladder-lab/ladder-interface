@@ -10,8 +10,17 @@ import Copy from 'components/essential/Copy'
 import SampleNftImg from 'assets/images/sample-nft.png'
 import LogoText from 'components/LogoText'
 import { ExternalLink } from 'theme/components'
+import { Token1155 } from 'constants/token/token1155'
 
-export function AssetAccordion({ token, disabled }: { token?: AllTokens; disabled?: boolean }) {
+export function AssetAccordion({
+  token,
+  disabled,
+  subTokens
+}: {
+  token?: AllTokens
+  disabled?: boolean
+  subTokens?: Token1155[]
+}) {
   const [expanded, setExpanded] = useState(false)
   const theme = useTheme()
 
@@ -68,24 +77,23 @@ export function AssetAccordion({ token, disabled }: { token?: AllTokens; disable
     )
   }, [token, theme.palette.text.secondary, is1155])
 
-  const details = (
-    <Box sx={{ display: 'grid', gap: 12, pt: 12 }}>
-      {/* <Typography color={theme.palette.text.secondary}>Supply/Holder: 20000/500</Typography> */}
-      {/* Graph */}
-      {/* View accrued fees and analytics or NFTscan */}
-
-      {token &&
-        [token, token, token, token, token].map((token, idx) => (
-          <Box key={idx} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <LogoText logo={SampleNftImg} text={token.name} />
-            <ExternalLink sx={{ color: theme.palette.text.secondary }} href={'#'} showIcon>
-              address.....
-            </ExternalLink>
-            <Typography sx={{ color: theme.palette.text.secondary }}>Quantity: 1</Typography>
-          </Box>
-        ))}
-    </Box>
-  )
+  const details = useMemo(() => {
+    return (
+      <Box sx={{ display: 'grid', gap: 12, pt: 12 }}>
+        {subTokens &&
+          subTokens.length > 0 &&
+          subTokens.map((token, idx) => (
+            <Box key={idx} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <LogoText logo={SampleNftImg} text={token.name} />
+              <ExternalLink sx={{ color: theme.palette.text.secondary }} href={'#'} showIcon>
+                {token.address}
+              </ExternalLink>
+              <Typography sx={{ color: theme.palette.text.secondary }}>Quantity: 1</Typography>
+            </Box>
+          ))}
+      </Box>
+    )
+  }, [subTokens])
 
   return (
     <Accordion
