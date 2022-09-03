@@ -15,7 +15,9 @@ import { CollectionListComponent } from './ListComponent'
 import LogoText from 'components/LogoText'
 import { ExternalLink } from 'theme/components'
 import { ReactComponent as Xcircle } from 'assets/svg/xcircle.svg'
+import { ReactComponent as XcircleSm } from 'assets/svg/xcirclesm.svg'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
+import { ReactComponent as ExternalIcon } from 'assets/svg/external_arrow.svg'
 
 export default function ERC721List({
   // onSelectCurrency,
@@ -84,6 +86,11 @@ export default function ERC721List({
     [currencies]
   )
 
+  const onRemoveCollection = useCallback(() => {
+    setCollection(null)
+    setCurrencies([])
+  }, [])
+
   return (
     <>
       {children}
@@ -122,10 +129,17 @@ export default function ERC721List({
                   sx={{
                     borderRadius: '8px',
                     background: theme => theme.palette.background.default,
-                    padding: '11px 23px'
+                    padding: '11px 18px',
+                    display: 'flex',
+                    gap: 8,
+                    alignItems: 'center',
+                    height: 52
                   }}
                 >
-                  {collection?.name}
+                  <Typography sx={{ fontSize: 16, fontWeight: 500 }}>
+                    {collection?.name} <ExternalIcon />
+                  </Typography>
+                  <XcircleSm onClick={onRemoveCollection} style={{ cursor: 'pointer' }} />
                 </Box>
               </Box>
               {currencies.map((currency, idx) => (
