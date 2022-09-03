@@ -18,32 +18,24 @@ import { ReactComponent as Xcircle } from 'assets/svg/xcircle.svg'
 import { ReactComponent as XcircleSm } from 'assets/svg/xcirclesm.svg'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { ReactComponent as ExternalIcon } from 'assets/svg/external_arrow.svg'
+import useModal from 'hooks/useModal'
 
 export default function ERC721List({
-  // onSelectCurrency,
   searchToken,
   searchTokenIsAdded,
   currencyOptions,
   children,
-  // commonCollectionList,
-  // onSelectCollection,
-  // selectedCollection,/
-  // collectionOptions,
-  fixedListRef
-}: // selectedCurrencies
-{
-  // selectedCurrencies: Currency[]
+  fixedListRef,
+  updateERC721Currencies
+}: {
   currencyOptions: Token1155[]
   searchToken?: Token1155 | null | undefined
   searchTokenIsAdded?: boolean
-  // onSelectCurrency?: (token: AllTokens) => void
   children?: React.ReactNode
-  // commonCollectionList?: Collection[]
-  // onSelectCollection?: (collection: Collection) => void
-  // selectedCollection?: Collection | null
-  // collectionOptions?: Collection[]
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>
+  updateERC721Currencies?: (currencies: Token1155[]) => void
 }) {
+  const { hideModal } = useModal()
   const [collection, setCollection] = useState<Token1155 | null>(null)
   const [currencies, setCurrencies] = useState<Token1155[]>([])
   const isDownMd = useBreakpoint('md')
@@ -74,9 +66,7 @@ export default function ERC721List({
     (currency: Token1155) => {
       const list = currencies
       const index = currencies.findIndex(el => el.tokenId === currency.tokenId)
-      console.log('push')
       if (index !== -1) {
-        console.log('same')
         return
       }
 
@@ -90,6 +80,11 @@ export default function ERC721List({
     setCollection(null)
     setCurrencies([])
   }, [])
+
+  const onConfirm = useCallback(() => {
+    updateERC721Currencies && updateERC721Currencies([...currencies])
+    hideModal()
+  }, [currencies, updateERC721Currencies])
 
   return (
     <>
@@ -162,7 +157,7 @@ export default function ERC721List({
                   </Box>
                 ))}
                 <Box margin="28px 0" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Button onClick={() => {}} sx={{ height: 60, width: 300 }}>
+                  <Button onClick={onConfirm} sx={{ height: 60, width: 300 }}>
                     Confirm
                   </Button>
                 </Box>
