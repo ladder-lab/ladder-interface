@@ -10,8 +10,8 @@ import { useCurrencyBalance } from 'state/wallet/hooks'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { AllTokens, TokenType } from 'models/allTokens'
 import { checkIs1155 } from 'utils/checkIs1155'
-
 import useBreakpoint from 'hooks/useBreakpoint'
+import { Token1155 } from 'constants/token/token1155'
 
 interface Props {
   currency?: AllTokens | null
@@ -27,6 +27,7 @@ interface Props {
   onMax?: () => void
   disableInput?: boolean
   hideBalance?: boolean
+  updateERC721Currencies?: (currencies: Token1155[]) => void
 }
 
 const trimBalance = (balance: string) => {
@@ -50,7 +51,8 @@ export default function CurrencyInputPanel({
   selectedTokenType,
   onMax,
   disableInput,
-  hideBalance
+  hideBalance,
+  updateERC721Currencies
 }: Props) {
   const { account } = useActiveWeb3React()
   const is1155 = checkIs1155(currency)
@@ -62,9 +64,15 @@ export default function CurrencyInputPanel({
 
   const showCurrencySearch = useCallback(() => {
     if (!disableCurrencySelect) {
-      showModal(<SelectCurrencyModal onSelectCurrency={onSelectCurrency} selectedTokenType={selectedTokenType} />)
+      showModal(
+        <SelectCurrencyModal
+          onSelectCurrency={onSelectCurrency}
+          selectedTokenType={selectedTokenType}
+          updateERC721Currencies={updateERC721Currencies}
+        />
+      )
     }
-  }, [disableCurrencySelect, onSelectCurrency, selectedTokenType, showModal])
+  }, [disableCurrencySelect, onSelectCurrency, selectedTokenType, showModal, updateERC721Currencies])
 
   // const handleMax = useCallback(() => {
   //   if (!selectedCurrencyBalance && !token1155Balance) return
