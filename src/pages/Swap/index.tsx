@@ -28,11 +28,17 @@ import TransactionSubmittedModal from 'components/Modal/TransactionModals/Transa
 import { Currency } from 'constants/token'
 import QuestionHelper from 'components/essential/QuestionHelper'
 
+enum SwapType {
+  AUTO = 'auto',
+  MANUAL = 'Choose by yourself'
+}
+
 export default function Swap() {
   // const theme = useTheme()
   const { account } = useActiveWeb3React()
 
   const [summaryExpanded, setSummaryExpanded] = useState(false)
+  const [swapType, setSwapType] = useState(SwapType.AUTO)
   // modal and loading
   const [{ showConfirm, tradeToConfirm, attemptingTxn, txHash }, setSwapState] = useState<{
     showConfirm: boolean
@@ -276,12 +282,17 @@ export default function Swap() {
               style={{ cursor: account ? 'pointer' : 'auto' }}
             />
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 12, mt: 16 }}>
-              <SwapTypeButton selected={true} text="Auto" helperText="auto..." onClick={() => {}} />
               <SwapTypeButton
-                selected={false}
-                text="Choose by yourself"
+                selected={swapType === SwapType.AUTO}
+                text={SwapType.AUTO}
+                helperText="auto..."
+                onClick={() => setSwapType(SwapType.AUTO)}
+              />
+              <SwapTypeButton
+                selected={swapType === SwapType.MANUAL}
+                text={SwapType.MANUAL}
                 helperText="choose by yourself..."
-                onClick={() => {}}
+                onClick={() => setSwapType(SwapType.MANUAL)}
               />
             </Box>
           </Box>
