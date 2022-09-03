@@ -1,49 +1,49 @@
-import { MutableRefObject, useMemo } from 'react'
+import { MutableRefObject, useCallback, useMemo, useState } from 'react'
 import { FixedSizeList } from 'react-window'
 import { Grid, Box, Typography, useTheme, Button, ButtonBase, IconButton } from '@mui/material'
 import Image from 'components/Image'
 import SampleNftImg from 'assets/images/sample-nft.png'
 import { Token1155 } from 'constants/token/token1155'
-import { AllTokens } from 'models/allTokens'
 import { shortenAddress } from 'utils'
-import useModal from 'hooks/useModal'
+// import useModal from 'hooks/useModal'
 import { useIsDarkMode } from 'state/user/hooks'
 import useBreakpoint from 'hooks/useBreakpoint'
-import { Currency } from '@uniswap/sdk'
 import { useToken1155Balance, useToken1155Balances } from 'state/wallet/hooks'
 import { Loader } from 'components/AnimatedSvg/Loader'
-import Divider from 'components/Divider'
-import { CollectionListComponent, Collection } from './ListComponent'
+// import Divider from 'components/Divider'
+import { CollectionListComponent } from './ListComponent'
 import LogoText from 'components/LogoText'
 import { ExternalLink } from 'theme/components'
 import { ReactComponent as Xcircle } from 'assets/svg/xcircle.svg'
+import CurrencyLogo from 'components/essential/CurrencyLogo'
 
 export default function ERC721List({
-  onSelectCurrency,
+  // onSelectCurrency,
   searchToken,
   searchTokenIsAdded,
   currencyOptions,
   children,
-  commonCollectionList,
-  onSelectCollection,
-  selectedCollection,
-  collectionOptions,
-  fixedListRef,
-  selectedCurrencies
-}: {
-  selectedCurrencies: Currency[]
+  // commonCollectionList,
+  // onSelectCollection,
+  // selectedCollection,/
+  // collectionOptions,
+  fixedListRef
+}: // selectedCurrencies
+{
+  // selectedCurrencies: Currency[]
   currencyOptions: Token1155[]
   searchToken?: Token1155 | null | undefined
   searchTokenIsAdded?: boolean
-  onSelectCurrency?: (token: AllTokens) => void
+  // onSelectCurrency?: (token: AllTokens) => void
   children?: React.ReactNode
-  commonCollectionList?: Collection[]
-  onSelectCollection?: (collection: Collection) => void
-  selectedCollection?: Collection | null
-  collectionOptions?: Collection[]
+  // commonCollectionList?: Collection[]
+  // onSelectCollection?: (collection: Collection) => void
+  // selectedCollection?: Collection | null
+  // collectionOptions?: Collection[]
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>
 }) {
-  const { hideModal } = useModal()
+  const [collection, setCollection] = useState<Token1155 | null>(null)
+  const [currencies, setCurrencies] = useState<Token1155[]>([])
   const isDownMd = useBreakpoint('md')
   const { balances, loading } = useToken1155Balances(currencyOptions)
   const sortedList = useMemo(() => {
@@ -52,133 +52,174 @@ export default function ERC721List({
     })
   }, [balances])
 
+  const commonCollectionList = useMemo(() => {
+    return currencyOptions
+  }, [currencyOptions])
+
+  const collectionOptions = useMemo(() => {
+    return currencyOptions
+  }, [currencyOptions])
+
+  const onRemoveCur = useCallback(
+    (cur: Token1155) => {
+      const curs = currencies.filter(el => el != cur)
+      setCurrencies(curs)
+    },
+    [currencies]
+  )
+
+  const addCurrency = useCallback(
+    (currency: Token1155) => {
+      const list = currencies
+      const index = currencies.findIndex(el => el.tokenId === currency.tokenId)
+      console.log('push')
+      if (index !== -1) {
+        console.log('same')
+        return
+      }
+
+      list.push(currency)
+      setCurrencies([...list])
+    },
+    [currencies]
+  )
+
   return (
     <>
       {children}
-      {selectedCurrencies && (
-        <Box width="100%" mt={28}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <Typography>Collection:</Typography>
-            <Box
-              sx={{
-                borderRadius: '8px',
-                background: theme => theme.palette.background.default,
-                padding: '11px 23px'
-              }}
-            >
-              SelectedCollectionTitle
-            </Box>
-          </Box>
-          {selectedCurrencies.map(currency => (
-            <Box key={currency.symbol} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <LogoText logo={SampleNftImg} text={currency.name} />
-              <ExternalLink href={'#'}>address.....</ExternalLink>
-              <Typography>Quantity: 1</Typography>
-              <IconButton onClick={() => {}}>
-                <Xcircle />
-              </IconButton>
-            </Box>
-          ))}
-        </Box>
-      )}
-      <Box display="flex" gap={20} margin="20px 0">
-        {!selectedCollection ? (
-          commonCollectionList?.map((collection: Collection) => (
-            <ButtonBase
-              onClick={() => onSelectCollection && onSelectCollection(collection)}
-              key={collection.title}
-              sx={{
-                borderRadius: '8px',
-                background: theme => theme.palette.background.default,
-                padding: '11px 23px',
-                '&:hover': {
-                  opacity: 0.8
-                }
-              }}
-            >
-              {collection.title}
-            </ButtonBase>
-          ))
-        ) : (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <Typography>Collection:</Typography>
-            <Box
-              sx={{
-                borderRadius: '8px',
-                background: theme => theme.palette.background.default,
-                padding: '11px 23px'
-              }}
-            >
-              {selectedCollection.title}
-            </Box>
-          </Box>
-        )}
-      </Box>
 
-      <Divider />
-
-      {collectionOptions && !selectedCollection && (
-        <Box height={isDownMd ? 290 : 450} paddingTop={'24px'} position="relative">
-          <CollectionListComponent onSelect={() => {}} options={collectionOptions} fixedListRef={fixedListRef} />
-        </Box>
-      )}
-
-      {selectedCollection && (
-        <Grid
-          container
-          spacing={20}
-          sx={{ overflow: 'auto', height: isDownMd ? 357 : 517, pb: 100 }}
-          paddingTop={'24px'}
-          position="relative"
-        >
-          {searchToken && !searchTokenIsAdded ? (
-            <NftCard
-              token={searchToken}
-              onClick={() => {
-                onSelectCurrency && onSelectCurrency(searchToken)
-                hideModal()
-              }}
-            />
-          ) : currencyOptions.length === 0 ? (
-            <Box width={'100%'} display="flex" alignItems="center" justifyContent="center">
-              <Typography
-                textAlign="center"
-                mb="20px"
-                fontSize={16}
-                fontWeight={500}
-                component="div"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
+      {!collection ? (
+        <>
+          <Box display="flex" gap={20} margin="20px 0">
+            {commonCollectionList.map((collection: Token1155, idx) => (
+              <ButtonBase
+                onClick={() => setCollection(collection)}
+                key={`collection-${idx}`}
+                sx={{
+                  borderRadius: '8px',
+                  background: theme => theme.palette.background.default,
+                  padding: '11px 23px',
+                  '&:hover': {
+                    opacity: 0.8
+                  }
+                }}
               >
-                No results found. &nbsp;
-                <Button variant="text" sx={{ display: 'inline', width: 'unset', padding: 0, height: 'max-content' }}>
-                  Import token
-                </Button>
-              </Typography>
-            </Box>
-          ) : (
-            <>
-              {loading && (
-                <Box width={'100%'} display="flex" alignItems="center" justifyContent="center">
-                  <Loader />
+                {collection.name}
+              </ButtonBase>
+            ))}
+          </Box>
+          <Box height={isDownMd ? 290 : 450} paddingTop={'24px'} position="relative">
+            <CollectionListComponent onSelect={setCollection} options={collectionOptions} fixedListRef={fixedListRef} />
+          </Box>
+        </>
+      ) : (
+        <Box margin="20px 0">
+          {currencies.length > 0 && (
+            <Box width="100%" mt={28}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 12, mb: 24 }}>
+                <Typography>Collection:</Typography>
+                <Box
+                  sx={{
+                    borderRadius: '8px',
+                    background: theme => theme.palette.background.default,
+                    padding: '11px 23px'
+                  }}
+                >
+                  {collection?.name}
                 </Box>
-              )}
-              {!loading &&
-                sortedList?.map(({ token }, idx) => (
-                  <Grid item xs={6} md={3} key={idx}>
-                    <NftCard
-                      key={idx}
-                      token={token as Token1155}
-                      onClick={() => {
-                        onSelectCurrency && onSelectCurrency(token)
-                      }}
-                    />
-                  </Grid>
-                ))}
-            </>
+              </Box>
+              {currencies.map((currency, idx) => (
+                <Box
+                  key={`${currency.symbol}-${idx}`}
+                  sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                >
+                  <LogoText logo={<CurrencyLogo currency={currency} />} text={currency.name} fontSize={12} />
+                  <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
+                    {currency.address}
+                  </ExternalLink>
+                  <Typography sx={{ fontSize: 12 }}>Quantity: 1</Typography>
+                  <IconButton onClick={() => onRemoveCur(currency)}>
+                    <Xcircle />
+                  </IconButton>
+                </Box>
+              ))}
+              <Box margin="28px 0" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Button onClick={() => {}} sx={{ height: 60, width: 300 }}>
+                  Confirm
+                </Button>
+              </Box>
+            </Box>
           )}
-        </Grid>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <Typography>Collection:</Typography>
+            <Box
+              sx={{
+                borderRadius: '8px',
+                background: theme => theme.palette.background.default,
+                padding: '11px 23px'
+              }}
+            >
+              {collection.name}
+            </Box>
+            <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
+              {collection.address}
+            </ExternalLink>
+          </Box>
+          <Grid
+            container
+            spacing={20}
+            sx={{ overflow: 'auto', height: isDownMd ? 357 : 517, pb: 100 }}
+            paddingTop={'24px'}
+            position="relative"
+          >
+            {searchToken && !searchTokenIsAdded ? (
+              <NftCard
+                token={searchToken}
+                onClick={() => {
+                  addCurrency(searchToken)
+                }}
+              />
+            ) : currencyOptions.length === 0 ? (
+              <Box width={'100%'} display="flex" alignItems="center" justifyContent="center">
+                <Typography
+                  textAlign="center"
+                  mb="20px"
+                  fontSize={16}
+                  fontWeight={500}
+                  component="div"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  No results found. &nbsp;
+                  <Button variant="text" sx={{ display: 'inline', width: 'unset', padding: 0, height: 'max-content' }}>
+                    Import token
+                  </Button>
+                </Typography>
+              </Box>
+            ) : (
+              <>
+                {loading && (
+                  <Box width={'100%'} display="flex" alignItems="center" justifyContent="center">
+                    <Loader />
+                  </Box>
+                )}
+                {!loading &&
+                  sortedList?.map(({ token }, idx) => (
+                    <Grid item xs={6} md={3} key={idx}>
+                      <NftCard
+                        key={idx}
+                        token={token as Token1155}
+                        onClick={() => {
+                          addCurrency(token as Token1155)
+                        }}
+                      />
+                    </Grid>
+                  ))}
+              </>
+            )}
+          </Grid>
+        </Box>
       )}
     </>
   )

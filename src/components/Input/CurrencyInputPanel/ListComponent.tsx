@@ -8,11 +8,7 @@ import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks'
 import Spinner from 'components/Spinner'
 import useBreakpoint from 'hooks/useBreakpoint'
-
-export interface Collection {
-  logo?: string
-  title: string
-}
+import { Token1155 } from 'constants/token/token1155'
 
 export function CurrencyListComponent({
   onSelect,
@@ -73,30 +69,28 @@ export function CollectionListComponent({
   options,
   fixedListRef
 }: {
-  onSelect?: (collection: Collection) => void
-  options: Collection[]
+  onSelect?: (collection: Token1155) => void
+  options: Token1155[]
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>
 }) {
-  const { hideModal } = useModal()
   const isDownMd = useBreakpoint('md')
 
-  const key = useCallback((collection: Collection): string => {
-    return collection ? collection.title || '' : ''
+  const key = useCallback((collection: Token1155): string => {
+    return collection ? collection.tokenId.toString() || '' : ''
   }, [])
 
   const itemKey = useCallback((index: number, data: any) => key(data[index]), [key])
 
   const Rows = useCallback(
     ({ data, index }: any) => {
-      const collection: Collection = data[index]
+      const collection: Token1155 = data[index]
       const onClickCollection = () => {
         onSelect && onSelect(collection)
-        hideModal()
       }
 
       return <CollectionRow collection={collection} onClick={onClickCollection} />
     },
-    [hideModal, onSelect]
+    [onSelect]
   )
 
   return (
@@ -155,13 +149,13 @@ function CurrencyRow({ currency, onClick }: { currency: Currency; onClick: () =>
   )
 }
 
-function CollectionRow({ collection, onClick }: { collection: Collection; onClick: () => void }) {
+function CollectionRow({ collection, onClick }: { collection: Token1155; onClick: () => void }) {
   return (
     <ListItem onClick={onClick}>
       <Box display="flex">
         {/* <CurrencyLogo currency={currency} style={{ width: '30px', height: '30px' }} /> */}
         <Box display="flex" flexDirection="column" marginLeft="16px">
-          <Typography variant="inherit">{collection.title}</Typography>
+          <Typography variant="inherit">{collection.symbol}</Typography>
           {/* <Typography variant="caption">{currency.name}</Typography> */}
         </Box>
       </Box>
