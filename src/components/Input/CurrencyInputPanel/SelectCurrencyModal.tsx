@@ -22,7 +22,6 @@ import useBreakpoint from 'hooks/useBreakpoint'
 import { useIsDarkMode, useTrackedToken1155List } from 'state/user/hooks'
 import { Token1155 } from 'constants/token/token1155'
 import ERC721List from './ERC721List'
-import { Collection } from './ListComponent'
 
 export enum Mode {
   ERC20 = 'erc20',
@@ -53,7 +52,6 @@ export default function SelectCurrencyModal({
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [searchQueryNFT, setSearchQueryNFT] = useState<string>('')
   const [invertSearchOrder] = useState<boolean>(false)
-  const [collection, setCollection] = useState<Collection | null>(null)
 
   const fixedList = useRef<FixedSizeList>()
 
@@ -112,23 +110,6 @@ export default function SelectCurrencyModal({
     })
     return curList
   }, [allTokens])
-
-  const commonCollectionList = useMemo(() => {
-    return [
-      {
-        logo: undefined,
-        title: 'Jack Paul'
-      },
-      {
-        logo: undefined,
-        title: 'OK Bear'
-      },
-      {
-        logo: undefined,
-        title: 'Love Death Robot'
-      }
-    ]
-  }, [])
 
   // manage focus on modal show
   const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
@@ -320,14 +301,14 @@ export default function SelectCurrencyModal({
           {mode === Mode.ERC721 && (
             <ERC721List
               currencyOptions={filteredTokens1155 as Token1155[]}
-              onSelectCurrency={onSelectCurrency}
+              // onSelectCurrency={onSelectCurrency}
               searchToken={searchTokenNFT}
               searchTokenIsAdded={searchTokenIsAddedNFT}
-              commonCollectionList={commonCollectionList}
-              collectionOptions={commonCollectionList}
-              selectedCollection={collection}
-              onSelectCollection={setCollection}
-              selectedCurrencies={filteredTokens1155}
+              // commonCollectionList={commonCollectionList}
+              // collectionOptions={commonCollectionList}
+              // selectedCollection={collection}
+              // onSelectCollection={setCollection}
+              // selectedCurrencies={filteredTokens1155}
             >
               <>
                 {/* <Box display="flex" alignItems="center" gap={3} mb={16}> */}
