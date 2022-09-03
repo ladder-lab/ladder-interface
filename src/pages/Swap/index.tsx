@@ -1,9 +1,9 @@
 import { useCallback, useState, ChangeEvent, useMemo, useEffect } from 'react'
-import { Typography, Box, Button } from '@mui/material'
+import { Typography, Box, Button, ButtonBase } from '@mui/material'
 import { CurrencyAmount, JSBI, Trade } from '@uniswap/sdk'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
-import { ReactComponent as ArrowCircle } from 'assets/svg/arrow_circle.svg'
+import { ReactComponent as SwitchCircle } from 'assets/svg/switch_circle.svg'
 import Settings from 'components/essential/Settings'
 import { AssetAccordion } from './AssetAccordion'
 import { SwapSummary } from './SwapSummary'
@@ -26,6 +26,7 @@ import useModal from 'hooks/useModal'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import { Currency } from 'constants/token'
+import QuestionHelper from 'components/essential/QuestionHelper'
 
 export default function Swap() {
   // const theme = useTheme()
@@ -262,20 +263,27 @@ export default function Swap() {
           {/* {fromAsset && <AssetAccordion token={fromAsset} />} */}
           <Box
             sx={{
-              height: 76,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: account ? 'pointer' : 'auto',
+              paddingBottom: 12,
               margin: '0 auto',
-              width: 'max-content',
+              paddingLeft: 362,
               '&:hover': {
                 opacity: 0.8
               }
             }}
-            onClick={account ? onSwitchTokens : undefined}
           >
-            <ArrowCircle />
+            <SwitchCircle
+              onClick={account ? onSwitchTokens : undefined}
+              style={{ cursor: account ? 'pointer' : 'auto' }}
+            />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 12, mt: 16 }}>
+              <SwapTypeButton selected={true} text="Auto" helperText="auto..." onClick={() => {}} />
+              <SwapTypeButton
+                selected={false}
+                text="Choose by yourself"
+                helperText="choose by yourself..."
+                onClick={() => {}}
+              />
+            </Box>
           </Box>
           <Box mb={toAsset ? 16 : 0}>
             <CurrencyInputPanel
@@ -389,5 +397,33 @@ function TokenInfo({ fromAsset, toAsset }: { fromAsset?: Currency; toAsset?: Cur
         </Box>
       </Box>
     </AppBody>
+  )
+}
+
+function SwapTypeButton({
+  onClick,
+  text,
+  helperText,
+  selected
+}: {
+  onClick: () => void
+  text: string
+  helperText: string
+  selected: boolean
+}) {
+  return (
+    <ButtonBase
+      onClick={onClick}
+      sx={{
+        height: 22,
+        padding: '0 12px',
+        borderRadius: '10px',
+        background: theme => (selected ? theme.palette.background.default : 'none'),
+        border: theme => `1px solid ${selected ? 'none' : theme.palette.primary.main}`
+      }}
+    >
+      <Typography sx={{ color: theme => theme.palette.primary.main, mr: 4 }}>{text}</Typography>
+      <QuestionHelper text={helperText} />
+    </ButtonBase>
   )
 }
