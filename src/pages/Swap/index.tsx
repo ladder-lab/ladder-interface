@@ -241,6 +241,17 @@ export default function Swap() {
     return undefined
   }, [fromAsset, toAsset])
 
+  const onSwitch = useCallback(() => {
+    if (!account) {
+      return
+    }
+    onSwitchTokens()
+    const from = fromErc721SubTokens
+    const to = toErc721SubTokens
+    setFromErc721SubTokens(to)
+    setToErc721SubTokens(from)
+  }, [account, onSwitchTokens, fromErc721SubTokens, toErc721SubTokens])
+
   return (
     <>
       <ConfirmSwapModal
@@ -302,10 +313,7 @@ export default function Swap() {
               }
             }}
           >
-            <SwitchCircle
-              onClick={account ? onSwitchTokens : undefined}
-              style={{ cursor: account ? 'pointer' : 'auto' }}
-            />
+            <SwitchCircle onClick={onSwitch} style={{ cursor: account ? 'pointer' : 'auto' }} />
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 12, mt: 16 }}>
               <SwapTypeButton
                 selected={swapType === SwapType.AUTO}
