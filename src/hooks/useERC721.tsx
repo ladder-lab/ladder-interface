@@ -21,7 +21,7 @@ export default function useERC721Tokens({ collection }: { collection?: Token721 
   const tokenOptions = useTrackedToken1155List()
 
   // Todo: Define common options in constants
-  const commonTokenOptions = useMemo(() => {
+  const commonCollections = useMemo(() => {
     return tokenOptions.slice(0, 3)
   }, [tokenOptions])
 
@@ -51,5 +51,5 @@ export default function useERC721Tokens({ collection }: { collection?: Token721 
     setTokens([])
   }, [])
 
-  return { tokens, tokenOptions, commonTokenOptions, setTokens, onRemoveToken, onAddToken, onClearTokens }
+  return { tokens, tokenOptions, commonCollections, setTokens, onRemoveToken, onAddToken, onClearTokens }
 }
