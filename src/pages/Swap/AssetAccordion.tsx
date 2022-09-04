@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Typography, Box, useTheme } from '@mui/material'
 import Accordion from 'components/Accordion'
 import { useCallback, useState } from 'react'
@@ -20,16 +20,25 @@ export function AssetAccordion({
 }: {
   token?: AllTokens
   disabled?: boolean
-  subTokens?: Token721[]
+  subTokens?: Token721[] | null
 }) {
   const [expanded, setExpanded] = useState(false)
   const theme = useTheme()
+
+  useEffect(() => {
+    if (!subTokens) {
+      setExpanded(false)
+    }
+  }, [subTokens])
 
   const handleChange = useCallback(() => {
     setExpanded(prev => !prev)
   }, [])
 
   const is1155 = checkIs1155(token)
+
+  //TOOD: Implement checkIs721
+  const is721 = checkIs1155(token)
 
   const summary = useMemo(() => {
     return (
@@ -73,7 +82,7 @@ export function AssetAccordion({
           )}
         </Box>
 
-        <Tag sx={{ position: 'absolute', right: 0, top: 0 }}>{is1155 ? 'ERC1155' : 'ERC20'}</Tag>
+        <Tag sx={{ position: 'absolute', right: 0, top: 0 }}>{is1155 ? 'ERC1155' : is721 ? 'ERC721' : 'ERC20'}</Tag>
       </Box>
     )
   }, [token, theme.palette.text.secondary, is1155])
@@ -107,7 +116,7 @@ export function AssetAccordion({
       expanded={expanded}
       onChange={handleChange}
       margin={'0'}
-      disabled={disabled}
+      disabled={disabled || !subTokens}
       iconCssOverride={{ right: 0, bottom: 0, position: 'absolute' }}
     />
   )
