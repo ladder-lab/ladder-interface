@@ -28,6 +28,7 @@ import TransactionSubmittedModal from 'components/Modal/TransactionModals/Transa
 import { Currency } from 'constants/token'
 import QuestionHelper from 'components/essential/QuestionHelper'
 import { Token721 } from 'models/allTokens'
+import { checkIs1155 } from 'utils/checkIs1155'
 
 enum SwapType {
   AUTO = 'auto',
@@ -64,8 +65,8 @@ export default function Swap() {
   const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
   const { [Field.INPUT]: fromAsset, [Field.OUTPUT]: toAsset } = currencies
 
-  const [fromErc721SubTokens, setFromErc721SubTokens] = useState<Token721[]>([])
-  const [toErc721SubTokens, setToErc721SubTokens] = useState<Token721[]>([])
+  const [fromErc721SubTokens, setFromErc721SubTokens] = useState<Token721[] | null>(null)
+  const [toErc721SubTokens, setToErc721SubTokens] = useState<Token721[] | null>([])
 
   const {
     wrapType,
@@ -201,17 +202,27 @@ export default function Swap() {
 
   const handleFromAsset = useCallback(
     (currency: AllTokens) => {
+      // TODO: checkIs721
+      const is721 = checkIs1155(currency)
+      if (!is721) {
+        setFromErc721SubTokens(null)
+      }
       setApprovalSubmitted(false) // reset 2 step UI for approvals
       onCurrencySelection(Field.INPUT, currency)
     },
-    [onCurrencySelection]
+    [onCurrencySelection, setFromErc721SubTokens]
   )
 
   const handleToAsset = useCallback(
     (currency: AllTokens) => {
+      // TODO: checkIs721
+      const is721 = checkIs1155(currency)
+      if (!is721) {
+        setToErc721SubTokens(null)
+      }
       onCurrencySelection(Field.OUTPUT, currency)
     },
-    [onCurrencySelection]
+    [onCurrencySelection, setToErc721SubTokens]
   )
 
   const handleFromSubAssets = useCallback((tokens: Token721[]) => {
@@ -420,9 +431,10 @@ function TokenInfo({
 }: {
   fromAsset?: Currency
   toAsset?: Currency
-  fromErc721SubTokens: Token721[]
-  toErc721SubTokens: Token721[]
+  fromErc721SubTokens?: Token721[] | null
+  toErc721SubTokens?: Token721[] | null
 }) {
+  null
   return (
     <AppBody width={'100%'} maxWidth={'680px'} sx={{ marginTop: 33 }}>
       <Box
