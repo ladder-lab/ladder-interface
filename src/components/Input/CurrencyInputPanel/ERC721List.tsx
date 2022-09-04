@@ -42,7 +42,7 @@ export default function ERC721List({
   const { hideModal } = useModal()
 
   const [collection, setCollection] = useState<Token721 | null>(null)
-  const { tokens, tokenOptions, commonTokenOptions, onAddToken, onRemoveToken, onClearTokens } = useERC721Tokens({
+  const { tokens, tokenOptions, commonCollections, onAddToken, onRemoveToken, onClearTokens } = useERC721Tokens({
     collection
   })
 
@@ -80,7 +80,7 @@ export default function ERC721List({
         {!collection ? (
           <>
             <Box display="flex" gap={20} margin="20px 0">
-              {commonTokenOptions.map((collection: Token721, idx) => (
+              {commonCollections.map((collection: Token721, idx) => (
                 <ButtonBase
                   onClick={() => onSelectCollection(collection)}
                   key={`collection-${idx}`}
