@@ -7,10 +7,11 @@ import CurrencyLogo from 'components/essential/CurrencyLogo'
 import Tag from 'components/Tag'
 import { checkIs1155 } from 'utils/checkIs1155'
 import Copy from 'components/essential/Copy'
-import SampleNftImg from 'assets/images/sample-nft.png'
+// import SampleNftImg from 'assets/images/sample-nft.png'
 import LogoText from 'components/LogoText'
 import { ExternalLink } from 'theme/components'
 import { Token721 } from 'models/allTokens'
+import { shortenAddress } from 'utils'
 
 export function AssetAccordion({
   token,
@@ -84,11 +85,15 @@ export function AssetAccordion({
           subTokens.length > 0 &&
           subTokens.map((token, idx) => (
             <Box key={idx} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <LogoText logo={SampleNftImg} text={token.name} />
-              <ExternalLink sx={{ color: theme.palette.text.secondary }} href={'#'} showIcon>
-                {token.address}
+              <LogoText
+                logo={<CurrencyLogo currency={token} style={{ width: 28 }} />}
+                text={token.name}
+                fontSize={12}
+              />
+              <ExternalLink sx={{ color: theme.palette.text.secondary, fontSize: 12 }} href={'#'} showIcon>
+                {shortenAddress(token.address)}
               </ExternalLink>
-              <Typography sx={{ color: theme.palette.text.secondary }}>Quantity: 1</Typography>
+              <Typography sx={{ color: theme.palette.text.secondary, fontSize: 12 }}>Quantity: 1</Typography>
             </Box>
           ))}
       </Box>
