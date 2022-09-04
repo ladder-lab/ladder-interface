@@ -3,12 +3,10 @@ import { FixedSizeList } from 'react-window'
 import { Grid, Box, Typography, useTheme, Button, ButtonBase, IconButton } from '@mui/material'
 import Image from 'components/Image'
 import SampleNftImg from 'assets/images/sample-nft.png'
-import { Token1155 } from 'constants/token/token1155'
 import { shortenAddress } from 'utils'
 // import useModal from 'hooks/useModal'
 import { useIsDarkMode } from 'state/user/hooks'
 import useBreakpoint from 'hooks/useBreakpoint'
-import { useToken1155Balance, useToken1155Balances } from 'state/wallet/hooks'
 import { Loader } from 'components/AnimatedSvg/Loader'
 // import Divider from 'components/Divider'
 import { CollectionListComponent } from './ListComponent'
@@ -19,72 +17,61 @@ import { ReactComponent as XcircleSm } from 'assets/svg/xcirclesm.svg'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { ReactComponent as ExternalIcon } from 'assets/svg/external_arrow.svg'
 import useModal from 'hooks/useModal'
+import useERC721Tokens from 'hooks/useERC721'
+import { Token721 } from 'models/allTokens'
+
+// TOOD: Update to ERC721
+import { useToken1155Balance, useToken1155Balances } from 'state/wallet/hooks'
 
 export default function ERC721List({
   searchToken,
   searchTokenIsAdded,
-  currencyOptions,
   children,
   fixedListRef,
-  updateERC721Currencies
+  onSelectCurrency,
+  onSelectSubTokens
 }: {
-  currencyOptions: Token1155[]
-  searchToken?: Token1155 | null | undefined
+  // currencyOptions: Token721[]
+  searchToken?: Token721 | null | undefined
   searchTokenIsAdded?: boolean
   children?: React.ReactNode
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>
-  updateERC721Currencies?: (currencies: Token1155[]) => void
+  onSelectCurrency?: (token: Token721) => void
+  onSelectSubTokens?: (tokens: Token721[]) => void
 }) {
   const { hideModal } = useModal()
-  const [collection, setCollection] = useState<Token1155 | null>(null)
-  const [currencies, setCurrencies] = useState<Token1155[]>([])
-  const isDownMd = useBreakpoint('md')
-  const { balances, loading } = useToken1155Balances(currencyOptions)
+
+  const [collection, setCollection] = useState<Token721 | null>(null)
+  const { tokens, tokenOptions, commonTokenOptions, onAddToken, onRemoveToken, onClearTokens } = useERC721Tokens({
+    collection
+  })
+
+  // TODO: Update to ERC721
+  const { balances, loading } = useToken1155Balances(tokenOptions)
   const sortedList = useMemo(() => {
     return balances?.sort((amount1, amount2) => {
       return amount1.greaterThan(amount2) ? -1 : 1
     })
   }, [balances])
 
-  const commonCollectionList = useMemo(() => {
-    return currencyOptions
-  }, [currencyOptions])
+  const isDownMd = useBreakpoint('md')
 
-  const collectionOptions = useMemo(() => {
-    return currencyOptions
-  }, [currencyOptions])
-
-  const onRemoveCur = useCallback(
-    (cur: Token1155) => {
-      const curs = currencies.filter(el => el != cur)
-      setCurrencies(curs)
-    },
-    [currencies]
-  )
-
-  const addCurrency = useCallback(
-    (currency: Token1155) => {
-      const list = currencies
-      const index = currencies.findIndex(el => el.tokenId === currency.tokenId)
-      if (index !== -1) {
-        return
-      }
-
-      list.push(currency)
-      setCurrencies([...list])
-    },
-    [currencies]
-  )
+  const onSelectCollection = useCallback((collection: Token721) => {
+    setCollection(collection)
+    onSelectCurrency && onSelectCurrency(collection)
+  }, [])
 
   const onRemoveCollection = useCallback(() => {
     setCollection(null)
-    setCurrencies([])
+    onClearTokens()
   }, [])
 
   const onConfirm = useCallback(() => {
-    updateERC721Currencies && updateERC721Currencies([...currencies])
+    // Do something...
+    console.log(tokens, 'current selected')
+    onSelectSubTokens && onSelectSubTokens(tokens)
     hideModal()
-  }, [currencies, updateERC721Currencies])
+  }, [tokens])
 
   return (
     <>
@@ -93,9 +80,9 @@ export default function ERC721List({
         {!collection ? (
           <>
             <Box display="flex" gap={20} margin="20px 0">
-              {commonCollectionList.map((collection: Token1155, idx) => (
+              {commonTokenOptions.map((collection: Token721, idx) => (
                 <ButtonBase
-                  onClick={() => setCollection(collection)}
+                  onClick={() => onSelectCollection(collection)}
                   key={`collection-${idx}`}
                   sx={{
                     borderRadius: '8px',
@@ -112,15 +99,15 @@ export default function ERC721List({
             </Box>
             <Box height={isDownMd ? 290 : 450} paddingTop={'24px'} position="relative">
               <CollectionListComponent
-                onSelect={setCollection}
-                options={collectionOptions}
+                onSelect={onSelectCollection}
+                options={tokenOptions}
                 fixedListRef={fixedListRef}
               />
             </Box>
           </>
         ) : (
           <Box margin="20px 0">
-            {currencies.length > 0 && (
+            {tokens.length > 0 && (
               <Box width="100%" mt={28}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 12, mb: 24 }}>
                   <Typography>Collection:</Typography>
@@ -141,17 +128,17 @@ export default function ERC721List({
                     <XcircleSm onClick={onRemoveCollection} style={{ cursor: 'pointer' }} />
                   </Box>
                 </Box>
-                {currencies.map((currency, idx) => (
+                {tokens.map((token, idx) => (
                   <Box
-                    key={`${currency.symbol}-${idx}`}
+                    key={`${token.symbol}-${idx}`}
                     sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
                   >
-                    <LogoText logo={<CurrencyLogo currency={currency} />} text={currency.name} fontSize={12} />
+                    <LogoText logo={<CurrencyLogo currency={token} />} text={token.name} fontSize={12} />
                     <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
-                      {currency.address}
+                      {token.address}
                     </ExternalLink>
                     <Typography sx={{ fontSize: 12 }}>Quantity: 1</Typography>
-                    <IconButton onClick={() => onRemoveCur(currency)}>
+                    <IconButton onClick={() => onRemoveToken(token)}>
                       <Xcircle />
                     </IconButton>
                   </Box>
@@ -189,10 +176,10 @@ export default function ERC721List({
                 <NftCard
                   token={searchToken}
                   onClick={() => {
-                    addCurrency(searchToken)
+                    onAddToken(searchToken)
                   }}
                 />
-              ) : currencyOptions.length === 0 ? (
+              ) : tokenOptions.length === 0 ? (
                 <Box width={'100%'} display="flex" alignItems="center" justifyContent="center">
                   <Typography
                     textAlign="center"
@@ -225,9 +212,9 @@ export default function ERC721List({
                       <Grid item xs={6} md={3} key={idx}>
                         <NftCard
                           key={idx}
-                          token={token as Token1155}
+                          token={token as Token721}
                           onClick={() => {
-                            addCurrency(token as Token1155)
+                            onAddToken(token as Token721)
                           }}
                         />
                       </Grid>
@@ -242,7 +229,7 @@ export default function ERC721List({
   )
 }
 
-function NftCard({ token, onClick }: { token: Token1155; onClick: () => void }) {
+function NftCard({ token, onClick }: { token: Token721; onClick: () => void }) {
   const theme = useTheme()
   const isDarkMode = useIsDarkMode()
   const balance = useToken1155Balance(token)

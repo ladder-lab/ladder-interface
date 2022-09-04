@@ -10,7 +10,7 @@ import Copy from 'components/essential/Copy'
 import SampleNftImg from 'assets/images/sample-nft.png'
 import LogoText from 'components/LogoText'
 import { ExternalLink } from 'theme/components'
-import { Token1155 } from 'constants/token/token1155'
+import { Token721 } from 'models/allTokens'
 
 export function AssetAccordion({
   token,
@@ -19,7 +19,7 @@ export function AssetAccordion({
 }: {
   token?: AllTokens
   disabled?: boolean
-  subTokens?: Token1155[]
+  subTokens?: Token721[]
 }) {
   const [expanded, setExpanded] = useState(false)
   const theme = useTheme()

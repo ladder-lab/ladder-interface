@@ -27,7 +27,7 @@ import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import { Currency } from 'constants/token'
 import QuestionHelper from 'components/essential/QuestionHelper'
-import { Token1155 } from 'constants/token/token1155'
+import { Token721 } from 'models/allTokens'
 
 enum SwapType {
   AUTO = 'auto',
@@ -61,13 +61,12 @@ export default function Swap() {
   const [isExpertMode] = useExpertModeManager()
   const { independentField, typedValue, recipient } = useSwapState()
 
-  // Use Swap State to manage
-  const [erc721Currencies, setErc721Currencies] = useState<Token1155[]>([])
-
-  console.log(erc721Currencies)
-
   const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
   const { [Field.INPUT]: fromAsset, [Field.OUTPUT]: toAsset } = currencies
+
+  const [fromErc721SubTokens, setFromErc721SubTokens] = useState<Token721[]>([])
+  const [toErc721SubTokens, setToErc721SubTokens] = useState<Token721[]>([])
+
   const {
     wrapType,
     execute: onWrap,
@@ -215,6 +214,14 @@ export default function Swap() {
     [onCurrencySelection]
   )
 
+  const handleFromSubAssets = useCallback((tokens: Token721[]) => {
+    setFromErc721SubTokens(tokens)
+  }, [])
+
+  const handleToSubAssets = useCallback((tokens: Token721[]) => {
+    setToErc721SubTokens(tokens)
+  }, [])
+
   const error = useMemo(() => {
     if (!fromAsset || !toAsset) {
       return 'Select a Token'
@@ -270,7 +277,7 @@ export default function Swap() {
               currency={fromAsset}
               onMax={handleMaxInput}
               disabled={!account}
-              updateERC721Currencies={setErc721Currencies}
+              onSelectSubTokens={handleFromSubAssets}
             />
           </Box>
           {/* {fromAsset && <AssetAccordion token={fromAsset} />} */}
@@ -311,7 +318,7 @@ export default function Swap() {
               onSelectCurrency={handleToAsset}
               currency={toAsset}
               disabled={!account}
-              updateERC721Currencies={setErc721Currencies}
+              onSelectSubTokens={handleToSubAssets}
             />
           </Box>
           {/* {toAsset && <AssetAccordion token={toAsset} />} */}
@@ -393,12 +400,29 @@ export default function Swap() {
           </Box>
         </Box>
       </AppBody>
-      {(fromAsset || toAsset) && <TokenInfo fromAsset={fromAsset} toAsset={toAsset} />}
+      {(fromAsset || toAsset) && (
+        <TokenInfo
+          fromAsset={fromAsset}
+          toAsset={toAsset}
+          fromErc721SubTokens={fromErc721SubTokens}
+          toErc721SubTokens={toErc721SubTokens}
+        />
+      )}
     </>
   )
 }
 
-function TokenInfo({ fromAsset, toAsset }: { fromAsset?: Currency; toAsset?: Currency }) {
+function TokenInfo({
+  fromAsset,
+  toAsset,
+  fromErc721SubTokens,
+  toErc721SubTokens
+}: {
+  fromAsset?: Currency
+  toAsset?: Currency
+  fromErc721SubTokens: Token721[]
+  toErc721SubTokens: Token721[]
+}) {
   return (
     <AppBody width={'100%'} maxWidth={'680px'} sx={{ marginTop: 33 }}>
       <Box
@@ -411,8 +435,8 @@ function TokenInfo({ fromAsset, toAsset }: { fromAsset?: Currency; toAsset?: Cur
           Token Info
         </Typography>
         <Box display="flex" flexDirection="column" gap={12}>
-          {fromAsset && <AssetAccordion token={fromAsset} />}
-          {toAsset && <AssetAccordion token={toAsset} />}
+          {fromAsset && <AssetAccordion token={fromAsset} subTokens={fromErc721SubTokens} />}
+          {toAsset && <AssetAccordion token={toAsset} subTokens={toErc721SubTokens} />}
         </Box>
       </Box>
     </AppBody>
