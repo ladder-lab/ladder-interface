@@ -85,7 +85,7 @@ export function AssetAccordion({
         <Tag sx={{ position: 'absolute', right: 0, top: 0 }}>{is1155 ? 'ERC1155' : is721 ? 'ERC721' : 'ERC20'}</Tag>
       </Box>
     )
-  }, [token, theme.palette.text.secondary, is1155])
+  }, [token, theme.palette.text.secondary, is1155, is721])
 
   const details = useMemo(() => {
     return (
@@ -107,7 +107,7 @@ export function AssetAccordion({
           ))}
       </Box>
     )
-  }, [subTokens])
+  }, [subTokens, theme.palette.text.secondary])
 
   return (
     <Accordion

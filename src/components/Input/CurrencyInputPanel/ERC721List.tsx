@@ -63,7 +63,7 @@ export default function ERC721List({
   const onRemoveCollection = useCallback(() => {
     setCollection(null)
     onClearTokens()
-  }, [])
+  }, [onClearTokens])
 
   const onConfirm = useCallback(() => {
     if (!collection) {
@@ -72,7 +72,7 @@ export default function ERC721List({
     onSelectCurrency && onSelectCurrency(collection)
     onSelectSubTokens && onSelectSubTokens(tokens)
     hideModal()
-  }, [collection, tokens])
+  }, [collection, hideModal, onSelectCurrency, onSelectSubTokens, tokens])
 
   return (
     <>
