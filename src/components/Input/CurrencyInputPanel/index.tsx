@@ -71,7 +71,7 @@ export default function CurrencyInputPanel({
         />
       )
     }
-  }, [disableCurrencySelect, onSelectCurrency, selectedTokenType, showModal, currency])
+  }, [disableCurrencySelect, showModal, onSelectCurrency, selectedTokenType, onSelectSubTokens])
 
   // const handleMax = useCallback(() => {
   //   if (!selectedCurrencyBalance && !token1155Balance) return
@@ -122,9 +122,7 @@ export default function CurrencyInputPanel({
           height={isDownMd ? 48 : 52}
         />
         <Box display="flex" justifyContent="space-between" alignItems="center" mt={9}>
-          <Typography fontSize={12} sx={{ color: theme.palette.text.secondary }}>
-            {/* ~$568.23 */}
-          </Typography>
+          <Typography fontSize={12} sx={{ color: theme.palette.text.secondary }}></Typography>
           <Box display="flex" alignItems={'center'}>
             {!hideBalance && (
               <Typography fontSize={12} sx={{ color: theme.palette.text.secondary }}>
