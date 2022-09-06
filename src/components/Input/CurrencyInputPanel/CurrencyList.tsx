@@ -11,6 +11,7 @@ import Spinner from 'components/Spinner'
 import useBreakpoint from 'hooks/useBreakpoint'
 import LogoText from 'components/LogoText'
 import Divider from 'components/Divider'
+import { NETWORK_CHAIN_ID, SUPPORTED_NETWORKS } from 'constants/chain'
 
 const StyledBalanceText = styled(Typography)(`
   white-space: nowrap;
@@ -120,6 +121,7 @@ export default function CurrencyList({
 }: Props) {
   const { hideModal } = useModal()
   const isDownMd = useBreakpoint('md')
+  const { chainId } = useActiveWeb3React()
 
   const onClick = useCallback(() => {
     onSelectCurrency && searchToken && onSelectCurrency(searchToken)
@@ -146,7 +148,14 @@ export default function CurrencyList({
               }
             }}
           >
-            <LogoText logo={<CurrencyLogo currency={currency} />} text={currency.symbol} />
+            <LogoText
+              logo={<CurrencyLogo currency={currency} />}
+              text={
+                currency.symbol === 'ETH'
+                  ? SUPPORTED_NETWORKS[chainId ?? NETWORK_CHAIN_ID]?.nativeCurrency.symbol
+                  : currency.symbol
+              }
+            />
           </ButtonBase>
         ))}
       </Box>

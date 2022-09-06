@@ -7,8 +7,11 @@ import CurrencyLogo from 'components/essential/CurrencyLogo'
 import Tag from 'components/Tag'
 import { checkIs1155 } from 'utils/checkIs1155'
 import Copy from 'components/essential/Copy'
+import { NETWORK_CHAIN_ID, SUPPORTED_NETWORKS } from 'constants/chain'
+import { useActiveWeb3React } from 'hooks'
 
 export function AssetAccordion({ token }: { token?: AllTokens }) {
+  const { chainId } = useActiveWeb3React()
   const [expanded, setExpanded] = useState(false)
   const theme = useTheme()
 
@@ -37,7 +40,14 @@ export function AssetAccordion({ token }: { token?: AllTokens }) {
       >
         <CurrencyLogo currency={token} style={{ width: 36 }} />
         <Box display="flex" flexDirection="column" gap={8} width="100%">
-          <Typography color={theme.palette.text.secondary}>Name: {token?.name ?? '-'}</Typography>
+          <Typography color={theme.palette.text.secondary}>
+            Name:{' '}
+            {token?.name
+              ? token.symbol === 'ETH'
+                ? SUPPORTED_NETWORKS[chainId ?? NETWORK_CHAIN_ID]?.nativeCurrency.name
+                : token.name
+              : '-'}
+          </Typography>
           <Typography
             color={theme.palette.text.secondary}
             component="div"
@@ -63,7 +73,7 @@ export function AssetAccordion({ token }: { token?: AllTokens }) {
         <Tag sx={{ position: 'absolute', right: 0, top: 0 }}>{is1155 ? 'ERC1155' : 'ERC20'}</Tag>
       </Box>
     )
-  }, [token, theme.palette.text.secondary, is1155])
+  }, [token, chainId, theme.palette.text.secondary, is1155])
 
   const details = (
     <Box pt={12}>
