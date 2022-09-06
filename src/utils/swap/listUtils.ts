@@ -1,4 +1,4 @@
-import { ChainId } from '@uniswap/sdk'
+import { ChainId } from '@ladder/sdk'
 import { TokenAddressMap } from 'hooks/Tokens'
 import { TagInfo, TokenList, WrappedTokenInfo } from 'models/tokenList'
 
@@ -7,7 +7,8 @@ const EMPTY_LIST: TokenAddressMap = {
   [ChainId.RINKEBY]: {},
   [ChainId.ROPSTEN]: {},
   [ChainId.GÖRLI]: {},
-  [ChainId.MAINNET]: {}
+  [ChainId.MAINNET]: {},
+  [ChainId.BSC]: {}
 }
 
 const listCache: WeakMap<TokenList, TokenAddressMap> | null =

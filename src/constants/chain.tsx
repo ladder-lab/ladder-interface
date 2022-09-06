@@ -1,13 +1,16 @@
 import { Chain } from 'models/chain'
 import { ReactComponent as ETH } from 'assets/svg/eth_logo.svg'
 import EthUrl from 'assets/svg/eth_logo.svg'
+import { ReactComponent as BSC } from 'assets/svg/binance.svg'
+import BSCUrl from 'assets/svg/binance.svg'
 
 export enum ChainId {
   MAINNET = 1,
   ROPSTEN = 3,
   RINKEBY = 4,
   GÖRLI = 5,
-  KOVAN = 42
+  KOVAN = 42,
+  BSC = 56
 }
 
 export const NETWORK_CHAIN_ID: ChainId = process.env.REACT_APP_CHAIN_ID
@@ -44,6 +47,14 @@ export const AllChainList = [
     name: 'Kovan Testnet',
     id: ChainId.KOVAN,
     hex: '0x2a'
+  },
+  {
+    icon: <BSC height={20} width={20} />,
+    logo: BSCUrl,
+    symbol: 'BSC',
+    name: 'Binance Smart Chain',
+    id: ChainId.BSC,
+    hex: '0x38'
   }
 ]
 
@@ -112,5 +123,16 @@ export const SUPPORTED_NETWORKS: {
     },
     rpcUrls: ['https://kovan.infura.io/v3/'],
     blockExplorerUrls: ['https://kovan.etherscan.io/']
+  },
+  [ChainId.BSC]: {
+    chainId: '0x38',
+    chainName: 'Binance Smart Chain',
+    nativeCurrency: {
+      name: 'Binance Coin',
+      symbol: 'BNB',
+      decimals: 18
+    },
+    rpcUrls: ['https://bsc-dataseed.binance.org'],
+    blockExplorerUrls: ['https://bscscan.com']
   }
 }

@@ -1,4 +1,4 @@
-import { Percent, JSBI, WETH, ChainId, Token } from '@uniswap/sdk'
+import { Percent, JSBI, WETH, ChainId, Token } from '@ladder/sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
 import { DEFAULT_1155_LIST } from './default1155List'
@@ -28,7 +28,8 @@ const WETH_ONLY: ChainTokenList = {
   // [ChainId.RINKEBY]: [],
   [ChainId.RINKEBY]: [WETH[ChainId.RINKEBY]],
   [ChainId.GÖRLI]: [WETH[ChainId.GÖRLI]],
-  [ChainId.KOVAN]: [WETH[ChainId.KOVAN]]
+  [ChainId.KOVAN]: [WETH[ChainId.KOVAN]],
+  [ChainId.BSC]: [WETH[ChainId.BSC]]
 }
 
 // used to construct intermediary pairs for trading
