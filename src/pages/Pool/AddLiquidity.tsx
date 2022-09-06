@@ -159,14 +159,14 @@ export default function AddLiquidy() {
 
   useEffect(() => {
     if (currency0) {
-      if (currency0.symbol === 'WETH') {
+      if (currency0.symbol === 'WETH' || currency0.symbol === 'WBNB') {
         setCurrencyA(ETHER)
       } else {
         setCurrencyA(currency0)
       }
     }
     if (currency1) {
-      if (currency1.symbol === 'WETH') {
+      if (currency1.symbol === 'WETH' || currency1.symbol === 'WBNB') {
         setCurrencyB(ETHER)
       } else {
         setCurrencyB(currency1)
@@ -254,8 +254,12 @@ export default function AddLiquidy() {
                           onAction={approveACallback}
                           disableAction={approvalA === ApprovalState.PENDING}
                           pending={approvalA === ApprovalState.PENDING}
-                          pendingText={`Approving ${currencies[Field.CURRENCY_A]?.symbol}`}
-                          actionText={'Approve ' + currencies[Field.CURRENCY_A]?.symbol}
+                          pendingText={`Approving ${
+                            currencies[Field.CURRENCY_A]?.symbol ?? currencies[Field.CURRENCY_A]?.name
+                          }`}
+                          actionText={
+                            'Approve ' + (currencies[Field.CURRENCY_A]?.symbol ?? currencies[Field.CURRENCY_A]?.name)
+                          }
                         />
                       )}
                       {approvalB !== ApprovalState.APPROVED && (
@@ -263,8 +267,12 @@ export default function AddLiquidy() {
                           onAction={approveBCallback}
                           disableAction={approvalB === ApprovalState.PENDING}
                           pending={approvalB === ApprovalState.PENDING}
-                          pendingText={`Approving ${currencies[Field.CURRENCY_B]?.symbol}`}
-                          actionText={'Approve ' + currencies[Field.CURRENCY_B]?.symbol}
+                          pendingText={`Approving ${
+                            currencies[Field.CURRENCY_B]?.symbol ?? currencies[Field.CURRENCY_B]?.name
+                          }`}
+                          actionText={
+                            'Approve ' + (currencies[Field.CURRENCY_B]?.symbol ?? currencies[Field.CURRENCY_B]?.name)
+                          }
                         />
                       )}
                     </Box>
