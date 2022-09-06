@@ -7,7 +7,7 @@ const axiosInstance = axios.create({
 })
 
 const axiosToken1155Instance = axios.create({
-  baseURL: 'https://eth-mainnet.blockvision.org/v1/2CW5NcBtEvzDeRMhB5BwUTe70lE',
+  baseURL: 'https://bsc-mainnet.blockvision.org/v1/2EL8whf4KemeNi9Pr3b1hPshJoA',
   timeout: 10000,
   headers: { 'content-type': 'application/json', accept: 'application/json' }
 })
@@ -24,7 +24,7 @@ export const Axios = {
   ): AxiosPromise<ResponseType<T>> {
     return axiosInstance.post(url, data, { params, ...config })
   },
-  getMetadata<T = any>(contractAddress: string, tokenId: string | number): AxiosPromise<ResponseType<T>> {
+  getMetadata(contractAddress: string, tokenId: string | number): AxiosPromise<NFTResponseType> {
     return axiosToken1155Instance.post('', {
       jsonrpc: '2.0',
       method: 'nft_metadata',
@@ -42,4 +42,24 @@ export interface ResponseType<T = any> {
   msg: string
   code: number
   data: T
+}
+
+export interface NFTResponseType {
+  jsonrpc: string
+  result: {
+    contractAddress: string
+    description: string
+    ercStandard: string
+    image: string
+    metadata: {
+      description: string
+      id: string
+      image: string
+      name: string
+    }
+    name: string
+    protocol: string
+    tokenID: string
+    tokenURI: string
+  }
 }

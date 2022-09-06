@@ -1,6 +1,6 @@
 import { useCallback, useState, useMemo, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ETHER, JSBI, Percent, TokenAmount } from '@uniswap/sdk'
+import { ETHER, JSBI, Percent, TokenAmount } from '@ladder/sdk'
 import { Box, Button, Typography } from '@mui/material'
 import AppBody from 'components/AppBody'
 import { routes } from 'constants/routes'

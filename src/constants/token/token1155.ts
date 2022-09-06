@@ -1,6 +1,6 @@
 import { ChainId } from '../chain'
 // import ERC1155Abi from 'constants/abis/erc1155.json'
-import { Token } from '@uniswap/sdk'
+import { Token } from '@ladder/sdk'
 import { Axios } from 'utils/axios'
 // import { getContract } from 'utils'
 
@@ -10,6 +10,7 @@ import { Axios } from 'utils/axios'
 export class Token1155 extends Token {
   public readonly tokenId: string | number
   public readonly is1155: boolean
+  public name?: string
   public uri?: string
 
   public constructor(
@@ -30,7 +31,9 @@ export class Token1155 extends Token {
     if (!metadata) {
       Axios.getMetadata(address, tokenId)
         .then(r => {
-          console.log(r)
+          const metadata = r.data.result.metadata
+          this.uri = metadata.image
+          this.name = metadata.name
         })
         .catch(e => {
           console.error(e)

@@ -1,4 +1,4 @@
-import { Currency, ETHER, Token } from '@uniswap/sdk'
+import { Currency, ETHER, Token } from '@ladder/sdk'
 import { Token1155 } from './token/token1155'
 
 export const routes = {

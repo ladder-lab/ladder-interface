@@ -1,4 +1,4 @@
-import { TokenAmount, Pair, Currency } from '@uniswap/sdk'
+import { TokenAmount, Pair, Currency } from '@ladder/sdk'
 import { useMemo } from 'react'
 import IUniswapV2PairABI from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import { Interface } from '@ethersproject/abi'

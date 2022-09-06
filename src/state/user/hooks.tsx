@@ -1,4 +1,4 @@
-import { Pair, Token, ChainId } from '@uniswap/sdk'
+import { Pair, Token, ChainId } from '@ladder/sdk'
 import { DEFAULT_1155_LIST } from 'constants/default1155List'
 import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from 'constants/index'
 import { Token1155 } from 'constants/token/token1155'

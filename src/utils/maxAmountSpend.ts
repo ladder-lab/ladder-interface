@@ -1,4 +1,4 @@
-import { JSBI, CurrencyAmount, ETHER } from '@uniswap/sdk'
+import { JSBI, CurrencyAmount, ETHER } from '@ladder/sdk'
 import { MIN_ETH } from '../constants'
 
 /**

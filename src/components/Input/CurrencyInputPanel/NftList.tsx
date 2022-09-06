@@ -9,7 +9,7 @@ import useModal from 'hooks/useModal'
 import { useIsDarkMode } from 'state/user/hooks'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { Mode } from './SelectCurrencyModal'
-import { Currency } from '@uniswap/sdk'
+import { Currency } from '@ladder/sdk'
 import { useToken1155Balance, useToken1155Balances } from 'state/wallet/hooks'
 import { Loader } from 'components/AnimatedSvg/Loader'
 
