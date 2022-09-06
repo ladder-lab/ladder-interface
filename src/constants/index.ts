@@ -15,7 +15,7 @@ export const ROUTER_ADDRESS =
   (
     {
       [4]: '0x9f524cEe47d5f940eeb0Bba4419Bb176A722c51A',
-      [56]: '0x198371CC1385B27DE6C7AfbDE6eC374C6093CCED',
+      [56]: '0x54F0d8485e931c22D542D7b95dbbf5ecdE9C91E8',
       [1]: ''
     } as any
   )[NETWORK_CHAIN_ID] ?? ''
