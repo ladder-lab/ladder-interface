@@ -16,5 +16,8 @@ export const DEFAULT_1155_LIST: { [chainId in ChainId]?: Token1155[] } = {
       uri: SampleNftImg
     })
   ],
-  [ChainId.BSC]: [new Token1155(56, '0x26cA871A864f85A3673F7240D72daE54d1FcFd63', 4)]
+  [ChainId.BSC]: [
+    new Token1155(56, '0x26cA871A864f85A3673F7240D72daE54d1FcFd63', 4),
+    new Token1155(56, '0x26cA871A864f85A3673F7240D72daE54d1FcFd63', 2)
+  ]
 }
