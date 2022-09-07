@@ -27,6 +27,7 @@ export class Token1155 extends Token {
     this.tokenId = tokenId + ''
     this.is1155 = true
     this.uri = metadata?.uri
+    this.name = metadata?.name
 
     if (!metadata) {
       Axios.getMetadata(address, tokenId)
