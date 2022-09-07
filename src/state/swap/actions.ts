@@ -18,3 +18,4 @@ export const replaceSwapState = createAction<{
   recipient: string | null
 }>('swap/replaceSwapState')
 export const setRecipient = createAction<{ recipient: string | null }>('swap/setRecipient')
+export const resetSwap = createAction<{ recipient: string | null }>('swap/reset')
