@@ -67,10 +67,10 @@ export function useDerivedMintInfo(
   const dependentField = independentField === Field.CURRENCY_A ? Field.CURRENCY_B : Field.CURRENCY_A
 
   // tokens
-  const currencies: { [field in Field]?: Token } = useMemo(
+  const currencies: { [field in Field]?: Token | Currency } = useMemo(
     () => ({
-      [Field.CURRENCY_A]: generateErc20(wrappedCurrency(currencyA, chainId)),
-      [Field.CURRENCY_B]: generateErc20(wrappedCurrency(currencyB, chainId))
+      [Field.CURRENCY_A]: currencyA === ETHER ? ETHER : generateErc20(wrappedCurrency(currencyA, chainId)),
+      [Field.CURRENCY_B]: currencyB === ETHER ? ETHER : generateErc20(wrappedCurrency(currencyB, chainId))
     }),
     [currencyA, currencyB, chainId]
   )
@@ -116,8 +116,10 @@ export function useDerivedMintInfo(
           dependentField === Field.CURRENCY_B ? currencies[Field.CURRENCY_B] : currencies[Field.CURRENCY_A]
         const dependentTokenAmount =
           dependentField === Field.CURRENCY_B
-            ? pair.priceOf(tokenA).quote(wrappedIndependentAmount)
-            : pair.priceOf(tokenB).quote(wrappedIndependentAmount)
+            ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              pair.priceOf(wrappedCurrency(tokenA, chainId)!).quote(wrappedIndependentAmount)
+            : // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              pair.priceOf(wrappedCurrency(tokenB, chainId)!).quote(wrappedIndependentAmount)
         return dependentCurrency === ETHER ? CurrencyAmount.ether(dependentTokenAmount.raw) : dependentTokenAmount
       }
       return undefined
