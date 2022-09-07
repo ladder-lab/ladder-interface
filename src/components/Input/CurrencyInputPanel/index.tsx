@@ -13,6 +13,7 @@ import { checkIs1155 } from 'utils/checkIs1155'
 
 import useBreakpoint from 'hooks/useBreakpoint'
 import { NETWORK_CHAIN_ID, SUPPORTED_NETWORKS } from 'constants/chain'
+import { getSymbol } from 'utils/getSymbol'
 
 interface Props {
   currency?: AllTokens | null
@@ -99,16 +100,7 @@ export default function CurrencyInputPanel({
         selected={!!currency}
       >
         {currency ? (
-          <LogoText
-            logo={<CurrencyLogo currency={currency} />}
-            text={
-              is1155
-                ? currency.name
-                : currency.symbol === 'ETH'
-                ? SUPPORTED_NETWORKS[chainId ?? NETWORK_CHAIN_ID]?.nativeCurrency.symbol
-                : currency.symbol
-            }
-          />
+          <LogoText logo={<CurrencyLogo currency={currency} />} text={is1155 ? currency.name : getSymbol(currency)} />
         ) : (
           <>Select Token</>
         )}

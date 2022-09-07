@@ -27,6 +27,7 @@ import TransacitonPendingModal from 'components/Modal/TransactionModals/Transact
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useCurrency } from 'hooks/Tokens'
+import { getSymbol } from 'utils/getSymbol'
 
 export default function AddLiquidy() {
   const [currencyA, setCurrencyA] = useState<undefined | AllTokens>(undefined)
@@ -110,11 +111,11 @@ export default function AddLiquidy() {
             'Add ' +
             parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
             ' ' +
-            currencies[Field.CURRENCY_A]?.symbol +
+            getSymbol(currencies[Field.CURRENCY_A]) +
             ' and ' +
             parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
             ' ' +
-            currencies[Field.CURRENCY_B]?.symbol
+            getSymbol(currencies[Field.CURRENCY_B])
         })
       })
       .catch(error => {

@@ -19,7 +19,7 @@ import useModal from 'hooks/useModal'
 import ImportModal from 'components/Modal/ImportModal'
 import { HelperText } from 'constants/helperText'
 import useBreakpoint from 'hooks/useBreakpoint'
-import { useIsDarkMode, useTrackedToken1155List } from 'state/user/hooks'
+import { useAddUserToken, useIsDarkMode, useTrackedToken1155List } from 'state/user/hooks'
 import { Token1155 } from 'constants/token/token1155'
 
 export enum Mode {
@@ -63,6 +63,7 @@ export default function SelectCurrencyModal({
   // if they input an address, use it
   const searchToken = useToken(debouncedQuery)
   const searchTokenIsAdded = useIsUserAddedToken(searchToken)
+  const addUserToken = useAddUserToken()
 
   const searchTokenNFT = useToken1155(debouncedQueryNFT)
   const searchTokenIsAddedNFT = useIsUserAddedToken1155(searchTokenNFT)
@@ -167,6 +168,12 @@ export default function SelectCurrencyModal({
   const onImport = useCallback(() => {
     setIsInportOpen(true)
   }, [])
+
+  useEffect(() => {
+    if (!searchTokenIsAdded && searchToken) {
+      addUserToken(searchToken)
+    }
+  }, [addUserToken, searchToken, searchTokenIsAdded])
 
   return (
     <>
