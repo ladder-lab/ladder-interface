@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useCallback, useMemo } from 'react'
+import React, { MutableRefObject, useCallback, useEffect, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
 import { Box, Typography, styled, ButtonBase } from '@mui/material'
 import { Mode } from './SelectCurrencyModal'
@@ -12,6 +12,7 @@ import useBreakpoint from 'hooks/useBreakpoint'
 import LogoText from 'components/LogoText'
 import Divider from 'components/Divider'
 import { NETWORK_CHAIN_ID, SUPPORTED_NETWORKS } from 'constants/chain'
+import { getName, getSymbol } from 'utils/getSymbol'
 
 const StyledBalanceText = styled(Typography)(`
   white-space: nowrap;
@@ -50,8 +51,8 @@ function Row({ currency, onClick }: { currency: Currency; onClick: () => void })
       <Box display="flex">
         <CurrencyLogo currency={currency} style={{ width: '30px', height: '30px' }} />
         <Box display="flex" flexDirection="column" marginLeft="16px">
-          <Typography variant="inherit">{currency.symbol}</Typography>
-          <Typography variant="caption">{currency.name}</Typography>
+          <Typography variant="inherit">{getSymbol(currency)}</Typography>
+          <Typography variant="caption">{getName(currency)}</Typography>
         </Box>
       </Box>
       <span style={{ fontWeight: 500 }}>
@@ -72,7 +73,7 @@ export function CurrencyListComponent({ onSelectCurrency, currencyOptions, fixed
   const isDownMd = useBreakpoint('md')
 
   const currencyKey = useCallback((currency: Currency): string => {
-    return currency ? currency.symbol || '' : ''
+    return currency ? getSymbol(currency) || '' : ''
   }, [])
 
   const itemKey = useCallback((index: number, data: any) => currencyKey(data[index]), [currencyKey])
@@ -148,14 +149,7 @@ export default function CurrencyList({
               }
             }}
           >
-            <LogoText
-              logo={<CurrencyLogo currency={currency} />}
-              text={
-                currency.symbol === 'ETH'
-                  ? SUPPORTED_NETWORKS[chainId ?? NETWORK_CHAIN_ID]?.nativeCurrency.symbol
-                  : currency.symbol
-              }
-            />
+            <LogoText logo={<CurrencyLogo currency={currency} />} text={getSymbol(currency)} />
           </ButtonBase>
         ))}
       </Box>

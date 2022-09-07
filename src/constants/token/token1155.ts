@@ -12,6 +12,7 @@ export class Token1155 extends Token {
   public readonly is1155: boolean
   public name?: string
   public uri?: string
+  public symbol?: string
 
   public constructor(
     chainId: ChainId,
@@ -28,6 +29,7 @@ export class Token1155 extends Token {
     this.is1155 = true
     this.uri = metadata?.uri
     this.name = metadata?.name
+    this.symbol = metadata?.symbol
 
     if (!metadata) {
       Axios.getMetadata(address, tokenId)
@@ -35,6 +37,7 @@ export class Token1155 extends Token {
           const metadata = r.data.result.metadata
           this.uri = metadata.image
           this.name = metadata.name
+          this.symbol = 'NFT'
         })
         .catch(e => {
           console.error(e)
