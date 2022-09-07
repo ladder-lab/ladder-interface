@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useCallback, useEffect, useMemo } from 'react'
+import React, { MutableRefObject, useCallback, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
 import { Box, Typography, styled, ButtonBase } from '@mui/material'
 import { Mode } from './SelectCurrencyModal'
@@ -11,7 +11,6 @@ import Spinner from 'components/Spinner'
 import useBreakpoint from 'hooks/useBreakpoint'
 import LogoText from 'components/LogoText'
 import Divider from 'components/Divider'
-import { NETWORK_CHAIN_ID, SUPPORTED_NETWORKS } from 'constants/chain'
 import { getName, getSymbol } from 'utils/getSymbol'
 
 const StyledBalanceText = styled(Typography)(`
@@ -122,7 +121,6 @@ export default function CurrencyList({
 }: Props) {
   const { hideModal } = useModal()
   const isDownMd = useBreakpoint('md')
-  const { chainId } = useActiveWeb3React()
 
   const onClick = useCallback(() => {
     onSelectCurrency && searchToken && onSelectCurrency(searchToken)
