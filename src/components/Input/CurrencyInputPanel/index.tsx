@@ -12,7 +12,6 @@ import { AllTokens, TokenType } from 'models/allTokens'
 import { checkIs1155 } from 'utils/checkIs1155'
 
 import useBreakpoint from 'hooks/useBreakpoint'
-import { NETWORK_CHAIN_ID, SUPPORTED_NETWORKS } from 'constants/chain'
 import { getSymbol } from 'utils/getSymbol'
 
 interface Props {
@@ -54,7 +53,7 @@ export default function CurrencyInputPanel({
   disableInput,
   hideBalance
 }: Props) {
-  const { account, chainId } = useActiveWeb3React()
+  const { account } = useActiveWeb3React()
   const is1155 = checkIs1155(currency)
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
 
