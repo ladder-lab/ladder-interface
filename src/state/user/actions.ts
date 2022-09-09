@@ -3,10 +3,11 @@ import { createAction } from '@reduxjs/toolkit'
 export interface SerializedToken {
   chainId: number
   address: string
-  decimals: number
+  decimals?: number
   symbol?: string
   name?: string
   tokenId?: string | number
+  standard?: 'erc721' | 'erc1155' | 'erc20'
 }
 
 export interface SerializedPair {
@@ -25,6 +26,10 @@ export const removeSerializedToken = createAction<{ chainId: number; address: st
 export const addSerializedToken1155 = createAction<{ serializedToken: SerializedToken }>('user/addSerializedToken1155')
 export const removeSerializedToken1155 = createAction<{ chainId: number; address: string; tokenId: string | number }>(
   'user/removeSerializedToken1155'
+)
+export const addSerializedToken721 = createAction<{ serializedToken: SerializedToken }>('user/addSerializedToken721')
+export const removeSerializedToken721 = createAction<{ chainId: number; address: string; tokenId: string | number }>(
+  'user/removeSerializedToken721'
 )
 export const addSerializedPair = createAction<{ serializedPair: SerializedPair }>('user/addSerializedPair')
 export const removeSerializedPair = createAction<{

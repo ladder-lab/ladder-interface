@@ -9,10 +9,12 @@ import { use1155Contract, useBytes32TokenContract, useTokenContract } from './us
 import { arrayify } from 'ethers/lib/utils'
 import { TokenList, WrappedTokenInfo } from 'models/tokenList'
 import { listToTokenMap } from 'utils/swap/listUtils'
-import { useUserAddedTokens, useUserAddedTokens1155 } from 'state/user/hooks'
+import { useUserAddedTokens, useUserAddedTokens1155, useUserAddedTokens721 } from 'state/user/hooks'
 import { Token1155 } from 'constants/token/token1155'
 import { IS_TEST_NET, NETWORK_CHAIN_ID } from 'constants/chain'
 import { DEFAULT_1155_LIST } from 'constants/default1155List'
+import { DEFAULT_721_LIST } from 'constants/default721List'
+import { Token721 } from 'constants/token/token721'
 
 // Check if currency is included in custom list from user storage
 export function useIsUserAddedToken(currency: Currency | undefined | null): boolean {
@@ -33,6 +35,16 @@ export function useIsUserAddedToken1155(currency: Currency | undefined | null): 
   }
 
   return !!userAddedTokens.find(token1155 => currencyEquals(currency, token1155))
+}
+
+export function useIsUserAddedToken721(currency: Currency | undefined | null): boolean {
+  const userAddedTokens = useUserAddedTokens721()
+
+  if (!currency) {
+    return false
+  }
+
+  return !!userAddedTokens.find(token721 => currencyEquals(currency, token721))
 }
 
 export type TokenAddressMap = Readonly<{
@@ -177,6 +189,24 @@ export function useToken1155(tokenAddress?: string, tokenId?: string | number): 
       if (token) return token
     }
     return new Token1155(chainId, address, tokenId, { name: nameRes.result?.[0], symbol: symbolRes.result?.[0] })
+  }, [address, chainId, nameRes.result, symbolRes.result, tokenAddress, tokenId])
+}
+
+export function useToken721(tokenAddress?: string, tokenId?: string | number | undefined): Token721 | undefined | null {
+  const { chainId } = useActiveWeb3React()
+  const address = isAddress(tokenAddress)
+  const nftContract = use1155Contract(address ? address : undefined)
+  const nameRes = useSingleCallResult(nftContract, 'name')
+  const symbolRes = useSingleCallResult(nftContract, 'symbol')
+
+  return useMemo(() => {
+    if (!chainId || !address) return undefined
+    const list = DEFAULT_721_LIST[chainId ?? NETWORK_CHAIN_ID]
+    if (list) {
+      const token = list.find(token721 => token721.address === tokenAddress && token721.tokenId == tokenId)
+      if (token) return token
+    }
+    return new Token721(chainId, address, tokenId, { name: nameRes.result?.[0], symbol: symbolRes.result?.[0] })
   }, [address, chainId, nameRes.result, symbolRes.result, tokenAddress, tokenId])
 }
 

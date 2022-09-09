@@ -1,6 +1,6 @@
+import { Token721 } from 'constants/token/token721'
 import { useState, useCallback, useMemo } from 'react'
-import { Token721 } from 'models/allTokens'
-import { useTrackedToken1155List } from 'state/user/hooks'
+import { useTrackedToken721List } from 'state/user/hooks'
 
 // import { useContext } from 'react'
 // import { ERC721TokenContext } from '../context/ERC721Context'
@@ -18,7 +18,7 @@ export default function useERC721Tokens({ collection }: { collection?: Token721 
 
   // TODO: Need to update. TEMP use 1155 list. Can accept collection as parameters
   console.log(collection, 'collection as search key')
-  const tokenOptions = useTrackedToken1155List()
+  const tokenOptions = useTrackedToken721List()
 
   // Todo: Define common options in constants
   const commonCollections = useMemo(() => {

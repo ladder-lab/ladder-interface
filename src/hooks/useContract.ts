@@ -8,6 +8,7 @@ import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
 import WETH_ABI from '../constants/abis/weth.json'
 import ERC20_ABI from '../constants/abis/erc20.json'
 import ERC1155_ABI from '../constants/abis/erc1155.json'
+import ERC721_ABI from '../constants/abis/erc721.json'
 import { MIGRATOR_ABI, MIGRATOR_ADDRESS } from '../constants/abis/migrator'
 import UNISOCKS_ABI from '../constants/abis/unisocks.json'
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
@@ -99,4 +100,8 @@ export function useSocksController(): Contract | null {
 
 export function use1155Contract(address: string | undefined, withSignerIfPossible?: boolean): Contract | null {
   return useContract(address, ERC1155_ABI, withSignerIfPossible)
+}
+
+export function use721Contract(address: string | undefined, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(address, ERC721_ABI, withSignerIfPossible)
 }

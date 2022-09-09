@@ -2,8 +2,9 @@ import { useMemo } from 'react'
 import { isAddress } from '..'
 import { Token } from '@ladder/sdk'
 import { Token1155 } from 'constants/token/token1155'
+import { Token721 } from 'constants/token/token721'
 
-export function filterTokens(tokens: Token[] | Token1155[], search: string): Token[] {
+export function filterTokens(tokens: Token[] | Token1155[] | Token721[], search: string): Token[] {
   if (search.length === 0) return tokens
 
   const searchingAddress = isAddress(search)

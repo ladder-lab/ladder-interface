@@ -7,7 +7,7 @@ import { useAllTokens } from 'hooks/Tokens'
 import flatMap from 'lodash.flatmap'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { filter1155 } from 'utils/checkIs1155'
+import { filter1155, filter721 } from 'utils/checkIs1155'
 import { generateErc20 } from 'utils/getHashAddress'
 import { pairKeyToken, token1155key } from './reducer'
 import { AppDispatch, AppState } from '../index'
@@ -23,41 +23,60 @@ import {
   addSerializedPair,
   SerializedToken,
   addSerializedToken1155,
-  removeSerializedToken1155
+  removeSerializedToken1155,
+  addSerializedToken721
 } from './actions'
 import { NFT } from 'models/allTokens'
+import { DEFAULT_721_LIST } from 'constants/default721List'
+import { Token721 } from 'constants/token/token721'
 
 function serializeToken(token: Token | Token1155): SerializedToken {
+  const is721 = filter1155(token)
   const is1155 = filter1155(token)
-  return is1155
+  return is721
     ? {
         chainId: token.chainId,
         address: token.address,
-        decimals: token.decimals,
         symbol: token.symbol,
         name: token.name,
-        tokenId: is1155.tokenId
+        tokenId: is721.tokenId ?? '',
+        standard: 'erc721'
+      }
+    : is1155
+    ? {
+        chainId: token.chainId,
+        address: token.address,
+        symbol: token.symbol,
+        name: token.name,
+        tokenId: is1155.tokenId,
+        standard: 'erc1155'
       }
     : {
         chainId: token.chainId,
         address: token.address,
         decimals: token.decimals,
         symbol: token.symbol,
-        name: token.name
+        name: token.name,
+        standard: 'erc20'
       }
 }
 
 function deserializeToken(serializedToken: SerializedToken): Token | Token1155 {
   const hasTokenId = serializedToken?.tokenId
-  return hasTokenId
-    ? new Token1155(serializedToken.chainId, serializedToken.address, hasTokenId, {
+  return serializedToken.standard === 'erc721'
+    ? new Token721(serializedToken.chainId, serializedToken.address, hasTokenId, {
+        name: serializedToken.name,
+        symbol: serializedToken.symbol
+      })
+    : serializedToken.standard === 'erc1155'
+    ? new Token1155(serializedToken.chainId, serializedToken.address, serializedToken.tokenId ?? 0, {
         name: serializedToken.name,
         symbol: serializedToken.symbol
       })
     : new Token(
         serializedToken.chainId,
         serializedToken.address,
-        serializedToken.decimals,
+        serializedToken.decimals ?? 18,
         serializedToken.symbol,
         serializedToken.name
       )
@@ -159,6 +178,11 @@ export function useAddUserToken(): (token: Token | NFT) => void {
   return useCallback(
     token => {
       const token1155 = filter1155(token)
+      const token721 = filter721(token)
+      if (token721) {
+        dispatch(addSerializedToken721({ serializedToken: serializeToken(token721) }))
+        return
+      }
       if (token1155) {
         dispatch(addSerializedToken1155({ serializedToken: serializeToken(token1155) }))
         return
@@ -197,13 +221,25 @@ export function useUserAddedTokens(): Token[] {
 
 export function useUserAddedTokens1155(): Token[] {
   const { chainId } = useActiveWeb3React()
-  const serializedTokensMap = useSelector<AppState, AppState['user']['tokens1155']>(
-    ({ user: { tokens1155 } }) => tokens1155
+  const serializedTokensMap = useSelector<AppState, AppState['user']['token1155s']>(
+    ({ user: { token1155s } }) => token1155s
   )
 
   return useMemo(() => {
     if (!chainId) return []
     return Object.values(serializedTokensMap?.[chainId as ChainId] ?? {}).map(deserializeToken)
+  }, [serializedTokensMap, chainId])
+}
+
+export function useUserAddedTokens721(): Token[] {
+  const { chainId } = useActiveWeb3React()
+  const serializedTokensMap = useSelector<AppState, AppState['user']['token721s']>(
+    ({ user: { token721s } }) => token721s
+  )
+
+  return useMemo(() => {
+    if (!chainId) return []
+    return Object.values(serializedTokensMap?.[chainId as ChainId] ?? {}).map(item => deserializeToken(item))
   }, [serializedTokensMap, chainId])
 }
 // function serializePair(pair: Pair): SerializedPair {
@@ -359,8 +395,8 @@ export function useTokenPairAdder(): (
 
 export function useTrackedToken1155List(): Token1155[] {
   const { chainId } = useActiveWeb3React()
-  const serializedTokensMap = useSelector<AppState, AppState['user']['tokens1155']>(
-    ({ user: { tokens1155 } }) => tokens1155
+  const serializedTokensMap = useSelector<AppState, AppState['user']['token1155s']>(
+    ({ user: { token1155s } }) => token1155s
   )
 
   const userList: Token1155[] = useMemo(() => {
@@ -382,6 +418,40 @@ export function useTrackedToken1155List(): Token1155[] {
     // dedupes pairs of tokens in the combined list
     const keyed = combinedList.reduce<{ [key: string]: Token1155 }>((memo, token) => {
       const key = token1155key(token.address, token.tokenId)
+      if (memo[key]) return memo
+      memo[key] = token
+      return memo
+    }, {})
+
+    return Object.keys(keyed).map(key => keyed[key])
+  }, [combinedList])
+}
+
+export function useTrackedToken721List(): Token721[] {
+  const { chainId } = useActiveWeb3React()
+  const serializedTokensMap = useSelector<AppState, AppState['user']['token721s']>(
+    ({ user: { token721s } }) => token721s
+  )
+
+  const userList: Token721[] = useMemo(() => {
+    if (!chainId || !serializedTokensMap) return []
+    const forChain = serializedTokensMap[chainId]
+    if (!forChain) return []
+
+    return Object.keys(forChain).map(idx => {
+      return deserializeToken(forChain[idx]) as Token721
+    })
+  }, [serializedTokensMap, chainId])
+
+  const combinedList = useMemo(
+    () => (chainId ? userList.concat(DEFAULT_721_LIST[chainId] ?? []) : []),
+    [userList, chainId]
+  )
+
+  return useMemo(() => {
+    // dedupes pairs of tokens in the combined list
+    const keyed = combinedList.reduce<{ [key: string]: Token721 }>((memo, token) => {
+      const key = token.address
       if (memo[key]) return memo
       memo[key] = token
       return memo

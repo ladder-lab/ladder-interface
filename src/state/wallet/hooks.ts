@@ -1,7 +1,8 @@
 import { useMemo, useState, useEffect } from 'react'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 import ERC21155_ABI from 'constants/abis/erc1155.json'
-import { use1155Contract, useMulticallContract } from '../../hooks/useContract'
+import ERC2721_ABI from 'constants/abis/erc721.json'
+import { use1155Contract, use721Contract, useMulticallContract } from '../../hooks/useContract'
 import { getContract, isAddress } from '../../utils'
 import { useSingleContractMultipleData, useMultipleContractSingleData, useSingleCallResult } from '../multicall/hooks'
 import { Currency, ETHER, Token, JSBI, CurrencyAmount, TokenAmount } from '@ladder/sdk'
@@ -10,6 +11,7 @@ import { useAllTokens } from 'hooks/Tokens'
 import { Token1155 } from 'constants/token/token1155'
 import { checkIs1155 } from 'utils/checkIs1155'
 import { useBlockNumber } from 'state/application/hooks'
+import { Token721 } from 'constants/token/token721'
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -193,7 +195,125 @@ export function useToken1155Balance(token?: Token1155 | null | undefined) {
   const contract = use1155Contract(token?.address ? token.address : undefined)
   const balance = useSingleCallResult(contract, 'balanceOf', args)
 
-  return token && balance.result ? new TokenAmount(token, balance.result[0]?.toString()) : undefined
+  const amount = useMemo(() => {
+    return token && balance.result ? new TokenAmount(token, balance.result[0]?.toString()) : undefined
+  }, [balance.result, token])
+
+  return amount
+}
+
+export function useToken721Balances(tokens?: Token721[] | null | undefined) {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(undefined)
+  const [balances, setBalances] = useState<TokenAmount[] | undefined>(undefined)
+  const { account, library } = useActiveWeb3React()
+  const blockNumber = useBlockNumber()
+
+  const calls = useMemo(() => {
+    if (!tokens || !library) return undefined
+    return Promise.all(
+      tokens.map(({ address }) => {
+        const contract = getContract(address, ERC2721_ABI, library, account ?? undefined)
+        if (!contract) return undefined
+        return contract.balanceOf(account)
+      })
+    )
+  }, [account, library, tokens])
+
+  useEffect(() => {
+    ;(async () => {
+      setError(undefined)
+      setLoading(true)
+      try {
+        const callRes = await calls
+
+        setLoading(false)
+
+        const res = tokens?.map((token, idx) => new TokenAmount(token, callRes?.[idx]?.toString() ?? '0'))
+        setBalances(res)
+      } catch (e: any) {
+        setLoading(false)
+        setError(e.message)
+        console.error(e.message)
+        setBalances(undefined)
+      }
+    })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [calls, blockNumber, tokens])
+
+  return { loading, error, balances }
+}
+
+export function useToken721Balance(token?: Token721 | null | undefined) {
+  const { account } = useActiveWeb3React()
+
+  const args = useMemo(() => {
+    return [account ?? undefined]
+  }, [account])
+
+  const contract = use721Contract(isAddress(token?.address) ? token?.address : undefined)
+  const balance = useSingleCallResult(contract, 'balanceOf', args)
+
+  const amount = useMemo(() => {
+    return token && balance.result ? new TokenAmount(token, balance.result[0]?.toString()) : undefined
+  }, [balance.result, token])
+
+  return amount
+}
+
+export function useToken721BalanceTokens(tokenAmount?: TokenAmount): {
+  loading: boolean
+  availableTokens: undefined | Array<Token721> | undefined
+} {
+  const { account, chainId } = useActiveWeb3React()
+  const [loading, setLoading] = useState(false)
+  const [tokens, setTokens] = useState<Token721[] | undefined>(undefined)
+
+  const contract = use721Contract(isAddress(tokenAmount?.token?.address) ? tokenAmount?.token?.address : undefined)
+
+  const calls = useMemo(() => {
+    const balance = tokenAmount?.toExact()
+
+    if (!balance || !account || !contract) return
+
+    const total = parseInt(balance)
+    const arr = Array.from(Array(total).keys()).map((_, idx) => {
+      return contract.tokenOfOwnerByIndex(account, idx)
+    })
+    return arr
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, contract, tokenAmount?.toExact()])
+
+  useEffect(() => {
+    if (!calls || !chainId || !tokenAmount?.raw) {
+      return
+    }
+    ;(async () => {
+      setLoading(true)
+      try {
+        const indexes = await Promise.all(calls)
+        const tokens = indexes.map(
+          id =>
+            new Token721(chainId, tokenAmount.token.address, id.toString(), {
+              name: tokenAmount.token.name,
+              symbol: tokenAmount.token.symbol
+            })
+        )
+        setTokens(tokens)
+        setLoading(false)
+      } catch (e) {
+        setLoading(false)
+        console.error('cannot get 721 available ids')
+      }
+    })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [calls, chainId, tokenAmount?.toExact()])
+
+  const res = useMemo(() => {
+    return { loading, availableTokens: tokens }
+  }, [loading, tokens])
+
+  return res
 }
 
 export function useTokenTotalSupplies(tokens?: (Token | undefined)[]): {
