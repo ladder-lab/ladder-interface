@@ -1,7 +1,7 @@
 import { Currency, CurrencyAmount, ETHER, JSBI, Pair, Percent, Price, Token, TokenAmount } from '@ladder/sdk'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { checkIs1155 } from 'utils/checkIs1155'
+import { checkIs1155, checkIs721 } from 'utils/checkIs1155'
 import { generateErc20 } from 'utils/getHashAddress'
 import { PairState, usePair } from '../../data/Reserves'
 import { useTotalSupply } from '../../data/TotalSupply'
@@ -84,8 +84,10 @@ export function useDerivedMintInfo(
 
   // pair
   const [pairState, pair] = usePair(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B])
+
   const totalSupply = useTotalSupply(pair?.liquidityToken)
   const lpBalance = useTokenBalance(account ?? undefined, pair?.liquidityToken)
+  console.log('pair', currencies, pair, totalSupply, lpBalance)
 
   const noLiquidity: boolean =
     pairState === PairState.NOT_EXISTS || Boolean(totalSupply && JSBI.equal(totalSupply.raw, ZERO))
@@ -226,10 +228,11 @@ export function useDerivedMintInfo(
   //   error = error ?? 'Insufficient Amount'
   // }
 
-  const isA1155 = checkIs1155(currencyA)
-  const isB1155 = checkIs1155(currencyB)
-  if (isA1155 && isB1155) {
-    error = error ?? 'Invalid pair'
+  const isANft = checkIs1155(currencyA) || checkIs721(currencyA)
+  const isBNft = checkIs1155(currencyB) || checkIs721(currencyB)
+
+  if (isANft && isBNft) {
+    error = 'Invalid pair'
   }
 
   return {

@@ -216,9 +216,10 @@ export function useCurrency(
   standard?: string
 ): Currency | null | undefined {
   const isETH = currencyId?.toUpperCase() === 'ETH'
-  const token1155 = useToken1155(!isETH && tokenId ? currencyId : undefined, tokenId)
-  const token = useToken(isETH || tokenId ? undefined : currencyId)
-  const token721 = useToken721(currencyId)
+  const is721 = standard === 'erc721' || tokenId === 'erc721'
+  const token1155 = useToken1155(!isETH && !is721 && tokenId ? currencyId : undefined, tokenId)
+  const token = useToken(isETH || tokenId || is721 ? undefined : currencyId)
+  const token721 = useToken721(is721 ? currencyId : undefined)
 
-  return standard === 'erc721' ? token721 : tokenId ? token1155 : isETH ? ETHER : token
+  return is721 ? token721 : tokenId ? token1155 : isETH ? ETHER : token
 }

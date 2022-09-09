@@ -9,7 +9,7 @@ import { Currency, ETHER, Token, JSBI, CurrencyAmount, TokenAmount } from '@ladd
 import { useActiveWeb3React } from 'hooks'
 import { useAllTokens } from 'hooks/Tokens'
 import { Token1155 } from 'constants/token/token1155'
-import { checkIs1155 } from 'utils/checkIs1155'
+import { checkIs1155, checkIs721 } from 'utils/checkIs1155'
 import { useBlockNumber } from 'state/application/hooks'
 import { Token721 } from 'constants/token/token721'
 
@@ -129,9 +129,14 @@ export function useCurrencyBalances(
 
 export function useCurrencyBalance(account?: string, currency?: Currency): CurrencyAmount | undefined {
   const is1155 = checkIs1155(currency)
+  const is721 = checkIs721(currency)
   const token1155Balance = useToken1155Balance(is1155 ? (currency as Token1155) : undefined)
-  const balances = useCurrencyBalances(is1155 ? undefined : account, [currency])[0]
-  return is1155 ? token1155Balance : balances
+
+  const token721Balance = useToken721Balance(is721 ? (currency as Token721) : undefined)
+
+  const balances = useCurrencyBalances(is1155 || is721 ? undefined : account, [currency])[0]
+
+  return is721 ? token721Balance : is1155 ? token1155Balance : balances
 }
 
 // mimics useAllBalances
@@ -251,11 +256,11 @@ export function useToken721Balance(token?: Token721 | null | undefined) {
     return [account ?? undefined]
   }, [account])
 
-  const contract = use721Contract(isAddress(token?.address) ? token?.address : undefined)
-  const balance = useSingleCallResult(contract, 'balanceOf', args)
+  const contract = use721Contract(!!token && isAddress(token?.address) ? token?.address : undefined)
+  const balance = useSingleCallResult(!!token && account ? contract : null, 'balanceOf', args)
 
   const amount = useMemo(() => {
-    return token && balance.result ? new TokenAmount(token, balance.result[0]?.toString()) : undefined
+    return !!token && balance.result ? new TokenAmount(token, balance.result[0]?.toString()) : undefined
   }, [balance.result, token])
 
   return amount
