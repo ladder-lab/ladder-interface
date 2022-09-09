@@ -6,7 +6,7 @@ import { useTransactionAdder, useHasPendingApproval } from '../state/transaction
 import { calculateGasMargin } from '../utils'
 import { useTokenContract } from './useContract'
 import { useActiveWeb3React } from './index'
-import { Trade, CurrencyAmount, TokenAmount, ETHER } from '@uniswap/sdk'
+import { Trade, CurrencyAmount, TokenAmount, ETHER } from '@ladder/sdk'
 import { computeSlippageAdjustedAmounts } from 'utils/swap/prices'
 import { ROUTER_ADDRESS } from 'constants/index'
 import { Field } from 'state/swap/actions'

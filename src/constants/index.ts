@@ -1,6 +1,7 @@
-import { Percent, JSBI, WETH, ChainId, Token } from '@uniswap/sdk'
+import { Percent, JSBI, WETH, ChainId, Token } from '@ladder/sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
+import { NETWORK_CHAIN_ID } from './chain'
 import { DEFAULT_1155_LIST } from './default1155List'
 
 type ChainTokenList = {
@@ -10,8 +11,24 @@ type ChainTokenList = {
 // used to ensure the user doesn't send so much ETH so they end up with <.01
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
 
-export const ROUTER_ADDRESS = '0x9f524cEe47d5f940eeb0Bba4419Bb176A722c51A'
-export const FACTORY_ADDRESS = '0x58efa15b89781ec6976a829b9f6e45623ad68429'
+export const ROUTER_ADDRESS =
+  (
+    {
+      [4]: '0x9f524cEe47d5f940eeb0Bba4419Bb176A722c51A',
+      [56]: '0x54F0d8485e931c22D542D7b95dbbf5ecdE9C91E8',
+      [1]: ''
+    } as any
+  )[NETWORK_CHAIN_ID] ?? ''
+
+export const FACTORY_ADDRESS =
+  (
+    {
+      [4]: '0x58efa15b89781ec6976a829b9f6e45623ad68429',
+      [56]: '0xa1bf45AF7cDe8c105054611383E8ae3dA65615a3',
+      [1]: ''
+    } as any
+  )[NETWORK_CHAIN_ID] ?? ''
+
 export const INIT_CODE_HASH = '0x419abd54eca263cfa3a929ec78f33149e6666220be682934d54d6166311a4ce7'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -28,7 +45,8 @@ const WETH_ONLY: ChainTokenList = {
   // [ChainId.RINKEBY]: [],
   [ChainId.RINKEBY]: [WETH[ChainId.RINKEBY]],
   [ChainId.GÖRLI]: [WETH[ChainId.GÖRLI]],
-  [ChainId.KOVAN]: [WETH[ChainId.KOVAN]]
+  [ChainId.KOVAN]: [WETH[ChainId.KOVAN]],
+  [ChainId.BSC]: [WETH[ChainId.BSC]]
 }
 
 // used to construct intermediary pairs for trading

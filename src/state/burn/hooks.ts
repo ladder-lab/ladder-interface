@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import { Currency, CurrencyAmount, JSBI, Pair, Percent, Token, TokenAmount } from '@uniswap/sdk'
+import { Currency, CurrencyAmount, JSBI, Pair, Percent, Token, TokenAmount } from '@ladder/sdk'
 import { useDispatch, useSelector } from 'react-redux'
 import { generateErc20 } from 'utils/getHashAddress'
 import { usePair } from '../../data/Reserves'

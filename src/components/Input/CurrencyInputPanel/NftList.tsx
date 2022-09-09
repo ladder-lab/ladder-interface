@@ -8,7 +8,7 @@ import { shortenAddress } from 'utils'
 import useModal from 'hooks/useModal'
 import { useIsDarkMode } from 'state/user/hooks'
 import useBreakpoint from 'hooks/useBreakpoint'
-import { Currency } from '@uniswap/sdk'
+import { Currency } from '@ladder/sdk'
 import { useToken1155Balance, useToken1155Balances } from 'state/wallet/hooks'
 import { Loader } from 'components/AnimatedSvg/Loader'
 
@@ -122,7 +122,10 @@ function NftCard({ token, onClick }: { token: Token1155; onClick: () => void }) 
         }
       }}
     >
-      <Image src={token?.uri ?? SampleNftImg} style={{ borderRadius: '8px', overflow: 'hidden', width: '100%' }} />
+      <Image
+        src={token?.uri ?? SampleNftImg}
+        style={{ borderRadius: '8px', overflow: 'hidden', width: '100%', height: 123, objectFit: 'contain' }}
+      />
       <Typography
         sx={{
           color: theme.palette.text.secondary,
@@ -146,7 +149,9 @@ function NftCard({ token, onClick }: { token: Token1155; onClick: () => void }) 
         {shortenAddress(token.address)}
       </Typography>
       <Typography sx={{ fontSize: 10, fontWeight: 600 }}>
-        {balance?.toFixed(0)} /<span style={{ color: theme.palette.text.secondary }}>1 M</span>
+        <span style={{ color: theme.palette.text.secondary }}>balance: </span>
+        {balance?.toFixed(0)}
+        {/* /<span style={{ color: theme.palette.text.secondary }}>1 M</span> */}
       </Typography>
     </Box>
   )

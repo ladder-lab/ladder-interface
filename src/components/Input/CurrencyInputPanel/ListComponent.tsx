@@ -3,12 +3,13 @@ import { FixedSizeList } from 'react-window'
 import { Box, Typography, styled } from '@mui/material'
 import useModal from 'hooks/useModal'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
-import { Currency } from '@uniswap/sdk'
+import { Currency } from '@ladder/sdk'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks'
 import Spinner from 'components/Spinner'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { Token1155 } from 'constants/token/token1155'
+import { getName, getSymbol } from 'utils/getSymbol'
 
 export function CurrencyListComponent({
   onSelect,
@@ -132,8 +133,8 @@ function CurrencyRow({ currency, onClick }: { currency: Currency; onClick: () =>
       <Box display="flex">
         <CurrencyLogo currency={currency} style={{ width: '30px', height: '30px' }} />
         <Box display="flex" flexDirection="column" marginLeft="16px">
-          <Typography variant="inherit">{currency.symbol}</Typography>
-          <Typography variant="caption">{currency.name}</Typography>
+          <Typography variant="inherit">{getSymbol(currency)}</Typography>
+          <Typography variant="caption">{getName(currency)}</Typography>
         </Box>
       </Box>
       <span style={{ fontWeight: 500 }}>
@@ -155,7 +156,7 @@ function CollectionRow({ collection, onClick }: { collection: Token1155; onClick
       <Box display="flex">
         {/* <CurrencyLogo currency={currency} style={{ width: '30px', height: '30px' }} /> */}
         <Box display="flex" flexDirection="column" marginLeft="16px">
-          <Typography variant="inherit">{collection.symbol}</Typography>
+          <Typography variant="inherit">{getSymbol(collection)}</Typography>
           {/* <Typography variant="caption">{currency.name}</Typography> */}
         </Box>
       </Box>

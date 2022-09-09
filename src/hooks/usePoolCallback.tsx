@@ -1,5 +1,5 @@
 import { TransactionResponse } from '@ethersproject/providers'
-import { ETHER } from '@uniswap/sdk'
+import { ETHER } from '@ladder/sdk'
 import { BigNumber, Contract } from 'ethers'
 import { splitSignature } from '@ethersproject/bytes'
 import { useActiveWeb3React } from 'hooks'

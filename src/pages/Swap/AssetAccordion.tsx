@@ -12,6 +12,7 @@ import LogoText from 'components/LogoText'
 import { ExternalLink } from 'theme/components'
 import { Token721 } from 'models/allTokens'
 import { shortenAddress } from 'utils'
+import { getName } from 'utils/getSymbol'
 
 export function AssetAccordion({
   token,
@@ -59,7 +60,7 @@ export function AssetAccordion({
       >
         <CurrencyLogo currency={token} style={{ width: 36 }} />
         <Box display="flex" flexDirection="column" gap={8} width="100%">
-          <Typography color={theme.palette.text.secondary}>Name: {token?.name ?? '-'}</Typography>
+          <Typography color={theme.palette.text.secondary}>Name: {getName(token) ?? '-'}</Typography>
           <Typography
             color={theme.palette.text.secondary}
             component="div"
@@ -96,7 +97,7 @@ export function AssetAccordion({
             <Box key={idx} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <LogoText
                 logo={<CurrencyLogo currency={token} style={{ width: 28 }} />}
-                text={token.name}
+                text={getName(token)}
                 fontSize={12}
               />
               <ExternalLink sx={{ color: theme.palette.text.secondary, fontSize: 12 }} href={'#'} showIcon>
