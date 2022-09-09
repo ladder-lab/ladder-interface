@@ -9,10 +9,10 @@ import { useCallback, useMemo, useState } from 'react'
 import { useDerivedBurnInfo } from 'state/burn/hooks'
 import { Field } from 'state/mint/actions'
 import { Field as BurnField } from 'state/burn/actions'
-import { useDerivedMintInfo } from 'state/mint/hooks'
+import { useDerivedMintInfo, useMintTokenIds } from 'state/mint/hooks'
 import { useTokenPairAdder, useUserSlippageTolerance } from 'state/user/hooks'
-import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'utils'
-import { checkIs1155, filter1155 } from 'utils/checkIs1155'
+import { calculateGasMargin, calculateSlippageAmount, getRouterContract, getRouterContract721 } from 'utils'
+import { checkIs1155, checkIs721, filter1155, filter721 } from 'utils/checkIs1155'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
 import { ApprovalState, useApproveCallback } from './useApproveCallback'
 import { usePairContract } from './useContract'
@@ -29,13 +29,17 @@ export function useMintCallback(currencyA: AllTokens | undefined, currencyB: All
   const [allowedSlippage] = useUserSlippageTolerance()
   const deadline = useTransactionDeadline()
   const addTokenPair = useTokenPairAdder()
+  const is721Pair = checkIs721(currencyA) || checkIs721(currencyB)
+  const tokenIds = useMintTokenIds()
 
   const addLiquidityCb = useCallback(async () => {
     if (!chainId || !library || !account || !currencyA || !currencyB) return
 
     addTokenPair(wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId))
 
-    const router = getRouterContract(chainId, library, account)
+    const router = is721Pair
+      ? getRouterContract721(chainId, library, account)
+      : getRouterContract(chainId, library, account)
 
     const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts
     if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline) {
@@ -51,18 +55,26 @@ export function useMintCallback(currencyA: AllTokens | undefined, currencyB: All
       method: (...args: any) => Promise<TransactionResponse>,
       args: Array<string | string[] | number>,
       value: BigNumber | null
-    const isA1155 = checkIs1155(currencyA)
-    const isB1155 = checkIs1155(currencyB)
+    const isA1155 = checkIs1155(currencyA) || checkIs721(currencyA)
+    const isB1155 = checkIs1155(currencyB) || checkIs721(currencyB)
 
     if (currencyA === ETHER || currencyB === ETHER) {
       const tokenBIsETH = currencyB === ETHER
       const noNft = !isA1155 && !isB1155
-      const methodName = noNft ? 'addLiquidityETH' : 'addLiquidityETH1155'
+      const methodName = noNft ? 'addLiquidityETH' : is721Pair ? 'addLiquidityETH721' : 'addLiquidityETH1155'
       estimate = router.estimateGas[methodName]
       method = router[methodName]
       args = [
         wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', // token
-        ...(noNft ? [] : [tokenBIsETH ? filter1155(currencyA)?.tokenId ?? '' : filter1155(currencyB)?.tokenId ?? '']), //tokenId
+        ...(noNft
+          ? []
+          : is721Pair
+          ? tokenIds ?? []
+          : [
+              tokenBIsETH
+                ? (filter1155(currencyA) ?? filter721(currencyA))?.tokenId ?? ''
+                : (filter1155(currencyB) ?? filter721(currencyB))?.tokenId ?? ''
+            ]), //tokenId
         (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
         amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
         amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // eth min
@@ -71,25 +83,38 @@ export function useMintCallback(currencyA: AllTokens | undefined, currencyB: All
       ]
       value = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString())
     } else {
-      const tokenAIs1155 = checkIs1155(currencyA)
+      const tokenAIs1155 = checkIs1155(currencyA) || checkIs721(currencyA)
       const noNft = !isA1155 && !isB1155
-      const methodName = noNft ? 'addLiquidity' : 'addLiquidity1155'
-      const token1155 = filter1155(tokenAIs1155 ? currencyA : currencyB)
+      const methodName = noNft ? 'addLiquidity' : is721Pair ? 'addLiquidity721' : 'addLiquidity1155'
+      const token1155 =
+        filter1155(tokenAIs1155 ? currencyA : currencyB) ?? filter721(tokenAIs1155 ? currencyA : currencyB)
       const token = tokenAIs1155 ? currencyB : currencyA
       estimate = router.estimateGas[methodName]
       method = router[methodName]
-      args = [
-        token1155?.address ?? '',
-        ...(noNft ? [] : [token1155?.tokenId ?? '']),
-        wrappedCurrency(token, chainId)?.address ?? '',
-        (tokenAIs1155 ? parsedAmountA : parsedAmountB).raw.toString(),
-        (tokenAIs1155 ? parsedAmountB : parsedAmountA).raw.toString(),
-        amountsMin[tokenAIs1155 ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
-        amountsMin[tokenAIs1155 ? Field.CURRENCY_B : Field.CURRENCY_A].toString(),
-        account,
-        deadline.toHexString()
-      ]
+
+      args = is721Pair
+        ? [
+            token1155?.address ?? '',
+            tokenIds,
+            ((tokenAIs1155 ? currencyB : currencyA) as any).address ?? '',
+            (tokenAIs1155 ? parsedAmountB : parsedAmountA).raw.toString(),
+            (tokenAIs1155 ? parsedAmountB : parsedAmountA).raw.toString(),
+            account,
+            deadline.toHexString()
+          ]
+        : [
+            token1155?.address ?? '',
+            ...(noNft ? [] : [token1155?.tokenId ?? '']),
+            wrappedCurrency(token, chainId)?.address ?? '',
+            (tokenAIs1155 ? parsedAmountA : parsedAmountB).raw.toString(),
+            (tokenAIs1155 ? parsedAmountB : parsedAmountA).raw.toString(),
+            amountsMin[tokenAIs1155 ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
+            amountsMin[tokenAIs1155 ? Field.CURRENCY_B : Field.CURRENCY_A].toString(),
+            account,
+            deadline.toHexString()
+          ]
       value = null
+      console.log('methodName', methodName, args)
     }
     const estimatedGasLimit = await estimate(...args, value ? { value } : {})
 
@@ -105,9 +130,11 @@ export function useMintCallback(currencyA: AllTokens | undefined, currencyB: All
     currencyA,
     currencyB,
     deadline,
+    is721Pair,
     library,
     noLiquidity,
-    parsedAmounts
+    parsedAmounts,
+    tokenIds
   ])
 
   return useMemo(

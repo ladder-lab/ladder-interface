@@ -10,9 +10,9 @@ import Copy from 'components/essential/Copy'
 // import SampleNftImg from 'assets/images/sample-nft.png'
 import LogoText from 'components/LogoText'
 import { ExternalLink } from 'theme/components'
-import { Token721 } from 'models/allTokens'
 import { shortenAddress } from 'utils'
 import { getName } from 'utils/getSymbol'
+import { Token721 } from 'constants/token/token721'
 
 export function AssetAccordion({
   token,

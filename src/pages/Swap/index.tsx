@@ -26,7 +26,7 @@ import useModal from 'hooks/useModal'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import { Currency } from 'constants/token'
-import { checkIs1155, checkIs721 } from 'utils/checkIs1155'
+import { checkIs721 } from 'utils/checkIs1155'
 import { Token721 } from 'constants/token/token721'
 import { useSwap721State } from 'state/swap/useSwap721State'
 
@@ -214,7 +214,7 @@ export default function Swap() {
     [onCurrencySelection]
   )
 
-  const { onSubTokenSelection, tokenIds } = useSwap721State()
+  const { onSubTokenSelection /*, tokenIds*/ } = useSwap721State()
 
   const handleFromSubAssets = useCallback(
     (tokens: Token721[]) => {

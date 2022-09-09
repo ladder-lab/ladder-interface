@@ -4,7 +4,6 @@ import { isAddress } from 'utils'
 import { useAddUserToken, useTrackedToken721List } from 'state/user/hooks'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { CollectionListComponent } from './ListComponent'
-import useERC721Tokens from 'hooks/useERC721'
 import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
 
 // TOOD: Update to ERC721
@@ -60,7 +59,7 @@ export default function ERC721List({
 
       hideModal()
     },
-    [onSelectCurrency]
+    [hideModal, onSelectCurrency]
   )
 
   // const onRemoveCollection = useCallback(() => {

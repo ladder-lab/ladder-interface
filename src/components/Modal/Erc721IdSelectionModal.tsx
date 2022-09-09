@@ -14,7 +14,6 @@ import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { ReactComponent as ExternalIcon } from 'assets/svg/external_arrow.svg'
 import { useCallback, useEffect } from 'react'
 import { useToken721Balance, useToken721BalanceTokens } from 'state/wallet/hooks'
-import useModal from 'hooks/useModal'
 import { shortenAddress } from 'utils'
 import { useERC721Tokens } from 'state/swap/useSwap721State'
 
@@ -32,7 +31,6 @@ export default function Erc721IdSelectionModal({
   amount: number
 }) {
   const isDownMd = useBreakpoint('md')
-  const { hideModal } = useModal()
 
   const { onClearTokens, onRemoveToken, onAddToken, tokens } = useERC721Tokens()
 
@@ -45,8 +43,8 @@ export default function Erc721IdSelectionModal({
     }
 
     onSelectSubTokens && onSelectSubTokens(tokens)
-    hideModal()
-  }, [amount, collection, hideModal, onSelectSubTokens, tokens])
+    onDismiss()
+  }, [amount, collection, onDismiss, onSelectSubTokens, tokens])
 
   useEffect(() => {
     onClearTokens()
