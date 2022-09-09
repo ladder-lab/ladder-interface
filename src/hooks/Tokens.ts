@@ -210,10 +210,15 @@ export function useToken721(tokenAddress?: string, tokenId?: string | number | u
   }, [address, chainId, nameRes.result, symbolRes.result, tokenAddress, tokenId])
 }
 
-export function useCurrency(currencyId: string | undefined, tokenId?: string | number): Currency | null | undefined {
+export function useCurrency(
+  currencyId: string | undefined,
+  tokenId?: string | number,
+  standard?: string
+): Currency | null | undefined {
   const isETH = currencyId?.toUpperCase() === 'ETH'
   const token1155 = useToken1155(!isETH && tokenId ? currencyId : undefined, tokenId)
   const token = useToken(isETH || tokenId ? undefined : currencyId)
+  const token721 = useToken721(currencyId)
 
-  return tokenId ? token1155 : isETH ? ETHER : token
+  return standard === 'erc721' ? token721 : tokenId ? token1155 : isETH ? ETHER : token
 }

@@ -1,5 +1,5 @@
 import { useCallback, useState, ChangeEvent, useMemo, useEffect } from 'react'
-import { Typography, Box, Button, ButtonBase } from '@mui/material'
+import { Typography, Box, Button } from '@mui/material'
 import { CurrencyAmount, JSBI, Trade } from '@ladder/sdk'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
@@ -26,21 +26,16 @@ import useModal from 'hooks/useModal'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import { Currency } from 'constants/token'
-import QuestionHelper from 'components/essential/QuestionHelper'
-import { Token721 } from 'models/allTokens'
 import { checkIs1155 } from 'utils/checkIs1155'
-
-enum SwapType {
-  AUTO = 'auto',
-  MANUAL = 'Choose by yourself'
-}
+import { Token721 } from 'constants/token/token721'
+import { useSwap721State } from 'state/swap/useSwap721State'
 
 export default function Swap() {
   // const theme = useTheme()
   const { account } = useActiveWeb3React()
 
   const [summaryExpanded, setSummaryExpanded] = useState(false)
-  const [swapType, setSwapType] = useState(SwapType.AUTO)
+
   // modal and loading
   const [{ showConfirm, tradeToConfirm, attemptingTxn, txHash }, setSwapState] = useState<{
     showConfirm: boolean
@@ -202,36 +197,40 @@ export default function Swap() {
 
   const handleFromAsset = useCallback(
     (currency: AllTokens) => {
-      // TODO: checkIs721
-      const is721 = checkIs1155(currency)
-      if (!is721) {
-        setFromErc721SubTokens(null)
-      }
       setApprovalSubmitted(false) // reset 2 step UI for approvals
       onCurrencySelection(Field.INPUT, currency)
     },
-    [onCurrencySelection, setFromErc721SubTokens]
+    [onCurrencySelection]
   )
 
   const handleToAsset = useCallback(
     (currency: AllTokens) => {
-      // TODO: checkIs721
-      const is721 = checkIs1155(currency)
-      if (!is721) {
-        setToErc721SubTokens(null)
-      }
       onCurrencySelection(Field.OUTPUT, currency)
     },
-    [onCurrencySelection, setToErc721SubTokens]
+    [onCurrencySelection]
   )
 
-  const handleFromSubAssets = useCallback((tokens: Token721[]) => {
-    setFromErc721SubTokens(tokens)
-  }, [])
+  const { onSubTokenSelection, tokenIds } = useSwap721State()
 
-  const handleToSubAssets = useCallback((tokens: Token721[]) => {
-    setToErc721SubTokens(tokens)
-  }, [])
+  const handleFromSubAssets = useCallback(
+    (tokens: Token721[]) => {
+      if (fromAsset) {
+        const ids: any[] = tokens.map(({ tokenId }) => tokenId).filter(id => id !== undefined)
+        onSubTokenSelection(Field.INPUT, fromAsset, ids)
+      }
+    },
+    [fromAsset, onSubTokenSelection]
+  )
+
+  const handleToSubAssets = useCallback(
+    (tokens: Token721[]) => {
+      if (toAsset) {
+        const ids: any[] = tokens.map(({ tokenId }) => tokenId).filter(id => id !== undefined)
+        onSubTokenSelection(Field.OUTPUT, toAsset, ids)
+      }
+    },
+    [onSubTokenSelection, toAsset]
+  )
 
   const error = useMemo(() => {
     if (!fromAsset || !toAsset) {
@@ -314,20 +313,6 @@ export default function Swap() {
             }}
           >
             <SwitchCircle onClick={onSwitch} style={{ cursor: account ? 'pointer' : 'auto' }} />
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 12, mt: 16 }}>
-              <SwapTypeButton
-                selected={swapType === SwapType.AUTO}
-                text={SwapType.AUTO}
-                helperText="auto..."
-                onClick={() => setSwapType(SwapType.AUTO)}
-              />
-              <SwapTypeButton
-                selected={swapType === SwapType.MANUAL}
-                text={SwapType.MANUAL}
-                helperText="choose by yourself..."
-                onClick={() => setSwapType(SwapType.MANUAL)}
-              />
-            </Box>
           </Box>
           <Box mb={toAsset ? 16 : 0}>
             <CurrencyInputPanel
@@ -460,33 +445,5 @@ function TokenInfo({
         </Box>
       </Box>
     </AppBody>
-  )
-}
-
-function SwapTypeButton({
-  onClick,
-  text,
-  helperText,
-  selected
-}: {
-  onClick: () => void
-  text: string
-  helperText: string
-  selected: boolean
-}) {
-  return (
-    <ButtonBase
-      onClick={onClick}
-      sx={{
-        height: 22,
-        padding: '0 12px',
-        borderRadius: '10px',
-        background: theme => (selected ? theme.palette.background.default : 'none'),
-        border: theme => `1px solid ${selected ? 'none' : theme.palette.primary.main}`
-      }}
-    >
-      <Typography sx={{ color: theme => theme.palette.primary.main, mr: 4 }}>{text}</Typography>
-      <QuestionHelper text={helperText} />
-    </ButtonBase>
   )
 }
