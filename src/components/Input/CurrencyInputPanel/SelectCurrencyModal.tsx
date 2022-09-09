@@ -6,7 +6,7 @@ import CurrencyList from './CurrencyList'
 import Input from 'components/Input'
 import QuestionHelper from 'components/essential/QuestionHelper'
 import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
-import NftList from './NftList'
+import NftList from './ERC1155List'
 import { COMMON_CURRENCIES } from 'constants/currencies'
 import { useAllTokens, useIsUserAddedToken, useIsUserAddedToken1155, useToken, useToken1155 } from 'hooks/Tokens'
 import useDebounce from 'hooks/useDebounce'
@@ -22,7 +22,7 @@ import useBreakpoint from 'hooks/useBreakpoint'
 import { useAddUserToken, useIsDarkMode, useTrackedToken1155List } from 'state/user/hooks'
 import { Token1155 } from 'constants/token/token1155'
 import ERC721List from './ERC721List'
-import { Token721 } from 'models/allTokens'
+import { Token721 } from 'constants/token/token721'
 
 export enum Mode {
   ERC20 = 'erc20',
@@ -310,8 +310,8 @@ export default function SelectCurrencyModal({
 
           {mode === Mode.ERC721 && (
             <ERC721List
-              searchToken={searchTokenNFT}
-              searchTokenIsAdded={searchTokenIsAddedNFT}
+              // searchToken={searchTokenNFT}
+              // searchTokenIsAdded={searchTokenIsAddedNFT}
               onSelectCurrency={onSelectCurrency}
               onSelectSubTokens={onSelectSubTokens}
               // commonCollectionList={commonCollectionList}
@@ -319,40 +319,7 @@ export default function SelectCurrencyModal({
               // selectedCollection={collection}
               // onSelectCollection={setCollection}
               // selectedCurrencies={filteredTokens1155}
-            >
-              <>
-                {/* <Box display="flex" alignItems="center" gap={3} mb={16}> */}
-                {/* <Typography fontSize={16} fontWeight={500}>
-                    Don&apos;t see your NFT ?
-                  </Typography> */}
-                {/* <ButtonBase
-                    sx={{
-                      color: theme => theme.palette.primary.main,
-                      fontSize: 16,
-                      fontWeight: 500,
-                      ml: 10,
-                      '&:hover': {
-                        color: theme => theme.palette.primary.dark
-                      }
-                    }}
-                    onClick={onImport}
-                  >
-                    Import it
-                  </ButtonBase> */}
-                {/* </Box> */}
-
-                <Input
-                  value={searchQueryNFT}
-                  onChange={handleInput}
-                  placeholder="Search name or paste address"
-                  // outlined
-                  startAdornment={<SearchIcon />}
-                  onKeyDown={handleEnter1155}
-                  height={isDownMd ? 48 : 60}
-                />
-              </>
-              <Box sx={{ display: 'flex' }}></Box>
-            </ERC721List>
+            />
           )}
 
           <Box

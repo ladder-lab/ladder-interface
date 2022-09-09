@@ -6,23 +6,26 @@ import MuiStepLabel from '@mui/material/StepLabel'
 import MuiStepConnector, { stepConnectorClasses } from '@mui/material/StepConnector'
 import { styled } from '@mui/material/styles'
 import { ReactComponent as StepCompletedIcon } from 'assets/componentsIcon/step_completed_icon.svg'
+import { Box } from '@mui/material'
+
 interface Props {
   activeStep: number
   steps: number[]
   completedIcon?: React.ReactNode
   connector?: ReactElement
   onStep?: (step: number) => void
+  stepsDescription?: string[]
 }
 
-const Connector = styled(MuiStepConnector)(() => ({
+const Connector = styled(MuiStepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.active}`]: {
     [`& .${stepConnectorClasses.line}`]: {
-      backgroundImage: 'linear-gradient(90deg, #24FF00 0%, #FFFFFF 100%)'
+      backgroundImage: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, #FFFFFF 100%)`
     }
   },
   [`&.${stepConnectorClasses.completed}`]: {
     [`& .${stepConnectorClasses.line}`]: {
-      backgroundImage: 'linear-gradient(90deg, #24FF00 100%, #FFFFFF 100%)'
+      backgroundImage: `linear-gradient(90deg, ${theme.palette.primary.main} 100%, #FFFFFF 100%)`
     }
   },
   [`& .${stepConnectorClasses.line}`]: {
@@ -34,17 +37,24 @@ const Connector = styled(MuiStepConnector)(() => ({
 }))
 
 export default function Stepper(props: Props) {
-  const { activeStep, steps, completedIcon = <StepCompletedIcon />, connector = <Connector />, onStep } = props
+  const {
+    activeStep,
+    steps,
+    completedIcon = <StepCompletedIcon />,
+    connector = <Connector />,
+    onStep,
+    stepsDescription
+  } = props
 
   const onClick = useCallback((val: string | number) => () => onStep && onStep(parseInt(val + '')), [onStep])
 
   function StepIcon(props: any) {
     const { active, completed, children } = props
     return (
-      <div
-        style={{
+      <Box
+        sx={{
           borderRadius: '50%',
-          border: completed ? '1px solid transparent' : '1px solid #FFFFFF',
+          border: completed ? '1px solid transparent' : '1px solid currentColor',
           opacity: active || completed ? 1 : 0.4,
           width: 22,
           height: 22,
@@ -54,7 +64,7 @@ export default function Stepper(props: Props) {
         }}
       >
         {completed ? completedIcon : children}
-      </div>
+      </Box>
     )
   }
 
@@ -64,11 +74,16 @@ export default function Stepper(props: Props) {
         <MuiStep key={label}>
           <MuiStepButton
             onClick={onClick(index)}
-            disabled={!onClick}
+            disabled={!onClick || index > activeStep}
+            disableRipple
             sx={{
               ':disabled': {
                 cursor: 'pointer',
                 pointerEvents: 'auto'
+              },
+              color: theme => (index < activeStep ? theme.palette.primary.main : 'auto'),
+              '&:hover': {
+                opacity: 0.8
               }
             }}
           >
@@ -79,9 +94,14 @@ export default function Stepper(props: Props) {
                   cursor: 'pointer',
                   pointerEvents: 'auto',
                   userSelect: 'all'
+                },
+                '& .Mui-completed': {
+                  color: theme => theme.palette.primary.main
                 }
               }}
-            />
+            >
+              {stepsDescription && stepsDescription[index]}
+            </MuiStepLabel>
           </MuiStepButton>
         </MuiStep>
       ))}

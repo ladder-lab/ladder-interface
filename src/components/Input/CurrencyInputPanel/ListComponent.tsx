@@ -8,8 +8,8 @@ import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks'
 import Spinner from 'components/Spinner'
 import useBreakpoint from 'hooks/useBreakpoint'
-import { Token1155 } from 'constants/token/token1155'
 import { getName, getSymbol } from 'utils/getSymbol'
+import { Token721 } from 'constants/token/token721'
 
 export function CurrencyListComponent({
   onSelect,
@@ -70,21 +70,21 @@ export function CollectionListComponent({
   options,
   fixedListRef
 }: {
-  onSelect?: (collection: Token1155) => void
-  options: Token1155[]
+  onSelect?: (collection: Token721) => void
+  options: Token721[]
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>
 }) {
   const isDownMd = useBreakpoint('md')
 
-  const key = useCallback((collection: Token1155): string => {
-    return collection ? collection.tokenId.toString() || '' : ''
-  }, [])
+  // const key = useCallback((collection: Token721): string => {
+  //   return collection ? collection.tokenId?.toString() || idx + '' : ''
+  // }, [])
 
-  const itemKey = useCallback((index: number, data: any) => key(data[index]), [key])
+  // const itemKey = useCallback((index: number, data: any) => key(data[index]), [key])
 
   const Rows = useCallback(
     ({ data, index }: any) => {
-      const collection: Token1155 = data[index]
+      const collection: Token721 = data[index]
       const onClickCollection = () => {
         onSelect && onSelect(collection)
       }
@@ -96,12 +96,12 @@ export function CollectionListComponent({
 
   return (
     <FixedSizeList
-      height={isDownMd ? 290 : 450}
+      height={isDownMd ? 290 : 365}
       width="100%"
       itemCount={options.length}
       itemSize={56}
       itemData={options}
-      itemKey={itemKey}
+      // itemKey={itemKey}
       ref={fixedListRef as any}
     >
       {Rows}
@@ -150,7 +150,7 @@ function CurrencyRow({ currency, onClick }: { currency: Currency; onClick: () =>
   )
 }
 
-function CollectionRow({ collection, onClick }: { collection: Token1155; onClick: () => void }) {
+function CollectionRow({ collection, onClick }: { collection: Token721; onClick: () => void }) {
   return (
     <ListItem onClick={onClick}>
       <Box display="flex">

@@ -1,15 +1,13 @@
-import { ChainId } from '../chain'
-// import ERC1155Abi from 'constants/abis/erc1155.json'
+import { ChainId, NETWORK_CHAIN_ID } from '../chain'
 import { Token } from '@ladder/sdk'
 import { Axios } from 'utils/axios'
-// import { getContract } from 'utils'
 
 /**
- * Represents an ERC1155 token with a unique address and some metadata.
+ * Represents an ERC721 token with a unique address and some metadata.
  */
-export class Token1155 extends Token {
-  public readonly tokenId: string | number
-  public readonly is1155: boolean
+export class Token721 extends Token {
+  public readonly tokenId: string | number | undefined
+  public readonly is721: true
   public name?: string
   public uri?: string
   public symbol?: string
@@ -17,7 +15,7 @@ export class Token1155 extends Token {
   public constructor(
     chainId: ChainId,
     address: string,
-    tokenId: string | number,
+    tokenId: string | number | undefined,
     metadata?: {
       name?: string
       symbol?: string
@@ -25,23 +23,24 @@ export class Token1155 extends Token {
     }
   ) {
     super(chainId, address, 0, metadata?.symbol, metadata?.name)
-    this.tokenId = tokenId + ''
-    this.is1155 = true
+    this.tokenId = tokenId === '' ? undefined : tokenId
+    this.is721 = true
     this.uri = metadata?.uri
-    this.name = metadata?.name
-    this.symbol = metadata?.symbol
+    this.name = metadata?.name ?? 'ERC721'
+    this.symbol = metadata?.symbol ?? 'NFT'
 
-    if (!metadata) {
-      Axios.getMetadata(address, tokenId)
-        .then(r => {
-          const metadata = r.data.result.metadata
-          this.uri = metadata.image
-          this.name = metadata.name
-          this.symbol = 'NFT'
-        })
-        .catch(e => {
-          console.error(e)
-        })
+    if (!metadata && NETWORK_CHAIN_ID !== 4) {
+      if (tokenId) {
+        Axios.getMetadata(address, tokenId)
+          .then(r => {
+            const metadata = r.data.result.metadata
+            this.uri = metadata.image
+            this.name = metadata.name
+          })
+          .catch(e => {
+            console.error(e)
+          })
+      }
     }
   }
 
@@ -49,7 +48,7 @@ export class Token1155 extends Token {
    * Returns true if the two tokens are equivalent, i.e. have the same chainId and address.
    * @param other other token to compare
    */
-  public equals(other: Token1155): boolean {
+  public equals(other: Token721): boolean {
     // short circuit on reference equality
     if (this === other) {
       return true
