@@ -28,6 +28,7 @@ import TransactionSubmittedModal from 'components/Modal/TransactionModals/Transa
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useCurrency } from 'hooks/Tokens'
 import { getSymbol } from 'utils/getSymbol'
+import { checkIs721 } from 'utils/checkIs1155'
 
 export default function AddLiquidy() {
   const [currencyA, setCurrencyA] = useState<undefined | AllTokens>(undefined)
@@ -86,8 +87,16 @@ export default function AddLiquidy() {
   )
 
   // check whether the user has approved the router on the tokens
-  const [approvalA, approveACallback] = useAllTokenApproveCallback(currencyA, parsedAmounts[Field.CURRENCY_A])
-  const [approvalB, approveBCallback] = useAllTokenApproveCallback(currencyB, parsedAmounts[Field.CURRENCY_B])
+  const [approvalA, approveACallback] = useAllTokenApproveCallback(
+    currencyA,
+    parsedAmounts[Field.CURRENCY_A],
+    checkIs721(currencyB)
+  )
+  const [approvalB, approveBCallback] = useAllTokenApproveCallback(
+    currencyB,
+    parsedAmounts[Field.CURRENCY_B],
+    checkIs721(currencyA)
+  )
 
   const handleMaxInputA = useCallback(() => {
     onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')

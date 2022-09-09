@@ -8,15 +8,16 @@ import { useTokenContract } from './useContract'
 import { useActiveWeb3React } from './index'
 import { Trade, CurrencyAmount, TokenAmount, ETHER } from '@ladder/sdk'
 import { computeSlippageAdjustedAmounts } from 'utils/swap/prices'
-import { ROUTER_ADDRESS } from 'constants/index'
+import { ROUTER_ADDRESS, ROUTER_ADDRESS_721 } from 'constants/index'
 import { Field } from 'state/swap/actions'
 import { useApproveERC1155Callback } from './useApproveERC1155Callback'
-import { checkIs1155, filter1155 } from 'utils/checkIs1155'
+import { checkIs1155, checkIs721, filter1155, filter721 } from 'utils/checkIs1155'
 import { AllTokens } from 'models/allTokens'
 import useModal from './useModal'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
+import { useApproveERC721Callback } from './useApproveERC721Callback'
 
 export enum ApprovalState {
   UNKNOWN,
@@ -121,9 +122,14 @@ export function useApproveCallbackFromTrade(trade?: Trade, allowedSlippage = 0) 
   return useApproveCallback(amountToApprove, ROUTER_ADDRESS)
 }
 
-export function useAllTokenApproveCallback(token: AllTokens | undefined, amount?: CurrencyAmount) {
+export function useAllTokenApproveCallback(token: AllTokens | undefined, amount?: CurrencyAmount, is721Pair?: boolean) {
   const is1155 = checkIs1155(token)
-  const erc20 = useApproveCallback(amount, ROUTER_ADDRESS)
+  const is721 = checkIs721(token)
+  const erc20 = useApproveCallback(
+    is1155 || is721 ? undefined : amount,
+    is721Pair ? ROUTER_ADDRESS_721 : ROUTER_ADDRESS
+  )
   const erc1155 = useApproveERC1155Callback(filter1155(token))
-  return is1155 ? erc1155 : erc20
+  const erc721 = useApproveERC721Callback(filter721(token))
+  return is721 ? erc721 : is1155 ? erc1155 : erc20
 }

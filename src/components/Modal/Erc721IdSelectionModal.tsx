@@ -12,11 +12,11 @@ import { ReactComponent as Xcircle } from 'assets/svg/xcircle.svg'
 // import { ReactComponent as XcircleSm } from 'assets/svg/xcirclesm.svg'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { ReactComponent as ExternalIcon } from 'assets/svg/external_arrow.svg'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useToken721Balance, useToken721BalanceTokens } from 'state/wallet/hooks'
 import useModal from 'hooks/useModal'
-import useERC721 from 'hooks/useERC721'
 import { shortenAddress } from 'utils'
+import { useERC721Tokens } from 'state/swap/useSwap721State'
 
 export default function Erc721IdSelectionModal({
   isOpen,
@@ -34,7 +34,7 @@ export default function Erc721IdSelectionModal({
   const isDownMd = useBreakpoint('md')
   const { hideModal } = useModal()
 
-  const { onClearTokens, onRemoveToken, onAddToken, tokens } = useERC721()
+  const { onClearTokens, onRemoveToken, onAddToken, tokens } = useERC721Tokens()
 
   const balance = useToken721Balance(collection)
   const { loading, availableTokens } = useToken721BalanceTokens(balance)
@@ -47,6 +47,11 @@ export default function Erc721IdSelectionModal({
     onSelectSubTokens && onSelectSubTokens(tokens)
     hideModal()
   }, [amount, collection, hideModal, onSelectSubTokens, tokens])
+
+  useEffect(() => {
+    onClearTokens()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [collection])
 
   return (
     //   <Box margin="-24px 30px 30px">

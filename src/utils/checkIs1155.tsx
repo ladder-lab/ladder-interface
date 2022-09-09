@@ -4,7 +4,7 @@ import { Token721 } from 'constants/token/token721'
 import { AllTokens } from 'models/allTokens'
 
 export function checkIs721(token: AllTokens | null | undefined) {
-  return token && token instanceof Token721 && token.is721 == true
+  return !!token && !!(token instanceof Token721) && token.is721 == true
 }
 
 export function filter721(token: AllTokens | null | undefined) {
@@ -15,7 +15,7 @@ export function filter721(token: AllTokens | null | undefined) {
 }
 
 export function checkIs1155(token: AllTokens | null | undefined) {
-  return token && token instanceof Token1155 && token.is1155 == true
+  return !!token && !!(token instanceof Token1155) && token.is1155 == true
 }
 
 export function filter1155(token: AllTokens | null | undefined) {
