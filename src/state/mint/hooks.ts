@@ -11,7 +11,7 @@ import { wrappedCurrency, wrappedCurrencyAmount } from '../../utils/wrappedCurre
 import { AppDispatch, AppState } from '../index'
 import { tryParseAmount } from '../swap/hooks'
 import { useCurrencyBalance, useTokenBalance } from '../wallet/hooks'
-import { Field, typeInput } from './actions'
+import { Field, setTokenIds, typeInput } from './actions'
 
 const ZERO = JSBI.BigInt(0)
 
@@ -22,6 +22,7 @@ export function useMintState(): AppState['mint'] {
 export function useMintActionHandlers(noLiquidity: boolean | undefined): {
   onFieldAInput: (typedValue: string) => void
   onFieldBInput: (typedValue: string) => void
+  onSetTokenIds: (tokenIds: Array<string | number>) => void
 } {
   const dispatch = useDispatch<AppDispatch>()
 
@@ -38,9 +39,17 @@ export function useMintActionHandlers(noLiquidity: boolean | undefined): {
     [dispatch, noLiquidity]
   )
 
+  const onSetTokenIds = useCallback(
+    (tokenIds: Array<string | number>) => {
+      dispatch(setTokenIds({ tokenIds }))
+    },
+    [dispatch]
+  )
+
   return {
     onFieldAInput,
-    onFieldBInput
+    onFieldBInput,
+    onSetTokenIds
   }
 }
 
@@ -248,4 +257,9 @@ export function useDerivedMintInfo(
     poolTokenPercentage,
     error
   }
+}
+
+export function useMintTokenIds() {
+  const ids = useSelector((state: AppState) => state.mint.tokenIds)
+  return ids
 }

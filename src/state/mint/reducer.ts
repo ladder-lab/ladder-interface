@@ -1,16 +1,18 @@
 import { createReducer } from '@reduxjs/toolkit'
-import { Field, resetMintState, typeInput } from './actions'
+import { Field, resetMintState, setTokenIds, typeInput } from './actions'
 
 export interface MintState {
   readonly independentField: Field
   readonly typedValue: string
   readonly otherTypedValue: string // for the case when there's no liquidity
+  readonly tokenIds: undefined | Array<string | number>
 }
 
 const initialState: MintState = {
   independentField: Field.CURRENCY_A,
   typedValue: '',
-  otherTypedValue: ''
+  otherTypedValue: '',
+  tokenIds: undefined
 }
 
 export default createReducer<MintState>(initialState, builder =>
@@ -44,4 +46,8 @@ export default createReducer<MintState>(initialState, builder =>
         }
       }
     })
+    .addCase(setTokenIds, (state, { payload: { tokenIds } }) => ({
+      ...state,
+      tokenIds: tokenIds
+    }))
 )

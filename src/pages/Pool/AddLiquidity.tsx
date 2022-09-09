@@ -29,6 +29,7 @@ import { useTransactionAdder } from 'state/transactions/hooks'
 import { useCurrency } from 'hooks/Tokens'
 import { getSymbol } from 'utils/getSymbol'
 import { checkIs721 } from 'utils/checkIs1155'
+import { Token721 } from 'constants/token/token721'
 
 export default function AddLiquidy() {
   const [currencyA, setCurrencyA] = useState<undefined | AllTokens>(undefined)
@@ -63,7 +64,7 @@ export default function AddLiquidy() {
     poolTokenPercentage,
     error
   } = useDerivedMintInfo(currencyA, currencyB)
-  const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
+  const { onFieldAInput, onFieldBInput, onSetTokenIds } = useMintActionHandlers(noLiquidity)
   const shareOfPool =
     noLiquidity && price
       ? '100'
@@ -184,6 +185,14 @@ export default function AddLiquidy() {
     }
   }, [currency0, currency1])
 
+  const handleTokenIds = useCallback(
+    (tokens: Token721[]) => {
+      const list = tokens.map(({ tokenId }) => tokenId)
+      onSetTokenIds(list as any[])
+    },
+    [onSetTokenIds]
+  )
+
   return (
     <>
       <ConfirmSupplyModal
@@ -217,6 +226,7 @@ export default function AddLiquidy() {
               onSelectCurrency={handleAssetA}
               currency={currencyA}
               onMax={handleMaxInputA}
+              onSelectSubTokens={handleTokenIds}
             />
           </Box>
           {currencyA && <AssetAccordion token={currencyA} />}

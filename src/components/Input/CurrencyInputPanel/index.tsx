@@ -107,11 +107,11 @@ export default function CurrencyInputPanel({
         <SelectCurrencyModal
           onSelectCurrency={onSelectCurrency}
           selectedTokenType={selectedTokenType}
-          onSelectSubTokens={onSelectSubTokens}
+          // onSelectSubTokens={onSelectSubTokens}
         />
       )
     }
-  }, [disableCurrencySelect, showModal, onSelectCurrency, selectedTokenType, onSelectSubTokens])
+  }, [disableCurrencySelect, showModal, onSelectCurrency, selectedTokenType])
 
   // const handleMax = useCallback(() => {
   //   if (!selectedCurrencyBalance && !token1155Balance) return

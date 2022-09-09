@@ -22,7 +22,6 @@ import useBreakpoint from 'hooks/useBreakpoint'
 import { useAddUserToken, useIsDarkMode, useTrackedToken1155List } from 'state/user/hooks'
 import { Token1155 } from 'constants/token/token1155'
 import ERC721List from './ERC721List'
-import { Token721 } from 'constants/token/token721'
 
 export enum Mode {
   ERC20 = 'erc20',
@@ -41,12 +40,12 @@ export const SwapContext = React.createContext<SwapContextType>({
 
 export default function SelectCurrencyModal({
   onSelectCurrency,
-  selectedTokenType,
-  onSelectSubTokens
-}: {
+  selectedTokenType
+}: // onSelectSubTokens
+{
   onSelectCurrency?: (currency: AllTokens) => void
   selectedTokenType?: TokenType
-  onSelectSubTokens?: (tokens: Token721[]) => void
+  // onSelectSubTokens?: (tokens: Token721[]) => void
 }) {
   const isDownMd = useBreakpoint('md')
   const [isImportOpen, setIsInportOpen] = useState(false)
@@ -313,7 +312,7 @@ export default function SelectCurrencyModal({
               // searchToken={searchTokenNFT}
               // searchTokenIsAdded={searchTokenIsAddedNFT}
               onSelectCurrency={onSelectCurrency}
-              onSelectSubTokens={onSelectSubTokens}
+              // onSelectSubTokens={onSelectSubTokens}
               // commonCollectionList={commonCollectionList}
               // collectionOptions={commonCollectionList}
               // selectedCollection={collection}
