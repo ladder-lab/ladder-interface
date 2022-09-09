@@ -11,6 +11,24 @@ type ChainTokenList = {
 // used to ensure the user doesn't send so much ETH so they end up with <.01
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
 
+export const ROUTER_ADDRESS_721 =
+  (
+    {
+      [4]: '0x07877a8a74C3fDB822F952108EeF9f8d8752A9c4',
+      [56]: '',
+      [1]: ''
+    } as any
+  )[NETWORK_CHAIN_ID] ?? ''
+
+export const FACTORY_ADDRESS_721 =
+  (
+    {
+      [4]: '0xfE354EA7a06f6dBDEF06F087C4Be5A6d4E021442',
+      [56]: '',
+      [1]: ''
+    } as any
+  )[NETWORK_CHAIN_ID] ?? ''
+
 export const ROUTER_ADDRESS =
   (
     {
