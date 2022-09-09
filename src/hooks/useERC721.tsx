@@ -13,7 +13,7 @@ import { useTrackedToken721List } from 'state/user/hooks'
 //   return context
 // }
 
-export default function useERC721Tokens({ collection }: { collection?: Token721 | null }) {
+export default function useERC721Tokens(collection?: Token721 | null) {
   const [tokens, setTokens] = useState<Token721[]>([])
 
   // TODO: Need to update. TEMP use 1155 list. Can accept collection as parameters

@@ -15,6 +15,7 @@ import { computeSlippageAdjustedAmounts } from 'utils/swap/prices'
 import { AllTokens } from 'models/allTokens'
 import { getHashAddress } from 'utils/getHashAddress'
 import { NETWORK_CHAIN_ID } from 'constants/chain'
+import { filter1155, filter721 } from 'utils/checkIs1155'
 
 export function useSwapState(): AppState['swap'] {
   return useSelector<AppState, AppState['swap']>(state => state.swap)
@@ -29,11 +30,14 @@ export function useSwapActionHandlers(): {
   const dispatch = useDispatch<AppDispatch>()
   const onCurrencySelection = useCallback(
     (field: Field, currency: AllTokens) => {
+      const is1155 = filter1155(currency)
+      const is721 = filter721(currency)
       dispatch(
         selectCurrency({
           field,
           currencyId: 'address' in currency ? currency.address : currency === ETHER ? 'ETH' : '',
-          tokenId: 'tokenId' in currency ? currency.tokenId : undefined
+          tokenId: 'tokenId' in currency ? currency.tokenId : undefined,
+          standard: is1155 ? 'erc1155' : is721 ? 'erc721' : 'erc20'
         })
       )
     },
@@ -117,13 +121,13 @@ export function useDerivedSwapInfo(): {
   const {
     independentField,
     typedValue,
-    [Field.INPUT]: { currencyId: inputCurrencyId, tokenId: inputTokenId },
-    [Field.OUTPUT]: { currencyId: outputCurrencyId, tokenId: outputTokenId },
+    [Field.INPUT]: { currencyId: inputCurrencyId, tokenId: inputTokenId, standard: inputStandard },
+    [Field.OUTPUT]: { currencyId: outputCurrencyId, tokenId: outputTokenId, standard: outputStandard },
     recipient
   } = useSwapState()
 
-  const inputCurrencyRaw = useCurrency(inputCurrencyId, inputTokenId)
-  const outputCurrencyRaw = useCurrency(outputCurrencyId, outputTokenId)
+  const inputCurrencyRaw = useCurrency(inputCurrencyId, inputTokenId, inputStandard)
+  const outputCurrencyRaw = useCurrency(outputCurrencyId, outputTokenId, outputStandard)
 
   const inputCurrency =
     inputTokenId && inputCurrencyId

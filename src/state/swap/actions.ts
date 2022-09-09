@@ -5,9 +5,17 @@ export enum Field {
   OUTPUT = 'OUTPUT'
 }
 
-export const selectCurrency = createAction<{ field: Field; currencyId: string; tokenId?: string | number }>(
-  'swap/selectCurrency'
-)
+export const selectCurrency = createAction<{
+  field: Field
+  currencyId: string
+  tokenId?: string | number
+  standard: 'erc20' | 'erc1155' | 'erc721'
+}>('swap/selectCurrency')
+export const selectSubToken = createAction<{
+  field: Field
+  currencyId: string
+  tokenIds?: Array<string | number>
+}>('swap/selectSubToken')
 export const switchCurrencies = createAction<void>('swap/switchCurrencies')
 export const typeInput = createAction<{ field: Field; typedValue: string }>('swap/typeInput')
 export const replaceSwapState = createAction<{
