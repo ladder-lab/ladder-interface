@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { TransactionResponse } from '@ethersproject/providers'
-import { currencyEquals, Percent, WETH, ETHER } from '@uniswap/sdk'
+import { currencyEquals, Percent, WETH, ETHER } from '@ladder/sdk'
 import { Box, useTheme, Typography, Button, Slider, styled, ButtonBase } from '@mui/material'
 import { liquidityParamBuilder, routes } from 'constants/routes'
 import AppBody from 'components/AppBody'
@@ -32,6 +32,7 @@ import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import { generateErc20 } from 'utils/getHashAddress'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
 import { useIsDarkMode } from 'state/user/hooks'
+import { getSymbol } from 'utils/getSymbol'
 
 enum Mode {
   SIMPLE,
@@ -111,11 +112,11 @@ export default function RemoveLiquidity() {
             'Remove ' +
             parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
             ' ' +
-            currencyA?.symbol +
+            getSymbol(currencyA) +
             ' and ' +
             parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
             ' ' +
-            currencyB?.symbol
+            getSymbol(currencyB)
         })
         onUserInput(Field.LIQUIDITY_PERCENT, '0')
       })
@@ -125,16 +126,7 @@ export default function RemoveLiquidity() {
         // we only care if the error is something _other_ than the user rejected the tx
         console.error(error)
       })
-  }, [
-    addTransaction,
-    burnCallback,
-    currencyA?.symbol,
-    currencyB?.symbol,
-    hideModal,
-    onUserInput,
-    parsedAmounts,
-    showModal
-  ])
+  }, [addTransaction, burnCallback, currencyA, currencyB, hideModal, onUserInput, parsedAmounts, showModal])
 
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false)

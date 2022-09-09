@@ -1,5 +1,5 @@
 import { isTradeBetter } from 'utils/swap/trades'
-import { Currency, CurrencyAmount, Pair, Token, Trade } from '@uniswap/sdk'
+import { Currency, CurrencyAmount, Pair, Token, Trade } from '@ladder/sdk'
 import flatMap from 'lodash.flatmap'
 import { useMemo } from 'react'
 import { BASES_TO_CHECK_TRADES_AGAINST, CUSTOM_BASES, BETTER_TRADE_LESS_HOPS_THRESHOLD } from '../constants'

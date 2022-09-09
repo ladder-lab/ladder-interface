@@ -3,8 +3,8 @@ import { getAddress } from '@ethersproject/address'
 import { AddressZero } from '@ethersproject/constants'
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { BigNumber } from '@ethersproject/bignumber'
-import { JSBI, Percent, CurrencyAmount } from '@uniswap/sdk'
-import { ChainId } from '../constants/chain'
+import { JSBI, Percent, CurrencyAmount } from '@ladder/sdk'
+import { ChainId, SUPPORTED_NETWORKS } from '../constants/chain'
 import { ROUTER_ADDRESS } from 'constants/index'
 import V2RouterABI from 'constants/abis/v2Router.json'
 
@@ -68,28 +68,13 @@ interface ChainObject {
   }
 }
 
-const chains: ChainObject = {
-  [ChainId.MAINNET]: {
-    link: 'https://etherscan.io',
-    builder: explorers.etherscan
-  },
-  [ChainId.ROPSTEN]: {
-    link: 'https://ropsten.etherscan.io',
-    builder: explorers.etherscan
-  },
-  [ChainId.RINKEBY]: {
-    link: 'https://rinkeby.etherscan.io',
-    builder: explorers.etherscan
-  },
-  [ChainId.KOVAN]: {
-    link: 'https://kovan.etherscan.io',
-    builder: explorers.etherscan
-  },
-  [ChainId.GÖRLI]: {
-    link: 'https://gorli.etherscan.io',
+const chains: ChainObject = Object.keys(SUPPORTED_NETWORKS).reduce((acc, chainId) => {
+  acc[+chainId] = {
+    link: SUPPORTED_NETWORKS[+chainId as ChainId]?.blockExplorerUrls[0],
     builder: explorers.etherscan
   }
-}
+  return acc
+}, {} as any)
 
 export function getEtherscanLink(
   chainId: ChainId,

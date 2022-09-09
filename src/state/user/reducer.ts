@@ -18,7 +18,7 @@ import {
 } from './actions'
 import { Token1155 } from 'constants/token/token1155'
 import { filter1155 } from 'utils/checkIs1155'
-import { Token } from '@uniswap/sdk'
+import { Token } from '@ladder/sdk'
 
 const currentTimestamp = () => new Date().getTime()
 

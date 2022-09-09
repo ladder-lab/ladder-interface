@@ -1,4 +1,4 @@
-import { Token } from '@uniswap/sdk'
+import { Token } from '@ladder/sdk'
 import { getAddress, keccak256, solidityPack } from 'ethers/lib/utils'
 import { filter1155 } from './checkIs1155'
 

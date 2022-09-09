@@ -1,5 +1,5 @@
 import { BLOCKED_PRICE_IMPACT_NON_EXPERT } from 'constants/index'
-import { CurrencyAmount, Fraction, JSBI, Percent, TokenAmount, Trade } from '@uniswap/sdk'
+import { CurrencyAmount, Fraction, JSBI, Percent, TokenAmount, Trade } from '@ladder/sdk'
 import { ALLOWED_PRICE_IMPACT_HIGH, ALLOWED_PRICE_IMPACT_LOW, ALLOWED_PRICE_IMPACT_MEDIUM } from 'constants/index'
 import { Field } from 'state/swap/actions'
 import { basisPointsToPercent } from '../index'

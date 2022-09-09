@@ -1,6 +1,6 @@
 import { useCallback, useState, ChangeEvent, useMemo, useEffect } from 'react'
 import { Typography, Box, Button, ButtonBase } from '@mui/material'
-import { CurrencyAmount, JSBI, Trade } from '@uniswap/sdk'
+import { CurrencyAmount, JSBI, Trade } from '@ladder/sdk'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
 import { ReactComponent as SwitchCircle } from 'assets/svg/switch_circle.svg'

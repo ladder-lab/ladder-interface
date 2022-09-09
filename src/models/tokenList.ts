@@ -1,4 +1,4 @@
-import { Token } from '@uniswap/sdk'
+import { Token } from '@ladder/sdk'
 
 export interface Version {
   readonly major: number

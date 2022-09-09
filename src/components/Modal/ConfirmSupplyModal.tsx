@@ -4,7 +4,7 @@ import ActionButton from 'components/Button/ActionButton'
 import { AllTokens } from 'models/allTokens'
 import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
 import { getTokenText } from 'utils/checkIs1155'
-import { TokenAmount } from '@uniswap/sdk'
+import { TokenAmount } from '@ladder/sdk'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 
 export default function ConfirmSupplyModal({

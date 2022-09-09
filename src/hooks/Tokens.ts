@@ -1,5 +1,5 @@
 import { parseBytes32String } from '@ethersproject/strings'
-import { Currency, ETHER, Token, ChainId, currencyEquals } from '@uniswap/sdk'
+import { Currency, ETHER, Token, ChainId, currencyEquals } from '@ladder/sdk'
 import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
 import { useMemo } from 'react'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'

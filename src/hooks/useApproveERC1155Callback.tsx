@@ -17,7 +17,7 @@ function useGetApproved(contract: Contract | null, spender: string, tokenId: str
   const { account } = useActiveWeb3React()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const arg = useMemo(() => [account ?? '', spender], [account, spender, tokenId])
-  const res = useSingleCallResult(contract, 'isApprovedForAll', arg)
+  const res = useSingleCallResult(account ? contract : null, 'isApprovedForAll', arg)
   return useMemo(() => {
     if (res.loading) return undefined
     return !!res.result?.[0]

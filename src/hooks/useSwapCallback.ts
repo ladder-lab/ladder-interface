@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { JSBI, Percent, Router, SwapParameters, Trade, TradeType } from '@uniswap/sdk'
+import { JSBI, Percent, Router, SwapParameters, Trade, TradeType } from '@ladder/sdk'
 import { useMemo } from 'react'
 import { BIPS_BASE, INITIAL_ALLOWED_SLIPPAGE } from '../constants'
 import { useTransactionAdder } from '../state/transactions/hooks'
@@ -9,6 +9,7 @@ import isZero from '../utils/isZero'
 import { useActiveWeb3React } from './index'
 import useTransactionDeadline from './useTransactionDeadline'
 import useENS from './useENS'
+import { getSymbol } from 'utils/getSymbol'
 
 export enum SwapCallbackState {
   INVALID,
@@ -181,8 +182,8 @@ export function useSwapCallback(
           ...(value && !isZero(value) ? { value, from: account } : { from: account })
         })
           .then((response: any) => {
-            const inputSymbol = trade.inputAmount.currency.symbol
-            const outputSymbol = trade.outputAmount.currency.symbol
+            const inputSymbol = getSymbol(trade.inputAmount.currency)
+            const outputSymbol = getSymbol(trade.outputAmount.currency)
             const inputAmount = trade.inputAmount.toSignificant(3)
             const outputAmount = trade.outputAmount.toSignificant(3)
 

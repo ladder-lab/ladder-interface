@@ -1,4 +1,4 @@
-import { Currency, Token, ETHER } from '@uniswap/sdk'
+import { Currency, Token, ETHER } from '@ladder/sdk'
 
 export function currencyId(currency: Currency): string {
   if (currency === ETHER) return 'ETH'

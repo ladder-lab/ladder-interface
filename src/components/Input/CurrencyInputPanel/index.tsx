@@ -11,6 +11,7 @@ import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { AllTokens, Token721, TokenType } from 'models/allTokens'
 import { checkIs1155 } from 'utils/checkIs1155'
 import useBreakpoint from 'hooks/useBreakpoint'
+import { getSymbol } from 'utils/getSymbol'
 
 interface Props {
   currency?: AllTokens | null
@@ -105,7 +106,7 @@ export default function CurrencyInputPanel({
         selected={!!currency}
       >
         {currency ? (
-          <LogoText logo={<CurrencyLogo currency={currency} />} text={is1155 ? currency.name : currency.symbol} />
+          <LogoText logo={<CurrencyLogo currency={currency} />} text={is1155 ? currency.name : getSymbol(currency)} />
         ) : (
           <>Select Token</>
         )}

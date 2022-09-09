@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { Contract } from '@ethersproject/contracts'
-import { ChainId, WETH } from '@uniswap/sdk'
+import { ChainId, WETH } from '@ladder/sdk'
 import IUniswapV2PairABI from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
