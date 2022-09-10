@@ -4,7 +4,7 @@ import { JSBI, Percent, Router, SwapParameters, Trade, TradeType } from '@ladder
 import { useMemo } from 'react'
 import { BIPS_BASE, INITIAL_ALLOWED_SLIPPAGE } from '../constants'
 import { useTransactionAdder } from '../state/transactions/hooks'
-import { calculateGasMargin, getRouterContract, isAddress, shortenAddress } from '../utils'
+import { calculateGasMargin, getRouterContract, getRouterContract721, isAddress, shortenAddress } from '../utils'
 import isZero from '../utils/isZero'
 import { useActiveWeb3React } from './index'
 import useTransactionDeadline from './useTransactionDeadline'
@@ -43,7 +43,8 @@ type EstimatedSwapCall = SuccessfulCall | FailedCall
 function useSwapCallArguments(
   trade: Trade | undefined, // trade to execute, required
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
-  recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
+  recipientAddressOrName: string | null,
+  tokenIds?: Array<number | string> // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): SwapCall[] {
   const { account, chainId, library } = useActiveWeb3React()
 
@@ -54,7 +55,10 @@ function useSwapCallArguments(
   return useMemo(() => {
     if (!trade || !recipient || !library || !account || !chainId || !deadline) return []
 
-    const contract: Contract | null = getRouterContract(chainId, library, account)
+    const contract1155: Contract | null = getRouterContract(chainId, library, account)
+    const contract721: Contract | null = getRouterContract721(chainId, library, account)
+
+    const contract = tokenIds ? contract721 : contract1155
     if (!contract) {
       return []
     }
@@ -66,23 +70,25 @@ function useSwapCallArguments(
         feeOnTransfer: false,
         allowedSlippage: new Percent(JSBI.BigInt(allowedSlippage), BIPS_BASE),
         recipient,
-        deadline: deadline.toNumber()
+        deadline: deadline.toNumber(),
+        tokenIds
       })
     )
 
     if (trade.tradeType === TradeType.EXACT_INPUT) {
       swapMethods.push(
         Router.swapCallParameters(trade, {
-          feeOnTransfer: true,
+          feeOnTransfer: tokenIds ? false : true,
           allowedSlippage: new Percent(JSBI.BigInt(allowedSlippage), BIPS_BASE),
           recipient,
-          deadline: deadline.toNumber()
+          deadline: deadline.toNumber(),
+          tokenIds
         })
       )
     }
 
     return swapMethods.map(parameters => ({ parameters, contract }))
-  }, [account, allowedSlippage, chainId, deadline, library, recipient, trade])
+  }, [account, allowedSlippage, chainId, deadline, library, recipient, tokenIds, trade])
 }
 
 // returns a function that will execute a swap, if the parameters are all valid
@@ -90,11 +96,12 @@ function useSwapCallArguments(
 export function useSwapCallback(
   trade: Trade | undefined, // trade to execute, required
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
-  recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
+  recipientAddressOrName: string | null,
+  tokenIds?: Array<string | number> // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
   const { account, chainId, library } = useActiveWeb3React()
 
-  const swapCalls = useSwapCallArguments(trade, allowedSlippage, recipientAddressOrName)
+  const swapCalls = useSwapCallArguments(trade, allowedSlippage, recipientAddressOrName, tokenIds)
 
   const addTransaction = useTransactionAdder()
 
@@ -123,7 +130,7 @@ export function useSwapCallback(
               contract
             } = call
             const options = !value || isZero(value) ? {} : { value }
-
+            console.log(methodName, args)
             return contract.estimateGas[methodName](...args, options)
               .then(gasEstimate => {
                 return {

@@ -12,7 +12,7 @@ import { ReactComponent as Xcircle } from 'assets/svg/xcircle.svg'
 // import { ReactComponent as XcircleSm } from 'assets/svg/xcirclesm.svg'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { ReactComponent as ExternalIcon } from 'assets/svg/external_arrow.svg'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useToken721Balance, useToken721BalanceTokens } from 'state/wallet/hooks'
 import { shortenAddress } from 'utils'
 import { useERC721Tokens } from 'state/swap/useSwap721State'
@@ -20,16 +20,16 @@ import Input from 'components/Input'
 import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
 
 export default function Erc721IdSelectionModal({
-  isOpen,
+  // isOpen,
   onDismiss,
   collection,
   onSelectSubTokens,
   amount
 }: {
-  isOpen: boolean
+  // isOpen: boolean
   onDismiss: () => void
   collection?: Token721
-  onSelectSubTokens?: (tokens: Token721[]) => void
+  onSelectSubTokens: (tokens: Token721[]) => void
   amount: number
 }) {
   const isDownMd = useBreakpoint('md')
@@ -39,41 +39,39 @@ export default function Erc721IdSelectionModal({
   const balance = useToken721Balance(collection)
   const { loading, availableTokens } = useToken721BalanceTokens(balance)
 
+  const [filteredAvailableTokens, setFilteredAvailableTokens] = useState(availableTokens)
+
   const onConfirm = useCallback(() => {
-    if (!collection || tokens.length < amount) {
+    if (!collection || tokens.length !== amount) {
       return
     }
-
-    onSelectSubTokens && onSelectSubTokens(tokens)
+    onSelectSubTokens && onSelectSubTokens([...tokens])
+    const tokenIds = tokens.map(({ tokenId }) => tokenId)
+    setFilteredAvailableTokens(prev => {
+      return prev?.filter(token => !tokenIds.includes(token.tokenId))
+    })
     onDismiss()
   }, [amount, collection, onDismiss, onSelectSubTokens, tokens])
 
   useEffect(() => {
     onClearTokens()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [collection])
+  }, [collection, availableTokens, amount])
 
+  useEffect(() => {
+    setFilteredAvailableTokens(availableTokens)
+  }, [availableTokens])
   return (
-    //   <Box margin="-24px 30px 30px">
-    //   <Stepper
-    //     steps={[1, 2]}
-    //     activeStep={collection ? 1 : 0}
-    //     onStep={(num: number) => {
-    //       if (num !== 0) return
-    //       setCollection(null)
-    //     }}
-    //     stepsDescription={['Select collection', 'Select token ID']}
-    //   />
-    // </Box>
     <Modal
-      customIsOpen={isOpen}
+      // customIsOpen={isOpen}
       customOnDismiss={onDismiss}
       width="100%"
       maxWidth="680px"
       closeIcon
+      closeVariant="button"
       padding={isDownMd ? '28px 16px' : '32px 32px'}
     >
-      <Box width="100%" display="flex" gap={14} alignItems="center">
+      <Box width="100%" display="flex" gap={14} alignItems="center" pb={30}>
         <Typography
           variant="h5"
           sx={{
@@ -156,13 +154,10 @@ export default function Erc721IdSelectionModal({
                     sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}
                   >
                     <LogoText logo={<CurrencyLogo currency={token} />} text={token.name} fontSize={12} />
-                    <Box sx={{ display: { xs: 'block', md: 'flex', gap: 12 } }}>
-                      <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
-                        {isDownMd ? shortenAddress(token.address) : token.address}
-                      </ExternalLink>
-                      <Typography sx={{ fontSize: 12 }}>Quantity: 1</Typography>
-                    </Box>
-
+                    <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
+                      {shortenAddress(token.address)}
+                    </ExternalLink>
+                    <Typography sx={{ fontSize: 12 }}>Quantity: 1</Typography>
                     <IconButton onClick={() => onRemoveToken(token)}>
                       <Xcircle />
                     </IconButton>
@@ -170,12 +165,14 @@ export default function Erc721IdSelectionModal({
                 ))}
                 <Box margin="28px 0" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Button onClick={onConfirm} sx={{ height: 60, width: 300 }} disabled={tokens.length < amount}>
-                    {tokens.length === amount ? 'Confirm' : `${amount} NFTs should be chosen`}
+                    {tokens.length === amount
+                      ? `${tokens.length}/${amount} Confirm`
+                      : `${amount} NFTs should be chosen`}
                   </Button>
                 </Box>
               </Box>
             )}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <Box sx={{ display: { xs: 'grid', md: 'flex' }, alignItems: 'center', gap: 12 }}>
               <Typography>Collection:</Typography>
               <Box
                 sx={{
@@ -210,66 +207,18 @@ export default function Erc721IdSelectionModal({
                 gap={10}
                 justifyContent="flex-start"
               >
-                {availableTokens?.map(token => (
+                {filteredAvailableTokens?.map(token => (
                   <NftCard
                     key={token.tokenId}
                     token={token}
                     onClick={() => {
                       onAddToken(token)
                     }}
+                    disabled={tokens.length >= amount}
                   />
                 ))}
               </Box>
             )}
-            {/* {searchToken && !searchTokenIsAdded ? (
-                <NftCard
-                  token={searchToken}
-                  onClick={() => {
-                    onAddToken(searchToken)
-                  }}
-                />
-              ) : tokenOptions.length === 0 ? (
-                <Box width={'100%'} display="flex" alignItems="center" justifyContent="center">
-                  <Typography
-                    textAlign="center"
-                    mb="20px"
-                    fontSize={16}
-                    fontWeight={500}
-                    component="div"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                  >
-                    No results found. &nbsp;
-                    <Button
-                      variant="text"
-                      sx={{ display: 'inline', width: 'unset', padding: 0, height: 'max-content' }}
-                    >
-                      Import token
-                    </Button>
-                  </Typography>
-                </Box>
-              ) : (
-                <>
-                  {loading && (
-                    <Box width={'100%'} display="flex" alignItems="center" justifyContent="center">
-                      <Loader />
-                    </Box>
-                  )}
-                  {!loading &&
-                    sortedList?.map(({ token }, idx) => (
-                      <Grid item xs={6} md={3} key={idx}>
-                        <NftCard
-                          key={idx}
-                          token={token as Token721}
-                          onClick={() => {
-                            onAddToken(token as Token721)
-                          }}
-                        />
-                      </Grid>
-                    ))}
-                </>
-              )} */}
           </Box>
         </Box>
       </Box>
@@ -277,13 +226,13 @@ export default function Erc721IdSelectionModal({
   )
 }
 
-function NftCard({ token, onClick }: { token: Token721; onClick: () => void }) {
+function NftCard({ token, onClick, disabled }: { token: Token721; onClick: () => void; disabled: boolean }) {
   const theme = useTheme()
   const isDarkMode = useIsDarkMode()
 
   return (
     <Box
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
       sx={{
         width: '100%',
         display: 'flex',
@@ -294,11 +243,14 @@ function NftCard({ token, onClick }: { token: Token721; onClick: () => void }) {
         background: isDarkMode ? '#15171A' : '#F6F6F6',
         transition: '0.5s',
         cursor: 'pointer',
-        '&:hover': {
-          boxShadow: isDarkMode ? 'none' : '0px 3px 10px rgba(0, 0, 0, 0.15)',
-          background: isDarkMode ? '#2E3133' : '#FFFFFF',
-          cursor: 'pointer'
-        }
+        opacity: disabled ? 0.8 : 1,
+        '&:hover': disabled
+          ? {}
+          : {
+              boxShadow: isDarkMode ? 'none' : '0px 3px 10px rgba(0, 0, 0, 0.15)',
+              background: isDarkMode ? '#2E3133' : '#FFFFFF',
+              cursor: 'pointer'
+            }
       }}
     >
       <Image src={token?.uri ?? SampleNftImg} style={{ borderRadius: '8px', overflow: 'hidden', width: '100%' }} />

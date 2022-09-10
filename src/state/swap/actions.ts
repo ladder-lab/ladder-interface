@@ -16,6 +16,9 @@ export const selectSubToken = createAction<{
   currencyId: string
   tokenIds?: Array<string | number>
 }>('swap/selectSubToken')
+export const resetSubToken = createAction<{
+  field: Field
+}>('swap/resetSubToken')
 export const switchCurrencies = createAction<void>('swap/switchCurrencies')
 export const typeInput = createAction<{ field: Field; typedValue: string }>('swap/typeInput')
 export const replaceSwapState = createAction<{

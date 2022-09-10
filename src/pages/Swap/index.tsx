@@ -14,7 +14,6 @@ import { AllTokens } from 'models/allTokens'
 import ConfirmSwapModal from 'components/Modal/ConfirmSwapModal'
 import { useExpertModeManager, useUserSingleHopOnly, useUserSlippageTolerance } from 'state/user/hooks'
 import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
-import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
 import { Field } from 'state/swap/actions'
 import { ApprovalState, useAllTokenApproveCallback } from 'hooks/useApproveCallback'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
@@ -63,24 +62,27 @@ export default function Swap() {
   const [fromErc721SubTokens, setFromErc721SubTokens] = useState<Token721[] | null>(null)
   const [toErc721SubTokens, setToErc721SubTokens] = useState<Token721[] | null>([])
 
-  const {
-    wrapType,
-    execute: onWrap,
-    inputError: wrapInputError
-  } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue)
-  const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
+  // const {
+  //   wrapType,
+  //   execute: onWrap,
+  //   inputError: wrapInputError
+  // } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue)
+  // const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
 
-  const trade = showWrap ? undefined : v2Trade
+  // const trade = showWrap ? undefined : v2Trade
+  const trade = v2Trade
 
-  const parsedAmounts = showWrap
-    ? {
-        [Field.INPUT]: parsedAmount,
-        [Field.OUTPUT]: parsedAmount
-      }
-    : {
-        [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-        [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount
-      }
+  const parsedAmounts =
+    // showWrap
+    // ? {
+    //     [Field.INPUT]: parsedAmount,
+    //     [Field.OUTPUT]: parsedAmount
+    //   }
+    // :
+    {
+      [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
+      [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount
+    }
 
   const { onSwitchTokens, onCurrencySelection, onUserInput } = useSwapActionHandlers()
 
@@ -89,9 +91,11 @@ export default function Swap() {
 
   const formattedAmounts = {
     [independentField]: typedValue,
-    [dependentField]: showWrap
-      ? parsedAmounts[independentField]?.toExact() ?? ''
-      : parsedAmounts[dependentField]?.toSignificant(6) ?? ''
+    [dependentField]:
+      // showWrap
+      // ? parsedAmounts[independentField]?.toExact() ?? ''
+      //   :
+      parsedAmounts[dependentField]?.toSignificant(6) ?? ''
   }
 
   const slippageAdjustedAmounts = useMemo(
@@ -128,8 +132,16 @@ export default function Swap() {
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
 
+  const is721Input = checkIs721(currencies[Field.INPUT])
+  const is721Output = checkIs721(currencies[Field.OUTPUT])
+  const { onSubTokenSelection, tokenIds, resetSubTokenSelection } = useSwap721State()
   // the callback to execute the swap
-  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, allowedSlippage, recipient)
+  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(
+    trade,
+    allowedSlippage,
+    recipient,
+    is721Input ? tokenIds[Field.INPUT] : is721Output ? tokenIds[Field.OUTPUT] : undefined
+  )
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
   const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
   const [singleHopOnly] = useUserSingleHopOnly()
@@ -148,6 +160,10 @@ export default function Swap() {
         hideModal()
         showModal(<TransactionSubmittedModal />)
         setSwapState(prev => ({ ...prev, attemptingTxn: false, txHash: hash }))
+        setFromErc721SubTokens(null)
+        setToErc721SubTokens(null)
+        resetSubTokenSelection(Field.INPUT)
+        resetSubTokenSelection(Field.OUTPUT)
       })
       .catch(error => {
         hideModal()
@@ -158,7 +174,7 @@ export default function Swap() {
           txHash: undefined
         }))
       })
-  }, [hideModal, priceImpactWithoutFee, showModal, swapCallback])
+  }, [hideModal, priceImpactWithoutFee, resetSubTokenSelection, showModal, swapCallback])
 
   const handleConfirmDismiss = useCallback(() => {
     setSwapState(prev => ({ ...prev, showConfirm: false, tradeToConfirm, attemptingTxn, txHash }))
@@ -201,47 +217,37 @@ export default function Swap() {
 
   const handleFromAsset = useCallback(
     (currency: AllTokens) => {
+      resetSubTokenSelection(Field.INPUT)
       setApprovalSubmitted(false) // reset 2 step UI for approvals
       onCurrencySelection(Field.INPUT, currency)
+      setFromErc721SubTokens(null)
     },
-    [onCurrencySelection]
+    [onCurrencySelection, resetSubTokenSelection]
   )
 
   const handleToAsset = useCallback(
     (currency: AllTokens) => {
+      resetSubTokenSelection(Field.OUTPUT)
       onCurrencySelection(Field.OUTPUT, currency)
+      setToErc721SubTokens(null)
     },
-    [onCurrencySelection]
+    [onCurrencySelection, resetSubTokenSelection]
   )
 
-  const { onSubTokenSelection /*, tokenIds*/ } = useSwap721State()
+  const handleFromSubAssets = useCallback((tokens: Token721[]) => {
+    setFromErc721SubTokens(tokens)
+  }, [])
 
-  const handleFromSubAssets = useCallback(
-    (tokens: Token721[]) => {
-      if (fromAsset) {
-        const ids: any[] = tokens.map(({ tokenId }) => tokenId).filter(id => id !== undefined)
-        onSubTokenSelection(Field.INPUT, fromAsset, ids)
-      }
-    },
-    [fromAsset, onSubTokenSelection]
-  )
-
-  const handleToSubAssets = useCallback(
-    (tokens: Token721[]) => {
-      if (toAsset) {
-        const ids: any[] = tokens.map(({ tokenId }) => tokenId).filter(id => id !== undefined)
-        onSubTokenSelection(Field.OUTPUT, toAsset, ids)
-      }
-    },
-    [onSubTokenSelection, toAsset]
-  )
+  const handleToSubAssets = useCallback((tokens: Token721[]) => {
+    setToErc721SubTokens(tokens)
+  }, [])
 
   const error = useMemo(() => {
     if (!fromAsset || !toAsset) {
       return 'Select a Token'
     }
 
-    if (checkIs721(fromAsset) || checkIs721(toAsset)) {
+    if (checkIs721(fromAsset) && checkIs721(toAsset)) {
       return 'Invalid Pair'
     }
 
@@ -258,6 +264,24 @@ export default function Swap() {
     setFromErc721SubTokens(to)
     setToErc721SubTokens(from)
   }, [account, onSwitchTokens, fromErc721SubTokens, toErc721SubTokens])
+
+  useEffect(() => {
+    if (fromAsset && fromErc721SubTokens) {
+      const ids: any[] = fromErc721SubTokens.map(({ tokenId }) => tokenId).filter(id => id !== undefined)
+      onSubTokenSelection(Field.INPUT, fromAsset, ids)
+    } else {
+      resetSubTokenSelection(Field.INPUT)
+    }
+  }, [fromAsset, fromErc721SubTokens, onSubTokenSelection, resetSubTokenSelection])
+
+  useEffect(() => {
+    if (toAsset && toErc721SubTokens) {
+      const ids: any[] = toErc721SubTokens.map(({ tokenId }) => tokenId).filter(id => id !== undefined)
+      onSubTokenSelection(Field.OUTPUT, toAsset, ids)
+    } else {
+      resetSubTokenSelection(Field.OUTPUT)
+    }
+  }, [fromAsset, fromErc721SubTokens, onSubTokenSelection, resetSubTokenSelection, toAsset, toErc721SubTokens])
 
   return (
     <>
@@ -360,12 +384,13 @@ export default function Swap() {
           <Box mt={40}>
             {!account ? (
               <Button onClick={toggleWallet}>Connect Wallet</Button>
-            ) : showWrap ? (
-              <Button disabled={Boolean(wrapInputError)} onClick={onWrap}>
-                {wrapInputError ??
-                  (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
-              </Button>
-            ) : noRoute && userHasSpecifiedInputOutput ? (
+            ) : // : showWrap ? (
+            // <Button disabled={Boolean(wrapInputError)} onClick={onWrap}>
+            //   {wrapInputError ??
+            //     (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
+            // </Button>
+            // )
+            noRoute && userHasSpecifiedInputOutput ? (
               <Button disabled style={{ textAlign: 'center' }}>
                 <Typography mb="4px">
                   Insufficient liquidity for this trade. {singleHopOnly && 'Try enabling multi-hop trades.'}

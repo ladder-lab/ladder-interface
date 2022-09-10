@@ -19,8 +19,9 @@ import {
   removeSerializedToken721
 } from './actions'
 import { Token1155 } from 'constants/token/token1155'
-import { filter1155 } from 'utils/checkIs1155'
+import { filter1155, filter721 } from 'utils/checkIs1155'
 import { Token } from '@ladder/sdk'
+import { Token721 } from 'constants/token/token721'
 
 const currentTimestamp = () => new Date().getTime()
 
@@ -77,8 +78,10 @@ export function pairKey(
 ) {
   return `${token0Address};${token1Address}/${token0TokenId}$${token1TokenId}`
 }
-export function pairKeyToken(token0: Token | Token1155, token1: Token | Token1155) {
-  return `${token0.address};${token1.address}/${filter1155(token0)?.tokenId ?? ''}$${filter1155(token1)?.tokenId ?? ''}`
+export function pairKeyToken(token0: Token | Token1155 | Token721, token1: Token | Token1155 | Token721) {
+  return `${token0.address};${token1.address}/${filter1155(token0)?.tokenId ?? filter721(token0) ?? 'erc721' ?? ''}$${
+    filter1155(token1)?.tokenId ?? filter721(token1) ?? 'erc721' ?? ''
+  }`
 }
 
 export const initialState: UserState = {

@@ -1,5 +1,14 @@
 import { createReducer } from '@reduxjs/toolkit'
-import { Field, resetSwap, selectCurrency, selectSubToken, setRecipient, switchCurrencies, typeInput } from './actions'
+import {
+  Field,
+  resetSubToken,
+  resetSwap,
+  selectCurrency,
+  selectSubToken,
+  setRecipient,
+  switchCurrencies,
+  typeInput
+} from './actions'
 
 export interface SwapState {
   readonly independentField: Field
@@ -130,5 +139,9 @@ export default createReducer<SwapState>(initialState, builder =>
     })
     .addCase(resetSwap, () => {
       return initialState
+    })
+    .addCase(resetSubToken, (state, { payload: { field } }) => {
+      const prev = state[field]
+      return { ...state, [field]: { ...prev, tokenIds: undefined } }
     })
 )

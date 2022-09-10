@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   AppBar,
   Box,
@@ -117,6 +117,7 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { pathname } = useLocation()
   const isDownMd = useBreakpoint('md')
+  const navigate = useNavigate()
 
   const [darkMode] = useDarkModeManager()
 
@@ -124,12 +125,24 @@ export default function Header() {
     setMobileMenuOpen(false)
   }, [])
 
+  const toHome = useCallback(() => navigate(routes.swap), [navigate])
+
   return (
     <>
       <MobileMenu isOpen={mobileMenuOpen} onDismiss={handleMobileMenueDismiss} />
       <Filler />
       <StyledAppBar>
-        <Box display="flex" alignItems="center" gap={30}>
+        <Box
+          display="flex"
+          alignItems="center"
+          gap={30}
+          onClick={toHome}
+          sx={{
+            ':hover': {
+              cursor: 'pointer'
+            }
+          }}
+        >
           <MainLogo color={darkMode ? '#FFFFFF' : '#232859'} />
           {/* <Box sx={{ display: { xs: 'none', md: 'block' } }}> */}
           {/* <SwitchToggle checked={darkMode} onChange={toggleDarkMode} /> */}

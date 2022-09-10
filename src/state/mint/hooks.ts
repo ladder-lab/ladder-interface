@@ -76,7 +76,6 @@ export function useDerivedMintInfo(
   const dependentField = independentField === Field.CURRENCY_A ? Field.CURRENCY_B : Field.CURRENCY_A
 
   const tokenIds = useMintTokenIds()
-
   // tokens
   const currencies: { [field in Field]?: Token } = useMemo(
     () => ({
@@ -98,7 +97,6 @@ export function useDerivedMintInfo(
 
   const totalSupply = useTotalSupply(pair?.liquidityToken)
   const lpBalance = useTokenBalance(account ?? undefined, pair?.liquidityToken)
-  console.log('pair', currencies, pair, totalSupply, lpBalance)
 
   const noLiquidity: boolean =
     pairState === PairState.NOT_EXISTS || Boolean(totalSupply && JSBI.equal(totalSupply.raw, ZERO))
@@ -209,6 +207,10 @@ export function useDerivedMintInfo(
     error = 'Connect Wallet'
   }
 
+  if (!currencyA || !currencyB) {
+    error = error ?? 'Select Currency and/or NFT'
+  }
+
   if (pairState === PairState.INVALID) {
     error = error ?? 'Invalid pair'
   }
@@ -247,7 +249,7 @@ export function useDerivedMintInfo(
   }
 
   if ((checkIs721(currencyA) || checkIs721(currencyB)) && (!tokenIds || tokenIds.length < 1)) {
-    error = 'Please choose NFT token IDs'
+    error = error ?? 'Please choose NFT token IDs'
   }
 
   return {

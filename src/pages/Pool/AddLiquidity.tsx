@@ -111,6 +111,7 @@ export default function AddLiquidy() {
     setShowConfirm(false)
     showModal(<TransacitonPendingModal />)
     onFieldAInput('')
+    onSetTokenIds([])
     addLiquidityCb()
       .then(response => {
         hideModal()
@@ -136,7 +137,7 @@ export default function AddLiquidy() {
           showModal(<MessageBox type="error">Contract Error</MessageBox>)
         }
       })
-  }, [addLiquidityCb, addTransaction, currencies, hideModal, onFieldAInput, parsedAmounts, showModal])
+  }, [addLiquidityCb, addTransaction, currencies, hideModal, onFieldAInput, onSetTokenIds, parsedAmounts, showModal])
 
   const handleAdd = useCallback(() => {
     expertMode ? handleAddCb() : setShowConfirm(true)
@@ -242,6 +243,7 @@ export default function AddLiquidy() {
               onSelectCurrency={handleAssetB}
               currency={currencyB}
               onMax={handleMaxInputB}
+              onSelectSubTokens={handleTokenIds}
             />
           </Box>
           {currencyB && <AssetAccordion token={currencyB} />}
