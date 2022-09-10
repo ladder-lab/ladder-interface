@@ -34,7 +34,7 @@ interface Props {
 }
 
 enum SwapType {
-  AUTO = 'auto',
+  AUTO = 'Auto',
   MANUAL = 'Choose by yourself'
 }
 
@@ -56,8 +56,8 @@ function SwapTypeButton({
         height: 22,
         padding: '0 12px',
         borderRadius: '10px',
-        background: theme => (selected ? theme.palette.background.default : 'none'),
-        border: theme => `1px solid ${selected ? 'none' : theme.palette.primary.main}`
+        background: theme => theme.palette.background.default,
+        border: theme => `1px solid ${selected ? theme.palette.primary.main : 'none'}`
       }}
     >
       <Typography sx={{ color: theme => theme.palette.primary.main, mr: 4 }}>{text}</Typography>
