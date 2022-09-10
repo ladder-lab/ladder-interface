@@ -90,7 +90,7 @@ export default function Modal(props: Props) {
                     borderRadius: '12px',
                     marginTop: theme.height.mobileHeader,
                     marginBottom: 0,
-                    pb: '50px',
+                    pb: '10px',
                     pt: '10px'
                   }
                 }
