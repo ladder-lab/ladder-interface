@@ -15,7 +15,7 @@ import { toV2LiquidityToken, useIsDarkMode, useTrackedTokenPairs } from 'state/u
 import { useTokenBalancesWithLoadingIndicator, useTokenTotalSupplies } from 'state/wallet/hooks'
 import { usePairs } from 'data/Reserves'
 import { useActiveWeb3React } from 'hooks'
-import { checkIs1155, getTokenText } from 'utils/checkIs1155'
+import { checkIs1155, checkIs721, getTokenText } from 'utils/checkIs1155'
 import { useWalletModalToggle } from 'state/application/hooks'
 import { generateErc20 } from 'utils/getHashAddress'
 import { trimNumberString } from 'utils/trimNumberString'
@@ -28,13 +28,12 @@ export default function Pool() {
 
   // fetch the user's balances of all tracked V2 LP tokens
   const trackedTokenPairs = useTrackedTokenPairs()
-
   const [tokenPairsWithLiquidityTokens, trackedTokenPairMap] = useMemo(() => {
     const tokensMap: { [key: string]: Token[] } = {}
     const lpTokens = trackedTokenPairs.map(tokens => {
       const lpToken = toV2LiquidityToken(tokens)
       tokensMap[lpToken.address] = tokens
-      return { liquidityToken: toV2LiquidityToken(tokens), tokens }
+      return { liquidityToken: lpToken, tokens }
     })
 
     return [lpTokens, tokensMap]
@@ -147,7 +146,7 @@ export default function Pool() {
                 ]
 
                 const [amountA, amountB] =
-                  checkIs1155(token0) || token0.symbol === 'WETH' || token0.symbol === 'ETH'
+                  checkIs1155(token0) || checkIs721(token0) || token0.symbol === 'WETH' || token0.symbol === 'ETH'
                     ? [amount1, amount0]
                     : [amount0, amount1]
 
@@ -236,6 +235,8 @@ function PoolCard({
 }) {
   const theme = useTheme()
   const isDarkMode = useIsDarkMode()
+  const has721 = checkIs721(currency0) || checkIs721(currency1)
+  const has1155 = checkIs1155(currency0) || checkIs1155(currency1)
 
   return (
     <Card
@@ -247,7 +248,9 @@ function PoolCard({
         <DoubleCurrencyLogo currency0={currency0} currency1={currency1} size={28} />
         <Box display="flex" gap={16}>
           <Tag>ERC20</Tag>
-          <Tag>ERC1155</Tag>
+          {!has721 && !has1155 && <Tag>ERC20</Tag>}
+          {has721 && <Tag>ERC721</Tag>}
+          {has1155 && <Tag>ERC1155</Tag>}
         </Box>
       </Box>
       <Typography fontSize={18} fontWeight={600} mt={16} mb={16}>

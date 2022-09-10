@@ -243,6 +243,7 @@ export default function AddLiquidy() {
               onSelectCurrency={handleAssetB}
               currency={currencyB}
               onMax={handleMaxInputB}
+              onSelectSubTokens={handleTokenIds}
             />
           </Box>
           {currencyB && <AssetAccordion token={currencyB} />}
