@@ -241,6 +241,10 @@ export default function Swap() {
       return 'Select a Token'
     }
 
+    if (checkIs721(fromAsset) || checkIs721(toAsset)) {
+      return 'Invalid Pair'
+    }
+
     return undefined
   }, [fromAsset, toAsset])
 
