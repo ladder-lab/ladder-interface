@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Typography, useTheme } from '@mui/material'
+import { Box, Button, IconButton, Typography, useTheme, ButtonBase } from '@mui/material'
 import { Token721 } from 'constants/token/token721'
 import { useIsDarkMode } from 'state/user/hooks'
 import Modal from '.'
@@ -16,6 +16,8 @@ import { useCallback, useEffect } from 'react'
 import { useToken721Balance, useToken721BalanceTokens } from 'state/wallet/hooks'
 import { shortenAddress } from 'utils'
 import { useERC721Tokens } from 'state/swap/useSwap721State'
+import Input from 'components/Input'
+import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
 
 export default function Erc721IdSelectionModal({
   isOpen,
@@ -63,8 +65,55 @@ export default function Erc721IdSelectionModal({
     //     stepsDescription={['Select collection', 'Select token ID']}
     //   />
     // </Box>
-    <Modal customIsOpen={isOpen} customOnDismiss={onDismiss}>
-      {' '}
+    <Modal
+      customIsOpen={isOpen}
+      customOnDismiss={onDismiss}
+      width="100%"
+      maxWidth="680px"
+      closeIcon
+      padding={isDownMd ? '28px 16px' : '32px 32px'}
+    >
+      <Box width="100%" display="flex" gap={14} alignItems="center">
+        <Typography
+          variant="h5"
+          sx={{
+            fontSize: {
+              xs: 14,
+              md: 24
+            }
+          }}
+        >
+          Select a NFT
+        </Typography>
+      </Box>
+      <Box display="flex" alignItems="center" gap={3} mb={16} mt={28}>
+        <Typography fontSize={16} fontWeight={500}>
+          Don&apos;t see your NFT ?
+        </Typography>
+        <ButtonBase
+          sx={{
+            color: theme => theme.palette.primary.main,
+            fontSize: 16,
+            fontWeight: 500,
+            ml: 10,
+            '&:hover': {
+              color: theme => theme.palette.primary.dark
+            }
+          }}
+          onClick={() => {}}
+        >
+          Import it
+        </ButtonBase>
+      </Box>
+      <Input
+        value={''}
+        onChange={() => {}}
+        placeholder="Search name or paste address"
+        // outlined
+        startAdornment={<SearchIcon />}
+        onKeyDown={() => {}}
+        height={isDownMd ? 48 : 60}
+      />
       <Box sx={{ overflow: 'auto', height: isDownMd ? 357 : 500 }}>
         {' '}
         <Box margin="20px 0" display="grid" gap={20}>
