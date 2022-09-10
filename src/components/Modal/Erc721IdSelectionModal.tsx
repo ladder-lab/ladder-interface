@@ -188,7 +188,7 @@ export default function Erc721IdSelectionModal({
                 gridTemplateColumns={'repeat(auto-fit, 140px)'}
                 width="100%"
                 gap={10}
-                justifyContent="center"
+                justifyContent="flex-start"
               >
                 {availableTokens?.map(token => (
                   <NftCard
