@@ -90,14 +90,14 @@ export default function CurrencyInputPanel({
   hideBalance,
   onSelectSubTokens
 }: Props) {
-  const [isOpen, setIsOpen] = useState(false)
+  // const [isOpen, setIsOpen] = useState(false)
   const { account } = useActiveWeb3React()
   const is1155 = checkIs1155(currency)
   const is721 = filter721(currency)
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
   const [swapType, setSwapType] = useState(SwapType.AUTO)
 
-  const { showModal } = useModal()
+  const { hideModal, showModal } = useModal()
   const theme = useTheme()
   const isDownMd = useBreakpoint('md')
 
@@ -124,19 +124,27 @@ export default function CurrencyInputPanel({
     onSelectSubTokens && onSelectSubTokens([])
   }, [currency, onSelectSubTokens])
 
+  const subTokenSelection = useCallback(() => {
+    if (onSelectSubTokens) {
+      showModal(
+        <Erc721IdSelectionModal
+          amount={value ? +value : 0}
+          onSelectSubTokens={onSelectSubTokens}
+          collection={is721}
+          // isOpen={true}
+          onDismiss={hideModal}
+          // onDismiss={() => {
+          //   setIsOpen(false)
+          // }}
+        />
+      )
+    }
+  }, [hideModal, is721, onSelectSubTokens, showModal, value])
+
   return (
     <>
-      {is721 && (
+      {is721 && onSelectSubTokens && (
         <>
-          <Erc721IdSelectionModal
-            amount={value ? +value : 0}
-            onSelectSubTokens={onSelectSubTokens}
-            collection={is721}
-            isOpen={isOpen}
-            onDismiss={() => {
-              setIsOpen(false)
-            }}
-          />
           <Box
             sx={{
               paddingBottom: 12,
@@ -176,7 +184,8 @@ export default function CurrencyInputPanel({
                 text={SwapType.MANUAL}
                 helperText="choose by yourself..."
                 onClick={() => {
-                  setIsOpen(true)
+                  // setIsOpen(true)
+                  subTokenSelection()
                   setSwapType(SwapType.MANUAL)
                 }}
               />
