@@ -116,24 +116,35 @@ export default function Erc721IdSelectionModal({
       />
       <Box sx={{ overflow: 'auto', height: isDownMd ? 357 : 500, margin: '20px 0' }}>
         {' '}
-        <Box display="grid" gap={20}>
+        <Box display="flex" flexDirection="column" gap={20}>
           <Box>
             {tokens.length > 0 && (
-              <Box width="100%" mt={28}>
+              <Box
+                width="100%"
+                sx={{
+                  mt: {
+                    xs: 8,
+                    md: 28
+                  }
+                }}
+              >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 12, mb: 24 }}>
                   <Typography>Collection:</Typography>
                   <Box
                     sx={{
                       borderRadius: '8px',
                       background: theme => theme.palette.background.default,
-                      padding: '11px 18px',
+                      padding: '0px 18px',
                       display: 'flex',
                       gap: 8,
                       alignItems: 'center',
-                      height: 52
+                      height: {
+                        xs: 36,
+                        md: 52
+                      }
                     }}
                   >
-                    <Typography sx={{ fontSize: 16, fontWeight: 500 }}>
+                    <Typography sx={{ fontSize: { xs: 12, md: 16 }, fontWeight: 500 }}>
                       {collection?.name} <ExternalIcon />
                     </Typography>
                     {/* <XcircleSm onClick={onRemoveCollection} style={{ cursor: 'pointer' }} /> */}
@@ -142,13 +153,16 @@ export default function Erc721IdSelectionModal({
                 {tokens.map((token, idx) => (
                   <Box
                     key={`${token.symbol}-${idx}`}
-                    sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                    sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}
                   >
                     <LogoText logo={<CurrencyLogo currency={token} />} text={token.name} fontSize={12} />
-                    <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
-                      {token.address}
-                    </ExternalLink>
-                    <Typography sx={{ fontSize: 12 }}>Quantity: 1</Typography>
+                    <Box sx={{ display: { xs: 'block', md: 'flex', gap: 12 } }}>
+                      <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
+                        {isDownMd ? shortenAddress(token.address) : token.address}
+                      </ExternalLink>
+                      <Typography sx={{ fontSize: 12 }}>Quantity: 1</Typography>
+                    </Box>
+
                     <IconButton onClick={() => onRemoveToken(token)}>
                       <Xcircle />
                     </IconButton>
@@ -167,10 +181,16 @@ export default function Erc721IdSelectionModal({
                 sx={{
                   borderRadius: '8px',
                   background: theme => theme.palette.background.default,
-                  padding: '11px 23px'
+                  padding: '0px 18px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  height: {
+                    xs: 36,
+                    md: 52
+                  }
                 }}
               >
-                {collection?.name}
+                <Typography sx={{ fontSize: { xs: 12, md: 16 }, fontWeight: 500 }}> {collection?.name}</Typography>
               </Box>
               <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
                 {collection ? shortenAddress(collection.address) : ''}
