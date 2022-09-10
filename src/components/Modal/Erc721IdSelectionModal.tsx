@@ -114,9 +114,9 @@ export default function Erc721IdSelectionModal({
         onKeyDown={() => {}}
         height={isDownMd ? 48 : 60}
       />
-      <Box sx={{ overflow: 'auto', height: isDownMd ? 357 : 500 }}>
+      <Box sx={{ overflow: 'auto', height: isDownMd ? 357 : 500, margin: '20px 0' }}>
         {' '}
-        <Box margin="20px 0" display="grid" gap={20}>
+        <Box display="grid" gap={20}>
           <Box>
             {tokens.length > 0 && (
               <Box width="100%" mt={28}>
@@ -177,7 +177,7 @@ export default function Erc721IdSelectionModal({
               </ExternalLink>
             </Box>
           </Box>
-          <Box sx={{ overflow: 'auto', minHeight: 290 }} position="relative">
+          <Box sx={{ minHeight: 290 }} position="relative">
             {loading ? (
               <Box width={'100%'} display="flex" mt={20} alignItems="center" justifyContent="center">
                 <Loader />
