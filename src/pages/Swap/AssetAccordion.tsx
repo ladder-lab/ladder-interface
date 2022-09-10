@@ -5,7 +5,7 @@ import { useCallback, useState } from 'react'
 import { AllTokens } from 'models/allTokens'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import Tag from 'components/Tag'
-import { checkIs1155 } from 'utils/checkIs1155'
+import { checkIs1155, checkIs721 } from 'utils/checkIs1155'
 import Copy from 'components/essential/Copy'
 // import SampleNftImg from 'assets/images/sample-nft.png'
 import LogoText from 'components/LogoText'
@@ -16,11 +16,11 @@ import { Token721 } from 'constants/token/token721'
 
 export function AssetAccordion({
   token,
-  disabled,
+  // disabled,
   subTokens
 }: {
   token?: AllTokens
-  disabled?: boolean
+  // disabled?: boolean
   subTokens?: Token721[] | null
 }) {
   const [expanded, setExpanded] = useState(false)
@@ -37,9 +37,7 @@ export function AssetAccordion({
   }, [])
 
   const is1155 = checkIs1155(token)
-
-  //TOOD: Implement checkIs721
-  const is721 = checkIs1155(token)
+  const is721 = checkIs721(token)
 
   const summary = useMemo(() => {
     return (
@@ -117,7 +115,7 @@ export function AssetAccordion({
       expanded={expanded}
       onChange={handleChange}
       margin={'0'}
-      disabled={disabled || !subTokens}
+      disabled={subTokens && subTokens.length > 0 ? false : true}
       iconCssOverride={{ right: 0, bottom: 0, position: 'absolute' }}
     />
   )

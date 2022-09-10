@@ -60,12 +60,33 @@ export default function Erc721IdSelectionModal({
     setFilteredAvailableTokens(availableTokens)
   }, [availableTokens])
   return (
-    <Modal customIsOpen={isOpen} customOnDismiss={onDismiss}>
+    <Modal
+      customIsOpen={isOpen}
+      customOnDismiss={onDismiss}
+      width="100%"
+      maxWidth="680px"
+      closeIcon
+      closeVariant="button"
+      padding={isDownMd ? '28px 16px' : '32px 32px'}
+    >
+      <Box width="100%" display="flex" gap={14} alignItems="center" pb={30}>
+        <Typography
+          variant="h5"
+          sx={{
+            fontSize: {
+              xs: 14,
+              md: 24
+            }
+          }}
+        >
+          Select NFT (token ID)
+        </Typography>
+      </Box>
       <Box sx={{ overflow: 'auto', height: isDownMd ? 357 : 500 }}>
         <Box margin="20px 0" display="grid" gap={20}>
           <Box>
             {tokens.length > 0 && (
-              <Box width="100%" mt={28}>
+              <Box width="100%" mt={{ xs: 0, md: 28 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 12, mb: 24 }}>
                   <Typography>Collection:</Typography>
                   <Box
@@ -92,7 +113,7 @@ export default function Erc721IdSelectionModal({
                   >
                     <LogoText logo={<CurrencyLogo currency={token} />} text={token.name} fontSize={12} />
                     <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
-                      {token.address}
+                      {shortenAddress(token.address)}
                     </ExternalLink>
                     <Typography sx={{ fontSize: 12 }}>Quantity: 1</Typography>
                     <IconButton onClick={() => onRemoveToken(token)}>
@@ -109,7 +130,7 @@ export default function Erc721IdSelectionModal({
                 </Box>
               </Box>
             )}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <Box sx={{ display: { xs: 'grid', md: 'flex' }, alignItems: 'center', gap: 12 }}>
               <Typography>Collection:</Typography>
               <Box
                 sx={{

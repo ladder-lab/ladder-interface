@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { AppDispatch, AppState } from 'state'
 import { filter721 } from 'utils/checkIs1155'
-import { Field, selectSubToken } from './actions'
+import { Field, resetSubToken, selectSubToken } from './actions'
 
 export function useERC721Tokens() {
   const [tokens, setTokens] = useState<Token721[]>([])
@@ -41,6 +41,7 @@ export function useERC721Tokens() {
 
 export function useSwap721State(): {
   onSubTokenSelection: (field: Field, currency: AllTokens, tokenIds: Array<number | string>) => void
+  resetSubTokenSelection: (field: Field) => void
   tokenIds: {
     [Field.INPUT]: undefined | Array<number | string>
     [Field.OUTPUT]: undefined | Array<number | string>
@@ -49,6 +50,17 @@ export function useSwap721State(): {
   const dispatch = useDispatch<AppDispatch>()
   const inputIds = useSelector((state: AppState) => state.swap[Field.INPUT].tokenIds)
   const outputIds = useSelector((state: AppState) => state.swap[Field.OUTPUT].tokenIds)
+
+  const resetSubTokenSelection = useCallback(
+    (field: Field) => {
+      dispatch(
+        resetSubToken({
+          field
+        })
+      )
+    },
+    [dispatch]
+  )
 
   const onSubTokenSelection = useCallback(
     (field: Field, currency: AllTokens, tokenIds = [] as Array<number | string>) => {
@@ -67,12 +79,13 @@ export function useSwap721State(): {
   const res = useMemo(() => {
     return {
       onSubTokenSelection,
+      resetSubTokenSelection,
       tokenIds: {
         [Field.INPUT]: inputIds,
         [Field.OUTPUT]: outputIds
       }
     }
-  }, [inputIds, onSubTokenSelection, outputIds])
+  }, [inputIds, onSubTokenSelection, outputIds, resetSubTokenSelection])
 
   return res
 }
