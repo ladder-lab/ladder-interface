@@ -18,13 +18,13 @@ import { shortenAddress } from 'utils'
 import { useERC721Tokens } from 'state/swap/useSwap721State'
 
 export default function Erc721IdSelectionModal({
-  isOpen,
+  // isOpen,
   onDismiss,
   collection,
   onSelectSubTokens,
   amount
 }: {
-  isOpen: boolean
+  // isOpen: boolean
   onDismiss: () => void
   collection?: Token721
   onSelectSubTokens: (tokens: Token721[]) => void
@@ -61,7 +61,7 @@ export default function Erc721IdSelectionModal({
   }, [availableTokens])
   return (
     <Modal
-      customIsOpen={isOpen}
+      // customIsOpen={isOpen}
       customOnDismiss={onDismiss}
       width="100%"
       maxWidth="680px"
