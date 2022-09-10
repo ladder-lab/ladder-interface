@@ -76,7 +76,6 @@ export function useDerivedMintInfo(
   const dependentField = independentField === Field.CURRENCY_A ? Field.CURRENCY_B : Field.CURRENCY_A
 
   const tokenIds = useMintTokenIds()
-
   // tokens
   const currencies: { [field in Field]?: Token } = useMemo(
     () => ({
@@ -98,7 +97,6 @@ export function useDerivedMintInfo(
 
   const totalSupply = useTotalSupply(pair?.liquidityToken)
   const lpBalance = useTokenBalance(account ?? undefined, pair?.liquidityToken)
-  console.log('pair', currencies, pair, totalSupply, lpBalance)
 
   const noLiquidity: boolean =
     pairState === PairState.NOT_EXISTS || Boolean(totalSupply && JSBI.equal(totalSupply.raw, ZERO))

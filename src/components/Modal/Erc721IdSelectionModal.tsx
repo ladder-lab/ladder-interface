@@ -27,7 +27,7 @@ export default function Erc721IdSelectionModal({
   isOpen: boolean
   onDismiss: () => void
   collection?: Token721
-  onSelectSubTokens?: (tokens: Token721[]) => void
+  onSelectSubTokens: (tokens: Token721[]) => void
   amount: number
 }) {
   const isDownMd = useBreakpoint('md')
@@ -43,8 +43,7 @@ export default function Erc721IdSelectionModal({
     if (!collection || tokens.length !== amount) {
       return
     }
-
-    onSelectSubTokens && onSelectSubTokens(tokens)
+    onSelectSubTokens && onSelectSubTokens([...tokens])
     const tokenIds = tokens.map(({ tokenId }) => tokenId)
     setFilteredAvailableTokens(prev => {
       return prev?.filter(token => !tokenIds.includes(token.tokenId))
@@ -61,17 +60,6 @@ export default function Erc721IdSelectionModal({
     setFilteredAvailableTokens(availableTokens)
   }, [availableTokens])
   return (
-    //   <Box margin="-24px 30px 30px">
-    //   <Stepper
-    //     steps={[1, 2]}
-    //     activeStep={collection ? 1 : 0}
-    //     onStep={(num: number) => {
-    //       if (num !== 0) return
-    //       setCollection(null)
-    //     }}
-    //     stepsDescription={['Select collection', 'Select token ID']}
-    //   />
-    // </Box>
     <Modal customIsOpen={isOpen} customOnDismiss={onDismiss}>
       <Box sx={{ overflow: 'auto', height: isDownMd ? 357 : 500 }}>
         <Box margin="20px 0" display="grid" gap={20}>
@@ -162,55 +150,6 @@ export default function Erc721IdSelectionModal({
                 ))}
               </Box>
             )}
-            {/* {searchToken && !searchTokenIsAdded ? (
-                <NftCard
-                  token={searchToken}
-                  onClick={() => {
-                    onAddToken(searchToken)
-                  }}
-                />
-              ) : tokenOptions.length === 0 ? (
-                <Box width={'100%'} display="flex" alignItems="center" justifyContent="center">
-                  <Typography
-                    textAlign="center"
-                    mb="20px"
-                    fontSize={16}
-                    fontWeight={500}
-                    component="div"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                  >
-                    No results found. &nbsp;
-                    <Button
-                      variant="text"
-                      sx={{ display: 'inline', width: 'unset', padding: 0, height: 'max-content' }}
-                    >
-                      Import token
-                    </Button>
-                  </Typography>
-                </Box>
-              ) : (
-                <>
-                  {loading && (
-                    <Box width={'100%'} display="flex" alignItems="center" justifyContent="center">
-                      <Loader />
-                    </Box>
-                  )}
-                  {!loading &&
-                    sortedList?.map(({ token }, idx) => (
-                      <Grid item xs={6} md={3} key={idx}>
-                        <NftCard
-                          key={idx}
-                          token={token as Token721}
-                          onClick={() => {
-                            onAddToken(token as Token721)
-                          }}
-                        />
-                      </Grid>
-                    ))}
-                </>
-              )} */}
           </Box>
         </Box>
       </Box>

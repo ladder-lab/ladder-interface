@@ -64,23 +64,30 @@ export function useMintCallback(currencyA: AllTokens | undefined, currencyB: All
       const methodName = noNft ? 'addLiquidityETH' : is721Pair ? 'addLiquidityETH721' : 'addLiquidityETH1155'
       estimate = router.estimateGas[methodName]
       method = router[methodName]
-      args = [
-        wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', // token
-        ...(noNft
-          ? []
-          : is721Pair
-          ? tokenIds ?? []
-          : [
-              tokenBIsETH
-                ? (filter1155(currencyA) ?? filter721(currencyA))?.tokenId ?? ''
-                : (filter1155(currencyB) ?? filter721(currencyB))?.tokenId ?? ''
-            ]), //tokenId
-        (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
-        amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
-        amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // eth min
-        account,
-        deadline.toHexString()
-      ]
+      args = is721Pair
+        ? [
+            wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', //721 address
+            tokenIds ?? [], //ids
+            (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), //721 amount
+            (tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString(), //eth min,
+            account,
+            deadline.toHexString()
+          ]
+        : [
+            wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', // token
+            ...(noNft
+              ? []
+              : [
+                  tokenBIsETH
+                    ? (filter1155(currencyA) ?? filter721(currencyA))?.tokenId ?? ''
+                    : (filter1155(currencyB) ?? filter721(currencyB))?.tokenId ?? ''
+                ]), //tokenId
+            (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
+            amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
+            amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // eth min
+            account,
+            deadline.toHexString()
+          ]
       value = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString())
     } else {
       const tokenAIs1155 = checkIs1155(currencyA) || checkIs721(currencyA)
@@ -114,7 +121,6 @@ export function useMintCallback(currencyA: AllTokens | undefined, currencyB: All
             deadline.toHexString()
           ]
       value = null
-      console.log('methodName', methodName, args)
     }
     const estimatedGasLimit = await estimate(...args, value ? { value } : {})
 

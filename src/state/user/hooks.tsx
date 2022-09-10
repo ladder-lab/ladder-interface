@@ -278,6 +278,7 @@ export function useTrackedTokenPairs(): [Token, Token][] {
   const { chainId } = useActiveWeb3React()
   const tokens = useAllTokens()
   const nfts = useTrackedToken1155List()
+  const erc721s = useTrackedToken721List()
   const userTokens = useUserAddedTokens()
 
   // pinned pairs
@@ -294,7 +295,10 @@ export function useTrackedTokenPairs(): [Token, Token][] {
               // loop though all bases on the current chain
               (
                 nfts
-                  ? (nfts as any[]).concat(userTokens).concat(BASES_TO_TRACK_LIQUIDITY_FOR[chainId] ?? [])
+                  ? (nfts as any[])
+                      .concat(erc721s)
+                      .concat(userTokens)
+                      .concat(BASES_TO_TRACK_LIQUIDITY_FOR[chainId] ?? [])
                   : [...(BASES_TO_TRACK_LIQUIDITY_FOR[chainId] ?? []), userTokens]
               )
                 // to construct pairs of the given token with each base
@@ -309,9 +313,8 @@ export function useTrackedTokenPairs(): [Token, Token][] {
             )
           })
         : [],
-    [chainId, tokens, nfts, userTokens]
+    [chainId, tokens, nfts, erc721s, userTokens]
   )
-
   // pairs saved by users
   const savedSerializedPairs = useSelector<AppState, AppState['user']['pairs']>(({ user: { pairs } }) => pairs)
 
@@ -329,7 +332,6 @@ export function useTrackedTokenPairs(): [Token, Token][] {
     () => userPairs.concat(generatedPairs).concat(pinnedPairs),
     [generatedPairs, pinnedPairs, userPairs]
   )
-
   return useMemo(() => {
     // dedupes pairs of tokens in the combined list
     const keyed = combinedList.reduce<{ [key: string]: [Token | Token1155, Token | Token1155] }>(

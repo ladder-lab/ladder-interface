@@ -126,7 +126,7 @@ export default function CurrencyInputPanel({
 
   return (
     <>
-      {is721 && (
+      {is721 && onSelectSubTokens && (
         <>
           <Erc721IdSelectionModal
             amount={value ? +value : 0}
