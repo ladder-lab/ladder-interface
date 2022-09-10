@@ -160,6 +160,10 @@ export default function Swap() {
         hideModal()
         showModal(<TransactionSubmittedModal />)
         setSwapState(prev => ({ ...prev, attemptingTxn: false, txHash: hash }))
+        setFromErc721SubTokens(null)
+        setToErc721SubTokens(null)
+        resetSubTokenSelection(Field.INPUT)
+        resetSubTokenSelection(Field.OUTPUT)
       })
       .catch(error => {
         hideModal()
@@ -170,7 +174,7 @@ export default function Swap() {
           txHash: undefined
         }))
       })
-  }, [hideModal, priceImpactWithoutFee, showModal, swapCallback])
+  }, [hideModal, priceImpactWithoutFee, resetSubTokenSelection, showModal, swapCallback])
 
   const handleConfirmDismiss = useCallback(() => {
     setSwapState(prev => ({ ...prev, showConfirm: false, tradeToConfirm, attemptingTxn, txHash }))
@@ -230,27 +234,13 @@ export default function Swap() {
     [onCurrencySelection, resetSubTokenSelection]
   )
 
-  const handleFromSubAssets = useCallback(
-    (tokens: Token721[]) => {
-      if (fromAsset) {
-        setFromErc721SubTokens(tokens)
-        const ids: any[] = tokens.map(({ tokenId }) => tokenId).filter(id => id !== undefined)
-        onSubTokenSelection(Field.INPUT, fromAsset, ids)
-      }
-    },
-    [fromAsset, onSubTokenSelection]
-  )
+  const handleFromSubAssets = useCallback((tokens: Token721[]) => {
+    setFromErc721SubTokens(tokens)
+  }, [])
 
-  const handleToSubAssets = useCallback(
-    (tokens: Token721[]) => {
-      if (toAsset) {
-        setToErc721SubTokens(tokens)
-        const ids: any[] = tokens.map(({ tokenId }) => tokenId).filter(id => id !== undefined)
-        onSubTokenSelection(Field.OUTPUT, toAsset, ids)
-      }
-    },
-    [onSubTokenSelection, toAsset]
-  )
+  const handleToSubAssets = useCallback((tokens: Token721[]) => {
+    setToErc721SubTokens(tokens)
+  }, [])
 
   const error = useMemo(() => {
     if (!fromAsset || !toAsset) {
@@ -274,6 +264,24 @@ export default function Swap() {
     setFromErc721SubTokens(to)
     setToErc721SubTokens(from)
   }, [account, onSwitchTokens, fromErc721SubTokens, toErc721SubTokens])
+
+  useEffect(() => {
+    if (fromAsset && fromErc721SubTokens) {
+      const ids: any[] = fromErc721SubTokens.map(({ tokenId }) => tokenId).filter(id => id !== undefined)
+      onSubTokenSelection(Field.INPUT, fromAsset, ids)
+    } else {
+      resetSubTokenSelection(Field.INPUT)
+    }
+  }, [fromAsset, fromErc721SubTokens, onSubTokenSelection, resetSubTokenSelection])
+
+  useEffect(() => {
+    if (toAsset && toErc721SubTokens) {
+      const ids: any[] = toErc721SubTokens.map(({ tokenId }) => tokenId).filter(id => id !== undefined)
+      onSubTokenSelection(Field.OUTPUT, toAsset, ids)
+    } else {
+      resetSubTokenSelection(Field.OUTPUT)
+    }
+  }, [fromAsset, fromErc721SubTokens, onSubTokenSelection, resetSubTokenSelection, toAsset, toErc721SubTokens])
 
   return (
     <>
