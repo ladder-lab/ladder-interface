@@ -209,6 +209,10 @@ export function useDerivedMintInfo(
     error = 'Connect Wallet'
   }
 
+  if (!currencyA || !currencyB) {
+    error = error ?? 'Select Currency and/or NFT'
+  }
+
   if (pairState === PairState.INVALID) {
     error = error ?? 'Invalid pair'
   }
@@ -247,7 +251,7 @@ export function useDerivedMintInfo(
   }
 
   if ((checkIs721(currencyA) || checkIs721(currencyB)) && (!tokenIds || tokenIds.length < 1)) {
-    error = 'Please choose NFT token IDs'
+    error = error ?? 'Please choose NFT token IDs'
   }
 
   return {

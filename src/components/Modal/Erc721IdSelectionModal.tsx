@@ -12,7 +12,7 @@ import { ReactComponent as Xcircle } from 'assets/svg/xcircle.svg'
 // import { ReactComponent as XcircleSm } from 'assets/svg/xcirclesm.svg'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { ReactComponent as ExternalIcon } from 'assets/svg/external_arrow.svg'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useToken721Balance, useToken721BalanceTokens } from 'state/wallet/hooks'
 import { shortenAddress } from 'utils'
 import { useERC721Tokens } from 'state/swap/useSwap721State'
@@ -37,20 +37,29 @@ export default function Erc721IdSelectionModal({
   const balance = useToken721Balance(collection)
   const { loading, availableTokens } = useToken721BalanceTokens(balance)
 
+  const [filteredAvailableTokens, setFilteredAvailableTokens] = useState(availableTokens)
+
   const onConfirm = useCallback(() => {
-    if (!collection || tokens.length < amount) {
+    if (!collection || tokens.length !== amount) {
       return
     }
 
     onSelectSubTokens && onSelectSubTokens(tokens)
+    const tokenIds = tokens.map(({ tokenId }) => tokenId)
+    setFilteredAvailableTokens(prev => {
+      return prev?.filter(token => !tokenIds.includes(token.tokenId))
+    })
     onDismiss()
   }, [amount, collection, onDismiss, onSelectSubTokens, tokens])
 
   useEffect(() => {
     onClearTokens()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [collection])
+  }, [collection, availableTokens, amount])
 
+  useEffect(() => {
+    setFilteredAvailableTokens(availableTokens)
+  }, [availableTokens])
   return (
     //   <Box margin="-24px 30px 30px">
     //   <Stepper
@@ -64,9 +73,7 @@ export default function Erc721IdSelectionModal({
     //   />
     // </Box>
     <Modal customIsOpen={isOpen} customOnDismiss={onDismiss}>
-      {' '}
       <Box sx={{ overflow: 'auto', height: isDownMd ? 357 : 500 }}>
-        {' '}
         <Box margin="20px 0" display="grid" gap={20}>
           <Box>
             {tokens.length > 0 && (
@@ -107,7 +114,9 @@ export default function Erc721IdSelectionModal({
                 ))}
                 <Box margin="28px 0" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Button onClick={onConfirm} sx={{ height: 60, width: 300 }} disabled={tokens.length < amount}>
-                    {tokens.length === amount ? 'Confirm' : `${amount} NFTs should be chosen`}
+                    {tokens.length === amount
+                      ? `${tokens.length}/${amount} Confirm`
+                      : `${amount} NFTs should be chosen`}
                   </Button>
                 </Box>
               </Box>
@@ -141,13 +150,14 @@ export default function Erc721IdSelectionModal({
                 gap={10}
                 justifyContent="center"
               >
-                {availableTokens?.map(token => (
+                {filteredAvailableTokens?.map(token => (
                   <NftCard
                     key={token.tokenId}
                     token={token}
                     onClick={() => {
                       onAddToken(token)
                     }}
+                    disabled={tokens.length >= amount}
                   />
                 ))}
               </Box>
@@ -208,13 +218,13 @@ export default function Erc721IdSelectionModal({
   )
 }
 
-function NftCard({ token, onClick }: { token: Token721; onClick: () => void }) {
+function NftCard({ token, onClick, disabled }: { token: Token721; onClick: () => void; disabled: boolean }) {
   const theme = useTheme()
   const isDarkMode = useIsDarkMode()
 
   return (
     <Box
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
       sx={{
         width: '100%',
         display: 'flex',
@@ -225,11 +235,14 @@ function NftCard({ token, onClick }: { token: Token721; onClick: () => void }) {
         background: isDarkMode ? '#15171A' : '#F6F6F6',
         transition: '0.5s',
         cursor: 'pointer',
-        '&:hover': {
-          boxShadow: isDarkMode ? 'none' : '0px 3px 10px rgba(0, 0, 0, 0.15)',
-          background: isDarkMode ? '#2E3133' : '#FFFFFF',
-          cursor: 'pointer'
-        }
+        opacity: disabled ? 0.8 : 1,
+        '&:hover': disabled
+          ? {}
+          : {
+              boxShadow: isDarkMode ? 'none' : '0px 3px 10px rgba(0, 0, 0, 0.15)',
+              background: isDarkMode ? '#2E3133' : '#FFFFFF',
+              cursor: 'pointer'
+            }
       }}
     >
       <Image src={token?.uri ?? SampleNftImg} style={{ borderRadius: '8px', overflow: 'hidden', width: '100%' }} />

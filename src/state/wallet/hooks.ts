@@ -256,11 +256,11 @@ export function useToken721Balance(token?: Token721 | null | undefined) {
     return [account ?? undefined]
   }, [account])
 
-  const contract = use721Contract(!!token && isAddress(token?.address) ? token?.address : undefined)
-  const balance = useSingleCallResult(!!token && account ? contract : null, 'balanceOf', args)
+  const contract = use721Contract(token && isAddress(token?.address) ? token?.address : undefined)
+  const balance = useSingleCallResult(token && account ? contract : null, 'balanceOf', args)
 
   const amount = useMemo(() => {
-    return !!token && balance.result ? new TokenAmount(token, balance.result[0]?.toString()) : undefined
+    return token && balance.result ? new TokenAmount(token, balance.result[0]?.toString()) : undefined
   }, [balance.result, token])
 
   return amount
