@@ -134,7 +134,7 @@ export default function Swap() {
 
   const is721Input = checkIs721(currencies[Field.INPUT])
   const is721Output = checkIs721(currencies[Field.OUTPUT])
-  const { onSubTokenSelection, tokenIds } = useSwap721State()
+  const { onSubTokenSelection, tokenIds, resetSubTokenSelection } = useSwap721State()
   // the callback to execute the swap
   const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(
     trade,
@@ -213,22 +213,27 @@ export default function Swap() {
 
   const handleFromAsset = useCallback(
     (currency: AllTokens) => {
+      resetSubTokenSelection(Field.INPUT)
       setApprovalSubmitted(false) // reset 2 step UI for approvals
       onCurrencySelection(Field.INPUT, currency)
+      setFromErc721SubTokens(null)
     },
-    [onCurrencySelection]
+    [onCurrencySelection, resetSubTokenSelection]
   )
 
   const handleToAsset = useCallback(
     (currency: AllTokens) => {
+      resetSubTokenSelection(Field.OUTPUT)
       onCurrencySelection(Field.OUTPUT, currency)
+      setToErc721SubTokens(null)
     },
-    [onCurrencySelection]
+    [onCurrencySelection, resetSubTokenSelection]
   )
 
   const handleFromSubAssets = useCallback(
     (tokens: Token721[]) => {
       if (fromAsset) {
+        setFromErc721SubTokens(tokens)
         const ids: any[] = tokens.map(({ tokenId }) => tokenId).filter(id => id !== undefined)
         onSubTokenSelection(Field.INPUT, fromAsset, ids)
       }
@@ -239,6 +244,7 @@ export default function Swap() {
   const handleToSubAssets = useCallback(
     (tokens: Token721[]) => {
       if (toAsset) {
+        setToErc721SubTokens(tokens)
         const ids: any[] = tokens.map(({ tokenId }) => tokenId).filter(id => id !== undefined)
         onSubTokenSelection(Field.OUTPUT, toAsset, ids)
       }
