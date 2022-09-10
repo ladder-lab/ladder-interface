@@ -60,7 +60,7 @@ function SwapTypeButton({
         border: theme => `1px solid ${selected ? theme.palette.primary.main : 'none'}`
       }}
     >
-      <Typography sx={{ color: theme => theme.palette.primary.main, mr: 4 }}>{text}</Typography>
+      <Typography sx={{ color: theme => theme.palette.primary.main, mr: 4, fontSize: 12 }}>{text}</Typography>
       <QuestionHelper text={helperText} />
     </ButtonBase>
   )
@@ -141,13 +141,27 @@ export default function CurrencyInputPanel({
             sx={{
               paddingBottom: 12,
               margin: '0 auto',
-              paddingLeft: 362,
+              paddingLeft: {
+                xs: 0,
+                md: 362
+              },
               '&:hover': {
                 opacity: 0.8
               }
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 12, mt: 16 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+                mt: 16,
+                justifyContent: {
+                  xs: 'flex-end',
+                  md: 'flex-start'
+                }
+              }}
+            >
               <SwapTypeButton
                 selected={swapType === SwapType.AUTO}
                 text={SwapType.AUTO}
