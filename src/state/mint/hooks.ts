@@ -75,6 +75,8 @@ export function useDerivedMintInfo(
 
   const dependentField = independentField === Field.CURRENCY_A ? Field.CURRENCY_B : Field.CURRENCY_A
 
+  const tokenIds = useMintTokenIds()
+
   // tokens
   const currencies: { [field in Field]?: Token } = useMemo(
     () => ({
@@ -242,6 +244,10 @@ export function useDerivedMintInfo(
 
   if (isANft && isBNft) {
     error = 'Invalid pair'
+  }
+
+  if ((checkIs721(currencyA) || checkIs721(currencyB)) && (!tokenIds || tokenIds.length < 1)) {
+    error = 'Please choose NFT token IDs'
   }
 
   return {
