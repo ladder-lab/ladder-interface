@@ -53,7 +53,7 @@ export function useMintCallback(currencyA: AllTokens | undefined, currencyB: All
 
     let estimate,
       method: (...args: any) => Promise<TransactionResponse>,
-      args: Array<string | string[] | number>,
+      args: Array<string | string[] | number | Array<string | number>>,
       value: BigNumber | null
     const isA1155 = checkIs1155(currencyA) || checkIs721(currencyA)
     const isB1155 = checkIs1155(currencyB) || checkIs721(currencyB)
