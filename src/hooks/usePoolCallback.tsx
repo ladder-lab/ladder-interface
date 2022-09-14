@@ -69,7 +69,7 @@ export function useMintCallback(currencyA: AllTokens | undefined, currencyB: All
             wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', //721 address
             tokenIds ?? [], //ids
             (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), //721 amount
-            (tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString(), //eth min,
+            (tokenBIsETH ? amountsMin[Field.CURRENCY_B] : amountsMin[Field.CURRENCY_A]).toString(), //eth min,
             account,
             deadline.toHexString()
           ]
@@ -101,11 +101,11 @@ export function useMintCallback(currencyA: AllTokens | undefined, currencyB: All
 
       args = is721Pair
         ? [
-            token1155?.address ?? '',
-            tokenIds,
-            ((tokenAIs1155 ? currencyB : currencyA) as any).address ?? '',
-            (tokenAIs1155 ? parsedAmountB : parsedAmountA).raw.toString(),
-            (tokenAIs1155 ? parsedAmountB : parsedAmountA).raw.toString(),
+            token1155?.address ?? '', //token721 address
+            tokenIds, //nftIds
+            ((tokenAIs1155 ? currencyB : currencyA) as any).address ?? '', //tokenB address
+            (tokenAIs1155 ? parsedAmountB : parsedAmountA).raw.toString(), //amountBDesired
+            (tokenAIs1155 ? amountsMin[Field.CURRENCY_B] : amountsMin[Field.CURRENCY_A]).toString(), //amountBMin
             account,
             deadline.toHexString()
           ]
