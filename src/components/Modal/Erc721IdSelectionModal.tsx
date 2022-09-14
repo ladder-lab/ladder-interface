@@ -85,9 +85,25 @@ export default function Erc721IdSelectionModal({
       <Box sx={{ overflow: 'auto', height: isDownMd ? 357 : 500 }}>
         <Box margin="20px 0" display="grid" gap={20}>
           <Box>
+            <Box sx={{ display: { xs: 'grid', md: 'flex' }, alignItems: 'center', gap: 12 }}>
+              <Typography>Collection:</Typography>
+              <Box
+                sx={{
+                  borderRadius: '8px',
+                  background: theme => theme.palette.background.default,
+                  padding: '11px 23px'
+                }}
+              >
+                {collection?.name}
+                <ExternalIcon />
+              </Box>
+              <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
+                {collection ? shortenAddress(collection.address) : ''}
+              </ExternalLink>
+            </Box>
             {tokens.length > 0 && (
               <Box width="100%" mt={{ xs: 0, md: 28 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 12, mb: 24 }}>
+                {/* <Box sx={{ display: 'flex', alignItems: 'center', gap: 12, mb: 24 }}>
                   <Typography>Collection:</Typography>
                   <Box
                     sx={{
@@ -103,15 +119,19 @@ export default function Erc721IdSelectionModal({
                     <Typography sx={{ fontSize: 16, fontWeight: 500 }}>
                       {collection?.name} <ExternalIcon />
                     </Typography>
-                    {/* <XcircleSm onClick={onRemoveCollection} style={{ cursor: 'pointer' }} /> */}
+                    {/* <XcircleSm onClick={onRemoveCollection} style={{ cursor: 'pointer' }} /> 
                   </Box>
-                </Box>
+                </Box> */}
                 {tokens.map((token, idx) => (
                   <Box
                     key={`${token.symbol}-${idx}`}
                     sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
                   >
-                    <LogoText logo={<CurrencyLogo currency={token} />} text={token.name} fontSize={12} />
+                    <LogoText
+                      logo={<CurrencyLogo currency={token} />}
+                      text={token.name + `#${token.tokenId}`}
+                      fontSize={12}
+                    />
                     <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
                       {shortenAddress(token.address)}
                     </ExternalLink>
@@ -121,6 +141,9 @@ export default function Erc721IdSelectionModal({
                     </IconButton>
                   </Box>
                 ))}
+                <Typography fontSize={20} textAlign="center" margin="20px 0 0" color="primary">
+                  {tokens.length}/{amount}
+                </Typography>
                 <Box margin="28px 0" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Button onClick={onConfirm} sx={{ height: 60, width: 300 }} disabled={tokens.length < amount}>
                     {tokens.length === amount
@@ -130,21 +153,6 @@ export default function Erc721IdSelectionModal({
                 </Box>
               </Box>
             )}
-            <Box sx={{ display: { xs: 'grid', md: 'flex' }, alignItems: 'center', gap: 12 }}>
-              <Typography>Collection:</Typography>
-              <Box
-                sx={{
-                  borderRadius: '8px',
-                  background: theme => theme.palette.background.default,
-                  padding: '11px 23px'
-                }}
-              >
-                {collection?.name}
-              </Box>
-              <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
-                {collection ? shortenAddress(collection.address) : ''}
-              </ExternalLink>
-            </Box>
           </Box>
           <Box sx={{ overflow: 'auto', minHeight: 290 }} position="relative">
             {loading ? (
@@ -159,16 +167,20 @@ export default function Erc721IdSelectionModal({
                 gap={10}
                 justifyContent="center"
               >
-                {filteredAvailableTokens?.map(token => (
-                  <NftCard
-                    key={token.tokenId}
-                    token={token}
-                    onClick={() => {
-                      onAddToken(token)
-                    }}
-                    disabled={tokens.length >= amount}
-                  />
-                ))}
+                {filteredAvailableTokens?.map(token => {
+                  const selected = tokens.filter(item => item.tokenId === token.tokenId)
+                  return (
+                    <NftCard
+                      selected={!!selected.length}
+                      key={token.tokenId}
+                      token={token}
+                      onClick={() => {
+                        onAddToken(token)
+                      }}
+                      disabled={tokens.length >= amount}
+                    />
+                  )
+                })}
               </Box>
             )}
           </Box>
@@ -178,7 +190,17 @@ export default function Erc721IdSelectionModal({
   )
 }
 
-function NftCard({ token, onClick, disabled }: { token: Token721; onClick: () => void; disabled: boolean }) {
+function NftCard({
+  token,
+  onClick,
+  disabled,
+  selected = false
+}: {
+  token: Token721
+  onClick: () => void
+  disabled: boolean
+  selected?: boolean
+}) {
   const theme = useTheme()
   const isDarkMode = useIsDarkMode()
 
@@ -186,6 +208,8 @@ function NftCard({ token, onClick, disabled }: { token: Token721; onClick: () =>
     <Box
       onClick={disabled ? undefined : onClick}
       sx={{
+        border: '1px solid transparent',
+        borderColor: selected ? theme.palette.primary.main : 'transparnet',
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
