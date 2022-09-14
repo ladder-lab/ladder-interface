@@ -31,6 +31,7 @@ interface Props {
   disableInput?: boolean
   hideBalance?: boolean
   onSelectSubTokens?: (tokens: Token721[]) => void
+  enableAuto?: boolean
 }
 
 enum SwapType {
@@ -88,7 +89,8 @@ export default function CurrencyInputPanel({
   onMax,
   disableInput,
   hideBalance,
-  onSelectSubTokens
+  onSelectSubTokens,
+  enableAuto
 }: Props) {
   // const [isOpen, setIsOpen] = useState(false)
   const { account } = useActiveWeb3React()
@@ -121,8 +123,8 @@ export default function CurrencyInputPanel({
   // }, [is1155, onChange, selectedCurrencyBalance, token1155Balance])
 
   useEffect(() => {
-    onSelectSubTokens && onSelectSubTokens([])
-  }, [currency, onSelectSubTokens])
+    is721 && onSelectSubTokens && onSelectSubTokens([])
+  }, [currency, is721, onSelectSubTokens])
 
   const subTokenSelection = useCallback(() => {
     if (onSelectSubTokens) {
@@ -170,15 +172,17 @@ export default function CurrencyInputPanel({
                 }
               }}
             >
-              <SwapTypeButton
-                selected={swapType === SwapType.AUTO}
-                text={SwapType.AUTO}
-                helperText="auto..."
-                onClick={() => {
-                  setSwapType(SwapType.AUTO)
-                  onSelectSubTokens && onSelectSubTokens([])
-                }}
-              />
+              {enableAuto && (
+                <SwapTypeButton
+                  selected={swapType === SwapType.AUTO}
+                  text={SwapType.AUTO}
+                  helperText="auto..."
+                  onClick={() => {
+                    setSwapType(SwapType.AUTO)
+                    onSelectSubTokens && onSelectSubTokens([])
+                  }}
+                />
+              )}
               <SwapTypeButton
                 selected={swapType === SwapType.MANUAL}
                 text={SwapType.MANUAL}

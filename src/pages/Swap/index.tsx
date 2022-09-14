@@ -56,7 +56,14 @@ export default function Swap() {
   const [isExpertMode] = useExpertModeManager()
   const { independentField, typedValue, recipient } = useSwapState()
 
-  const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
+  const {
+    v2Trade,
+    currencyBalances,
+    parsedAmount,
+    currencies,
+    inputError: swapInputError,
+    selectedTokenIds
+  } = useDerivedSwapInfo()
   const { [Field.INPUT]: fromAsset, [Field.OUTPUT]: toAsset } = currencies
 
   const [fromErc721SubTokens, setFromErc721SubTokens] = useState<Token721[] | null>(null)
@@ -132,15 +139,13 @@ export default function Swap() {
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
 
-  const is721Input = checkIs721(currencies[Field.INPUT])
-  const is721Output = checkIs721(currencies[Field.OUTPUT])
-  const { onSubTokenSelection, tokenIds, resetSubTokenSelection } = useSwap721State()
+  const { onSubTokenSelection, resetSubTokenSelection } = useSwap721State()
   // the callback to execute the swap
   const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(
     trade,
     allowedSlippage,
     recipient,
-    is721Input ? tokenIds[Field.INPUT] : is721Output ? tokenIds[Field.OUTPUT] : undefined
+    selectedTokenIds
   )
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
   const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
@@ -266,7 +271,7 @@ export default function Swap() {
   }, [account, onSwitchTokens, fromErc721SubTokens, toErc721SubTokens])
 
   useEffect(() => {
-    if (fromAsset && fromErc721SubTokens) {
+    if (fromAsset && checkIs721(fromAsset) && fromErc721SubTokens) {
       const ids: any[] = fromErc721SubTokens.map(({ tokenId }) => tokenId).filter(id => id !== undefined)
       onSubTokenSelection(Field.INPUT, fromAsset, ids)
     } else {
@@ -275,7 +280,7 @@ export default function Swap() {
   }, [fromAsset, fromErc721SubTokens, onSubTokenSelection, resetSubTokenSelection])
 
   useEffect(() => {
-    if (toAsset && toErc721SubTokens) {
+    if (toAsset && checkIs721(toAsset) && toErc721SubTokens) {
       const ids: any[] = toErc721SubTokens.map(({ tokenId }) => tokenId).filter(id => id !== undefined)
       onSubTokenSelection(Field.OUTPUT, toAsset, ids)
     } else {
@@ -297,6 +302,7 @@ export default function Swap() {
         allowedSlippage={allowedSlippage}
         priceImpact={priceImpactWithoutFee?.toFixed()}
         slippageAdjustedAmounts={slippageAdjustedAmounts}
+        tokenIds={selectedTokenIds}
       />
       <AppBody width={'100%'} maxWidth={'680px'}>
         <Box
@@ -363,6 +369,7 @@ export default function Swap() {
               currency={toAsset}
               disabled={!account}
               onSelectSubTokens={handleToSubAssets}
+              enableAuto={true}
             />
           </Box>
           {/* {toAsset && <AssetAccordion token={toAsset} />} */}

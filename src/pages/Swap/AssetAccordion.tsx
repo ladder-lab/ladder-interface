@@ -95,7 +95,7 @@ export function AssetAccordion({
             <Box key={idx} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <LogoText
                 logo={<CurrencyLogo currency={token} style={{ width: 28 }} />}
-                text={getName(token)}
+                text={getName(token) + `#${token.tokenId}`}
                 fontSize={12}
               />
               <ExternalLink sx={{ color: theme.palette.text.secondary, fontSize: 12 }} href={'#'} showIcon>

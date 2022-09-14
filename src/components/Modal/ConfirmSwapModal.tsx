@@ -11,7 +11,7 @@ import { AllTokens } from 'models/allTokens'
 import { CurrencyAmount, currencyEquals, Trade } from '@ladder/sdk'
 import { Field } from 'state/swap/actions'
 import Tag from 'components/Tag'
-import { checkIs1155, checkTokenType, filter1155 } from 'utils/checkIs1155'
+import { checkTokenType, filter1155 } from 'utils/checkIs1155'
 
 /**
  * Returns true if the trade requires a confirmation of details before we can submit it
@@ -39,7 +39,8 @@ export default function ConfirmSwapModal({
   originalTrade,
   allowedSlippage,
   priceImpact,
-  slippageAdjustedAmounts
+  slippageAdjustedAmounts,
+  tokenIds
 }: {
   onConfirm: () => void
   from?: AllTokens
@@ -55,6 +56,7 @@ export default function ConfirmSwapModal({
     INPUT?: CurrencyAmount | undefined
     OUTPUT?: CurrencyAmount | undefined
   }
+  tokenIds?: Array<string | number>
 }) {
   const theme = useTheme()
 
@@ -74,6 +76,7 @@ export default function ConfirmSwapModal({
           to={to}
           fromVal={trade?.inputAmount.toExact() ?? '-'}
           toVal={trade?.outputAmount.toExact() ?? '-'}
+          tokenIds={tokenIds}
         />
         <Typography fontSize={16} mt={16} mb={24}>
           {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {trade?.outputAmount.currency.name ?? '-'} ={' '}
@@ -105,14 +108,15 @@ function SwapPanelRow({
   asset,
   value,
   approx,
-  type
+  type,
+  tokenIds
 }: {
   asset?: AllTokens
   value: string
   approx?: string
   type: string
+  tokenIds?: Array<string | number>
 }) {
-  const is1155 = checkIs1155(asset)
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
       <Box sx={{ display: 'flex', gap: 14, position: 'relative', width: '100%', alignItems: 'center' }}>
@@ -126,23 +130,36 @@ function SwapPanelRow({
       </Box>
       <Box display="flex" flexDirection="column" gap={8} alignItems="flex-end" width="50%">
         <Tag>{type}</Tag>
-        <Typography fontSize={is1155 ? 16 : 20} textAlign="right">
-          {is1155 ? asset?.name : asset?.symbol}
-          {is1155 ? ` #${filter1155(asset)?.tokenId}` : ''}
+        <Typography fontSize={type === 'ERC20' ? 16 : 20} textAlign="right">
+          {type !== 'ERC20' ? asset?.name : asset?.symbol}
+          {type === 'ERC1155' ? ` #${filter1155(asset)?.tokenId}` : ''}
         </Typography>
+        {tokenIds && type === 'ERC721' && <Typography>{tokenIds.map(id => `#${id} `)}</Typography>}
       </Box>
     </Box>
   )
 }
 
-function SwapPanel({ from, to, fromVal, toVal }: { from?: AllTokens; to?: AllTokens; fromVal: string; toVal: string }) {
+function SwapPanel({
+  from,
+  to,
+  fromVal,
+  toVal,
+  tokenIds
+}: {
+  from?: AllTokens
+  to?: AllTokens
+  fromVal: string
+  toVal: string
+  tokenIds?: Array<string | number>
+}) {
   const theme = useTheme()
 
   return (
     <Box sx={{ background: theme.palette.background.default, padding: '12px 20px', borderRadius: '8px' }}>
-      <SwapPanelRow asset={from} value={fromVal} type={from ? checkTokenType(from) : '-'} />
+      <SwapPanelRow asset={from} value={fromVal} type={from ? checkTokenType(from) : '-'} tokenIds={tokenIds} />
       <ArrowDownwardIcon />
-      <SwapPanelRow asset={to} value={toVal} type={to ? checkTokenType(to) : '-'} />
+      <SwapPanelRow asset={to} value={toVal} type={to ? checkTokenType(to) : '-'} tokenIds={tokenIds} />
     </Box>
   )
 }

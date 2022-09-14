@@ -16,7 +16,7 @@ import { checkIs1155, checkIs721, filter1155, filter721 } from 'utils/checkIs115
 import { wrappedCurrency } from 'utils/wrappedCurrency'
 import { ApprovalState, useApproveCallback } from './useApproveCallback'
 import { usePairContract } from './useContract'
-import { ROUTER_ADDRESS } from 'constants/index'
+import { ROUTER_ADDRESS, ROUTER_ADDRESS_721 } from 'constants/index'
 import useIsArgentWallet from 'hooks/useIsArgentWallet'
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import useModal from './useModal'
@@ -69,7 +69,7 @@ export function useMintCallback(currencyA: AllTokens | undefined, currencyB: All
             wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', //721 address
             tokenIds ?? [], //ids
             (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), //721 amount
-            (tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString(), //eth min,
+            (tokenBIsETH ? amountsMin[Field.CURRENCY_B] : amountsMin[Field.CURRENCY_A]).toString(), //eth min,
             account,
             deadline.toHexString()
           ]
@@ -101,11 +101,11 @@ export function useMintCallback(currencyA: AllTokens | undefined, currencyB: All
 
       args = is721Pair
         ? [
-            token1155?.address ?? '',
-            tokenIds,
-            ((tokenAIs1155 ? currencyB : currencyA) as any).address ?? '',
-            (tokenAIs1155 ? parsedAmountB : parsedAmountA).raw.toString(),
-            (tokenAIs1155 ? parsedAmountB : parsedAmountA).raw.toString(),
+            token1155?.address ?? '', //token721 address
+            tokenIds, //nftIds
+            ((tokenAIs1155 ? currencyB : currencyA) as any).address ?? '', //tokenB address
+            (tokenAIs1155 ? parsedAmountB : parsedAmountA).raw.toString(), //amountBDesired
+            (tokenAIs1155 ? amountsMin[Field.CURRENCY_B] : amountsMin[Field.CURRENCY_A]).toString(), //amountBMin
             account,
             deadline.toHexString()
           ]
@@ -161,7 +161,11 @@ export function useBurnCallback(currencyA: AllTokens | undefined, currencyB: All
   const deadline = useTransactionDeadline()
   const { parsedAmounts, pair } = useDerivedBurnInfo(currencyA ?? undefined, currencyB ?? undefined)
   const Field = BurnField
-  const [approval, approveCallback] = useApproveCallback(parsedAmounts[Field.LIQUIDITY], ROUTER_ADDRESS)
+  const is721Pair = checkIs721(currencyA) || checkIs721(currencyB)
+  const [approval, approveCallback] = useApproveCallback(
+    parsedAmounts[Field.LIQUIDITY],
+    is721Pair ? ROUTER_ADDRESS_721 : ROUTER_ADDRESS
+  )
   const isArgentWallet = useIsArgentWallet()
 
   // pair contract
@@ -173,7 +177,10 @@ export function useBurnCallback(currencyA: AllTokens | undefined, currencyB: All
     if (!currencyAmountA || !currencyAmountB) {
       throw new Error('missing currency amounts')
     }
-    const router = getRouterContract(chainId, library, account)
+
+    const router = is721Pair
+      ? getRouterContract721(chainId, library, account)
+      : getRouterContract(chainId, library, account)
 
     const amountsMin = {
       [Field.CURRENCY_A]: calculateSlippageAmount(currencyAmountA, allowedSlippage)[0],
@@ -199,7 +206,9 @@ export function useBurnCallback(currencyA: AllTokens | undefined, currencyB: All
     if (approval === ApprovalState.APPROVED) {
       // removeLiquidityETH
       if (oneCurrencyIsETH) {
-        methodNames = ['removeLiquidityETH', 'removeLiquidityETHSupportingFeeOnTransferTokens']
+        methodNames = is721Pair
+          ? ['removeLiquidityETH']
+          : ['removeLiquidityETH', 'removeLiquidityETHSupportingFeeOnTransferTokens']
         args = [
           currencyBIsETH ? tokenA.address : tokenB.address,
           liquidityAmount.raw.toString(),
@@ -227,7 +236,9 @@ export function useBurnCallback(currencyA: AllTokens | undefined, currencyB: All
     else if (signatureData !== null) {
       // removeLiquidityETHWithPermit
       if (oneCurrencyIsETH) {
-        methodNames = ['removeLiquidityETHWithPermit', 'removeLiquidityETHWithPermitSupportingFeeOnTransferTokens']
+        methodNames = is721Pair
+          ? ['removeLiquidityETHWithPermit']
+          : ['removeLiquidityETHWithPermit', 'removeLiquidityETHWithPermitSupportingFeeOnTransferTokens']
         args = [
           currencyBIsETH ? tokenA.address : tokenB.address,
           liquidityAmount.raw.toString(),
@@ -241,7 +252,7 @@ export function useBurnCallback(currencyA: AllTokens | undefined, currencyB: All
           signatureData.s
         ]
       }
-      // removeLiquidityETHWithPermit
+      // removeLiquidityWithPermit
       else {
         methodNames = ['removeLiquidityWithPermit']
         args = [
@@ -268,7 +279,8 @@ export function useBurnCallback(currencyA: AllTokens | undefined, currencyB: All
           .then(calculateGasMargin)
           .catch(error => {
             console.error(`estimateGas failed`, methodName, args, error)
-            return undefined
+            throw new Error(error)
+            // return undefined
           })
       )
     )
@@ -300,6 +312,7 @@ export function useBurnCallback(currencyA: AllTokens | undefined, currencyB: All
     currencyA,
     currencyB,
     deadline,
+    is721Pair,
     library,
     parsedAmounts,
     signatureData
@@ -338,7 +351,7 @@ export function useBurnCallback(currencyA: AllTokens | undefined, currencyB: All
     ]
     const message = {
       owner: account,
-      spender: ROUTER_ADDRESS,
+      spender: is721Pair ? ROUTER_ADDRESS_721 : ROUTER_ADDRESS,
       value: liquidityAmount.raw.toString(),
       nonce: nonce.toHexString(),
       deadline: deadline.toNumber()
@@ -378,6 +391,7 @@ export function useBurnCallback(currencyA: AllTokens | undefined, currencyB: All
     chainId,
     deadline,
     hideModal,
+    is721Pair,
     isArgentWallet,
     library,
     pair,
