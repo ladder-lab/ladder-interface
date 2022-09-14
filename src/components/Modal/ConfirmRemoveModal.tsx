@@ -5,7 +5,7 @@ import { AllTokens } from 'models/allTokens'
 import AddIcon from '@mui/icons-material/Add'
 import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
 import Tag from 'components/Tag'
-import { getTokenText } from 'utils/checkIs1155'
+import { checkIs1155, checkIs721, getTokenText } from 'utils/checkIs1155'
 
 export default function ConfirmRemoveModal({
   onConfirm,
@@ -42,7 +42,13 @@ export default function ConfirmRemoveModal({
           </Typography>
           <Box ml={20} display="flex" gap={16}>
             <Tag>ERC20</Tag>
-            <Tag>ERC1155</Tag>
+            {checkIs1155(tokenA) || checkIs1155(tokenB) ? (
+              <Tag>ERC1155</Tag>
+            ) : checkIs721(tokenA) || checkIs721(tokenB) ? (
+              <Tag>ERC721</Tag>
+            ) : (
+              <Tag>ERC20</Tag>
+            )}
           </Box>
         </Box>
 
@@ -74,7 +80,7 @@ export default function ConfirmRemoveModal({
           rateToken1Token2={priceA}
           rateToken2Token1={priceB}
         />
-        <ActionButton onAction={onConfirm} actionText="Confirm Supply" />
+        <ActionButton onAction={onConfirm} actionText="Confirm Remove" />
       </Box>
     </Modal>
   )

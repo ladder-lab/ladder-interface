@@ -15,7 +15,8 @@ import { computeSlippageAdjustedAmounts } from 'utils/swap/prices'
 import { AllTokens } from 'models/allTokens'
 import { getHashAddress } from 'utils/getHashAddress'
 import { NETWORK_CHAIN_ID } from 'constants/chain'
-import { filter1155, filter721 } from 'utils/checkIs1155'
+import { checkIs1155, checkIs721, filter1155, filter721 } from 'utils/checkIs1155'
+import { useSwap721State } from './useSwap721State'
 
 export function useSwapState(): AppState['swap'] {
   return useSelector<AppState, AppState['swap']>(state => state.swap)
@@ -115,6 +116,7 @@ export function useDerivedSwapInfo(): {
   parsedAmount: CurrencyAmount | undefined
   v2Trade: Trade | undefined
   inputError?: string
+  selectedTokenIds: (string | number)[] | undefined
 } {
   const { account, chainId } = useActiveWeb3React()
 
@@ -125,6 +127,7 @@ export function useDerivedSwapInfo(): {
     [Field.OUTPUT]: { currencyId: outputCurrencyId, tokenId: outputTokenId, standard: outputStandard },
     recipient
   } = useSwapState()
+  const { tokenIds } = useSwap721State()
 
   const inputCurrencyRaw = useCurrency(inputCurrencyId, inputTokenId, inputStandard)
   const outputCurrencyRaw = useCurrency(outputCurrencyId, outputTokenId, outputStandard)
@@ -170,6 +173,11 @@ export function useDerivedSwapInfo(): {
     [Field.OUTPUT]: outputCurrencyRaw ?? undefined
   }
 
+  const is721Input = checkIs721(currencies[Field.INPUT])
+  const is721Output = checkIs721(currencies[Field.OUTPUT])
+
+  const selectedTokenIds = is721Input ? tokenIds[Field.INPUT] : is721Output ? tokenIds[Field.OUTPUT] : undefined
+
   let inputError: string | undefined
   if (!account) {
     inputError = 'Connect Wallet'
@@ -179,8 +187,12 @@ export function useDerivedSwapInfo(): {
     inputError = inputError ?? 'Enter an amount'
   }
 
+  if (is721Input && tokenIds[Field.INPUT]?.length != v2Trade?.inputAmount.toExact()) {
+    inputError = inputError ?? 'Choose token Ids'
+  }
+
   if (!currencies[Field.INPUT] || !currencies[Field.OUTPUT]) {
-    inputError = inputError = 'Select a token'
+    inputError = 'Select a token'
   }
 
   const formattedTo = isAddress(to)
@@ -206,6 +218,13 @@ export function useDerivedSwapInfo(): {
   if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
     inputError = 'Insufficient ' + amountIn.currency.symbol + ' balance'
   }
+  if (
+    (is721Input && is721Output) ||
+    (is721Input && checkIs1155(currencies[Field.OUTPUT])) ||
+    (is721Output && checkIs1155(currencies[Field.INPUT]))
+  ) {
+    inputError = 'Invalid Pair'
+  }
 
   return {
     currencies,
@@ -215,6 +234,7 @@ export function useDerivedSwapInfo(): {
     },
     parsedAmount,
     v2Trade: v2Trade ?? undefined,
-    inputError
+    inputError,
+    selectedTokenIds
   }
 }

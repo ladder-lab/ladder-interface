@@ -8,6 +8,7 @@ import { wrappedCurrency } from 'utils/wrappedCurrency'
 
 import { useActiveWeb3React } from './index'
 import { useUserAddedTokens, useUserSingleHopOnly } from 'state/user/hooks'
+import { checkIs721 } from 'utils/checkIs1155'
 
 function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): Pair[] {
   const { chainId } = useActiveWeb3React()
@@ -93,7 +94,14 @@ export function useTradeExactIn(currencyAmountIn?: CurrencyAmount, currencyOut?:
   const [singleHopOnly] = useUserSingleHopOnly()
 
   return useMemo(() => {
+    const is721Pair = checkIs721(currencyAmountIn?.currency) || checkIs721(currencyOut)
     if (currencyAmountIn && currencyOut && allowedPairs.length > 0) {
+      if (is721Pair) {
+        return (
+          Trade.bestTradeExactIn(allowedPairs, currencyAmountIn, currencyOut, { maxHops: 1, maxNumResults: 1 })[0] ??
+          null
+        )
+      }
       if (singleHopOnly) {
         return (
           Trade.bestTradeExactIn(allowedPairs, currencyAmountIn, currencyOut, { maxHops: 3, maxNumResults: 1 })[0] ??
@@ -126,8 +134,9 @@ export function useTradeExactOut(currencyIn?: Currency, currencyAmountOut?: Curr
   const [singleHopOnly] = useUserSingleHopOnly()
 
   return useMemo(() => {
+    const is721Pair = checkIs721(currencyAmountOut?.currency) || checkIs721(currencyIn)
     if (currencyIn && currencyAmountOut && allowedPairs.length > 0) {
-      if (singleHopOnly) {
+      if (singleHopOnly || is721Pair) {
         return (
           Trade.bestTradeExactOut(allowedPairs, currencyIn, currencyAmountOut, { maxHops: 1, maxNumResults: 1 })[0] ??
           null
