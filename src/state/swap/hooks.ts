@@ -218,7 +218,6 @@ export function useDerivedSwapInfo(): {
   if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
     inputError = 'Insufficient ' + amountIn.currency.symbol + ' balance'
   }
-  console.log(is721Input, is721Output, checkIs1155(currencies[Field.OUTPUT]), checkIs1155(currencies[Field.INPUT]))
   if (
     (is721Input && is721Output) ||
     (is721Input && checkIs1155(currencies[Field.OUTPUT])) ||

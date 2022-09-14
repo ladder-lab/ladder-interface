@@ -302,6 +302,7 @@ export default function Swap() {
         allowedSlippage={allowedSlippage}
         priceImpact={priceImpactWithoutFee?.toFixed()}
         slippageAdjustedAmounts={slippageAdjustedAmounts}
+        tokenIds={selectedTokenIds}
       />
       <AppBody width={'100%'} maxWidth={'680px'}>
         <Box
