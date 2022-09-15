@@ -14,7 +14,7 @@ export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16))
 export const ROUTER_ADDRESS_721: string =
   (
     {
-      [4]: '0x75dF18db8AB078298ec07529f856887ab90457E4',
+      [4]: '0xC61d146BB1965ba0e387aA2Ad94c500a17dfe65F',
       [56]: '',
       [1]: ''
     } as any
@@ -32,7 +32,7 @@ export const FACTORY_ADDRESS_721: string =
 export const ROUTER_ADDRESS: string =
   (
     {
-      [4]: '0x9f524cEe47d5f940eeb0Bba4419Bb176A722c51A',
+      [4]: '0x2cB34c38f7FFF789fab70AB69DAA9f7F05a4ecc8',
       [56]: '0x54F0d8485e931c22D542D7b95dbbf5ecdE9C91E8',
       [1]: ''
     } as any
@@ -41,7 +41,7 @@ export const ROUTER_ADDRESS: string =
 export const FACTORY_ADDRESS =
   (
     {
-      [4]: '0x58efa15b89781ec6976a829b9f6e45623ad68429',
+      [4]: '0xB4AA7ce0558A8EbfC943928d6F3E5ceCc1650a46',
       [56]: '0xa1bf45AF7cDe8c105054611383E8ae3dA65615a3',
       [1]: ''
     } as any

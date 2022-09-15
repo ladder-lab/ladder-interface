@@ -344,9 +344,17 @@ export default function Swap() {
             sx={{
               paddingBottom: 12,
               margin: '0 auto',
-              paddingLeft: 362,
+              paddingLeft: {
+                xs: 0,
+                md: 362
+              },
               '&:hover': {
                 opacity: 0.8
+              },
+              display: 'flex',
+              justifyContent: {
+                xs: 'center',
+                md: 'flex-start'
               }
             }}
           >

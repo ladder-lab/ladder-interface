@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Typography, useTheme } from '@mui/material'
+import { Box, Button, IconButton, Typography, useTheme, ButtonBase } from '@mui/material'
 import { Token721 } from 'constants/token/token721'
 import { useIsDarkMode } from 'state/user/hooks'
 import Modal from '.'
@@ -16,6 +16,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { useToken721Balance, useToken721BalanceTokens } from 'state/wallet/hooks'
 import { shortenAddress } from 'utils'
 import { useERC721Tokens } from 'state/swap/useSwap721State'
+import Input from 'components/Input'
+import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
 
 export default function Erc721IdSelectionModal({
   // isOpen,
@@ -79,11 +81,40 @@ export default function Erc721IdSelectionModal({
             }
           }}
         >
-          Select NFT (token ID)
+          Select a NFT
         </Typography>
       </Box>
-      <Box sx={{ overflow: 'auto', height: isDownMd ? 357 : 500 }}>
-        <Box margin="20px 0" display="grid" gap={20}>
+      <Box display="flex" alignItems="center" gap={3} mb={16} mt={28}>
+        <Typography fontSize={16} fontWeight={500}>
+          Don&apos;t see your NFT ?
+        </Typography>
+        <ButtonBase
+          sx={{
+            color: theme => theme.palette.primary.main,
+            fontSize: 16,
+            fontWeight: 500,
+            ml: 10,
+            '&:hover': {
+              color: theme => theme.palette.primary.dark
+            }
+          }}
+          onClick={() => {}}
+        >
+          Import it
+        </ButtonBase>
+      </Box>
+      <Input
+        value={''}
+        onChange={() => {}}
+        placeholder="Search name or paste address"
+        // outlined
+        startAdornment={<SearchIcon />}
+        onKeyDown={() => {}}
+        height={isDownMd ? 48 : 60}
+      />
+      <Box sx={{ overflow: 'auto', height: isDownMd ? 357 : 500, margin: '20px 0' }}>
+        {' '}
+        <Box display="flex" flexDirection="column" gap={20}>
           <Box>
             <Box sx={{ display: { xs: 'grid', md: 'flex' }, alignItems: 'center', gap: 12 }}>
               <Typography>Collection:</Typography>
@@ -109,23 +140,26 @@ export default function Erc721IdSelectionModal({
                     sx={{
                       borderRadius: '8px',
                       background: theme => theme.palette.background.default,
-                      padding: '11px 18px',
+                      padding: '0px 18px',
                       display: 'flex',
                       gap: 8,
                       alignItems: 'center',
-                      height: 52
+                      height: {
+                        xs: 36,
+                        md: 52
+                      }
                     }}
                   >
-                    <Typography sx={{ fontSize: 16, fontWeight: 500 }}>
+                    <Typography sx={{ fontSize: { xs: 12, md: 16 }, fontWeight: 500 }}>
                       {collection?.name} <ExternalIcon />
                     </Typography>
-                    {/* <XcircleSm onClick={onRemoveCollection} style={{ cursor: 'pointer' }} /> 
+                    {/* <XcircleSm onClick={onRemoveCollection} style={{ cursor: 'pointer' }} />
                   </Box>
                 </Box> */}
                 {tokens.map((token, idx) => (
                   <Box
                     key={`${token.symbol}-${idx}`}
-                    sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                    sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}
                   >
                     <LogoText
                       logo={<CurrencyLogo currency={token} />}
@@ -154,7 +188,7 @@ export default function Erc721IdSelectionModal({
               </Box>
             )}
           </Box>
-          <Box sx={{ overflow: 'auto', minHeight: 290 }} position="relative">
+          <Box sx={{ minHeight: 290 }} position="relative">
             {loading ? (
               <Box width={'100%'} display="flex" mt={20} alignItems="center" justifyContent="center">
                 <Loader />
@@ -165,7 +199,7 @@ export default function Erc721IdSelectionModal({
                 gridTemplateColumns={'repeat(auto-fit, 140px)'}
                 width="100%"
                 gap={10}
-                justifyContent="center"
+                justifyContent="flex-start"
               >
                 {filteredAvailableTokens?.map(token => {
                   const selected = tokens.filter(item => item.tokenId === token.tokenId)

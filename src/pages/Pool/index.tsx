@@ -159,7 +159,7 @@ export default function Pool() {
                   totalSupply && balance ? new Percent(balance.raw, totalSupply.raw).toFixed() + '%' : '-'
 
                 return (
-                  <Grid item xs={12} md={4} key={pair.liquidityToken.address}>
+                  <Grid item xs={12} md={6} lg={4} key={pair.liquidityToken.address}>
                     <PoolCard
                       currency0={amountA.token}
                       currency1={amountB.token}
@@ -256,7 +256,7 @@ function PoolCard({
       <Typography fontSize={18} fontWeight={600} mt={16} mb={16}>
         {title}
       </Typography>
-      <Box display="grid" gap={8}>
+      <Box display="flex" flexDirection="column" gap={8}>
         <PoolAssetCard currency={currency0} value={reserve0} />
         <PoolAssetCard currency={currency1} value={reserve1} />
       </Box>
@@ -311,9 +311,9 @@ function PoolAssetCard({ currency, value }: { currency: AllTokens; value: string
   const theme = useTheme()
 
   return (
-    <Card color={theme.palette.background.paper} padding="16px 20px 16px 16px">
-      <Box display="flex" justifyContent="space-between">
-        <Box display="grid" gap={8}>
+    <Card color={theme.palette.background.paper} padding="16px 20px 16px 16px" width="100%">
+      <Box display="flex" justifyContent="space-between" width="100%">
+        <Box display="flex" flexDirection="column" gap={8} width="100%">
           <Typography fontSize={12} fontWeight={400} color={theme.palette.text.secondary}>
             Pooled {currency.symbol}
           </Typography>
