@@ -1,6 +1,6 @@
 import { useCallback, useState, ChangeEvent, useMemo, useEffect } from 'react'
 import { Typography, Box, Button } from '@mui/material'
-import { CurrencyAmount, JSBI, Trade } from '@ladder/sdk'
+import { CurrencyAmount, JSBI, Pair, Trade } from '@ladder/sdk'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
 import { ReactComponent as SwitchCircle } from 'assets/svg/switch_circle.svg'
@@ -28,10 +28,11 @@ import { Currency } from 'constants/token'
 import { checkIs721 } from 'utils/checkIs1155'
 import { Token721 } from 'constants/token/token721'
 import { useSwap721State } from 'state/swap/useSwap721State'
+import { wrappedCurrency } from 'utils/wrappedCurrency'
 
 export default function Swap() {
   // const theme = useTheme()
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
 
   const [summaryExpanded, setSummaryExpanded] = useState(false)
 
@@ -247,6 +248,12 @@ export default function Swap() {
     setToErc721SubTokens(tokens)
   }, [])
 
+  const pair721Address = useMemo(() => {
+    const tokenFrom = wrappedCurrency(fromAsset, chainId)
+    const tokenTo = wrappedCurrency(toAsset, chainId)
+    return tokenFrom && tokenTo && checkIs721(toAsset) ? Pair.getAddress(tokenFrom, tokenTo) : undefined
+  }, [chainId, fromAsset, toAsset])
+
   const error = useMemo(() => {
     if (!fromAsset || !toAsset) {
       return 'Select a Token'
@@ -339,7 +346,6 @@ export default function Swap() {
               onSelectSubTokens={handleFromSubAssets}
             />
           </Box>
-          {/* {fromAsset && <AssetAccordion token={fromAsset} />} */}
           <Box
             sx={{
               paddingBottom: 12,
@@ -362,7 +368,6 @@ export default function Swap() {
           </Box>
           <Box mb={toAsset ? 16 : 0}>
             <CurrencyInputPanel
-              // selectedTokenType={fromAsset ? ('tokenId' in fromAsset ? 'erc1155' : 'erc20') : undefined}
               value={formattedAmounts[Field.OUTPUT]}
               onChange={handleToVal}
               onSelectCurrency={handleToAsset}
@@ -370,6 +375,7 @@ export default function Swap() {
               disabled={!account}
               onSelectSubTokens={handleToSubAssets}
               enableAuto={true}
+              pairAddress={pair721Address}
             />
           </Box>
           {/* {toAsset && <AssetAccordion token={toAsset} />} */}
