@@ -32,6 +32,7 @@ interface Props {
   hideBalance?: boolean
   onSelectSubTokens?: (tokens: Token721[]) => void
   enableAuto?: boolean
+  pairAddress?: string | undefined
 }
 
 enum SwapType {
@@ -90,7 +91,8 @@ export default function CurrencyInputPanel({
   disableInput,
   hideBalance,
   onSelectSubTokens,
-  enableAuto
+  enableAuto,
+  pairAddress
 }: Props) {
   // const [isOpen, setIsOpen] = useState(false)
   const { account } = useActiveWeb3React()
@@ -133,6 +135,7 @@ export default function CurrencyInputPanel({
           amount={value ? +value : 0}
           onSelectSubTokens={onSelectSubTokens}
           collection={is721}
+          pairAddress={pairAddress}
           // isOpen={true}
           onDismiss={hideModal}
           // onDismiss={() => {

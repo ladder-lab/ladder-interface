@@ -5,11 +5,11 @@ import IUniswapV2PairABI from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
 import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
+import ERC721_PAIR_ABI from '../constants/abis/erc721Pair.json'
 import WETH_ABI from '../constants/abis/weth.json'
 import ERC20_ABI from '../constants/abis/erc20.json'
 import ERC1155_ABI from '../constants/abis/erc1155.json'
 import ERC721_ABI from '../constants/abis/erc721.json'
-import { MIGRATOR_ABI, MIGRATOR_ADDRESS } from '../constants/abis/migrator'
 import UNISOCKS_ABI from '../constants/abis/unisocks.json'
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
 import { getContract } from '../utils'
@@ -32,10 +32,6 @@ export function useContract(address: string | undefined, ABI: any, withSignerIfP
       return null
     }
   }, [address, ABI, library, withSignerIfPossible, account])
-}
-
-export function useV2MigratorContract(): Contract | null {
-  return useContract(MIGRATOR_ADDRESS, MIGRATOR_ABI, true)
 }
 
 export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
@@ -104,4 +100,8 @@ export function use1155Contract(address: string | undefined, withSignerIfPossibl
 
 export function use721Contract(address: string | undefined, withSignerIfPossible?: boolean): Contract | null {
   return useContract(address, ERC721_ABI, withSignerIfPossible)
+}
+
+export function use721PairContract(address: string | undefined, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(address, ERC721_PAIR_ABI, withSignerIfPossible)
 }
