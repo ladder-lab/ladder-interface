@@ -1,5 +1,5 @@
 import { ChangeEvent, useCallback, useState, KeyboardEvent, useMemo, useEffect } from 'react'
-import { Box, Typography, ButtonBase } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { isAddress } from 'utils'
 import { useAddUserToken, useTrackedToken721List } from 'state/user/hooks'
 import useBreakpoint from 'hooks/useBreakpoint'
@@ -23,9 +23,9 @@ export default function ERC721List({
 }) {
   const [searchQueryNFT, setSearchQueryNFT] = useState<string>('')
   const tokenOptions = useTrackedToken721List()
-  const commonCollections = useMemo(() => {
-    return tokenOptions.slice(0, 3)
-  }, [tokenOptions])
+  // const commonCollections = useMemo(() => {
+  //   return tokenOptions.slice(0, 3)
+  // }, [tokenOptions])
 
   // TODO: Update to ERC721
   // const { balances, loading } = useToken1155Balances(tokenOptions)
@@ -105,7 +105,7 @@ export default function ERC721List({
       />
 
       <Box sx={{ overflow: 'auto', height: isDownMd ? 357 : 500 }}>
-        {filteredTokens.length > 0 && (
+        {/* {filteredTokens.length > 0 && (
           <Box display="flex" gap={20} margin="20px 0">
             {commonCollections.map((collection: Token721, idx) => (
               <ButtonBase
@@ -124,9 +124,9 @@ export default function ERC721List({
               </ButtonBase>
             ))}
           </Box>
-        )}
+        )} */}
         <Box paddingTop={'24px'} position="relative">
-          {filteredTokens.length === 0 ? (
+          {filteredTokens.length === 0 && !searchTokenNFT ? (
             <Box width={'100%'} display="flex" alignItems="center" justifyContent="center" mt={100}>
               <Typography
                 textAlign="center"
@@ -142,7 +142,10 @@ export default function ERC721List({
               </Typography>
             </Box>
           ) : (
-            <CollectionListComponent onSelect={onSelectCollection} options={filteredTokens as Token721[]} />
+            <CollectionListComponent
+              onSelect={onSelectCollection}
+              options={filteredTokens.length ? (filteredTokens as Token721[]) : searchTokenNFT ? [searchTokenNFT] : []}
+            />
           )}
         </Box>
       </Box>
