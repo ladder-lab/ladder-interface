@@ -156,7 +156,9 @@ function CollectionRow({ collection, onClick }: { collection: Token721; onClick:
       <Box display="flex">
         {/* <CurrencyLogo currency={currency} style={{ width: '30px', height: '30px' }} /> */}
         <Box display="flex" flexDirection="column" marginLeft="16px">
-          <Typography variant="inherit">{getSymbol(collection)}</Typography>
+          <Typography variant="inherit">
+            {getName(collection)}({getSymbol(collection)})
+          </Typography>
           {/* <Typography variant="caption">{currency.name}</Typography> */}
         </Box>
       </Box>

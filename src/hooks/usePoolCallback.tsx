@@ -337,7 +337,7 @@ export function useBurnCallback(currencyA: AllTokens | undefined, currencyB: All
       { name: 'verifyingContract', type: 'address' }
     ]
     const domain = {
-      name: 'Uniswap V2',
+      name: 'Ladder V1',
       version: '1',
       chainId: chainId,
       verifyingContract: pair.liquidityToken.address
