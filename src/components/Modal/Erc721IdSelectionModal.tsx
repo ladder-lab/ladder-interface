@@ -18,28 +18,32 @@ import { shortenAddress } from 'utils'
 import { useERC721Tokens } from 'state/swap/useSwap721State'
 import Input from 'components/Input'
 import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
+import { useToken721PoolIds } from 'hooks/useToken721PoolIds'
 
 export default function Erc721IdSelectionModal({
   // isOpen,
   onDismiss,
   collection,
   onSelectSubTokens,
-  amount
+  amount,
+  pairAddress
 }: {
   // isOpen: boolean
   onDismiss: () => void
   collection?: Token721
   onSelectSubTokens: (tokens: Token721[]) => void
   amount: number
+  pairAddress?: string
 }) {
   const isDownMd = useBreakpoint('md')
 
   const { onClearTokens, onRemoveToken, onAddToken, tokens } = useERC721Tokens()
 
-  const balance = useToken721Balance(collection)
+  const balance = useToken721Balance(pairAddress ? undefined : collection)
   const { loading, availableTokens } = useToken721BalanceTokens(balance)
+  const { loading: poolLoading, poolTokens } = useToken721PoolIds(pairAddress, collection)
 
-  const [filteredAvailableTokens, setFilteredAvailableTokens] = useState(availableTokens)
+  const [filteredAvailableTokens, setFilteredAvailableTokens] = useState(pairAddress ? poolTokens : availableTokens)
 
   const onConfirm = useCallback(() => {
     if (!collection || tokens.length !== amount) {
@@ -47,8 +51,8 @@ export default function Erc721IdSelectionModal({
     }
     onSelectSubTokens && onSelectSubTokens([...tokens])
     const tokenIds = tokens.map(({ tokenId }) => tokenId)
-    setFilteredAvailableTokens(prev => {
-      return prev?.filter(token => !tokenIds.includes(token.tokenId))
+    setFilteredAvailableTokens((prev: Token721[] | undefined) => {
+      return prev?.filter((token: Token721) => !tokenIds.includes(token.tokenId))
     })
     onDismiss()
   }, [amount, collection, onDismiss, onSelectSubTokens, tokens])
@@ -59,8 +63,8 @@ export default function Erc721IdSelectionModal({
   }, [collection, availableTokens, amount])
 
   useEffect(() => {
-    setFilteredAvailableTokens(availableTokens)
-  }, [availableTokens])
+    setFilteredAvailableTokens(pairAddress ? poolTokens : availableTokens)
+  }, [availableTokens, pairAddress, poolTokens])
   return (
     <Modal
       // customIsOpen={isOpen}
@@ -189,7 +193,7 @@ export default function Erc721IdSelectionModal({
             )}
           </Box>
           <Box sx={{ minHeight: 290 }} position="relative">
-            {loading ? (
+            {loading || poolLoading ? (
               <Box width={'100%'} display="flex" mt={20} alignItems="center" justifyContent="center">
                 <Loader />
               </Box>
@@ -201,7 +205,7 @@ export default function Erc721IdSelectionModal({
                 gap={10}
                 justifyContent="flex-start"
               >
-                {filteredAvailableTokens?.map(token => {
+                {filteredAvailableTokens?.map((token: Token721) => {
                   const selected = tokens.filter(item => item.tokenId === token.tokenId)
                   return (
                     <NftCard
