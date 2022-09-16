@@ -78,7 +78,7 @@ export default function NftList({ onClick, searchToken, searchTokenIsAdded, curr
             )}
             {!loading &&
               sortedList?.map(({ token }, idx) => (
-                <Grid item xs={6} md={3} key={idx}>
+                <Grid item xs={6} sm={4} md={3} key={idx}>
                   <NftCard
                     key={idx}
                     token={token as Token1155}
