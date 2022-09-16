@@ -89,7 +89,7 @@ export function CollectionListComponent({
         onSelect && onSelect(collection)
       }
 
-      return <CollectionRow collection={collection} onClick={onClickCollection} />
+      return <CurrencyRow currency={collection} onClick={onClickCollection} />
     },
     [onSelect]
   )
@@ -146,23 +146,6 @@ function CurrencyRow({ currency, onClick }: { currency: Currency; onClick: () =>
           <Spinner />
         ) : null}
       </span>
-    </ListItem>
-  )
-}
-
-function CollectionRow({ collection, onClick }: { collection: Token721; onClick: () => void }) {
-  return (
-    <ListItem onClick={onClick}>
-      <Box display="flex">
-        {/* <CurrencyLogo currency={currency} style={{ width: '30px', height: '30px' }} /> */}
-        <Box display="flex" flexDirection="column" marginLeft="16px">
-          <Typography variant="inherit">
-            {getName(collection)}({getSymbol(collection)})
-          </Typography>
-          {/* <Typography variant="caption">{currency.name}</Typography> */}
-        </Box>
-      </Box>
-      <span style={{ fontWeight: 500 }}>-</span>
     </ListItem>
   )
 }
