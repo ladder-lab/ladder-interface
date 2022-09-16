@@ -6,7 +6,7 @@ import AnimatedSvg from '.'
 export function Loader({ color, margin = '0 auto', size = 90 }: { color?: string; margin?: string; size?: number }) {
   const isDarkMode = useIsDarkMode()
   return (
-    <Box display="grid" gap={19}>
+    <Box display="grid" gap={19} justifyItems="center">
       <Typography sx={{ color: theme => theme.palette.text.secondary, fontSize: 20 }}>
         Loading
         <Dots />
