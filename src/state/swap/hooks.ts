@@ -33,6 +33,7 @@ export function useSwapActionHandlers(): {
     (field: Field, currency: AllTokens) => {
       const is1155 = filter1155(currency)
       const is721 = filter721(currency)
+
       dispatch(
         selectCurrency({
           field,
