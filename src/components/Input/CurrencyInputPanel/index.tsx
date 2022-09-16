@@ -144,7 +144,7 @@ export default function CurrencyInputPanel({
         />
       )
     }
-  }, [hideModal, is721, onSelectSubTokens, showModal, value])
+  }, [hideModal, is721, onSelectSubTokens, pairAddress, showModal, value])
 
   return (
     <>
