@@ -29,7 +29,7 @@ export class Token721 extends Token {
     this.name = metadata?.name ?? 'ERC721'
     this.symbol = metadata?.symbol ?? 'NFT'
 
-    if (!metadata && NETWORK_CHAIN_ID !== 4) {
+    if ((!metadata || !metadata.uri) && NETWORK_CHAIN_ID !== 4) {
       if (tokenId) {
         Axios.getMetadata(address, tokenId)
           .then(r => {

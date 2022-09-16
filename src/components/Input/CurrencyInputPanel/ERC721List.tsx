@@ -9,12 +9,13 @@ import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
 // TOOD: Update to ERC721
 import { Token721 } from 'constants/token/token721'
 import Input from '..'
-import { useIsUserAddedToken721, useToken721 } from 'hooks/Tokens'
+import { useIsUserAddedToken721, useToken721WithLoadingIndicator } from 'hooks/Tokens'
 import useDebounce from 'hooks/useDebounce'
 import { filterTokens } from 'utils/swap/filtering'
 import { Token } from '@ladder/sdk'
 import { AllTokens } from 'models/allTokens'
 import useModal from 'hooks/useModal'
+import { Loader } from 'components/AnimatedSvg/Loader'
 
 export default function ERC721List({
   onSelectCurrency
@@ -39,7 +40,7 @@ export default function ERC721List({
   const { hideModal } = useModal()
 
   const debouncedQueryNFT = useDebounce(searchQueryNFT, 200)
-  const searchTokenNFT = useToken721(debouncedQueryNFT)
+  const { loading, token721: searchTokenNFT } = useToken721WithLoadingIndicator(debouncedQueryNFT)
   const searchTokenIsAddedNFT = useIsUserAddedToken721(searchTokenNFT)
   const addUserToken = useAddUserToken()
 
@@ -126,7 +127,12 @@ export default function ERC721List({
           </Box>
         )} */}
         <Box paddingTop={'24px'} position="relative">
-          {filteredTokens.length === 0 && !searchTokenNFT ? (
+          {loading && (
+            <Box marginTop="40px">
+              <Loader />
+            </Box>
+          )}
+          {filteredTokens.length === 0 && !searchTokenNFT && !loading ? (
             <Box width={'100%'} display="flex" alignItems="center" justifyContent="center" mt={100}>
               <Typography
                 textAlign="center"
