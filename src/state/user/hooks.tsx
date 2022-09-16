@@ -31,7 +31,7 @@ import { DEFAULT_721_LIST } from 'constants/default721List'
 import { Token721 } from 'constants/token/token721'
 
 function serializeToken(token: Token | Token1155): SerializedToken {
-  const is721 = filter1155(token)
+  const is721 = filter721(token)
   const is1155 = filter1155(token)
   return is721
     ? {
