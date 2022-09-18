@@ -88,7 +88,7 @@ export default function Erc721IdSelectionModal({
           Select a NFT
         </Typography>
       </Box>
-      <Box display="flex" alignItems="center" gap={3} mb={16} mt={28}>
+      <Box display="flex" alignItems="center" gap={3} mb={16}>
         <Typography fontSize={16} fontWeight={500}>
           Don&apos;t see your NFT ?
         </Typography>
