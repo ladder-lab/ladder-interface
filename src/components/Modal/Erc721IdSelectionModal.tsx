@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Typography, useTheme, ButtonBase } from '@mui/material'
+import { Box, Button, IconButton, Typography, useTheme, ButtonBase, Grid } from '@mui/material'
 import { Token721 } from 'constants/token/token721'
 import { useIsDarkMode } from 'state/user/hooks'
 import Modal from '.'
@@ -196,34 +196,29 @@ export default function Erc721IdSelectionModal({
               </Box>
             )}
           </Box>
-          <Box sx={{ minHeight: 290 }} position="relative">
+          <Box sx={{ minHeight: 290, width: '100%' }}>
             {loading || poolLoading ? (
               <Box width={'100%'} display="flex" mt={20} alignItems="center" justifyContent="center">
                 <Loader />
               </Box>
             ) : (
-              <Box
-                display="grid"
-                gridTemplateColumns={'repeat(auto-fit, 140px)'}
-                width="100%"
-                gap={10}
-                justifyContent="flex-start"
-              >
+              <Grid container spacing={6} width="100%">
                 {filteredAvailableTokens?.map((token: Token721) => {
                   const selected = tokens.filter(item => item.tokenId === token.tokenId)
                   return (
-                    <NftCard
-                      selected={!!selected.length}
-                      key={token.tokenId}
-                      token={token}
-                      onClick={() => {
-                        onAddToken(token)
-                      }}
-                      disabled={tokens.length >= amount}
-                    />
+                    <Grid item key={token.tokenId} xs={6} md={3}>
+                      <NftCard
+                        selected={!!selected.length}
+                        token={token}
+                        onClick={() => {
+                          onAddToken(token)
+                        }}
+                        disabled={tokens.length >= amount}
+                      />
+                    </Grid>
                   )
                 })}
-              </Box>
+              </Grid>
             )}
           </Box>
         </Box>
