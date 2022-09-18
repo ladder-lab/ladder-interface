@@ -126,7 +126,11 @@ export default function Erc721IdSelectionModal({
                 sx={{
                   borderRadius: '8px',
                   background: theme => theme.palette.background.default,
-                  padding: '11px 23px'
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  height: 52,
+                  padding: '0px 23px'
                 }}
               >
                 {collection?.name}
