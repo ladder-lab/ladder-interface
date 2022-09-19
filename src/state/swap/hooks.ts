@@ -124,14 +124,14 @@ export function useDerivedSwapInfo(): {
   const {
     independentField,
     typedValue,
-    [Field.INPUT]: { currencyId: inputCurrencyId, tokenId: inputTokenId, standard: inputStandard },
-    [Field.OUTPUT]: { currencyId: outputCurrencyId, tokenId: outputTokenId, standard: outputStandard },
+    [Field.INPUT]: { currencyId: inputCurrencyId, tokenId: inputTokenId },
+    [Field.OUTPUT]: { currencyId: outputCurrencyId, tokenId: outputTokenId },
     recipient
   } = useSwapState()
   const { tokenIds } = useSwap721State()
 
-  const inputCurrencyRaw = useCurrency(inputCurrencyId, inputTokenId, inputStandard)
-  const outputCurrencyRaw = useCurrency(outputCurrencyId, outputTokenId, outputStandard)
+  const inputCurrencyRaw = useCurrency(inputCurrencyId, inputTokenId)
+  const outputCurrencyRaw = useCurrency(outputCurrencyId, outputTokenId)
 
   const inputCurrency =
     inputTokenId && inputCurrencyId
