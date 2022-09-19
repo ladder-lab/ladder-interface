@@ -27,18 +27,26 @@ export function filter1155(token: AllTokens | null | undefined) {
 
 export function getTokenText(token1: AllTokens | undefined, token2?: AllTokens | undefined) {
   if (!token1) {
-    return { Token1Text: '', Token2Text: '', token1Is1155: false, token2Is1155: false, toke1Text: '', token2Text: '' }
+    return {
+      Token1Text: () => null,
+      Token2Text: () => null,
+      token1Is1155: false,
+      token2Is1155: false,
+      toke1Text: '',
+      token2Text: ''
+    }
   }
 
   const token1Is1155 = checkIs1155(token1)
-  const token1Text = token1Is1155 ? token1?.name + ' #' + (token1 as Token1155).tokenId ?? '-' : token1?.symbol
+
+  const token1Text = (token1Is1155 ? token1?.name + ' #' + (token1 as Token1155).tokenId ?? '-' : token1?.symbol) ?? ''
   const Token1Text = token1Is1155
     ? ({ fontSize, color }: { fontSize?: string | number; color?: string | undefined }) => (
         <Typography component="span" color={color ?? 'primary'} fontSize={fontSize}>
           {token1?.name + ' #' + (token1 as Token1155).tokenId ?? '-'}{' '}
         </Typography>
       )
-    : () => token1Text
+    : () => <>{token1Text}</>
 
   if (!token2) {
     return {
@@ -53,14 +61,14 @@ export function getTokenText(token1: AllTokens | undefined, token2?: AllTokens |
     }
   }
   const token2Is1155 = checkIs1155(token2)
-  const token2Text = token2Is1155 ? token2?.name + ' #' + (token2 as Token1155).tokenId ?? '-' : token2?.symbol
+  const token2Text = (token2Is1155 ? token2?.name + ' #' + (token2 as Token1155).tokenId ?? '-' : token2?.symbol) ?? ''
   const Token2Text = token2Is1155
     ? ({ fontSize, color }: { fontSize?: string | number; color?: string | undefined }) => (
         <Typography component="span" color={color ?? 'primary'} fontSize={fontSize}>
           {token2?.name + ' #' + (token2 as Token1155).tokenId ?? '-'}{' '}
         </Typography>
       )
-    : () => <> {token2Text}</>
+    : () => <>{token2Text}</>
 
   return {
     token1Text,

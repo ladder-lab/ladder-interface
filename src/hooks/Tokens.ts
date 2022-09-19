@@ -1,7 +1,7 @@
 import { parseBytes32String } from '@ethersproject/strings'
 import { Currency, ETHER, Token, ChainId, currencyEquals } from '@ladder/sdk'
 import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
 import { isAddress } from '../utils'
 import { useActiveWeb3React } from './index'
@@ -174,12 +174,14 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
   ])
 }
 
+const interface1155 = ['0xd9b67a26']
 export function useToken1155(tokenAddress?: string, tokenId?: string | number): Token1155 | undefined | null {
   const { chainId } = useActiveWeb3React()
   const address = isAddress(tokenAddress)
   const nftContract = use1155Contract(address ? address : undefined)
   const nameRes = useSingleCallResult(nftContract, 'name')
   const symbolRes = useSingleCallResult(nftContract, 'symbol')
+  const is1155 = useSingleCallResult(nftContract, 'supportsInterface', interface1155)
 
   return useMemo(() => {
     if (!chainId || !address || !tokenId) return undefined
@@ -188,18 +190,28 @@ export function useToken1155(tokenAddress?: string, tokenId?: string | number): 
       const token = list.find(token1155 => token1155.address === tokenAddress && token1155.tokenId == tokenId)
       if (token) return token
     }
-    return nameRes.result
+    return nameRes.result && !!is1155.result?.[0]
       ? new Token1155(chainId, address, tokenId, { name: nameRes.result?.[0], symbol: symbolRes.result?.[0] })
       : undefined
-  }, [address, chainId, nameRes.result, symbolRes.result, tokenAddress, tokenId])
+  }, [address, chainId, is1155.result, nameRes.result, symbolRes.result, tokenAddress, tokenId])
 }
 
-export function useToken721(tokenAddress?: string, tokenId?: string | number | undefined): Token721 | undefined | null {
+const interface721 = ['0x80ac58cd']
+export function useToken721(
+  tokenAddress?: string,
+  tokenId?: string | number | undefined,
+  loadingCb?: any
+): Token721 | undefined | null {
   const { chainId } = useActiveWeb3React()
   const address = isAddress(tokenAddress)
   const nftContract = use721Contract(address ? address : undefined)
   const nameRes = useSingleCallResult(nftContract, 'name')
   const symbolRes = useSingleCallResult(nftContract, 'symbol')
+  const is721 = useSingleCallResult(nftContract, 'supportsInterface', interface721)
+
+  useEffect(() => {
+    loadingCb && loadingCb(!!nameRes?.loading)
+  }, [loadingCb, nameRes?.loading])
 
   return useMemo(() => {
     if (!chainId || !address) return undefined
@@ -208,47 +220,27 @@ export function useToken721(tokenAddress?: string, tokenId?: string | number | u
       const token = list.find(token721 => token721.address === tokenAddress && token721.tokenId == tokenId)
       if (token) return token
     }
-    return nameRes.result
+    return nameRes.result && !!is721.result?.[0]
       ? new Token721(chainId, address, tokenId, { name: nameRes.result?.[0], symbol: symbolRes.result?.[0] })
       : undefined
-  }, [address, chainId, nameRes.result, symbolRes.result, tokenAddress, tokenId])
+  }, [address, chainId, is721.result, nameRes.result, symbolRes.result, tokenAddress, tokenId])
 }
 
 export function useToken721WithLoadingIndicator(
   tokenAddress?: string,
   tokenId?: string | number | undefined
 ): { loading: boolean; token721: Token721 | undefined | null } {
-  const { chainId } = useActiveWeb3React()
-  const address = isAddress(tokenAddress)
-  const nftContract = use721Contract(address ? address : undefined)
-  const nameRes = useSingleCallResult(nftContract, 'name')
-  const symbolRes = useSingleCallResult(nftContract, 'symbol')
+  const [loading, setLoading] = useState(false)
+  const token721 = useToken721(tokenAddress, tokenId, setLoading)
 
-  const token = useMemo(() => {
-    if (!chainId || !address) return undefined
-    const list = DEFAULT_721_LIST[chainId ?? NETWORK_CHAIN_ID]
-    if (list) {
-      const token = list.find(token721 => token721.address === tokenAddress && token721.tokenId == tokenId)
-      if (token) return token
-    }
-    return nameRes.result
-      ? new Token721(chainId, address, tokenId, { name: nameRes.result?.[0], symbol: symbolRes.result?.[0] })
-      : undefined
-  }, [address, chainId, nameRes.result, symbolRes.result, tokenAddress, tokenId])
-
-  return { loading: !!nameRes?.loading, token721: token }
+  return { loading: !!loading, token721: token721 }
 }
 
-export function useCurrency(
-  currencyId: string | undefined,
-  tokenId?: string | number,
-  standard?: string
-): Currency | null | undefined {
+export function useCurrency(currencyId: string | undefined, tokenId?: string | number): Currency | null | undefined {
   const isETH = currencyId?.toUpperCase() === 'ETH'
-  const is721 = standard === 'erc721' || tokenId === 'erc721'
-  const token1155 = useToken1155(!isETH && !is721 && tokenId ? currencyId : undefined, tokenId)
-  const token = useToken(isETH || tokenId || is721 ? undefined : currencyId)
-  const token721 = useToken721(is721 ? currencyId : undefined)
+  const token1155 = useToken1155(!isETH && tokenId ? currencyId : undefined, tokenId)
+  const token = useToken(isETH || tokenId ? undefined : currencyId)
+  const token721 = useToken721(currencyId)
 
-  return is721 ? token721 : tokenId ? token1155 : isETH ? ETHER : token
+  return !!token721 ? token721 : !!token1155 ? token1155 : isETH ? ETHER : token
 }

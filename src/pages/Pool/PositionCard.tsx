@@ -3,7 +3,7 @@ import { AllTokens } from 'models/allTokens'
 import Card from 'components/Card'
 import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
 import Tag from 'components/Tag'
-import { getTokenText } from 'utils/checkIs1155'
+import { checkTokenType, getTokenText } from 'utils/checkIs1155'
 
 export default function PosittionCard({
   assetA,
@@ -25,7 +25,7 @@ export default function PosittionCard({
   liquidityB?: string
 }) {
   const theme = useTheme()
-  const { token1Text, token2Text, token1Is1155, token2Is1155 } = getTokenText(assetA ?? undefined, assetB ?? undefined)
+  const { token1Text, token2Text } = getTokenText(assetA ?? undefined, assetB ?? undefined)
   const data = {
     ['Your pool share']: poolShare ?? '-' + ' %',
     [token1Text ?? '-']: liquidityA ?? '-',
@@ -59,8 +59,8 @@ export default function PosittionCard({
                   gap: 8
                 }}
               >
-                <Tag>{token1Is1155 ? 'ERC1155' : 'ERC20'}</Tag>
-                <Tag>{token2Is1155 ? 'ERC1155' : 'ERC20'}</Tag>
+                {assetA && <Tag>{checkTokenType(assetA)}</Tag>}
+                {assetB && <Tag>{checkTokenType(assetB)}</Tag>}
               </Box>
             </Box>
 
