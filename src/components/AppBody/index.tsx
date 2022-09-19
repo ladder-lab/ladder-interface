@@ -14,8 +14,10 @@ const Root = styled('div')(({ theme }) => ({
   overflow: 'auto',
   [theme.breakpoints.down('md')]: {
     width: '100%!important',
-    maxWidth: 'unset'
-  }
+    maxWidth: 'unset',
+    paddingTop: 20
+  },
+  margin: '54px 0 80px'
 }))
 
 interface Props {

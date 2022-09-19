@@ -20,7 +20,7 @@ export default function Testnet() {
   const isDarkMode = useIsDarkMode()
 
   return (
-    <Box width="100%" height="100%" position="relative" sx={{ transform: 'translateY(-54px)' }}>
+    <Box width="100%" height="100%" position="relative">
       <Box
         sx={{
           width: '100%',
