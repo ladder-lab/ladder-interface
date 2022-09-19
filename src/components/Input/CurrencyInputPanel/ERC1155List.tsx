@@ -1,7 +1,5 @@
 import { useMemo } from 'react'
 import { Grid, Box, Typography, useTheme, Button } from '@mui/material'
-import Image from 'components/Image'
-import SampleNftImg from 'assets/images/sample-nft.png'
 import { Token1155 } from 'constants/token/token1155'
 import { AllTokens } from 'models/allTokens'
 import { shortenAddress } from 'utils'
@@ -11,6 +9,7 @@ import useBreakpoint from 'hooks/useBreakpoint'
 import { Currency } from '@ladder/sdk'
 import { useToken1155Balance, useToken1155Balances } from 'state/wallet/hooks'
 import { Loader } from 'components/AnimatedSvg/Loader'
+import LogoBase from 'components/essential/CurrencyLogo/LogoBase'
 
 interface Props {
   selectedCurrency?: Currency | null
@@ -122,10 +121,19 @@ function NftCard({ token, onClick }: { token: Token1155; onClick: () => void }) 
         }
       }}
     >
-      <Image
-        src={token?.uri ?? SampleNftImg}
-        style={{ borderRadius: '8px', overflow: 'hidden', width: '100%', height: 123, objectFit: 'contain' }}
-      />
+      <Box sx={{ width: '100%', height: 123, overflow: 'hidden' }}>
+        <LogoBase
+          srcs={token?.uri ? [token.uri] : []}
+          alt={token.name ?? ''}
+          style={{
+            borderRadius: '8px',
+            overflow: 'hidden',
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain'
+          }}
+        />
+      </Box>
       <Typography
         sx={{
           color: theme.palette.text.secondary,
