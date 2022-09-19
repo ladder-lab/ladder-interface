@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Stepper as MuiStepper, StepLabel, Button } from '@mui/material'
+import { Stepper as MuiStepper, StepLabel, Button, Typography } from '@mui/material'
 import Step from '@mui/material/Step'
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector'
 import { ReactComponent as CheckIconLight } from 'assets/svg/stepper/checkl.svg'
@@ -29,7 +29,7 @@ export default function Stepper() {
         icon: isDarkMode ? LoadingIconDark : LoadingIconLight,
         label: 'LIT-2',
         action: (
-          <Button sx={{ width: 140, height: 51 }} onClick={() => {}}>
+          <Button sx={{ width: 140, height: 51, fontSize: 16 }} onClick={() => {}}>
             Register
           </Button>
         )
@@ -70,8 +70,6 @@ export default function Stepper() {
           <StepLabel
             sx={{
               '& .MuiStepLabel-label': {
-                color: theme.palette.text.primary,
-                fontWeight: 700,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -80,7 +78,9 @@ export default function Stepper() {
             }}
             StepIconComponent={icon}
           >
-            {label}
+            <Typography component="h5" sx={{ color: theme.palette.text.primary, fontWeight: 700 }}>
+              {label}
+            </Typography>
             {action}
           </StepLabel>
         </Step>
