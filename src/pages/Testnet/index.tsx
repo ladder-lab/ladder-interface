@@ -166,7 +166,11 @@ function FaucetCard({
         </ExternalLink>
         <Typography sx={{ fontSize: 20 }}> amount: {amount}</Typography>
       </Box>
-      {onClick && <Button onClick={onClick}>Import Token</Button>}
+      {onClick && (
+        <Button variant="outlined" onClick={onClick} sx={{ borderColor: theme => theme.palette.text.primary }}>
+          Import Token
+        </Button>
+      )}
     </Box>
   )
 }
