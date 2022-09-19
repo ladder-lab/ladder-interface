@@ -24,17 +24,6 @@ export default function ERC721List({
 }) {
   const [searchQueryNFT, setSearchQueryNFT] = useState<string>('')
   const tokenOptions = useTrackedToken721List()
-  // const commonCollections = useMemo(() => {
-  //   return tokenOptions.slice(0, 3)
-  // }, [tokenOptions])
-
-  // TODO: Update to ERC721
-  // const { balances, loading } = useToken1155Balances(tokenOptions)
-  // const sortedList = useMemo(() => {
-  //   return balances?.sort((amount1, amount2) => {
-  //     return amount1.greaterThan(amount2) ? -1 : 1
-  //   })
-  // }, [balances])
 
   const isDownMd = useBreakpoint('md')
   const { hideModal } = useModal()
@@ -62,20 +51,6 @@ export default function ERC721List({
     },
     [hideModal, onSelectCurrency]
   )
-
-  // const onRemoveCollection = useCallback(() => {
-  //   setCollection(null)
-  //   onClearTokens()
-  // }, [onClearTokens])
-
-  // const onConfirm = useCallback(() => {
-  //   if (!collection) {
-  //     return
-  //   }
-  //   onSelectCurrency && onSelectCurrency(collection)
-  //   onSelectSubTokens && onSelectSubTokens(tokens)
-  //   hideModal()
-  // }, [collection, hideModal, onSelectCurrency, onSelectSubTokens, tokens])
 
   const handleEnter721 = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
@@ -106,26 +81,6 @@ export default function ERC721List({
       />
 
       <Box sx={{ overflow: 'auto', height: isDownMd ? 357 : 500 }}>
-        {/* {filteredTokens.length > 0 && (
-          <Box display="flex" gap={20} margin="20px 0">
-            {commonCollections.map((collection: Token721, idx) => (
-              <ButtonBase
-                onClick={() => onSelectCollection(collection)}
-                key={`collection-${idx}`}
-                sx={{
-                  borderRadius: '8px',
-                  background: theme => theme.palette.background.default,
-                  padding: '11px 23px',
-                  '&:hover': {
-                    opacity: 0.8
-                  }
-                }}
-              >
-                {collection.name}
-              </ButtonBase>
-            ))}
-          </Box>
-        )} */}
         <Box paddingTop={'24px'} position="relative">
           {loading && (
             <Box marginTop="40px">
