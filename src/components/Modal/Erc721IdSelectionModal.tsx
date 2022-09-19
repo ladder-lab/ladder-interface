@@ -2,8 +2,6 @@ import { Box, Button, IconButton, Typography, useTheme, ButtonBase } from '@mui/
 import { Token721 } from 'constants/token/token721'
 import { useIsDarkMode } from 'state/user/hooks'
 import Modal from '.'
-import Image from 'components/Image'
-import SampleNftImg from 'assets/images/sample-nft.png'
 import { Loader } from 'components/AnimatedSvg/Loader'
 import useBreakpoint from 'hooks/useBreakpoint'
 import LogoText from 'components/LogoText'
@@ -19,6 +17,8 @@ import { useERC721Tokens } from 'state/swap/useSwap721State'
 import Input from 'components/Input'
 import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
 import { useToken721PoolIds } from 'hooks/useToken721PoolIds'
+
+import LogoBase from 'components/essential/CurrencyLogo/LogoBase'
 
 export default function Erc721IdSelectionModal({
   // isOpen,
@@ -192,7 +192,7 @@ export default function Erc721IdSelectionModal({
               </Box>
             )}
           </Box>
-          <Box sx={{ minHeight: 290 }} position="relative">
+          <Box sx={{ minHeight: 200 }} position="relative">
             {loading || poolLoading ? (
               <Box width={'100%'} display="flex" mt={20} alignItems="center" justifyContent="center">
                 <Loader />
@@ -203,7 +203,7 @@ export default function Erc721IdSelectionModal({
                 gridTemplateColumns={'repeat(auto-fit, 140px)'}
                 width="100%"
                 gap={10}
-                justifyContent="flex-start"
+                justifyContent="center"
               >
                 {filteredAvailableTokens?.map((token: Token721) => {
                   const selected = tokens.filter(item => item.tokenId === token.tokenId)
@@ -267,7 +267,19 @@ function NftCard({
             }
       }}
     >
-      <Image src={token?.uri ?? SampleNftImg} style={{ borderRadius: '8px', overflow: 'hidden', width: '100%' }} />
+      <Box sx={{ width: '100%', height: 120, overflow: 'hidden' }}>
+        <LogoBase
+          srcs={token?.uri ? [token.uri] : []}
+          alt={token.name ?? ''}
+          style={{
+            borderRadius: '8px',
+            overflow: 'hidden',
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain'
+          }}
+        />
+      </Box>
       <Typography
         sx={{
           color: theme.palette.text.secondary,
