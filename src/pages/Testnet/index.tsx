@@ -1,5 +1,6 @@
 import { Box, Typography, useTheme, Button } from '@mui/material'
 import { ExternalLink } from 'theme/components'
+import Stepper from './Stepper'
 
 export default function Testnet() {
   const theme = useTheme()
@@ -14,7 +15,6 @@ export default function Testnet() {
           alignItems: 'center',
           gap: 36,
           height: 490
-          // height: `calc(570px - ${theme.height.header})`
         }}
       >
         <Typography sx={{ fontSize: 45, fontWeight: 700, width: 980, textAlign: 'center' }}>
@@ -26,6 +26,8 @@ export default function Testnet() {
         </Typography>
       </Box>
       <Box sx={{ width: '100%', height: '100%', background: theme.palette.background.paper, padding: '100px 46px' }}>
+        <Stepper />
+
         <Typography sx={{ height: 24, fontWeight: 700 }}>Ladder incentivized testnet stage 2</Typography>
         <Typography sx={{ lineHeight: '170%' }}>
           We gonna Airdrop another 3000 raffle whitelist to participate in testnet activity,and we will start Alpha-test
