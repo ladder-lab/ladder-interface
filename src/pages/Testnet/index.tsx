@@ -88,6 +88,17 @@ export default function Testnet() {
             />
           </Grid>
         </Grid>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Typography component="h5" mt={180} mb={24} fontWeight={700} fontSize={32}>
+            Feedback
+          </Typography>
+          <Typography fontWeight={500} fontSize={20} mb={61}>
+            Please leave your feedback to us, help us improve products!
+          </Typography>
+          <Button onClick={() => {}} sx={{ width: 226, height: 52, fontSize: 16 }}>
+            Write Feedback
+          </Button>
+        </Box>
       </Box>
     </Box>
   )
