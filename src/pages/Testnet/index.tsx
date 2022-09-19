@@ -8,13 +8,19 @@ import { ReactComponent as FacuetFirstDark } from 'assets/svg/faucet/firstd.svg'
 import { ReactComponent as FacuetSecondDark } from 'assets/svg/faucet/secondd.svg'
 import { ReactComponent as FacuetThirdDark } from 'assets/svg/faucet/thirdd.svg'
 import { useIsDarkMode } from 'state/user/hooks'
+import { ReactComponent as BgLowerLeftLight } from 'assets/svg/bg/lowerleftl.svg'
+import { ReactComponent as BgLowerRightLight } from 'assets/svg/bg/lowerrightl.svg'
+import { ReactComponent as BgLowerLeftDark } from 'assets/svg/bg/lowerleftd.svg'
+import { ReactComponent as BgLowerRightDark } from 'assets/svg/bg/lowerrightd.svg'
+import BgLight from 'assets/images/bg_light.png'
+import BgDark from 'assets/images/bg_dark.png'
 
 export default function Testnet() {
   const theme = useTheme()
   const isDarkMode = useIsDarkMode()
 
   return (
-    <Box width="100%" height="100%">
+    <Box width="100%" height="100%" position="relative" sx={{ transform: 'translateY(-54px)' }}>
       <Box
         sx={{
           width: '100%',
@@ -23,7 +29,11 @@ export default function Testnet() {
           alignItems: 'center',
           gap: 36,
           pt: theme.height.header,
-          pb: 120
+          pb: 120,
+          backgroundImage: `url(${isDarkMode ? BgDark : BgLight})`,
+          backgroundPosition: 'top',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: '100% 100%'
         }}
       >
         <Typography component="h5" sx={{ fontSize: 45, fontWeight: 700, textAlign: 'center' }}>
@@ -100,6 +110,17 @@ export default function Testnet() {
           </Button>
         </Box>
       </Box>
+      {isDarkMode ? (
+        <BgLowerLeftDark style={{ position: 'absolute', left: 0, bottom: 0 }} />
+      ) : (
+        <BgLowerLeftLight style={{ position: 'absolute', left: 0, bottom: 0 }} />
+      )}
+
+      {isDarkMode ? (
+        <BgLowerRightDark style={{ position: 'absolute', right: 0, bottom: 0 }} />
+      ) : (
+        <BgLowerRightLight style={{ position: 'absolute', right: 0, bottom: 0 }} />
+      )}
     </Box>
   )
 }
