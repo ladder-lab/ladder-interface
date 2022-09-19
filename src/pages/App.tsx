@@ -52,14 +52,14 @@ const BodyWrapper = styled('div')(({ theme }) => ({
   flexDirection: 'column',
   width: '100%',
   minHeight: `calc(100vh - ${theme.height.header})`,
-  padding: '54px 0 80px',
+  // padding: '54px 0 80px',
   justifyContent: 'flex-start',
   alignItems: 'center',
   flex: 1,
   position: 'relative',
   [theme.breakpoints.down('md')]: {
-    minHeight: `calc(100vh - ${theme.height.header})`,
-    paddingTop: 20
+    minHeight: `calc(100vh - ${theme.height.header})`
+    // paddingTop: 20
   }
 }))
 
