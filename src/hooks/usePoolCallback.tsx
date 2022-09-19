@@ -110,7 +110,7 @@ export function useMintCallback(currencyA: AllTokens | undefined, currencyB: All
             deadline.toHexString()
           ]
         : [
-            token1155?.address ?? '',
+            token1155?.address ?? wrappedCurrency(currencyB, chainId)?.address,
             ...(noNft ? [] : [token1155?.tokenId ?? '']),
             wrappedCurrency(token, chainId)?.address ?? '',
             (tokenAIs1155 ? parsedAmountA : parsedAmountB).raw.toString(),

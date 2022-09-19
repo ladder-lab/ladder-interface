@@ -245,7 +245,14 @@ export function useCurrency(currencyId: string | undefined, tokenId?: string | n
   const [tokenType, setTokenType] = useState<undefined | string>(undefined)
 
   useEffect(() => {
-    if (isETH || !currencyId || !library || tokenId) return
+    if (isETH || !currencyId || !library) return
+    if (tokenId) {
+      if (tokenId === 'erc721') {
+        setTokenType('ERC721')
+        return
+      }
+      return
+    }
     ;(async () => {
       const nftContract = getContract(currencyId, ERC721_ABI, library)
       try {
