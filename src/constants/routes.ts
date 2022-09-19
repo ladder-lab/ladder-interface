@@ -7,7 +7,8 @@ export const routes = {
   importPool: '/import-pool',
   addLiquidity: '/add-liquidity',
   removeLiquidity: '/remove-liquidity',
-  removeLiquidityParams: '/:currencyIdA/:currencyIdB/:tokenIds'
+  removeLiquidityParams: '/:currencyIdA/:currencyIdB/:tokenIds',
+  testnet: 'testnet'
 }
 
 export function liquidityParamBuilder(currencyA: Currency | undefined, currencyB: Currency | undefined) {
