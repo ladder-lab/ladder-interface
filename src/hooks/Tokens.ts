@@ -3,7 +3,7 @@ import { Currency, ETHER, Token, ChainId, currencyEquals } from '@ladder/sdk'
 import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
 import { useEffect, useMemo, useState } from 'react'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
-import { isAddress } from '../utils'
+import { getContract, isAddress } from '../utils'
 import { useActiveWeb3React } from './index'
 import { use1155Contract, use721Contract, useBytes32TokenContract, useTokenContract } from './useContract'
 import { arrayify } from 'ethers/lib/utils'
@@ -15,6 +15,7 @@ import { IS_TEST_NET, NETWORK_CHAIN_ID } from 'constants/chain'
 import { DEFAULT_1155_LIST } from 'constants/default1155List'
 import { DEFAULT_721_LIST } from 'constants/default721List'
 import { Token721 } from 'constants/token/token721'
+import ERC721_ABI from 'constants/abis/erc721.json'
 
 // Check if currency is included in custom list from user storage
 export function useIsUserAddedToken(currency: Currency | undefined | null): boolean {
@@ -179,9 +180,10 @@ export function useToken1155(tokenAddress?: string, tokenId?: string | number): 
   const { chainId } = useActiveWeb3React()
   const address = isAddress(tokenAddress)
   const nftContract = use1155Contract(address ? address : undefined)
-  const nameRes = useSingleCallResult(nftContract, 'name')
-  const symbolRes = useSingleCallResult(nftContract, 'symbol')
-  const is1155 = useSingleCallResult(nftContract, 'supportsInterface', interface1155)
+  const is1155Res = useSingleCallResult(nftContract, 'supportsInterface', interface1155)
+  const is1155 = !!is1155Res.result?.[0]
+  const nameRes = useSingleCallResult(is1155 ? nftContract : null, 'name')
+  const symbolRes = useSingleCallResult(is1155 ? nftContract : null, 'symbol')
 
   return useMemo(() => {
     if (!chainId || !address || !tokenId) return undefined
@@ -190,10 +192,10 @@ export function useToken1155(tokenAddress?: string, tokenId?: string | number): 
       const token = list.find(token1155 => token1155.address === tokenAddress && token1155.tokenId == tokenId)
       if (token) return token
     }
-    return nameRes.result && !!is1155.result?.[0]
+    return nameRes.result && is1155
       ? new Token1155(chainId, address, tokenId, { name: nameRes.result?.[0], symbol: symbolRes.result?.[0] })
       : undefined
-  }, [address, chainId, is1155.result, nameRes.result, symbolRes.result, tokenAddress, tokenId])
+  }, [address, chainId, is1155, nameRes.result, symbolRes.result, tokenAddress, tokenId])
 }
 
 const interface721 = ['0x80ac58cd']
@@ -205,9 +207,10 @@ export function useToken721(
   const { chainId } = useActiveWeb3React()
   const address = isAddress(tokenAddress)
   const nftContract = use721Contract(address ? address : undefined)
-  const nameRes = useSingleCallResult(nftContract, 'name')
-  const symbolRes = useSingleCallResult(nftContract, 'symbol')
-  const is721 = useSingleCallResult(nftContract, 'supportsInterface', interface721)
+  const is721Res = useSingleCallResult(nftContract, 'supportsInterface', interface721)
+  const is721 = !!is721Res.result?.[0]
+  const nameRes = useSingleCallResult(is721 ? nftContract : null, 'name')
+  const symbolRes = useSingleCallResult(is721 ? nftContract : null, 'symbol')
 
   useEffect(() => {
     loadingCb && loadingCb(!!nameRes?.loading)
@@ -220,10 +223,10 @@ export function useToken721(
       const token = list.find(token721 => token721.address === tokenAddress && token721.tokenId == tokenId)
       if (token) return token
     }
-    return nameRes.result && !!is721.result?.[0]
+    return nameRes.result && is721
       ? new Token721(chainId, address, tokenId, { name: nameRes.result?.[0], symbol: symbolRes.result?.[0] })
       : undefined
-  }, [address, chainId, is721.result, nameRes.result, symbolRes.result, tokenAddress, tokenId])
+  }, [address, chainId, is721, nameRes.result, symbolRes.result, tokenAddress, tokenId])
 }
 
 export function useToken721WithLoadingIndicator(
@@ -237,10 +240,28 @@ export function useToken721WithLoadingIndicator(
 }
 
 export function useCurrency(currencyId: string | undefined, tokenId?: string | number): Currency | null | undefined {
+  const { library } = useActiveWeb3React()
   const isETH = currencyId?.toUpperCase() === 'ETH'
+  const [tokenType, setTokenType] = useState<undefined | string>(undefined)
+
+  useEffect(() => {
+    if (isETH || !currencyId || !library || tokenId) return
+    ;(async () => {
+      const nftContract = getContract(currencyId, ERC721_ABI, library)
+      try {
+        const res = await nftContract.supportsInterface(interface721[0])
+        if (res === true) {
+          setTokenType('ERC721')
+        }
+      } catch (e) {
+        setTokenType('ERC20')
+      }
+    })()
+  }, [currencyId, isETH, library, tokenId])
+
   const token1155 = useToken1155(!isETH && tokenId ? currencyId : undefined, tokenId)
-  const token = useToken(isETH || tokenId ? undefined : currencyId)
-  const token721 = useToken721(currencyId)
+  const token = useToken(isETH || tokenId ? undefined : tokenType === 'ERC20' ? currencyId : undefined)
+  const token721 = useToken721(isETH ? undefined : tokenType === 'ERC721' ? currencyId : undefined)
 
   return !!token721 ? token721 : !!token1155 ? token1155 : isETH ? ETHER : token
 }
