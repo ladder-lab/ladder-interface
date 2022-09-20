@@ -72,8 +72,8 @@ export default function Testnet() {
           height: '100%',
           background: theme.palette.background.paper,
           padding: {
-            xs: '62px 16px',
-            md: '100px 46px'
+            xs: '62px 16px 214px',
+            md: '100px 46px 117px'
           }
         }}
       >
@@ -96,7 +96,7 @@ export default function Testnet() {
         >
           Ladder incentivized testnet stage 2
         </Typography>
-        <Typography sx={{ lineHeight: '170%', mb: 32, fontSize: 20 }}>
+        <Typography sx={{ lineHeight: '170%', mb: 32, fontSize: { xs: 16, md: 20 } }}>
           We gonna Airdrop another 3000 raffle whitelist to participate in testnet activity,and we will start Alpha-test
           in the stage with LAD rewards.
           <br /> 1. This version of the product (Ladder V2) will support the creation of Pairs between any
@@ -107,12 +107,34 @@ export default function Testnet() {
           More Details
         </ExternalLink>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 120, width: '100%' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            mt: { xs: 90, md: 120 },
+            width: '100%',
+            flexDirection: {
+              xs: 'column',
+              md: 'row'
+            },
+            gap: 28
+          }}
+        >
           <Box sx={{ display: 'grid', gap: 16 }}>
             <Typography sx={{ fontWeight: 700, fontSize: 32 }}>ladder test faucet</Typography>
             <Typography sx={{ fontWeight: 500, fontSize: 20 }}>Each IP/address can only claim once</Typography>
           </Box>
-          <Button onClick={() => {}} sx={{ width: 400, height: 50, fontSize: 16 }}>
+          <Button
+            onClick={() => {}}
+            sx={{
+              maxWidth: 400,
+              width: '100%',
+              height: { xs: 70, md: 50 },
+              fontSize: 16,
+              padding: { xs: '16px 40px', md: 0 }
+            }}
+          >
             Connect the wallet to claim your test assets
           </Button>
         </Box>
@@ -145,10 +167,13 @@ export default function Testnet() {
           </Grid>
         </Grid>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Typography variant="h5" mt={180} mb={24} fontWeight={700} fontSize={32}>
+          <Typography
+            variant="h5"
+            sx={{ fontSize: { xs: 20, md: 32 }, fontWeight: 700, mb: 24, mt: { xs: 102, md: 180 } }}
+          >
             Feedback
           </Typography>
-          <Typography fontWeight={500} fontSize={20} mb={61}>
+          <Typography sx={{ textAlign: 'center', mb: { xs: 40, md: 61 }, fontSize: { xs: 16, md: 20 } }}>
             Please leave your feedback to us, help us improve products!
           </Typography>
           <Button onClick={() => {}} sx={{ width: 226, height: 52, fontSize: 16 }}>
@@ -188,7 +213,10 @@ function FaucetCard({
     <Box
       sx={{
         borderRadius: '16px',
-        padding: '36px 40px 24px',
+        padding: {
+          xs: '36px 20px',
+          md: '36px 40px 24px'
+        },
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -201,10 +229,16 @@ function FaucetCard({
       <Box
         sx={{
           display: 'flex',
+          alignItems: 'center',
           justifyContent: 'space-between',
           width: '100%',
-          mt: 60,
-          mb: 34
+          mt: {
+            xs: 36,
+            md: 60
+          },
+          mb: 34,
+          flexDirection: 'column',
+          gap: 14
         }}
       >
         <ExternalLink href={link} showIcon sx={{ fontSize: 20, color: theme => theme.palette.text.primary }}>
