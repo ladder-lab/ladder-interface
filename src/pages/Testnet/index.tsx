@@ -141,7 +141,7 @@ export default function Testnet() {
           </Button>
         </Box>
 
-        <Grid container mt={36} width="100%" spacing={20}>
+        <Grid container mt={36} spacing={20}>
           <Grid item xs={12} md={4}>
             <FaucetCard
               icon={isDarkMode ? <FacuetFirstDark /> : <FacuetFirstLight />}
