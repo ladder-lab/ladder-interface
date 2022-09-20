@@ -15,11 +15,13 @@ import { ReactComponent as BgLowerRightDark } from 'assets/svg/bg/lowerrightd.sv
 import BgLight from 'assets/images/bg_light.png'
 import BgDark from 'assets/images/bg_dark.png'
 import useBreakpoint from 'hooks/useBreakpoint'
+import { useWalletModalToggle } from '../../state/application/hooks'
 
 export default function Testnet() {
   const theme = useTheme()
   const isDarkMode = useIsDarkMode()
   const isDownMd = useBreakpoint('md')
+  const toggleWalletModal = useWalletModalToggle()
 
   return (
     <Box sx={{ overflow: 'hidden', width: '100%', height: '100%', position: 'relative' }}>
@@ -128,7 +130,7 @@ export default function Testnet() {
             <Typography sx={{ fontWeight: 500, fontSize: 20 }}>Each IP/address can only claim once</Typography>
           </Box>
           <Button
-            onClick={() => {}}
+            onClick={toggleWalletModal}
             sx={{
               maxWidth: 400,
               width: '100%',
