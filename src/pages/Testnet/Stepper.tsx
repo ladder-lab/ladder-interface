@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Stepper as MuiStepper, StepLabel, Button, Typography } from '@mui/material'
+import { Stepper as MuiStepper, StepLabel, Button, Typography, useTheme } from '@mui/material'
 import Step from '@mui/material/Step'
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector'
 import { ReactComponent as CheckIconLight } from 'assets/svg/stepper/checkl.svg'
@@ -9,10 +9,10 @@ import { ReactComponent as CheckIconDark } from 'assets/svg/stepper/checkd.svg'
 import { ReactComponent as LoadingIconDark } from 'assets/svg/stepper/loadingd.svg'
 import { ReactComponent as BgIconDark } from 'assets/svg/stepper/bgd.svg'
 import { useIsDarkMode } from 'state/user/hooks'
-import { theme } from 'theme'
 
 export default function Stepper() {
   const isDarkMode = useIsDarkMode()
+  const theme = useTheme()
 
   const steps = useMemo(() => {
     return [
@@ -21,13 +21,14 @@ export default function Stepper() {
         label: 'LIT-1',
         actionText: 'End',
         onClick: () => {},
-        disabled: true
+        completed: true
       },
       {
         icon: isDarkMode ? LoadingIconDark : LoadingIconLight,
         label: 'LIT-2',
         actionText: 'Register',
-        onClick: () => {}
+        onClick: () => {},
+        active: true
       },
       {
         icon: isDarkMode ? BgIconDark : BgIconLight,
@@ -43,7 +44,7 @@ export default function Stepper() {
   return (
     <MuiStepper
       alternativeLabel
-      activeStep={1}
+      // activeStep={1}
       connector={
         <StepConnector
           sx={{
@@ -60,7 +61,7 @@ export default function Stepper() {
         />
       }
     >
-      {steps.map(({ icon, label, actionText, onClick, disabled }) => (
+      {steps.map(({ icon, label, actionText, onClick, completed, active }) => (
         <Step key={label}>
           <StepLabel
             sx={{
@@ -73,13 +74,25 @@ export default function Stepper() {
             }}
             StepIconComponent={icon}
           >
-            <Typography variant="h5" sx={{ color: theme.palette.text.primary, fontWeight: 700, fontSize: 16 }}>
+            <Typography
+              variant="h5"
+              sx={{
+                color: active ? theme.palette.text.primary : theme.palette.text.secondary,
+                fontWeight: 700,
+                fontSize: 16
+              }}
+            >
               {label}
             </Typography>
             <Button
-              sx={{ width: 140, height: 51, fontSize: 16, visibility: onClick ? 'visible' : 'hidden' }}
+              sx={{
+                width: 140,
+                height: 51,
+                fontSize: 16,
+                visibility: onClick ? 'visible' : 'hidden'
+              }}
               onClick={onClick}
-              disabled={disabled}
+              disabled={completed}
             >
               {actionText}
             </Button>
