@@ -38,17 +38,18 @@ export default function Testnet() {
         }}
       >
         <Typography
-          component="h5"
+          variant="h1"
           sx={{
             fontSize: {
               xs: 20,
               md: 45
             },
             fontWeight: 700,
-            textAlign: 'center'
+            textAlign: 'center',
+            maxWidth: 980
           }}
         >
-          Incredible liquidity pool! <br /> Quickly find real-time value of NFTs.
+          Incredible liquidity pool! Quickly find real-time value of NFTs.
         </Typography>
         <Typography
           sx={{
@@ -57,11 +58,12 @@ export default function Testnet() {
               md: 20
             },
             fontWeight: 500,
-            textAlign: 'center'
+            textAlign: 'center',
+            maxWidth: 900
           }}
         >
-          Ladder Protocol a decentralized NFT AMM, enabling instantd NFT swaps and better price discovery.
-          <br /> In fact, Ladder is the first protocol that allows you to Swap an NFT as easily as swapping a Token
+          Ladder Protocol a decentralized NFT AMM, enabling instantd NFT swaps and better price discovery. In fact,
+          Ladder is the first protocol that allows you to Swap an NFT as easily as swapping a Token
         </Typography>
       </Box>
       <Box
@@ -78,7 +80,7 @@ export default function Testnet() {
         <Stepper />
 
         <Typography
-          component="h5"
+          variant="h5"
           sx={{
             fontSize: {
               xs: 16,
@@ -94,7 +96,7 @@ export default function Testnet() {
         >
           Ladder incentivized testnet stage 2
         </Typography>
-        <Typography component="h5" sx={{ lineHeight: '170%', mb: 32, fontSize: 20 }}>
+        <Typography sx={{ lineHeight: '170%', mb: 32, fontSize: 20 }}>
           We gonna Airdrop another 3000 raffle whitelist to participate in testnet activity,and we will start Alpha-test
           in the stage with LAD rewards.
           <br /> 1. This version of the product (Ladder V2) will support the creation of Pairs between any
@@ -143,7 +145,7 @@ export default function Testnet() {
           </Grid>
         </Grid>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Typography component="h5" mt={180} mb={24} fontWeight={700} fontSize={32}>
+          <Typography variant="h5" mt={180} mb={24} fontWeight={700} fontSize={32}>
             Feedback
           </Typography>
           <Typography fontWeight={500} fontSize={20} mb={61}>

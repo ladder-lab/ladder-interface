@@ -73,7 +73,7 @@ export default function Stepper() {
             }}
             StepIconComponent={icon}
           >
-            <Typography component="h5" sx={{ color: theme.palette.text.primary, fontWeight: 700 }}>
+            <Typography variant="h5" sx={{ color: theme.palette.text.primary, fontWeight: 700, fontSize: 16 }}>
               {label}
             </Typography>
             <Button
