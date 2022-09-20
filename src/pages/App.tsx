@@ -16,6 +16,7 @@ import darkBg from 'assets/images/dark_bg.png'
 import lightBg from 'assets/images/light_bg.png'
 import { useIsDarkMode } from 'state/user/hooks'
 import RemoveLiquidity from './Pool/RemoveLiquidity'
+import Testnet from './Testnet'
 
 const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
   ({ theme, isDarkMode }) => ({
@@ -51,14 +52,14 @@ const BodyWrapper = styled('div')(({ theme }) => ({
   flexDirection: 'column',
   width: '100%',
   minHeight: `calc(100vh - ${theme.height.header})`,
-  padding: '54px 0 80px',
+  // padding: '54px 0 80px',
   justifyContent: 'flex-start',
   alignItems: 'center',
   flex: 1,
   position: 'relative',
   [theme.breakpoints.down('md')]: {
-    minHeight: `calc(100vh - ${theme.height.header})`,
-    paddingTop: 20
+    minHeight: `calc(100vh - ${theme.height.header})`
+    // paddingTop: 20
   }
 }))
 
@@ -76,6 +77,7 @@ export default function App() {
               {/* <WarningModal /> */}
               <Web3ReactManager>
                 <Routes>
+                  <Route path={routes.testnet} element={<Testnet />} />
                   <Route path={routes.swap} element={<Swap />} />
                   <Route path={routes.pool} element={<Pool />} />
                   <Route path={routes.importPool} element={<ImportPool />} />

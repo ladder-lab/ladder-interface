@@ -197,7 +197,8 @@ export default function Pool() {
           display: 'flex',
           alignItems: 'center',
           gap: 3,
-          mt: 50
+          mt: 50,
+          pb: 80
         }}
       >
         <Typography>Don’t see a pool you joined?</Typography>
