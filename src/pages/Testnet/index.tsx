@@ -57,7 +57,7 @@ export default function Testnet() {
           ERC721/ERC1155/ERC20 <br /> 2. Support for asset Swap routing of associated Pairs
         </Typography>
 
-        <ExternalLink href="#" underline="always">
+        <ExternalLink href="#" underline="always" sx={{ fontSize: 20 }}>
           More Details
         </ExternalLink>
 
