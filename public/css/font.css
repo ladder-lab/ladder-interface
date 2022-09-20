@@ -36,7 +36,7 @@
 
 @font-face {
   font-family: 'Monument Extended';
-  src: local('Monument Extended Regular'), local('Monument-Extended-Regular'),
+  src: local('Monument Extended Regular'), local('MonumentExtended-Regular'),
     url('../fonts/MonumentExtended-Regular.otf') format('truetype');
   font-weight: 700;
   font-style: normal;
