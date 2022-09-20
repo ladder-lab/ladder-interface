@@ -105,7 +105,7 @@ export default function Testnet() {
           ERC721/ERC1155/ERC20 <br /> 2. Support for asset Swap routing of associated Pairs
         </Typography>
 
-        <ExternalLink href="#" underline="always" sx={{ fontSize: 20 }}>
+        <ExternalLink href="#" underline="always" sx={{ fontSize: 20, color: '#1F9898' }}>
           More Details
         </ExternalLink>
 
@@ -211,6 +211,7 @@ function FaucetCard({
   amount: number
   onClick?: () => void
 }) {
+  const isDarkMode = useIsDarkMode()
   return (
     <Box
       sx={{
@@ -223,8 +224,9 @@ function FaucetCard({
         flexDirection: 'column',
         alignItems: 'center',
         width: '100%',
-        boxShadow: '0px 4px 11px rgba(51, 51, 51, 0.07)',
-        height: 308
+        boxShadow: isDarkMode ? 'none' : '0px 4px 11px rgba(51, 51, 51, 0.07)',
+        height: 308,
+        background: theme => theme.palette.background.default
       }}
     >
       {icon}
@@ -239,7 +241,7 @@ function FaucetCard({
             md: 60
           },
           mb: 34,
-          flexDirection: 'column',
+          flexDirection: { xs: 'column', md: 'row' },
           gap: 14
         }}
       >
