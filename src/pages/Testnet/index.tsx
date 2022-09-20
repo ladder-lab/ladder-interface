@@ -105,7 +105,7 @@ export default function Testnet() {
           ERC721/ERC1155/ERC20 <br /> 2. Support for asset Swap routing of associated Pairs
         </Typography>
 
-        <ExternalLink href="#" underline="always" sx={{ fontSize: 20, color: '#1F9898' }}>
+        <ExternalLink href="#" underline="always" sx={{ fontSize: 20, color: theme.palette.info.main }}>
           More Details
         </ExternalLink>
 
@@ -226,7 +226,7 @@ function FaucetCard({
         width: '100%',
         boxShadow: isDarkMode ? 'none' : '0px 4px 11px rgba(51, 51, 51, 0.07)',
         height: 308,
-        background: theme => theme.palette.background.default
+        background: theme => (isDarkMode ? theme.palette.background.default : theme.palette.background.paper)
       }}
     >
       {icon}
@@ -245,13 +245,21 @@ function FaucetCard({
           gap: 14
         }}
       >
-        <ExternalLink href={link} showIcon sx={{ fontSize: 20, color: theme => theme.palette.text.primary }}>
+        <ExternalLink
+          href={link}
+          showIcon
+          sx={{ fontSize: { xs: 16, md: 20 }, color: theme => theme.palette.text.primary }}
+        >
           {title}
         </ExternalLink>
-        <Typography sx={{ fontSize: 20 }}> amount: {amount}</Typography>
+        <Typography sx={{ fontSize: { xs: 16, md: 20 } }}> amount: {amount}</Typography>
       </Box>
       {onClick && (
-        <Button variant="outlined" onClick={onClick} sx={{ borderColor: theme => theme.palette.text.primary }}>
+        <Button
+          variant="outlined"
+          onClick={onClick}
+          sx={{ borderColor: theme => theme.palette.info.main, color: theme => theme.palette.info.main }}
+        >
           Import Token
         </Button>
       )}
