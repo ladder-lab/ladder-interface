@@ -285,6 +285,11 @@ export const override: (palette: any) => any & {
       body2: {
         fontSize: 12
       },
+      h1: {
+        fontSize: 45,
+        fontWeight: 700,
+        fontFamily: FONTS.title
+      },
       h5: {
         fontSize: 28,
         fontWeight: 500,
