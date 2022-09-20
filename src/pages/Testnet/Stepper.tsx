@@ -19,20 +19,15 @@ export default function Stepper() {
       {
         icon: isDarkMode ? CheckIconDark : CheckIconLight,
         label: 'LIT-1',
-        action: (
-          <Button sx={{ width: 140, height: 51 }} onClick={() => {}} disabled>
-            End
-          </Button>
-        )
+        actionText: 'End',
+        onClick: () => {},
+        disabled: true
       },
       {
         icon: isDarkMode ? LoadingIconDark : LoadingIconLight,
         label: 'LIT-2',
-        action: (
-          <Button sx={{ width: 140, height: 51, fontSize: 16 }} onClick={() => {}}>
-            Register
-          </Button>
-        )
+        actionText: 'Register',
+        onClick: () => {}
       },
       {
         icon: isDarkMode ? BgIconDark : BgIconLight,
@@ -65,7 +60,7 @@ export default function Stepper() {
         />
       }
     >
-      {steps.map(({ icon, label, action }) => (
+      {steps.map(({ icon, label, actionText, onClick, disabled }) => (
         <Step key={label}>
           <StepLabel
             sx={{
@@ -81,7 +76,13 @@ export default function Stepper() {
             <Typography component="h5" sx={{ color: theme.palette.text.primary, fontWeight: 700 }}>
               {label}
             </Typography>
-            {action}
+            <Button
+              sx={{ width: 140, height: 51, fontSize: 16, visibility: onClick ? 'visible' : 'hidden' }}
+              onClick={onClick}
+              disabled={disabled}
+            >
+              {actionText}
+            </Button>
           </StepLabel>
         </Step>
       ))}

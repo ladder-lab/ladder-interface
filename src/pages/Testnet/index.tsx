@@ -20,34 +20,78 @@ export default function Testnet() {
   const isDarkMode = useIsDarkMode()
 
   return (
-    <Box width="100%" height="100%" position="relative">
+    <Box sx={{ overflow: 'hidden', width: '100%', height: '100%', position: 'relative' }}>
       <Box
         sx={{
-          width: '100%',
+          // width: '100%',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           gap: 36,
-          pt: theme.height.header,
-          pb: 120,
+          // pt: theme.height.header,
+          // pb: 120,
+          padding: `${theme.height.header} 16px 120px`,
           backgroundImage: `url(${isDarkMode ? BgDark : BgLight})`,
           backgroundPosition: 'top',
           backgroundRepeat: 'no-repeat',
           backgroundSize: '100% 100%'
         }}
       >
-        <Typography component="h5" sx={{ fontSize: 45, fontWeight: 700, textAlign: 'center' }}>
+        <Typography
+          component="h5"
+          sx={{
+            fontSize: {
+              xs: 20,
+              md: 45
+            },
+            fontWeight: 700,
+            textAlign: 'center'
+          }}
+        >
           Incredible liquidity pool! <br /> Quickly find real-time value of NFTs.
         </Typography>
-        <Typography sx={{ fontSize: 20, fontWeight: 500, textAlign: 'center' }}>
+        <Typography
+          sx={{
+            fontSize: {
+              xs: 16,
+              md: 20
+            },
+            fontWeight: 500,
+            textAlign: 'center'
+          }}
+        >
           Ladder Protocol a decentralized NFT AMM, enabling instantd NFT swaps and better price discovery.
           <br /> In fact, Ladder is the first protocol that allows you to Swap an NFT as easily as swapping a Token
         </Typography>
       </Box>
-      <Box sx={{ width: '100%', height: '100%', background: theme.palette.background.paper, padding: '100px 46px' }}>
+      <Box
+        sx={{
+          width: '100%',
+          height: '100%',
+          background: theme.palette.background.paper,
+          padding: {
+            xs: '62px 16px',
+            md: '100px 46px'
+          }
+        }}
+      >
         <Stepper />
 
-        <Typography component="h5" sx={{ fontSize: 20, fontWeight: 700, mt: 100, mb: 24 }}>
+        <Typography
+          component="h5"
+          sx={{
+            fontSize: {
+              xs: 16,
+              md: 20
+            },
+            fontWeight: 700,
+            mt: {
+              xs: 40,
+              md: 100
+            },
+            mb: 24
+          }}
+        >
           Ladder incentivized testnet stage 2
         </Typography>
         <Typography component="h5" sx={{ lineHeight: '170%', mb: 32, fontSize: 20 }}>
