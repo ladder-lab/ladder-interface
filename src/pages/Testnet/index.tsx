@@ -81,7 +81,9 @@ export default function Testnet() {
           }
         }}
       >
-        <Stepper />
+        <Box sx={{ width: '100%', overflow: 'auto', padding: 18 }}>
+          <Stepper />
+        </Box>
 
         <Typography
           variant="h5"
