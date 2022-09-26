@@ -63,7 +63,7 @@ export default function Input({
           },
           '& .MuiInputBase-input': {
             height: '100%',
-            padding: startAdornment ? '0 0 0 60px' : '0 22px',
+            padding: `0 ${endAdornment ? '60px' : '22px'} 0 ${startAdornment ? '60px' : '22px'}`,
             backgroundClip: 'padding-box',
             boxSizing: 'border-box',
             background: theme.palette.background.default,
@@ -77,7 +77,7 @@ export default function Input({
             height: '100%',
             width: '100%',
             background: theme.palette.background.default,
-            padding: startAdornment ? '0 0 0 60px' : '0 22px',
+            padding: `0 ${endAdornment ? '60px' : '22px'} 0 ${startAdornment ? '60px' : '22px'}`,
             borderRadius
           },
           '&:after': {
@@ -122,7 +122,7 @@ export default function Input({
         disabled={disabled}
         type={type}
         startAdornment={startAdornment && <span style={{ paddingRight: 17 }}>{startAdornment}</span>}
-        endAdornment={endAdornment && <span style={{ paddingRight: 20 }}>{endAdornment}</span>}
+        endAdornment={endAdornment && <span style={{ paddingRight: 20, right: 0 }}>{endAdornment}</span>}
         {...rest}
       />
       <Box display="flex" justifyContent="space-between">

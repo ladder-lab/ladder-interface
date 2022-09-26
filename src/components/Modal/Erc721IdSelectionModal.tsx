@@ -1,24 +1,24 @@
-import { Box, Button, IconButton, Typography, useTheme, ButtonBase, Grid } from '@mui/material'
+import { Box, Button, IconButton, Typography, useTheme, Grid } from '@mui/material'
 import { Token721 } from 'constants/token/token721'
 import { useIsDarkMode } from 'state/user/hooks'
 import Modal from '.'
 import { Loader } from 'components/AnimatedSvg/Loader'
 import useBreakpoint from 'hooks/useBreakpoint'
 import LogoText from 'components/LogoText'
-import { ExternalLink } from 'theme/components'
+import { CloseIcon, ExternalLink } from 'theme/components'
 import { ReactComponent as Xcircle } from 'assets/svg/xcircle.svg'
 // import { ReactComponent as XcircleSm } from 'assets/svg/xcirclesm.svg'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { ReactComponent as ExternalIcon } from 'assets/svg/external_arrow.svg'
-import { useCallback, useEffect, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { useToken721Balance, useToken721BalanceTokens } from 'state/wallet/hooks'
 import { shortenAddress } from 'utils'
 import { useERC721Tokens } from 'state/swap/useSwap721State'
-import Input from 'components/Input'
 import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
 import { useToken721PoolIds } from 'hooks/useToken721PoolIds'
 
 import LogoBase from 'components/essential/CurrencyLogo/LogoBase'
+import InputNumerical from 'components/Input/InputNumerical'
 
 export default function Erc721IdSelectionModal({
   // isOpen,
@@ -26,7 +26,8 @@ export default function Erc721IdSelectionModal({
   collection,
   onSelectSubTokens,
   amount,
-  pairAddress
+  pairAddress,
+  setAmount
 }: {
   // isOpen: boolean
   onDismiss: () => void
@@ -34,10 +35,12 @@ export default function Erc721IdSelectionModal({
   onSelectSubTokens: (tokens: Token721[]) => void
   amount: number
   pairAddress?: string
+  setAmount?: (e: ChangeEvent<HTMLInputElement>) => void
 }) {
+  const [searchId, setSearchId] = useState('')
   const isDownMd = useBreakpoint('md')
 
-  const { onClearTokens, onRemoveToken, onAddToken, tokens } = useERC721Tokens()
+  const { onClearTokens, onRemoveToken, tokens, onToggleToken } = useERC721Tokens()
 
   const balance = useToken721Balance(pairAddress ? undefined : collection)
   const { loading, availableTokens } = useToken721BalanceTokens(balance)
@@ -46,16 +49,34 @@ export default function Erc721IdSelectionModal({
   const [filteredAvailableTokens, setFilteredAvailableTokens] = useState(pairAddress ? poolTokens : availableTokens)
 
   const onConfirm = useCallback(() => {
-    if (!collection || tokens.length !== amount) {
+    if (!collection || (!!amount && tokens.length !== amount)) {
       return
+    }
+    if (amount === 0) {
+      setAmount && setAmount({ target: { value: tokens.length + '' } } as any)
     }
     onSelectSubTokens && onSelectSubTokens([...tokens])
     const tokenIds = tokens.map(({ tokenId }) => tokenId)
     setFilteredAvailableTokens((prev: Token721[] | undefined) => {
       return prev?.filter((token: Token721) => !tokenIds.includes(token.tokenId))
     })
+
     onDismiss()
-  }, [amount, collection, onDismiss, onSelectSubTokens, tokens])
+  }, [amount, collection, onDismiss, onSelectSubTokens, setAmount, tokens])
+
+  const searchIdToken = useMemo(() => {
+    if (!filteredAvailableTokens || searchId == '') return undefined
+    const res = filteredAvailableTokens.find((token: Token721) => (token.tokenId + '').includes(searchId))
+    return res ? res : null
+  }, [filteredAvailableTokens, searchId])
+
+  const handleSearchId = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setSearchId(e.target.value)
+  }, [])
+
+  const resetSearchId = useCallback(() => {
+    setSearchId('')
+  }, [])
 
   useEffect(() => {
     onClearTokens()
@@ -65,6 +86,7 @@ export default function Erc721IdSelectionModal({
   useEffect(() => {
     setFilteredAvailableTokens(pairAddress ? poolTokens : availableTokens)
   }, [availableTokens, pairAddress, poolTokens])
+
   return (
     <Modal
       // customIsOpen={isOpen}
@@ -88,32 +110,14 @@ export default function Erc721IdSelectionModal({
           Select a NFT
         </Typography>
       </Box>
-      <Box display="flex" alignItems="center" gap={3} mb={16}>
-        <Typography fontSize={16} fontWeight={500}>
-          Don&apos;t see your NFT ?
-        </Typography>
-        <ButtonBase
-          sx={{
-            color: theme => theme.palette.primary.main,
-            fontSize: 16,
-            fontWeight: 500,
-            ml: 10,
-            '&:hover': {
-              color: theme => theme.palette.primary.dark
-            }
-          }}
-          onClick={() => {}}
-        >
-          Import it
-        </ButtonBase>
-      </Box>
-      <Input
-        value={''}
-        onChange={() => {}}
-        placeholder="Search name or paste address"
-        // outlined
+      <InputNumerical
+        integer
+        value={searchId}
+        onChange={handleSearchId}
+        placeholder="Search NFT token ID"
+        endAdornment={<CloseIcon onClick={resetSearchId} sx={{ position: 'static' }} />}
         startAdornment={<SearchIcon />}
-        onKeyDown={() => {}}
+        onKeyDown={handleSearchId}
         height={isDownMd ? 48 : 60}
       />
       <Box sx={{ overflow: 'auto', height: isDownMd ? 357 : 500, margin: '20px 0' }}>
@@ -183,13 +187,21 @@ export default function Erc721IdSelectionModal({
                     </IconButton>
                   </Box>
                 ))}
-                <Typography fontSize={20} textAlign="center" margin="20px 0 0" color="primary">
-                  {tokens.length}/{amount}
-                </Typography>
+                {!!amount && (
+                  <Typography fontSize={20} textAlign="center" margin="20px 0 0" color="primary">
+                    {tokens.length}/{amount}
+                  </Typography>
+                )}
                 <Box margin="28px 0" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Button onClick={onConfirm} sx={{ height: 60, width: 300 }} disabled={tokens.length < amount}>
+                  <Button
+                    onClick={onConfirm}
+                    sx={{ height: 60, width: 300 }}
+                    disabled={!!amount && tokens.length !== amount}
+                  >
                     {tokens.length === amount
                       ? `${tokens.length}/${amount} Confirm`
+                      : amount === 0
+                      ? `${tokens.length} NFTs has been chosen`
                       : `${amount} NFTs should be chosen`}
                   </Button>
                 </Box>
@@ -203,21 +215,52 @@ export default function Erc721IdSelectionModal({
               </Box>
             ) : (
               <Grid container spacing={6} width="100%">
-                {filteredAvailableTokens?.map((token: Token721) => {
-                  const selected = tokens.filter(item => item.tokenId === token.tokenId)
-                  return (
-                    <Grid item key={token.tokenId} xs={6} md={3}>
-                      <NftCard
-                        selected={!!selected.length}
-                        token={token}
-                        onClick={() => {
-                          onAddToken(token)
-                        }}
-                        disabled={tokens.length >= amount}
-                      />
-                    </Grid>
-                  )
-                })}
+                {searchIdToken === null && (
+                  <Box width={'100%'} display="flex" alignItems="center" justifyContent="center" mt={100}>
+                    <Typography
+                      textAlign="center"
+                      mb="20px"
+                      fontSize={16}
+                      fontWeight={500}
+                      component="div"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                    >
+                      No results found.
+                    </Typography>
+                  </Box>
+                )}
+                {searchIdToken && (
+                  <Grid item xs={6} md={3}>
+                    <NftCard
+                      selected={!!tokens.find(item => item.tokenId === searchIdToken.tokenId)}
+                      token={searchIdToken}
+                      onClick={() => {
+                        onToggleToken(searchIdToken)
+                        resetSearchId()
+                      }}
+                      disabled={false}
+                    />{' '}
+                  </Grid>
+                )}
+                {searchIdToken === undefined &&
+                  filteredAvailableTokens?.map((token: Token721) => {
+                    const selected = tokens.filter(item => item.tokenId === token.tokenId)
+                    return (
+                      <Grid item key={token.tokenId} xs={6} md={3}>
+                        <NftCard
+                          selected={!!selected.length}
+                          token={token}
+                          onClick={() => {
+                            onToggleToken(token)
+                            resetSearchId()
+                          }}
+                          disabled={false}
+                        />
+                      </Grid>
+                    )
+                  })}
               </Grid>
             )}
           </Box>

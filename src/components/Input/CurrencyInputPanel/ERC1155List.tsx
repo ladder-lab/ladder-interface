@@ -19,9 +19,17 @@ interface Props {
   searchTokenIsAdded?: boolean
   onClick?: (token: AllTokens) => void
   children?: React.ReactNode
+  importToken?: () => void
 }
 
-export default function NftList({ onClick, searchToken, searchTokenIsAdded, currencyOptions, children }: Props) {
+export default function NftList({
+  onClick,
+  searchToken,
+  searchTokenIsAdded,
+  currencyOptions,
+  children,
+  importToken
+}: Props) {
   const { hideModal } = useModal()
   const isDownMd = useBreakpoint('md')
   const { balances, loading } = useToken1155Balances(currencyOptions)
@@ -63,7 +71,11 @@ export default function NftList({ onClick, searchToken, searchTokenIsAdded, curr
               justifyContent="center"
             >
               No results found. &nbsp;
-              <Button variant="text" sx={{ display: 'inline', width: 'unset', padding: 0, height: 'max-content' }}>
+              <Button
+                variant="text"
+                sx={{ display: 'inline', width: 'unset', padding: 0, height: 'max-content' }}
+                onClick={importToken}
+              >
                 Import token
               </Button>
             </Typography>
