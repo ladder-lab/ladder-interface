@@ -36,7 +36,7 @@ export default function ConfirmRemoveModal({
   return (
     <Modal closeIcon customIsOpen={isOpen} customOnDismiss={onDismiss}>
       <Box padding="33px 32px">
-        <Box display="flex" alignItems="center" mb={39}>
+        <Box display="flex" alignItems="center" mb={{ xs: 20, md: 39 }}>
           <Typography fontSize={28} fontWeight={500}>
             You will receive
           </Typography>
@@ -53,19 +53,19 @@ export default function ConfirmRemoveModal({
         </Box>
 
         <Box display="flex" justifyContent="space-between" alignItems={'center'}>
-          <Typography fontSize={32} fontWeight={900}>
+          <Typography fontSize={{ xs: 26, md: 32 }} fontWeight={900}>
             {valA}
           </Typography>
-          <Typography fontSize={20} fontWeight={400}>
+          <Typography fontSize={{ xs: 18, md: 20 }} fontWeight={400}>
             {token1Text}
           </Typography>
         </Box>
         <AddIcon sx={{ color: theme.palette.text.secondary, ml: 8 }} />
         <Box display="flex" justifyContent="space-between" alignItems={'center'}>
-          <Typography fontSize={32} fontWeight={900}>
+          <Typography fontSize={{ xs: 26, md: 32 }} fontWeight={900}>
             {valB}
           </Typography>
-          <Typography fontSize={20} fontWeight={400}>
+          <Typography fontSize={{ xs: 18, md: 20 }} fontWeight={400}>
             {token2Text}
           </Typography>
         </Box>
