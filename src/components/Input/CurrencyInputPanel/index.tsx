@@ -136,6 +136,7 @@ export default function CurrencyInputPanel({
           onSelectSubTokens={onSelectSubTokens}
           collection={is721}
           pairAddress={pairAddress}
+          setAmount={onChange}
           // isOpen={true}
           onDismiss={hideModal}
           // onDismiss={() => {
@@ -144,7 +145,7 @@ export default function CurrencyInputPanel({
         />
       )
     }
-  }, [hideModal, is721, onSelectSubTokens, pairAddress, showModal, value])
+  }, [hideModal, is721, onChange, onSelectSubTokens, pairAddress, showModal, value])
 
   return (
     <>
@@ -237,7 +238,7 @@ export default function CurrencyInputPanel({
             type={'number'}
             disabled={disabled || disableInput}
             focused={inputFocused}
-            integer={!!is1155}
+            integer={!!is1155 || !!is721}
             height={isDownMd ? 48 : 52}
           />
           <Box display="flex" justifyContent="space-between" alignItems="center" mt={9}>

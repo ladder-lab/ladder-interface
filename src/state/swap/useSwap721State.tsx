@@ -32,11 +32,23 @@ export function useERC721Tokens() {
     [tokens]
   )
 
+  const onToggleToken = useCallback(
+    (token: Token721) => {
+      const newToken = tokens.find(el => el.tokenId == token.tokenId)
+      if (newToken) {
+        onRemoveToken(token)
+      } else {
+        onAddToken(token)
+      }
+    },
+    [onAddToken, onRemoveToken, tokens]
+  )
+
   const onClearTokens = useCallback(() => {
     setTokens([])
   }, [])
 
-  return { tokens, setTokens, onRemoveToken, onAddToken, onClearTokens }
+  return { tokens, setTokens, onRemoveToken, onAddToken, onClearTokens, onToggleToken }
 }
 
 export function useSwap721State(): {

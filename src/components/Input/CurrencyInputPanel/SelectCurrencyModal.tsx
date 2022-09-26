@@ -272,6 +272,7 @@ export default function SelectCurrencyModal({
               searchToken={searchTokenNFT}
               searchTokenIsAdded={searchTokenIsAddedNFT}
               onClick={onSelectCurrency}
+              importToken={onImport}
             >
               <>
                 <Box display="flex" alignItems="center" gap={3} mb={16}>
