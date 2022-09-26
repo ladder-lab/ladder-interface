@@ -24,7 +24,14 @@ export default function Testnet() {
   const toggleWalletModal = useWalletModalToggle()
 
   return (
-    <Box sx={{ overflow: 'hidden', width: '100%', height: '100%', position: 'relative' }}>
+    <Box
+      sx={{
+        overflow: 'hidden',
+        width: '100%',
+        height: '100%',
+        position: 'relative'
+      }}
+    >
       <Box
         sx={{
           // width: '100%',
@@ -81,110 +88,119 @@ export default function Testnet() {
           }
         }}
       >
-        <Box sx={{ width: '100%', overflow: 'auto', padding: 18 }}>
-          <Stepper />
-        </Box>
-
-        <Typography
-          variant="h5"
-          sx={{
-            fontSize: {
-              xs: 16,
-              md: 20
-            },
-            fontWeight: 700,
-            mt: {
-              xs: 40,
-              md: 100
-            },
-            mb: 24
-          }}
-        >
-          Ladder incentivized testnet stage 2
-        </Typography>
-        <Typography sx={{ lineHeight: '170%', mb: 32, fontSize: { xs: 16, md: 20 } }}>
-          We gonna Airdrop another 3000 raffle whitelist to participate in testnet activity,and we will start Alpha-test
-          in the stage with LAD rewards.
-          <br /> 1. This version of the product (Ladder V2) will support the creation of Pairs between any
-          ERC721/ERC1155/ERC20 <br /> 2. Support for asset Swap routing of associated Pairs
-        </Typography>
-
-        <ExternalLink href="#" underline="always" sx={{ fontSize: 20, color: theme.palette.info.main }}>
-          More Details
-        </ExternalLink>
-
         <Box
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            mt: { xs: 90, md: 120 },
             width: '100%',
-            flexDirection: {
-              xs: 'column',
-              md: 'row'
-            },
-            gap: 28
+            height: '100%',
+            margin: '0 auto',
+            maxWidth: theme.width.maxContent
           }}
         >
-          <Box sx={{ display: 'grid', gap: 16 }}>
-            <Typography sx={{ fontWeight: 700, fontSize: 32 }}>ladder test faucet</Typography>
-            <Typography sx={{ fontWeight: 500, fontSize: 20 }}>Each IP/address can only claim once</Typography>
+          <Box sx={{ width: '100%', overflow: 'auto', padding: 18 }}>
+            <Stepper />
           </Box>
-          <Button
-            onClick={toggleWalletModal}
-            sx={{
-              maxWidth: 400,
-              width: '100%',
-              height: { xs: 70, md: 50 },
-              fontSize: 16,
-              padding: { xs: '16px 40px', md: 0 }
-            }}
-          >
-            Connect the wallet to claim your test assets
-          </Button>
-        </Box>
 
-        <Grid container mt={36} spacing={20}>
-          <Grid item xs={12} md={4}>
-            <FaucetCard
-              icon={isDarkMode ? <FacuetFirstDark /> : <FacuetFirstLight />}
-              title="laddertest-erc20"
-              link="#"
-              amount={0}
-              onClick={() => {}}
-            />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <FaucetCard
-              icon={isDarkMode ? <FacuetSecondDark /> : <FacuetSecondLight />}
-              title="laddertest-erc20"
-              link="#"
-              amount={0}
-            />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <FaucetCard
-              icon={isDarkMode ? <FacuetThirdDark /> : <FacuetThirdLight />}
-              title="laddertest-erc20"
-              link="#"
-              amount={0}
-            />
-          </Grid>
-        </Grid>
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <Typography
             variant="h5"
-            sx={{ fontSize: { xs: 20, md: 32 }, fontWeight: 700, mb: 24, mt: { xs: 102, md: 180 } }}
+            sx={{
+              fontSize: {
+                xs: 16,
+                md: 20
+              },
+              fontWeight: 700,
+              mt: {
+                xs: 40,
+                md: 100
+              },
+              mb: 24
+            }}
           >
-            Feedback
+            Ladder incentivized testnet stage 2
           </Typography>
-          <Typography sx={{ textAlign: 'center', mb: { xs: 40, md: 61 }, fontSize: { xs: 16, md: 20 } }}>
-            Please leave your feedback to us, help us improve products!
+          <Typography sx={{ lineHeight: '170%', mb: 32, fontSize: { xs: 16, md: 20 } }}>
+            We gonna Airdrop another 3000 raffle whitelist to participate in testnet activity,and we will start
+            Alpha-test in the stage with LAD rewards.
+            <br /> 1. This version of the product (Ladder V2) will support the creation of Pairs between any
+            ERC721/ERC1155/ERC20 <br /> 2. Support for asset Swap routing of associated Pairs
           </Typography>
-          <Button onClick={() => {}} sx={{ width: 226, height: 52, fontSize: 16 }}>
-            Write Feedback
-          </Button>
+
+          <ExternalLink href="#" underline="always" sx={{ fontSize: 20, color: theme.palette.info.main }}>
+            More Details
+          </ExternalLink>
+
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              mt: { xs: 90, md: 120 },
+              width: '100%',
+              flexDirection: {
+                xs: 'column',
+                md: 'row'
+              },
+              gap: 28
+            }}
+          >
+            <Box sx={{ display: 'grid', gap: 16 }}>
+              <Typography sx={{ fontWeight: 700, fontSize: 32 }}>ladder test faucet</Typography>
+              <Typography sx={{ fontWeight: 500, fontSize: 20 }}>Each IP/address can only claim once</Typography>
+            </Box>
+            <Button
+              onClick={toggleWalletModal}
+              sx={{
+                maxWidth: 400,
+                width: '100%',
+                height: { xs: 70, md: 50 },
+                fontSize: 16,
+                padding: { xs: '16px 40px', md: 0 }
+              }}
+            >
+              Connect the wallet to claim your test assets
+            </Button>
+          </Box>
+
+          <Grid container mt={36} spacing={20}>
+            <Grid item xs={12} md={4}>
+              <FaucetCard
+                icon={isDarkMode ? <FacuetFirstDark /> : <FacuetFirstLight />}
+                title="laddertest-erc20"
+                link="#"
+                amount={0}
+                onClick={() => {}}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <FaucetCard
+                icon={isDarkMode ? <FacuetSecondDark /> : <FacuetSecondLight />}
+                title="laddertest-erc20"
+                link="#"
+                amount={0}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <FaucetCard
+                icon={isDarkMode ? <FacuetThirdDark /> : <FacuetThirdLight />}
+                title="laddertest-erc20"
+                link="#"
+                amount={0}
+              />
+            </Grid>
+          </Grid>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Typography
+              variant="h5"
+              sx={{ fontSize: { xs: 20, md: 32 }, fontWeight: 700, mb: 24, mt: { xs: 102, md: 180 } }}
+            >
+              Feedback
+            </Typography>
+            <Typography sx={{ textAlign: 'center', mb: { xs: 40, md: 61 }, fontSize: { xs: 16, md: 20 } }}>
+              Please leave your feedback to us, help us improve products!
+            </Typography>
+            <Button onClick={() => {}} sx={{ width: 226, height: 52, fontSize: 16 }}>
+              Write Feedback
+            </Button>
+          </Box>
         </Box>
       </Box>
       {isDarkMode ? (
