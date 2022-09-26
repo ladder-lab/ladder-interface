@@ -201,8 +201,8 @@ export default function AddLiquidy() {
         onConfirm={handleAddCb}
         tokenA={currencyA}
         tokenB={currencyB}
-        priceA={pair?.token0Price?.toFixed() ?? ''}
-        priceB={pair?.token1Price?.toFixed() ?? ''}
+        priceA={pair?.token1Price?.toFixed(8) ?? ''}
+        priceB={pair?.token0Price?.toFixed(8) ?? ''}
         valA={formattedAmounts[Field.CURRENCY_A]}
         valB={formattedAmounts[Field.CURRENCY_B]}
         isOpen={showConfirm}
@@ -311,7 +311,7 @@ export default function AddLiquidy() {
         </Box>
       </AppBody>
       {currencyA && currencyB && (
-        <Box maxWidth={'550px'} textAlign="center" mt={30}>
+        <Box maxWidth={'550px'} textAlign="center" mb={100} padding={'0 20px'}>
           By adding liquidity you&apos;ll earn 0.3% of all trades on this pair proportional to your share of the pool.
           Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.
         </Box>

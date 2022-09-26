@@ -11,7 +11,7 @@ import { AllTokens } from 'models/allTokens'
 import { CurrencyAmount, currencyEquals, Trade } from '@ladder/sdk'
 import { Field } from 'state/swap/actions'
 import Tag from 'components/Tag'
-import { checkTokenType, filter1155 } from 'utils/checkIs1155'
+import { checkTokenType, filter1155, getTokenText } from 'utils/checkIs1155'
 
 /**
  * Returns true if the trade requires a confirmation of details before we can submit it
@@ -65,6 +65,8 @@ export default function ConfirmSwapModal({
     [originalTrade, trade]
   )
 
+  const { token1Text } = getTokenText(to)
+
   return (
     <Modal closeIcon customIsOpen={isOpen} customOnDismiss={onDismiss}>
       <Box padding="33px 32px">
@@ -85,7 +87,7 @@ export default function ConfirmSwapModal({
         {showAcceptChanges && <PriceUpdateNotification onDismiss={onAcceptChanges} />}
         <Typography sx={{ fontSize: 16, color: theme.palette.text.secondary, mt: 24, mb: 24 }}>
           Output is estimated.You will receive at least {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)}{' '}
-          {to?.name} {to && 'tokenId' in to ? `# ${to.tokenId}` : ''} or the transaction will revert.
+          {token1Text} or the transaction will revert.
         </Typography>
         <SwapDetails
           ExpectedQty={trade?.outputAmount?.toExact() ?? ''}

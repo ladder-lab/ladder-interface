@@ -5,7 +5,7 @@ import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
 import Tag from 'components/Tag'
 import { checkTokenType, getTokenText } from 'utils/checkIs1155'
 
-export default function PosittionCard({
+export default function PositionCard({
   assetA,
   assetB,
   lpBalance,
@@ -28,8 +28,8 @@ export default function PosittionCard({
   const { token1Text, token2Text } = getTokenText(assetA ?? undefined, assetB ?? undefined)
   const data = {
     ['Your pool share']: poolShare ?? '-' + ' %',
-    [token1Text ?? '-']: liquidityA ?? '-',
-    [token2Text ?? '']: liquidityB ?? '-'
+    [`${token1Text ?? '-'} in pool`]: liquidityA ?? '-',
+    [`${token2Text ?? ''} in pool`]: liquidityB ?? '-'
   }
   return (
     <>
@@ -51,7 +51,7 @@ export default function PosittionCard({
         {!error && (
           <Box sx={{ width: '100%' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
-              <Typography sx={{ fontSize: 20, fontWeight: 500 }}>Your position</Typography>
+              <Typography sx={{ fontSize: 20, fontWeight: 500 }}>Pool position</Typography>
               <Box
                 sx={{
                   display: 'flex',
@@ -64,8 +64,15 @@ export default function PosittionCard({
               </Box>
             </Box>
 
-            <Box display="flex" justifyContent="space-between" mt={22} mb={28} alignItems="center">
-              <Box display="flex" gap={15} alignItems="center">
+            <Box
+              display={{ xs: 'grid', sm: 'flex' }}
+              justifyContent="space-between"
+              mt={22}
+              mb={28}
+              alignItems="center"
+              gap={4}
+            >
+              <Box display={{ xs: 'grid', sm: 'flex' }} gap={15} alignItems="center">
                 <DoubleCurrencyLogo currency0={assetA ?? undefined} currency1={assetB ?? undefined} size={24} />
                 <Typography fontWeight={500} fontSize={16}>
                   {token1Text + '/' + token2Text}

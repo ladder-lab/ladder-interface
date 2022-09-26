@@ -39,11 +39,18 @@ export default function ConfirmSupplyModal({
   return (
     <Modal closeIcon customIsOpen={isOpen} customOnDismiss={onDismiss}>
       <Box padding="33px 32px">
-        <Typography fontSize={28} mb={39} fontWeight={500}>
+        <Typography fontSize={28} mb={{ xs: 20, md: 39 }} fontWeight={500}>
           You will receive
         </Typography>
-        <Box display="flex" justifyContent="space-between" alignItems={'center'}>
-          <Typography fontSize={32} fontWeight={900}>
+        <Box display="flex" justifyContent="space-between" alignItems={'center'} gap={10}>
+          <Typography
+            fontSize={{ xs: 26, md: 32 }}
+            fontWeight={900}
+            sx={{
+              whiteSpace: 'wrap',
+              wordBreak: 'break-all'
+            }}
+          >
             {liquidityMinted?.toExact() ?? '-'}
           </Typography>
           <DoubleCurrencyLogo currency0={tokenA} currency1={tokenB} size={28} />
@@ -97,11 +104,11 @@ function AddLiquidityDetails({
         background: theme.palette.background.default,
         borderRadius: '8px',
         display: 'grid',
-        gap: 12,
+        gap: { xs: 20, md: 12 },
         mb: 40
       }}
     >
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Box display={{ xs: 'grid', md: 'flex' }} justifyContent="space-between" alignItems="center" gap={8}>
         <Box display="flex" alignItems="center" gap={9}>
           <Typography>
             <Token1Text /> <span style={{ color: theme.palette.text.primary }}> Deposited</span>
@@ -113,7 +120,7 @@ function AddLiquidityDetails({
           {token1Val}
         </Typography>
       </Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Box display={{ xs: 'grid', md: 'flex' }} justifyContent="space-between" alignItems="center" gap={8}>
         <Box display="flex" alignItems="center" gap={9}>
           <Typography>
             <Token2Text /> <span style={{ color: theme.palette.text.primary }}>Deposited</span>
@@ -125,19 +132,27 @@ function AddLiquidityDetails({
           {token2Val}
         </Typography>
       </Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" margin="20px 0">
-        <Box display="flex" alignItems="center" gap={9}>
-          <Typography sx={{ color: theme.palette.text.secondary }}>Rates</Typography>
+      {!rateToken1Token2 && !rateToken2Token1 ? null : (
+        <Box
+          display={{ xs: 'grid', md: 'flex' }}
+          justifyContent="space-between"
+          alignItems="center"
+          margin={{ xs: 0, md: '20px 0' }}
+          gap={8}
+        >
+          <Box display="flex" alignItems="center" gap={9}>
+            <Typography sx={{ color: theme.palette.text.secondary }}>Rates</Typography>
+          </Box>
+          <Box display="grid" gap={8}>
+            <Typography>
+              1 <Token1Text /> = {rateToken1Token2} <Token2Text />
+            </Typography>
+            <Typography>
+              1 <Token2Text /> = {rateToken2Token1} <Token1Text />
+            </Typography>
+          </Box>
         </Box>
-        <Box display="grid" gap={8}>
-          <Typography>
-            1 <Token1Text /> = {rateToken1Token2} <Token2Text />
-          </Typography>
-          <Typography>
-            1 <Token2Text /> = {rateToken2Token1} <Token1Text />
-          </Typography>
-        </Box>
-      </Box>
+      )}
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center" gap={9}>
           <Typography sx={{ color: theme.palette.text.secondary }}>Share of Pool</Typography>

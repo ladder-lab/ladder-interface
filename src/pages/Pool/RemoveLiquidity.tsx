@@ -187,7 +187,6 @@ export default function RemoveLiquidity() {
         onReturnClick={() => navigate(routes.pool)}
         title="Remove Liquidity"
         sx={{ padding: '24px 32px' }}
-        setting
       >
         <Tips />
 
@@ -246,7 +245,7 @@ export default function RemoveLiquidity() {
         </Box>
 
         <OutputCard value={formattedAmounts[Field.CURRENCY_B]} currency={currencyB} />
-        <Box display="flex" justifyContent="space-between" mt={36} mb={52}>
+        <Box display={{ xs: 'grid', sm: 'flex' }} justifyContent="space-between" mt={36} mb={52} gap={8}>
           <Typography sx={{ fontSize: 18 }}>Price</Typography>
           <Box display="grid" gap={12}>
             <Typography sx={{ color: theme.palette.text.secondary, fontSize: 18 }}>
@@ -257,7 +256,7 @@ export default function RemoveLiquidity() {
             </Typography>
           </Box>
         </Box>
-        <Box display="flex" gap={8}>
+        <Box display={{ xs: 'grid', sm: 'flex' }} gap={8}>
           {!account ? (
             <Button onClick={toggleWalletModal}>Connect Wallet</Button>
           ) : (
@@ -283,7 +282,7 @@ export default function RemoveLiquidity() {
           )}
         </Box>
       </AppBody>
-      <Box maxWidth={680} width="100%" mt={30}>
+      <Box maxWidth={680} width="100%" mb={100}>
         <PositionCard
           assetA={assets[0]}
           assetB={assets[1]}
@@ -351,7 +350,7 @@ function NumericalCard({
   return (
     <Card color={theme.palette.background.default} padding="24px 20px" style={{ position: 'relative' }}>
       <Box display="grid" gap={15} mb={20}>
-        <Typography sx={{ fontSize: 20, fontWeight: 400 }}>Remove Amount</Typography>
+        <Typography sx={{ fontSize: 20, fontWeight: 400, paddingRight: 103 }}>Remove Amount</Typography>
         <Typography sx={{ fontSize: 40, fontWeight: 900 }}>{sliderValue}%</Typography>
       </Box>
       {mode === Mode.DETAIL && (
@@ -416,10 +415,10 @@ function InputCard({
 
   return (
     <Card color={theme.palette.background.default} padding="24px" style={{ marginTop: 16 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Box sx={{ display: { xs: 'grid', sm: 'flex' }, justifyContent: 'space-between' }} gap={8}>
         <Box display="grid" gap={12}>
           <Typography sx={{ fontSize: 20, fontWeight: 400 }}>Input</Typography>
-          <Typography sx={{ fontSize: 24, fontWeight: 900 }}>{value ? value : '0'}</Typography>
+          <Typography sx={{ fontSize: 24, fontWeight: 900, wordBreak: 'break-all' }}>{value ? value : '0'}</Typography>
         </Box>
         <Box display="grid" gap={14}>
           <Typography sx={{ fontSize: 16, fontWeight: 400 }}>Balance: {balance ?? '-'}</Typography>
@@ -450,12 +449,12 @@ function OutputCard({ value, currency }: { value: string; currency: AllTokens | 
 
   return (
     <Card color={theme.palette.background.default} padding="24px">
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Box sx={{ display: { xs: 'grid', sm: 'flex' }, justifyContent: 'space-between', alignItems: 'center' }} gap={8}>
         <Box display="grid" gap={12}>
           <Typography sx={{ fontSize: 20, fontWeight: 400 }}>Output</Typography>
-          <Typography sx={{ fontSize: 24, fontWeight: 900 }}>{value}</Typography>
+          <Typography sx={{ fontSize: 24, fontWeight: 900 }}>{value ? value : 0}</Typography>
         </Box>
-        <Box display="flex" gap={12} width={180} alignItems="center">
+        <Box display="flex" gap={12} alignItems="center">
           {currency && <CurrencyLogo currency={currency} />}
           <Typography>{token1Text}</Typography>
         </Box>
