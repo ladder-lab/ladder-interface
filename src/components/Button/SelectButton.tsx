@@ -28,7 +28,7 @@ export default function SelectButton(props: Props) {
           width: width || '100%',
           height: height || 52,
           backgroundColor: primary ? theme.palette.primary.main : theme.palette.background.default,
-          color: selected ? theme.palette.text.primary : theme.palette.text.secondary,
+          color: selected ? theme.palette.text.primary : theme.palette.text.primary + '80',
           borderRadius: 1,
           fontSize: 16,
           fontWeight: 400,

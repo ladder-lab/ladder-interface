@@ -235,7 +235,7 @@ export default function AddLiquidy() {
             <AddCircle />
           </Box>
 
-          <Box mb={currencyB ? 16 : 0}>
+          <Box mb={currencyB ? 16 : 0} mt={16}>
             <CurrencyInputPanel
               // selectedTokenType={currencyA ? (checkIs1155(currencyA) ? 'erc1155' : 'erc20') : undefined}
               value={formattedAmounts[Field.CURRENCY_B]}

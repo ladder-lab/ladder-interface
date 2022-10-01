@@ -68,7 +68,6 @@ export default function SelectCurrencyModal({
   const searchToken = useToken(debouncedQuery)
   const searchTokenIsAdded = useIsUserAddedToken(searchToken)
   const addUserToken = useAddUserToken()
-
   const searchTokenNFT = useToken1155(debouncedQueryNFT)
   const searchTokenIsAddedNFT = useIsUserAddedToken1155(searchTokenNFT)
 
@@ -119,6 +118,12 @@ export default function SelectCurrencyModal({
     const input = event.target.value
     const checksummedInput = isAddress(input)
     setSearchQuery(checksummedInput || input)
+    fixedList.current?.scrollTo(0)
+  }, [])
+
+  const handleNFTInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    const input = event.target.value
+    const checksummedInput = isAddress(input)
     setSearchQueryNFT(checksummedInput || input)
     fixedList.current?.scrollTo(0)
   }, [])
@@ -297,7 +302,7 @@ export default function SelectCurrencyModal({
 
                 <Input
                   value={searchQueryNFT}
-                  onChange={handleInput}
+                  onChange={handleNFTInput}
                   placeholder="Search name or paste address"
                   // outlined
                   startAdornment={<SearchIcon />}

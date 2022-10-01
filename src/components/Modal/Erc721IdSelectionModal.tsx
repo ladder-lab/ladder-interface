@@ -10,7 +10,7 @@ import { ReactComponent as Xcircle } from 'assets/svg/xcircle.svg'
 // import { ReactComponent as XcircleSm } from 'assets/svg/xcirclesm.svg'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { ReactComponent as ExternalIcon } from 'assets/svg/external_arrow.svg'
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useToken721Balance, useToken721BalanceTokens } from 'state/wallet/hooks'
 import { shortenAddress } from 'utils'
 import { useERC721Tokens } from 'state/swap/useSwap721State'
@@ -19,13 +19,14 @@ import { useToken721PoolIds } from 'hooks/useToken721PoolIds'
 
 import LogoBase from 'components/essential/CurrencyLogo/LogoBase'
 import InputNumerical from 'components/Input/InputNumerical'
+import Close from '@mui/icons-material/Close'
+import SwitchToggle from 'components/SwitchToggle'
 
 export default function Erc721IdSelectionModal({
   // isOpen,
   onDismiss,
   collection,
   onSelectSubTokens,
-  amount,
   pairAddress,
   setAmount
 }: {
@@ -33,14 +34,16 @@ export default function Erc721IdSelectionModal({
   onDismiss: () => void
   collection?: Token721
   onSelectSubTokens: (tokens: Token721[]) => void
-  amount: number
   pairAddress?: string
   setAmount?: (e: ChangeEvent<HTMLInputElement>) => void
 }) {
   const [searchId, setSearchId] = useState('')
+  const [detailsOpen, setDetailsOpen] = useState(false)
+  const [selectAll, setSelectAll] = useState(false)
   const isDownMd = useBreakpoint('md')
+  const container = useRef<any>(null)
 
-  const { onClearTokens, onRemoveToken, tokens, onToggleToken } = useERC721Tokens()
+  const { onClearTokens, onRemoveToken, tokens, onToggleToken, setTokens } = useERC721Tokens()
 
   const balance = useToken721Balance(pairAddress ? undefined : collection)
   const { loading, availableTokens } = useToken721BalanceTokens(balance)
@@ -49,12 +52,10 @@ export default function Erc721IdSelectionModal({
   const [filteredAvailableTokens, setFilteredAvailableTokens] = useState(pairAddress ? poolTokens : availableTokens)
 
   const onConfirm = useCallback(() => {
-    if (!collection || (!!amount && tokens.length !== amount)) {
+    if (!collection) {
       return
     }
-    if (amount === 0) {
-      setAmount && setAmount({ target: { value: tokens.length + '' } } as any)
-    }
+    setAmount && setAmount({ target: { value: tokens.length + '' } } as any)
     onSelectSubTokens && onSelectSubTokens([...tokens])
     const tokenIds = tokens.map(({ tokenId }) => tokenId)
     setFilteredAvailableTokens((prev: Token721[] | undefined) => {
@@ -62,7 +63,7 @@ export default function Erc721IdSelectionModal({
     })
 
     onDismiss()
-  }, [amount, collection, onDismiss, onSelectSubTokens, setAmount, tokens])
+  }, [collection, onDismiss, onSelectSubTokens, setAmount, tokens])
 
   const searchIdToken = useMemo(() => {
     if (!filteredAvailableTokens || searchId == '') return undefined
@@ -81,11 +82,19 @@ export default function Erc721IdSelectionModal({
   useEffect(() => {
     onClearTokens()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [collection, availableTokens, amount])
+  }, [collection, availableTokens])
 
   useEffect(() => {
     setFilteredAvailableTokens(pairAddress ? poolTokens : availableTokens)
   }, [availableTokens, pairAddress, poolTokens])
+
+  useEffect(() => {
+    if (selectAll) {
+      setTokens(filteredAvailableTokens)
+    } else {
+      setTokens([])
+    }
+  }, [filteredAvailableTokens, selectAll, setTokens])
 
   return (
     <Modal
@@ -120,94 +129,39 @@ export default function Erc721IdSelectionModal({
         onKeyDown={handleSearchId}
         height={isDownMd ? 48 : 60}
       />
-      <Box sx={{ overflow: 'auto', height: isDownMd ? 357 : 500, margin: '20px 0' }}>
-        {' '}
-        <Box display="flex" flexDirection="column" gap={20}>
-          <Box>
-            <Box sx={{ display: { xs: 'grid', md: 'flex' }, alignItems: 'center', gap: 12 }}>
-              <Typography>Collection:</Typography>
-              <Box
-                sx={{
-                  borderRadius: '8px',
-                  background: theme => theme.palette.background.default,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  height: 52,
-                  padding: '0px 23px'
-                }}
-              >
-                {collection?.name}
-                <ExternalIcon />
-              </Box>
-              <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
-                {collection ? shortenAddress(collection.address) : ''}
-              </ExternalLink>
-            </Box>
-            {tokens.length > 0 && (
-              <Box width="100%" mt={{ xs: 0, md: 28 }}>
-                {/* <Box sx={{ display: 'flex', alignItems: 'center', gap: 12, mb: 24 }}>
-                  <Typography>Collection:</Typography>
-                  <Box
-                    sx={{
-                      borderRadius: '8px',
-                      background: theme => theme.palette.background.default,
-                      padding: '0px 18px',
-                      display: 'flex',
-                      gap: 8,
-                      alignItems: 'center',
-                      height: {
-                        xs: 36,
-                        md: 52
-                      }
-                    }}
-                  >
-                    <Typography sx={{ fontSize: { xs: 12, md: 16 }, fontWeight: 500 }}>
-                      {collection?.name} <ExternalIcon />
-                    </Typography>
-                    {/* <XcircleSm onClick={onRemoveCollection} style={{ cursor: 'pointer' }} />
-                  </Box>
-                </Box> */}
-                {tokens.map((token, idx) => (
-                  <Box
-                    key={`${token.symbol}-${idx}`}
-                    sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}
-                  >
-                    <LogoText
-                      logo={<CurrencyLogo currency={token} />}
-                      text={token.name + `#${token.tokenId}`}
-                      fontSize={12}
-                    />
-                    <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
-                      {shortenAddress(token.address)}
-                    </ExternalLink>
-                    <Typography sx={{ fontSize: 12 }}>Quantity: 1</Typography>
-                    <IconButton onClick={() => onRemoveToken(token)}>
-                      <Xcircle />
-                    </IconButton>
-                  </Box>
-                ))}
-                {!!amount && (
-                  <Typography fontSize={20} textAlign="center" margin="20px 0 0" color="primary">
-                    {tokens.length}/{amount}
-                  </Typography>
-                )}
-                <Box margin="28px 0" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Button
-                    onClick={onConfirm}
-                    sx={{ height: 60, width: 300 }}
-                    disabled={!!amount && tokens.length !== amount}
-                  >
-                    {tokens.length === amount
-                      ? `${tokens.length}/${amount} Confirm`
-                      : amount === 0
-                      ? `${tokens.length} NFTs has been chosen`
-                      : `${amount} NFTs should be chosen`}
-                  </Button>
-                </Box>
-              </Box>
-            )}
+      <Box mt={20}>
+        <Box sx={{ display: { xs: 'grid', md: 'flex' }, alignItems: 'center', gap: 12 }}>
+          <Typography>Collection:</Typography>
+          <Box
+            sx={{
+              borderRadius: '8px',
+              background: theme => theme.palette.background.default,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              height: 52,
+              padding: '0px 23px'
+            }}
+          >
+            {collection?.name}
+            <ExternalIcon />
           </Box>
+          <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
+            {collection ? shortenAddress(collection.address) : ''}
+          </ExternalLink>
+          <Box display="flex" alignItems="center" gap={5} marginLeft="auto">
+            <Typography>Select all</Typography>
+            <SwitchToggle
+              checked={selectAll}
+              onChange={() => {
+                setSelectAll(state => !state)
+              }}
+            />
+          </Box>
+        </Box>
+      </Box>
+      <Box sx={{ overflow: 'auto', height: isDownMd ? 257 : 400, margin: '20px 0' }}>
+        <Box display="flex" flexDirection="column" gap={20}>
           <Box sx={{ minHeight: 290, width: '100%' }}>
             {loading || poolLoading ? (
               <Box width={'100%'} display="flex" mt={20} alignItems="center" justifyContent="center">
@@ -264,6 +218,82 @@ export default function Erc721IdSelectionModal({
               </Grid>
             )}
           </Box>
+        </Box>
+      </Box>
+      <Box>
+        <Box
+          margin="25px 0 10px"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'relative'
+          }}
+          ref={container}
+        >
+          <Button
+            onClick={onConfirm}
+            sx={{ height: 60, width: 300 }}
+            disabled={tokens.length === 0}
+            // disabled={!!amount && tokens.length !== amount}
+          >
+            {tokens.length} NFTs has been chosen
+            {/* {tokens.length === amount
+                      ? `${tokens.length}/${amount} Confirm`
+                      : amount === 0
+                      ? `${tokens.length} NFTs has been chosen`
+                      : `${amount} NFTs should be chosen`} */}
+          </Button>
+          {tokens.length > 0 && (
+            <Button
+              variant="text"
+              sx={{ width: 85 }}
+              onClick={() => {
+                setDetailsOpen(state => !state)
+              }}
+            >
+              {detailsOpen ? <Close /> : 'Details'}
+            </Button>
+          )}
+          {detailsOpen && (
+            <Box
+              sx={{
+                position: 'absolute',
+                bottom: '100%',
+                boxShadow: 'none',
+                maxHeight: isDownMd ? 200 : 300,
+                height: 'max-content',
+                paddingBottom: 20,
+                background: theme => theme.palette.background.paper,
+                zIndex: 1200,
+                width: '100%'
+              }}
+            >
+              {tokens.length > 0 && (
+                <Box width="100%" mt={{ xs: 0, md: 28 }}>
+                  {tokens.map((token, idx) => (
+                    <Box
+                      key={`${token.symbol}-${idx}`}
+                      sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}
+                    >
+                      <LogoText
+                        logo={<CurrencyLogo currency={token} />}
+                        text={token.name + `#${token.tokenId}`}
+                        fontSize={12}
+                      />
+                      <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
+                        {shortenAddress(token.address)}
+                      </ExternalLink>
+                      <Typography sx={{ fontSize: 12 }}>Quantity: 1</Typography>
+                      <IconButton onClick={() => onRemoveToken(token)}>
+                        <Xcircle />
+                      </IconButton>
+                    </Box>
+                  ))}
+                </Box>
+              )}
+            </Box>
+          )}
         </Box>
       </Box>
     </Modal>

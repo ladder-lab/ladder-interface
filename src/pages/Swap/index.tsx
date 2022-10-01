@@ -349,11 +349,8 @@ export default function Swap() {
           <Box
             sx={{
               paddingBottom: 12,
-              margin: '0 auto',
-              paddingLeft: {
-                xs: 0,
-                md: 362
-              },
+              margin: '16px auto 32px',
+              width: 'max-content',
               '&:hover': {
                 opacity: 0.8
               },

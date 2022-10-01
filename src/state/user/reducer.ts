@@ -182,19 +182,19 @@ export default createReducer(initialState, builder =>
       state.timestamp = currentTimestamp()
     })
     .addCase(addSerializedToken721, (state, { payload: { serializedToken } }) => {
-      if (!state.tokens) {
+      if (!state.token721s) {
         state.tokens = {}
       }
-      state.token721s[serializedToken.chainId] = state.tokens[serializedToken.chainId] || {}
+      state.token721s[serializedToken.chainId] = state.token721s[serializedToken.chainId] || {}
       state.token721s[serializedToken.chainId][serializedToken.address] = serializedToken
       state.timestamp = currentTimestamp()
     })
     .addCase(removeSerializedToken721, (state, { payload: { address, chainId } }) => {
-      if (!state.tokens) {
+      if (!state.token721s) {
         state.tokens = {}
       }
-      state.tokens[chainId] = state.tokens[chainId] || {}
-      delete state.tokens[chainId][address]
+      state.token721s[chainId] = state.tokens[chainId] || {}
+      delete state.token721s[chainId][address]
       state.timestamp = currentTimestamp()
     })
     .addCase(

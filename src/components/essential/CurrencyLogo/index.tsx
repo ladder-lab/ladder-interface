@@ -49,17 +49,17 @@ export default function CurrencyLogo({
       }
     }
 
+    if (currency?.symbol) {
+      const uri = (tokenLogoUriList as any)[currency.symbol]
+      if (uri) return [uri]
+    }
+
     if (currency instanceof Token) {
       let uri = ''
       if (currency?.symbol) {
         uri = (tokenLogoUriList as any)[currency.symbol]
       }
       return [...uriLocations, getTokenLogoURL(currency.address), uri]
-    }
-
-    if (currency?.symbol) {
-      const uri = (tokenLogoUriList as any)[currency.symbol]
-      if (uri) return [uri]
     }
 
     return []
