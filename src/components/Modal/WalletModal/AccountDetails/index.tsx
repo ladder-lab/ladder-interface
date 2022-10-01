@@ -102,7 +102,7 @@ export default function AccountDetails({
           justifyContent="center"
           id="web3-account-identifier-row"
         >
-          {connector && <Dot />}
+          {(connector || ENSName) && <Dot />}
           {ENSName ? <span> {ENSName}</span> : <span> {account && shortenAddress(account)}</span>}
         </Box>
 
