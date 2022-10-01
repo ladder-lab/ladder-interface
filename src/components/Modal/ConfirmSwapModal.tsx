@@ -95,6 +95,7 @@ export default function ConfirmSwapModal({
           slippage={allowedSlippage / 100 + ''}
           MinReceiveQty={slippageAdjustedAmounts.OUTPUT?.toExact() ?? ''}
           NetworkFee="8.23"
+          toAsset={to}
         />
         <ActionButton
           onAction={onConfirm}
@@ -197,13 +198,15 @@ function SwapDetails({
   priceImpact,
   slippage,
   MinReceiveQty,
-  NetworkFee
+  NetworkFee,
+  toAsset
 }: {
   ExpectedQty: string
   priceImpact: string
   slippage: string
   MinReceiveQty: string
   NetworkFee: string
+  toAsset: AllTokens | undefined
 }) {
   const theme = useTheme()
 
@@ -245,7 +248,7 @@ function SwapDetails({
         </Box>
 
         <Typography>
-          {MinReceiveQty} <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
+          {MinReceiveQty} <span style={{ color: theme.palette.text.secondary }}>{toAsset?.symbol ?? '-'}s</span>
         </Typography>
       </Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">

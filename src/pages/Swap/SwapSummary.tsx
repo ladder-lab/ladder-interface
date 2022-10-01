@@ -107,7 +107,7 @@ export function SwapSummary({
             </Box>
 
             <Typography>
-              {minReceiveQty} <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
+              {minReceiveQty} <span style={{ color: theme.palette.text.secondary }}>{toAsset?.symbol}s</span>
             </Typography>
           </Box>
           <Box display="flex" justifyContent="space-between" alignItems="center">
