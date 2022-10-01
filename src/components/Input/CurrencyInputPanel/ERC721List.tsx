@@ -70,20 +70,23 @@ export default function ERC721List({
 
   return (
     <>
+      <Typography fontSize={16} fontWeight={500} mb={16}>
+        Don&apos;t see your NFT ? Search address
+      </Typography>
       <Input
         value={searchQueryNFT}
         onChange={handleInput}
-        placeholder="Search name or paste address"
+        placeholder="Search address"
         // outlined
         startAdornment={<SearchIcon />}
         onKeyDown={handleEnter721}
         height={isDownMd ? 48 : 60}
       />
 
-      <Box sx={{ overflow: 'auto', height: isDownMd ? 357 : 500 }}>
+      <Box sx={{ overflow: 'auto', minHeight: isDownMd ? 357 : 500 }}>
         <Box paddingTop={'24px'} position="relative">
           {loading && (
-            <Box marginTop="40px">
+            <Box marginTop="40px" position="absolute" left="50%" sx={{ transform: 'translateX(-50%)' }}>
               <Loader />
             </Box>
           )}

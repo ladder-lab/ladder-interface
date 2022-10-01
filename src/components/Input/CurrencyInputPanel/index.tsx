@@ -132,7 +132,7 @@ export default function CurrencyInputPanel({
     if (onSelectSubTokens) {
       showModal(
         <Erc721IdSelectionModal
-          amount={value ? +value : 0}
+          // amount={value ? +value : 0}
           onSelectSubTokens={onSelectSubTokens}
           collection={is721}
           pairAddress={pairAddress}
@@ -145,7 +145,12 @@ export default function CurrencyInputPanel({
         />
       )
     }
-  }, [hideModal, is721, onChange, onSelectSubTokens, pairAddress, showModal, value])
+  }, [hideModal, is721, onChange, onSelectSubTokens, pairAddress, showModal])
+
+  const handleOpenIdSelectionModal = useCallback(() => {
+    subTokenSelection()
+    setSwapType(SwapType.MANUAL)
+  }, [subTokenSelection])
 
   return (
     <>
@@ -157,7 +162,7 @@ export default function CurrencyInputPanel({
               margin: '0 auto',
               paddingLeft: {
                 xs: 0,
-                md: 362
+                md: 305
               },
               '&:hover': {
                 opacity: 0.8
@@ -191,11 +196,7 @@ export default function CurrencyInputPanel({
                 selected={swapType === SwapType.MANUAL}
                 text={SwapType.MANUAL}
                 helperText="choose by yourself..."
-                onClick={() => {
-                  // setIsOpen(true)
-                  subTokenSelection()
-                  setSwapType(SwapType.MANUAL)
-                }}
+                onClick={handleOpenIdSelectionModal}
               />
             </Box>
           </Box>
@@ -217,7 +218,7 @@ export default function CurrencyInputPanel({
       >
         {/* <InputLabel>Token</InputLabel> */}
         <SelectButton
-          width={isDownMd ? '100%' : '346px'}
+          width={isDownMd ? '100%' : '286px'}
           onClick={showCurrencySearch}
           disabled={disableCurrencySelect || disabled}
           primary={selectActive}
@@ -230,45 +231,55 @@ export default function CurrencyInputPanel({
             <>Select Token</>
           )}
         </SelectButton>
-        <Box flexGrow={1}>
-          <InputNumerical
-            placeholder={placeholder ?? 'Enter amount to swap'}
-            value={value.toString()}
-            onChange={onChange}
-            type={'number'}
-            disabled={disabled || disableInput}
-            focused={inputFocused}
-            integer={!!is1155 || !!is721}
-            height={isDownMd ? 48 : 52}
-          />
-          <Box display="flex" justifyContent="space-between" alignItems="center" mt={9}>
-            <Typography fontSize={12} sx={{ color: theme.palette.text.secondary }}></Typography>
-            <Box display="flex" alignItems={'center'}>
-              {!hideBalance && (
-                <Typography fontSize={12} sx={{ color: theme.palette.text.secondary }}>
-                  Balance:{' '}
-                  {!!currency && selectedCurrencyBalance ? trimBalance(selectedCurrencyBalance?.toSignificant(6)) : ''}
-                  {!selectedCurrencyBalance && '-'}
-                </Typography>
-              )}
-              {currency && onMax && (
-                <Button
-                  variant="text"
-                  sx={{
-                    fontSize: 12,
-                    minWidth: 'unset',
-                    width: 'max-content',
-                    height: 'max-content',
-                    padding: '0 10px'
-                  }}
-                  onClick={onMax}
-                >
-                  MAX
-                </Button>
-              )}
+        {is721 && !enableAuto ? (
+          <Box flexGrow={1}>
+            <SelectButton onClick={handleOpenIdSelectionModal} selected={!!value}>
+              {!!value ? value.toString() : 'Choose token Id'}
+            </SelectButton>
+          </Box>
+        ) : (
+          <Box flexGrow={1}>
+            <InputNumerical
+              placeholder={placeholder ?? 'Enter amount to swap'}
+              value={value.toString()}
+              onChange={onChange}
+              type={'number'}
+              disabled={disabled || disableInput}
+              focused={inputFocused}
+              integer={!!is1155 || !!is721}
+              height={isDownMd ? 48 : 52}
+            />
+            <Box display="flex" justifyContent="space-between" alignItems="center" mt={9}>
+              <Typography fontSize={12} sx={{ color: theme.palette.text.secondary }}></Typography>
+              <Box display="flex" alignItems={'center'}>
+                {!hideBalance && (
+                  <Typography fontSize={12} sx={{ color: theme.palette.text.secondary }}>
+                    Balance:{' '}
+                    {!!currency && selectedCurrencyBalance
+                      ? trimBalance(selectedCurrencyBalance?.toSignificant(6))
+                      : ''}
+                    {!selectedCurrencyBalance && '-'}
+                  </Typography>
+                )}
+                {currency && onMax && (
+                  <Button
+                    variant="text"
+                    sx={{
+                      fontSize: 12,
+                      minWidth: 'unset',
+                      width: 'max-content',
+                      height: 'max-content',
+                      padding: '0 10px'
+                    }}
+                    onClick={onMax}
+                  >
+                    MAX
+                  </Button>
+                )}
+              </Box>
             </Box>
           </Box>
-        </Box>
+        )}
       </Box>
     </>
   )
