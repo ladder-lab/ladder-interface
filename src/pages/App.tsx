@@ -17,6 +17,7 @@ import lightBg from 'assets/images/light_bg.png'
 import { useIsDarkMode } from 'state/user/hooks'
 import RemoveLiquidity from './Pool/RemoveLiquidity'
 import Testnet from './Testnet'
+import Explorer from './Explore'
 
 const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
   ({ theme, isDarkMode }) => ({
@@ -78,6 +79,7 @@ export default function App() {
               <Web3ReactManager>
                 <Routes>
                   <Route path={routes.testnet} element={<Testnet />} />
+                  <Route path={routes.explorer} element={<Explorer />} />
                   <Route path={routes.swap} element={<Swap />} />
                   <Route path={routes.pool} element={<Pool />} />
                   <Route path={routes.importPool} element={<ImportPool />} />

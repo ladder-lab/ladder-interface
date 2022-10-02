@@ -46,7 +46,7 @@ export const Tabs: Tab[] = [
   { title: 'Testnet', route: routes.testnet },
   { title: 'Swap', route: routes.swap },
   { title: 'Pool', route: routes.pool },
-  { title: 'Explore', link: 'https://www.google.com/' },
+  { title: 'Explore', route: routes.explorer },
   { title: 'Statistics', link: 'https://www.google.com/#' }
 ]
 
