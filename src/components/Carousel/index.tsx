@@ -10,23 +10,21 @@ import { autoPlay } from 'react-swipeable-views-utils'
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews)
 
 export default function Carousel({
-  imageWidth,
-  imageHeight,
-  images,
+  itemWidth,
+  items,
   maxWidth,
   stepperPosition = 'center',
   stepperDark
 }: {
-  imageWidth?: number
-  imageHeight?: number
-  images: any
+  itemWidth?: number
+  items: JSX.Element[]
   maxWidth?: number
   stepperPosition?: 'center' | 'left' | 'right'
   stepperDark?: boolean
 }) {
   const theme = useTheme()
   const [activeStep, setActiveStep] = useState(0)
-  const maxSteps = images.length
+  const maxSteps = items.length
 
   return (
     <Box
@@ -40,26 +38,10 @@ export default function Carousel({
         index={activeStep}
         onChangeIndex={(step: number) => setActiveStep(step)}
         enableMouseEvents
-        style={{ padding: `0 calc((100% - ${imageWidth}px - 20px) / 2)` }}
+        style={{ padding: `0 calc((100% - ${itemWidth}px - 20px) / 2)` }}
         slideStyle={{ padding: { xs: '0 5px', md: '0 10px' } }}
       >
-        {images.map((step: any, index: number) => (
-          <Box key={index}>
-            <Box
-              component="img"
-              sx={{
-                height: imageHeight,
-                display: 'block',
-                maxWidth: imageWidth,
-                overflow: 'hidden',
-                width: imageWidth,
-                borderRadius: '24px'
-              }}
-              src={step.imgPath}
-              alt={step.label}
-            />
-          </Box>
-        ))}
+        {items}
       </AutoPlaySwipeableViews>
       <MobileStepper
         sx={{
@@ -85,7 +67,11 @@ export default function Carousel({
             sx={{
               background: stepperDark ? '#121212' : '#FFFFFF',
               ml: 40,
-              '&:hover': { background: stepperDark ? '#121212' : '#FFFFFF', opacity: 0.8 }
+              '&:hover': { background: stepperDark ? '#121212' : '#FFFFFF', opacity: 0.8 },
+              '&:disabled': {
+                background: stepperDark ? '#121212' : '#FFFFFF',
+                opacity: 0.3
+              }
             }}
           >
             {theme.direction === 'rtl' ? (
@@ -102,7 +88,11 @@ export default function Carousel({
             sx={{
               background: stepperDark ? '#121212' : '#FFFFFF',
               mr: 40,
-              '&:hover': { background: stepperDark ? '#121212' : '#FFFFFF', opacity: 0.8 }
+              '&:hover': { background: stepperDark ? '#121212' : '#FFFFFF', opacity: 0.8 },
+              '&:disabled': {
+                background: stepperDark ? '#121212' : '#FFFFFF',
+                opacity: 0.3
+              }
             }}
           >
             {theme.direction === 'rtl' ? (

@@ -10,6 +10,7 @@ import { useIsDarkMode } from 'state/user/hooks'
 import BgLight from 'assets/images/bg_light.png'
 import BgDark from 'assets/images/bg_dark.png'
 import useBreakpoint from 'hooks/useBreakpoint'
+import { useMemo } from 'react'
 
 const images = [
   {
@@ -148,6 +149,42 @@ function NumericCard({ title, value }: { title: string; value: string }) {
 function CollectionHighLight() {
   const isDarkMode = useIsDarkMode()
   const isDownMd = useBreakpoint('md')
+
+  const items = useMemo(() => {
+    // Dummy data
+    const collections = [
+      {
+        title: 'San Francisco – Oakland Bay Bridge, United States',
+        imgPath: 'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60'
+      },
+      {
+        title: 'Bird',
+        imgPath: 'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60'
+      },
+      {
+        title: 'Bali, Indonesia',
+        imgPath: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250'
+      }
+    ]
+    return collections.map((collection: any, index: number) => (
+      <Box key={index}>
+        <Box
+          component="img"
+          sx={{
+            height: isDownMd ? 218 : 460,
+            display: 'block',
+            maxWidth: isDownMd ? 180 : 380,
+            overflow: 'hidden',
+            width: isDownMd ? 180 : 380,
+            borderRadius: '24px'
+          }}
+          src={collection.imgPath}
+          alt={collection.title}
+        />
+      </Box>
+    ))
+  }, [isDownMd])
+
   return (
     <Box
       sx={{
@@ -175,13 +212,110 @@ function CollectionHighLight() {
       >
         Popular Collection
       </Box>
-      <Carousel imageWidth={isDownMd ? 180 : 380} imageHeight={isDownMd ? 218 : 460} images={images} maxWidth={700} />
+      <Carousel itemWidth={isDownMd ? 180 : 380} itemHeight={isDownMd ? 218 : 460} items={items} maxWidth={700} />
     </Box>
   )
 }
 
 function CollectionListing({ title, dark }: { title: string; dark?: boolean }) {
   const isDownMd = useBreakpoint('md')
+
+  const collections = [
+    {
+      title: 'Item Listed via Acution',
+      imgPath: 'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60',
+      amount: '$562,265.25',
+      percentage: '+5.73%'
+    },
+    {
+      title: 'Item Listed via Acution',
+      imgPath: 'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60',
+      amount: '$562,265.25',
+      percentage: '+5.73%'
+    },
+    {
+      title: 'Item Listed via Acution',
+      imgPath: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250',
+      amount: '$562,265.25',
+      percentage: '+5.73%'
+    },
+    {
+      title: 'Item Listed via Acution',
+      imgPath: 'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60',
+      amount: '$562,265.25',
+      percentage: '+5.73%'
+    },
+    {
+      title: 'Item Listed via Acution',
+      imgPath: 'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60',
+      amount: '$562,265.25',
+      percentage: '+5.73%'
+    },
+    {
+      title: 'Item Listed via Acution',
+      imgPath: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250',
+      amount: '$562,265.25',
+      percentage: '+5.73%'
+    },
+    {
+      title: 'Item Listed via Acution',
+      imgPath: 'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60',
+      amount: '$562,265.25',
+      percentage: '+5.73%'
+    },
+    {
+      title: 'Item Listed via Acution',
+      imgPath: 'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60',
+      amount: '$562,265.25',
+      percentage: '+5.73%'
+    },
+    {
+      title: 'Item Listed via Acution',
+      imgPath: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250',
+      amount: '$562,265.25',
+      percentage: '+5.73%'
+    }
+  ]
+
+  const items = useMemo(() => {
+    return collections.map(({ title, imgPath, amount, percentage }: any, index: number) => (
+      <Box
+        key={index}
+        sx={{
+          height: 280,
+          maxWidth: 218,
+          width: 218,
+          borderRadius: '12px',
+          backgroundColor: dark ? 'rgba(255, 255, 255, 0.28)' : 'rgba(207, 207, 207, 0.41)',
+          overflow: 'hidden'
+        }}
+      >
+        <Box
+          component="img"
+          sx={{
+            height: 168,
+            display: 'block'
+          }}
+          src={imgPath}
+          alt={title}
+        />
+        <Box sx={{ padding: 16 }}>
+          <Typography sx={{ mb: 21, color: dark ? '#FFFFFF' : '#333333' }}>{title}</Typography>
+          <Typography sx={{ color: dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(51, 51, 51, 0.5)' }}>
+            Total Liquidity
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 4, alignItems: 'flex-end' }}>
+            <Typography sx={{ fontSize: 20, fontWeight: 700, color: dark ? '#FFFFFF' : '#333333' }}>
+              {amount}
+            </Typography>
+            <Typography sx={{ fontSize: 14, color: dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(51, 51, 51, 0.5)' }}>
+              {percentage}
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
+    ))
+  }, [isDownMd])
 
   return (
     <Box
@@ -220,7 +354,7 @@ function CollectionListing({ title, dark }: { title: string; dark?: boolean }) {
         </Box>
       )}
 
-      <Carousel imageWidth={218} imageHeight={280} images={images} stepperPosition="right" stepperDark={!dark} />
+      <Carousel itemWidth={218} items={items} stepperPosition="right" stepperDark={!dark} />
     </Box>
   )
 }
