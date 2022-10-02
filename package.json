@@ -97,6 +97,8 @@
     "decimal.js-light": "^2.5.1",
     "jsbi": "^4.3.0",
     "lottie-web": "^5.9.6",
+    "react-swipeable-views": "^0.14.0",
+    "react-swipeable-views-utils": "^0.14.0",
     "toformat": "^2.0.0"
   }
 }

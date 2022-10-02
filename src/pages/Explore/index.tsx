@@ -5,6 +5,7 @@ import { ReactComponent as Website } from 'assets/svg/socials/website.svg'
 import { ExternalLink } from 'theme/components'
 import { ExternalLinks } from 'constants/external_links'
 import Card from 'components/Card'
+import Carousel from 'components/Carousel'
 
 export default function Explore() {
   const theme = useTheme()
@@ -42,6 +43,9 @@ export default function Explore() {
               </Typography>
             </Card>
           </Box>
+        </Box>
+        <Box>
+          <Carousel />
         </Box>
       </Box>
     </Box>
