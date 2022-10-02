@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useTheme, IconButton } from '@mui/material'
 import Box from '@mui/material/Box'
 import MobileStepper from '@mui/material/MobileStepper'
@@ -6,55 +6,29 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
 import SwipeableViews from 'react-swipeable-views'
 import { autoPlay } from 'react-swipeable-views-utils'
-import useBreakpoint from 'hooks/useBreakpoint'
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews)
 
-const images = [
-  {
-    label: 'San Francisco – Oakland Bay Bridge, United States',
-    imgPath: 'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60'
-  },
-  {
-    label: 'Bird',
-    imgPath: 'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60'
-  },
-  {
-    label: 'Bali, Indonesia',
-    imgPath: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250'
-  },
-  {
-    label: 'San Francisco – Oakland Bay Bridge, United States',
-    imgPath: 'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60'
-  },
-  {
-    label: 'Bird',
-    imgPath: 'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60'
-  },
-  {
-    label: 'Bali, Indonesia',
-    imgPath: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250'
-  }
-]
-
-export default function Carousel() {
+export default function Carousel({
+  imageWidth,
+  imageHeight,
+  images,
+  maxWidth
+}: {
+  imageWidth?: number
+  imageHeight?: number
+  images: any
+  maxWidth?: number
+}) {
   const theme = useTheme()
   const [activeStep, setActiveStep] = useState(0)
   const maxSteps = images.length
-  const isDownMd = useBreakpoint('md')
-
-  const imageSize = useMemo(() => {
-    return {
-      width: isDownMd ? 180 : 380,
-      height: isDownMd ? 218 : 460
-    }
-  }, [isDownMd])
 
   return (
     <Box
       sx={{
         width: '100%',
-        maxWidth: 700
+        maxWidth
       }}
     >
       <AutoPlaySwipeableViews
@@ -62,19 +36,19 @@ export default function Carousel() {
         index={activeStep}
         onChangeIndex={(step: number) => setActiveStep(step)}
         enableMouseEvents
-        style={{ padding: `0 calc((100% - ${imageSize.width}px - 20px) / 2)` }}
+        style={{ padding: `0 calc((100% - ${imageWidth}px - 20px) / 2)` }}
         slideStyle={{ padding: { xs: '0 5px', md: '0 10px' } }}
       >
-        {images.map((step, index) => (
-          <Box key={step.label}>
+        {images.map((step: any, index: number) => (
+          <Box key={index}>
             <Box
               component="img"
               sx={{
-                height: imageSize.height,
+                height: imageHeight,
                 display: 'block',
-                maxWidth: imageSize.width,
+                maxWidth: imageWidth,
                 overflow: 'hidden',
-                width: imageSize.width,
+                width: imageWidth,
                 borderRadius: '24px'
               }}
               src={step.imgPath}
