@@ -45,22 +45,8 @@ export default function Explore() {
             Incredible liquidity pool! Quickly find real-time value of NFTs.
           </Typography>
           <Box sx={{ display: 'flex', gap: 20, mt: 48, flexDirection: { xs: 'column', md: 'row' } }}>
-            <Card padding="28px 24px" light width={320}>
-              <Typography variant="h5" sx={{ fontSize: 24, fontWeight: 700 }}>
-                $1,732,654,325
-              </Typography>
-              <Typography sx={{ fontSize: 18, fontWeight: 400, mt: 16, color: theme.palette.text.secondary }}>
-                Total Liquidity
-              </Typography>
-            </Card>
-            <Card padding="28px 24px" light width={320}>
-              <Typography variant="h5" sx={{ fontSize: 24, fontWeight: 700 }}>
-                $1,732,654,325
-              </Typography>
-              <Typography sx={{ fontSize: 18, fontWeight: 400, mt: 16, color: theme.palette.text.secondary }}>
-                Volume(24hrs)
-              </Typography>
-            </Card>
+            <NumericCard title="Total Liquidity" value={'1,732,654,325'} />
+            <NumericCard title="Volume(24hrs)" value={'1,732,654,325'} />
           </Box>
         </Box>
         <Box
@@ -125,5 +111,20 @@ function SocilaMediaGroup() {
         </SocilaMediaBtn>
       </ExternalLink>
     </Box>
+  )
+}
+
+function NumericCard({ title, value }: { title: string; value: string }) {
+  return (
+    <Card padding="28px 24px" light>
+      <Box sx={{ width: '100%', maxWidth: 320 }}>
+        <Typography variant="h5" sx={{ fontSize: 24, fontWeight: 700 }}>
+          ${value}
+        </Typography>
+        <Typography sx={{ fontSize: 18, fontWeight: 400, mt: 16, color: theme => theme.palette.text.secondary }}>
+          {title}
+        </Typography>
+      </Box>
+    </Card>
   )
 }
