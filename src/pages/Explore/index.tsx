@@ -92,7 +92,8 @@ export default function Explore() {
         <CollectionHighLight />
       </Box>
       <CollectionListing title="Popular ERC721 Collection" dark />
-      <CollectionListing title="Popular ERC721 Collection" />
+      <CollectionListing title="Top ERC-721 Liquidity Pool" />
+      <CollectionListing title="Top ERC-1155 Liquidity Pool" dark />
     </Box>
   )
 }
@@ -180,16 +181,45 @@ function CollectionHighLight() {
 }
 
 function CollectionListing({ title, dark }: { title: string; dark?: boolean }) {
+  const isDownMd = useBreakpoint('md')
+
   return (
     <Box
       sx={{
         padding: '33px 45px',
-        background: dark ? '#110E12' : '#FFFFFF'
+        background: dark ? '#110E12' : '#FFFFFF',
+        position: 'relative'
       }}
     >
-      <Typography variant="h5" fontSize={32} fontWeight={700} color={dark ? '#FFFFFF' : '#333333'} mb={56}>
-        {title}
-      </Typography>
+      {isDownMd ? (
+        <Typography
+          variant="h5"
+          sx={{ fontSize: 16, mb: 32 }}
+          fontWeight={700}
+          color={dark ? '#FFFFFF' : '#333333'}
+          mb={56}
+        >
+          {title}
+        </Typography>
+      ) : (
+        <Box
+          sx={{
+            height: 70,
+            width: 800,
+            background: dark ? '#110E12' : '#FFFFFF',
+            position: 'absolute',
+            top: -60,
+            left: 0,
+            borderRadius: '0 70px 0 0',
+            padding: '33px 45px'
+          }}
+        >
+          <Typography variant="h5" sx={{ fontSize: 32, mb: 56 }} fontWeight={700} color={dark ? '#FFFFFF' : '#333333'}>
+            {title}
+          </Typography>
+        </Box>
+      )}
+
       <Carousel imageWidth={218} imageHeight={280} images={images} stepperPosition="right" stepperDark={!dark} />
     </Box>
   )
