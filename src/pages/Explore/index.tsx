@@ -190,7 +190,7 @@ function CollectionListing({ title, dark }: { title: string; dark?: boolean }) {
       <Typography variant="h5" fontSize={32} fontWeight={700} color={dark ? '#FFFFFF' : '#333333'} mb={56}>
         {title}
       </Typography>
-      <Carousel imageWidth={218} imageHeight={280} images={images} />
+      <Carousel imageWidth={218} imageHeight={280} images={images} stepperPosition="right" stepperDark={!dark} />
     </Box>
   )
 }

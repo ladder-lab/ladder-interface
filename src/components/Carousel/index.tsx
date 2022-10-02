@@ -13,12 +13,16 @@ export default function Carousel({
   imageWidth,
   imageHeight,
   images,
-  maxWidth
+  maxWidth,
+  stepperPosition = 'center',
+  stepperDark
 }: {
   imageWidth?: number
   imageHeight?: number
   images: any
   maxWidth?: number
+  stepperPosition?: 'center' | 'left' | 'right'
+  stepperDark?: boolean
 }) {
   const theme = useTheme()
   const [activeStep, setActiveStep] = useState(0)
@@ -58,7 +62,19 @@ export default function Carousel({
         ))}
       </AutoPlaySwipeableViews>
       <MobileStepper
-        sx={{ background: 'transparent', justifyContent: 'center', mt: 20, padding: 0 }}
+        sx={{
+          background: 'transparent',
+          justifyContent:
+            stepperPosition === 'left' ? 'flex-start' : stepperPosition === 'right' ? 'flex-end' : 'center',
+          mt: 20,
+          padding: 0,
+          '& .MuiMobileStepper-dot': {
+            backgroundColor: stepperDark ? 'rgba(18, 18, 18, 0.36)' : 'rgba(255, 255, 255, 0.36)'
+          },
+          '& .MuiMobileStepper-dotActive': {
+            backgroundColor: stepperDark ? '#121212' : '#FFFFFF'
+          }
+        }}
         steps={maxSteps}
         position="static"
         activeStep={activeStep}
@@ -66,18 +82,34 @@ export default function Carousel({
           <IconButton
             onClick={() => setActiveStep(prevActiveStep => prevActiveStep + 1)}
             disabled={activeStep === maxSteps - 1}
-            sx={{ background: theme.palette.background.paper, ml: 40 }}
+            sx={{
+              background: stepperDark ? '#121212' : '#FFFFFF',
+              ml: 40,
+              '&:hover': { background: stepperDark ? '#121212' : '#FFFFFF', opacity: 0.8 }
+            }}
           >
-            {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+            {theme.direction === 'rtl' ? (
+              <KeyboardArrowLeft sx={{ color: stepperDark ? '#FFFFFF' : '#121212' }} />
+            ) : (
+              <KeyboardArrowRight sx={{ color: stepperDark ? '#FFFFFF' : '#121212' }} />
+            )}
           </IconButton>
         }
         backButton={
           <IconButton
             onClick={() => setActiveStep(prevActiveStep => prevActiveStep - 1)}
             disabled={activeStep === 0}
-            sx={{ background: theme.palette.background.paper, mr: 40 }}
+            sx={{
+              background: stepperDark ? '#121212' : '#FFFFFF',
+              mr: 40,
+              '&:hover': { background: stepperDark ? '#121212' : '#FFFFFF', opacity: 0.8 }
+            }}
           >
-            {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+            {theme.direction === 'rtl' ? (
+              <KeyboardArrowRight sx={{ color: stepperDark ? '#FFFFFF' : '#121212' }} />
+            ) : (
+              <KeyboardArrowLeft sx={{ color: stepperDark ? '#FFFFFF' : '#121212' }} />
+            )}
           </IconButton>
         }
       />
