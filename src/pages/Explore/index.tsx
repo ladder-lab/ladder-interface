@@ -6,9 +6,13 @@ import { ExternalLink } from 'theme/components'
 import { ExternalLinks } from 'constants/external_links'
 import Card from 'components/Card'
 import Carousel from 'components/Carousel'
+import { useIsDarkMode } from 'state/user/hooks'
+import BgLight from 'assets/images/bg_light.png'
+import BgDark from 'assets/images/bg_dark.png'
 
 export default function Explore() {
   const theme = useTheme()
+  const isDarkMode = useIsDarkMode()
   return (
     <Box
       sx={{
@@ -19,13 +23,28 @@ export default function Explore() {
         backgroundSize: '100% 100%'
       }}
     >
-      <Box sx={{ padding: '60px 45px', display: 'flex', gap: 32 }}>
-        <Box sx={{ width: 724 }}>
+      <Box
+        sx={{
+          padding: {
+            xs: 0,
+            md: '60px 0px 0px 45px'
+          },
+          display: 'flex',
+          gap: 32,
+          justifyContent: 'space-between',
+
+          flexDirection: {
+            xs: 'column',
+            md: 'row'
+          }
+        }}
+      >
+        <Box sx={{ maxWidth: 724, width: '100%', padding: { xs: '20px 15px', md: 0 } }}>
           <SocilaMediaGroup />
           <Typography variant="h1" sx={{ mt: 40 }}>
             Incredible liquidity pool! Quickly find real-time value of NFTs.
           </Typography>
-          <Box sx={{ display: 'flex', gap: 20, mt: 48 }}>
+          <Box sx={{ display: 'flex', gap: 20, mt: 48, flexDirection: { xs: 'column', md: 'row' } }}>
             <Card padding="28px 24px" light width={320}>
               <Typography variant="h5" sx={{ fontSize: 24, fontWeight: 700 }}>
                 $1,732,654,325
@@ -44,7 +63,32 @@ export default function Explore() {
             </Card>
           </Box>
         </Box>
-        <Box>
+        <Box
+          sx={{
+            padding: '20px 0 48px',
+            borderRadius: { xs: 0, md: '48px 0 0 0' },
+            backgroundImage: `url(${isDarkMode ? BgDark : BgLight})`,
+            backgroundPosition: 'top',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: '100% 100%',
+            overflow: 'hidden'
+          }}
+        >
+          <Box
+            sx={{
+              width: 'fit-content',
+              fontSize: 16,
+              fontWeight: 700,
+              borderRadius: '12px',
+              backgroundColor: 'rgba(255, 255, 255, 0.5)',
+              marginLeft: 'auto',
+              marginRight: 20,
+              padding: 14,
+              mb: 24
+            }}
+          >
+            Popular Collection
+          </Box>
           <Carousel />
         </Box>
       </Box>
