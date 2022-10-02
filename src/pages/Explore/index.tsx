@@ -2,6 +2,9 @@ import { Box, useTheme, IconButton, styled, Typography } from '@mui/material'
 import { ReactComponent as Twitter } from 'assets/svg/socials/twitter.svg'
 import { ReactComponent as Discord } from 'assets/svg/socials/discord.svg'
 import { ReactComponent as Website } from 'assets/svg/socials/website.svg'
+import { ReactComponent as TwitterLight } from 'assets/svg/socials/twitter_light.svg'
+import { ReactComponent as DiscordLight } from 'assets/svg/socials/discord_light.svg'
+import { ReactComponent as WebsiteLight } from 'assets/svg/socials/website_light.svg'
 import { ExternalLink } from 'theme/components'
 import { ExternalLinks } from 'constants/external_links'
 import Card from 'components/Card'
@@ -71,22 +74,18 @@ const SocilaMediaBtn = styled(IconButton)(({ theme }) => ({
 }))
 
 function SocilaMediaGroup() {
+  const isDark = useIsDarkMode()
+
   return (
     <Box sx={{ display: 'flex', gap: 20 }}>
       <ExternalLink href={ExternalLinks.twitter}>
-        <SocilaMediaBtn>
-          <Twitter />
-        </SocilaMediaBtn>
+        <SocilaMediaBtn>{isDark ? <TwitterLight /> : <Twitter />}</SocilaMediaBtn>
       </ExternalLink>
       <ExternalLink href={ExternalLinks.discord}>
-        <SocilaMediaBtn>
-          <Discord />
-        </SocilaMediaBtn>
+        <SocilaMediaBtn>{isDark ? <DiscordLight /> : <Discord />}</SocilaMediaBtn>
       </ExternalLink>
       <ExternalLink href={ExternalLinks.website}>
-        <SocilaMediaBtn>
-          <Website />
-        </SocilaMediaBtn>
+        <SocilaMediaBtn>{isDark ? <WebsiteLight /> : <Website />}</SocilaMediaBtn>
       </ExternalLink>
     </Box>
   )
