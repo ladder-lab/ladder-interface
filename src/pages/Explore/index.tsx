@@ -12,7 +12,7 @@ import BgDark from 'assets/images/bg_dark.png'
 
 export default function Explore() {
   const theme = useTheme()
-  const isDarkMode = useIsDarkMode()
+  // const isDarkMode = useIsDarkMode()
   return (
     <Box
       sx={{
@@ -49,35 +49,10 @@ export default function Explore() {
             <NumericCard title="Volume(24hrs)" value={'1,732,654,325'} />
           </Box>
         </Box>
-        <Box
-          sx={{
-            padding: '20px 0 48px',
-            borderRadius: { xs: 0, md: '48px 0 0 0' },
-            backgroundImage: `url(${isDarkMode ? BgDark : BgLight})`,
-            backgroundPosition: 'top',
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: '100% 100%',
-            overflow: 'hidden'
-          }}
-        >
-          <Box
-            sx={{
-              width: 'fit-content',
-              fontSize: 16,
-              fontWeight: 700,
-              borderRadius: '12px',
-              backgroundColor: 'rgba(255, 255, 255, 0.5)',
-              marginLeft: 'auto',
-              marginRight: 20,
-              padding: 14,
-              mb: 24
-            }}
-          >
-            Popular Collection
-          </Box>
-          <Carousel />
-        </Box>
+        <CollectionHighLight />
       </Box>
+      <CollectionListing title="Popular ERC721 Collection" dark />
+      <CollectionListing title="Popular ERC721 Collection" />
     </Box>
   )
 }
@@ -126,5 +101,55 @@ function NumericCard({ title, value }: { title: string; value: string }) {
         </Typography>
       </Box>
     </Card>
+  )
+}
+
+function CollectionHighLight() {
+  const isDarkMode = useIsDarkMode()
+  return (
+    <Box
+      sx={{
+        padding: '20px 0 48px',
+        borderRadius: { xs: 0, md: '48px 0 0 0' },
+        backgroundImage: `url(${isDarkMode ? BgDark : BgLight})`,
+        backgroundPosition: 'top',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: '100% 100%',
+        overflow: 'hidden'
+      }}
+    >
+      <Box
+        sx={{
+          width: 'fit-content',
+          fontSize: 16,
+          fontWeight: 700,
+          borderRadius: '12px',
+          backgroundColor: 'rgba(255, 255, 255, 0.5)',
+          marginLeft: 'auto',
+          marginRight: 20,
+          padding: 14,
+          mb: 24
+        }}
+      >
+        Popular Collection
+      </Box>
+      <Carousel />
+    </Box>
+  )
+}
+
+function CollectionListing({ title, dark }: { title: string; dark?: boolean }) {
+  return (
+    <Box
+      sx={{
+        padding: '33px 45px',
+        background: dark ? '#110E12' : '#FFFFFF'
+      }}
+    >
+      <Typography variant="h5" fontSize={32} fontWeight={700} color={dark ? '#FFFFFF' : '#333333'} mb={56}>
+        {title}
+      </Typography>
+      <Carousel />
+    </Box>
   )
 }

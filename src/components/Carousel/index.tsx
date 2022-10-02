@@ -80,21 +80,6 @@ export default function Carousel() {
               src={step.imgPath}
               alt={step.label}
             />
-            {/* {Math.abs(activeStep - index) <= 2 ? (
-              <Box
-                component="img"
-                sx={{
-                  height: 255,
-                  display: 'block',
-                  maxWidth: 400,
-                  overflow: 'hidden',
-                  width: '100%',
-                  borderRadius: '24px'
-                }}
-                src={step.imgPath}
-                alt={step.label}
-              />
-            ) : null} */}
           </Box>
         ))}
       </AutoPlaySwipeableViews>
