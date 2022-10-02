@@ -9,6 +9,46 @@ import Carousel from 'components/Carousel'
 import { useIsDarkMode } from 'state/user/hooks'
 import BgLight from 'assets/images/bg_light.png'
 import BgDark from 'assets/images/bg_dark.png'
+import useBreakpoint from 'hooks/useBreakpoint'
+
+const images = [
+  {
+    label: 'San Francisco – Oakland Bay Bridge, United States',
+    imgPath: 'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60'
+  },
+  {
+    label: 'Bird',
+    imgPath: 'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60'
+  },
+  {
+    label: 'Bali, Indonesia',
+    imgPath: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250'
+  },
+  {
+    label: 'San Francisco – Oakland Bay Bridge, United States',
+    imgPath: 'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60'
+  },
+  {
+    label: 'Bird',
+    imgPath: 'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60'
+  },
+  {
+    label: 'Bali, Indonesia',
+    imgPath: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250'
+  },
+  {
+    label: 'San Francisco – Oakland Bay Bridge, United States',
+    imgPath: 'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60'
+  },
+  {
+    label: 'Bird',
+    imgPath: 'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60'
+  },
+  {
+    label: 'Bali, Indonesia',
+    imgPath: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250'
+  }
+]
 
 export default function Explore() {
   const theme = useTheme()
@@ -106,6 +146,7 @@ function NumericCard({ title, value }: { title: string; value: string }) {
 
 function CollectionHighLight() {
   const isDarkMode = useIsDarkMode()
+  const isDownMd = useBreakpoint('md')
   return (
     <Box
       sx={{
@@ -133,7 +174,7 @@ function CollectionHighLight() {
       >
         Popular Collection
       </Box>
-      <Carousel />
+      <Carousel imageWidth={isDownMd ? 180 : 380} imageHeight={isDownMd ? 218 : 460} images={images} maxWidth={700} />
     </Box>
   )
 }
@@ -149,7 +190,7 @@ function CollectionListing({ title, dark }: { title: string; dark?: boolean }) {
       <Typography variant="h5" fontSize={32} fontWeight={700} color={dark ? '#FFFFFF' : '#333333'} mb={56}>
         {title}
       </Typography>
-      <Carousel />
+      <Carousel imageWidth={218} imageHeight={280} images={images} />
     </Box>
   )
 }
