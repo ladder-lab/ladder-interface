@@ -1,10 +1,7 @@
-import * as React from 'react'
-import { useTheme } from '@mui/material/styles'
+import { useState } from 'react'
+import { useTheme, IconButton } from '@mui/material'
 import Box from '@mui/material/Box'
 import MobileStepper from '@mui/material/MobileStepper'
-import Paper from '@mui/material/Paper'
-import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
 import SwipeableViews from 'react-swipeable-views'
@@ -24,16 +21,12 @@ const images = [
   {
     label: 'Bali, Indonesia',
     imgPath: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250'
-  },
-  {
-    label: 'Goč, Serbia',
-    imgPath: 'https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60'
   }
 ]
 
 export default function Carousel() {
   const theme = useTheme()
-  const [activeStep, setActiveStep] = React.useState(0)
+  const [activeStep, setActiveStep] = useState(0)
   const maxSteps = images.length
 
   const handleNext = () => {
@@ -49,29 +42,31 @@ export default function Carousel() {
   }
 
   return (
-    <Box sx={{ maxWidth: 400, flexGrow: 1 }}>
-      <Paper
-        square
-        elevation={0}
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          height: 50,
-          pl: 2,
-          bgcolor: 'background.default'
-        }}
-      >
-        <Typography>{images[activeStep].label}</Typography>
-      </Paper>
+    <Box sx={{ maxWidth: 520 }}>
       <AutoPlaySwipeableViews
         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
         index={activeStep}
         onChangeIndex={handleStepChange}
         enableMouseEvents
+        style={{ padding: '0 60px' }}
+        slideStyle={{ padding: '0 5px' }}
       >
         {images.map((step, index) => (
-          <div key={step.label}>
-            {Math.abs(activeStep - index) <= 2 ? (
+          <Box key={step.label}>
+            <Box
+              component="img"
+              sx={{
+                height: 460,
+                display: 'block',
+                maxWidth: 380,
+                overflow: 'hidden',
+                width: '100%',
+                borderRadius: '24px'
+              }}
+              src={step.imgPath}
+              alt={step.label}
+            />
+            {/* {Math.abs(activeStep - index) <= 2 ? (
               <Box
                 component="img"
                 sx={{
@@ -79,30 +74,38 @@ export default function Carousel() {
                   display: 'block',
                   maxWidth: 400,
                   overflow: 'hidden',
-                  width: '100%'
+                  width: '100%',
+                  borderRadius: '24px'
                 }}
                 src={step.imgPath}
                 alt={step.label}
               />
-            ) : null}
-          </div>
+            ) : null} */}
+          </Box>
         ))}
       </AutoPlaySwipeableViews>
       <MobileStepper
+        sx={{ background: 'transparent', justifyContent: 'center' }}
         steps={maxSteps}
         position="static"
         activeStep={activeStep}
         nextButton={
-          <Button size="small" onClick={handleNext} disabled={activeStep === maxSteps - 1}>
-            Next
+          <IconButton
+            onClick={handleNext}
+            disabled={activeStep === maxSteps - 1}
+            sx={{ background: theme.palette.background.paper, ml: 40 }}
+          >
             {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-          </Button>
+          </IconButton>
         }
         backButton={
-          <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
+          <IconButton
+            onClick={handleBack}
+            disabled={activeStep === 0}
+            sx={{ background: theme.palette.background.paper, mr: 40 }}
+          >
             {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-            Back
-          </Button>
+          </IconButton>
         }
       />
     </Box>
