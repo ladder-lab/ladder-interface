@@ -9,7 +9,8 @@ export const routes = {
   removeLiquidity: '/remove-liquidity',
   removeLiquidityParams: '/:currencyIdA/:currencyIdB/:tokenIds',
   testnet: '/testnet',
-  explorer: '/explorer'
+  explorer: '/explorer',
+  collection: '/collection/:collectionId'
 }
 
 export function liquidityParamBuilder(currencyA: Currency | undefined, currencyB: Currency | undefined) {
