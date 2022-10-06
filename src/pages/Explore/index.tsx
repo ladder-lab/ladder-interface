@@ -37,7 +37,6 @@ export default function Explore() {
           display: 'flex',
           gap: 32,
           justifyContent: 'space-between',
-
           flexDirection: {
             xs: 'column',
             md: 'row'
@@ -172,7 +171,7 @@ function CollectionHighLight() {
       >
         Popular Collection
       </Box>
-      <Carousel itemWidth={isDownMd ? 180 : 380} itemHeight={isDownMd ? 218 : 460} items={items} maxWidth={700} />
+      <Carousel itemWidth={isDownMd ? 180 : 380} items={items} maxWidth={700} />
     </Box>
   )
 }

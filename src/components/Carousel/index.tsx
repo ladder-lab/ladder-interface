@@ -6,6 +6,7 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft'
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
 import SwipeableViews from 'react-swipeable-views'
 import { autoPlay } from 'react-swipeable-views-utils'
+import useBreakpoint from 'hooks/useBreakpoint'
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews)
 
@@ -25,6 +26,7 @@ export default function Carousel({
   const theme = useTheme()
   const [activeStep, setActiveStep] = useState(0)
   const maxSteps = items.length
+  const isDownMd = useBreakpoint('md')
 
   return (
     <Box
@@ -39,7 +41,7 @@ export default function Carousel({
         onChangeIndex={(step: number) => setActiveStep(step)}
         enableMouseEvents
         style={{ padding: `0 calc((100% - ${itemWidth}px - 20px) / 2)` }}
-        slideStyle={{ padding: { xs: '0 5px', md: '0 10px' } }}
+        slideStyle={{ padding: isDownMd ? '0 5px' : '0 10px' }}
       >
         {items}
       </AutoPlaySwipeableViews>

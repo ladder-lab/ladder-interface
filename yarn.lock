@@ -2119,6 +2119,13 @@
   resolved "https://registry.yarnpkg.com/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz#b2ac626d6cb9c8718ab459166d4bb405b8ffa78b"
   integrity sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==
 
+"@material-ui/types@^4.0.0":
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@material-ui/types/-/types-4.1.1.tgz#b65e002d926089970a3271213a3ad7a21b17f02b"
+  integrity sha512-AN+GZNXytX9yxGi0JOfxHrRTbhFybjUJ05rnsBVjcB+16e466Z0Xe5IxawuOayVZgTBNDxmPKo5j4V6OnMtaSQ==
+  dependencies:
+    "@types/react" "*"
+
 "@metamask/safe-event-emitter@2.0.0", "@metamask/safe-event-emitter@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/safe-event-emitter/-/safe-event-emitter-2.0.0.tgz#af577b477c683fad17c619a78208cede06f9605c"
@@ -2888,6 +2895,22 @@
   integrity sha512-YYknwy0D0iOwKQgz9v8nOzt2J6l4gouBmDnWqUUznltOTaon+r8US8ky8HvN0tXvc38U9m6z/t2RsVsnd1zM0g==
   dependencies:
     "@types/history" "^4.7.11"
+    "@types/react" "*"
+
+"@types/react-swipeable-views-utils@^0.13.4":
+  version "0.13.4"
+  resolved "https://registry.yarnpkg.com/@types/react-swipeable-views-utils/-/react-swipeable-views-utils-0.13.4.tgz#2a48da267b48467887b146178673f4020dec5b1e"
+  integrity sha512-v0nDk6mMIPAu/kaEnqQpDz2Z7O8ewqy2in7xwobcAAkUKKsdw3MSWFW1BkQ+dPgTrBnj/KXUzx3ZIS6UYviwyA==
+  dependencies:
+    "@material-ui/types" "^4.0.0"
+    "@types/react" "*"
+    "@types/react-swipeable-views" "*"
+
+"@types/react-swipeable-views@*", "@types/react-swipeable-views@^0.13.1":
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/@types/react-swipeable-views/-/react-swipeable-views-0.13.1.tgz#381c8513deef5426623aa851033ff4f4831ae15c"
+  integrity sha512-Nuvywkv9CkwcUgItOCBszkc/pc8YSdiKV5E1AzOJ/p32Db50LgwhJFi5b1ANPgyWxB0Q5yn69aMURHyGi3MLyg==
+  dependencies:
     "@types/react" "*"
 
 "@types/react-transition-group@^4.4.5":
