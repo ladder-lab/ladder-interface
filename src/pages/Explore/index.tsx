@@ -14,6 +14,8 @@ import BgLight from 'assets/images/bg_light.png'
 import BgDark from 'assets/images/bg_dark.png'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { routes } from 'constants/routes'
 
 export default function Explore() {
   const theme = useTheme()
@@ -108,6 +110,7 @@ function NumericCard({ title, value }: { title: string; value: string }) {
 function CollectionHighLight() {
   const isDarkMode = useIsDarkMode()
   const isDownMd = useBreakpoint('md')
+  const navigate = useNavigate()
 
   const items = useMemo(() => {
     // Dummy data
@@ -126,7 +129,7 @@ function CollectionHighLight() {
       }
     ]
     return collections.map((collection: any, index: number) => (
-      <Box key={index}>
+      <Box key={index} onClick={() => navigate(routes.collection)} sx={{ cursor: 'pointer' }}>
         <Box
           component="img"
           sx={{
@@ -178,6 +181,7 @@ function CollectionHighLight() {
 
 function CollectionListing({ title, dark }: { title: string; dark?: boolean }) {
   const isDownMd = useBreakpoint('md')
+  const navigate = useNavigate()
 
   const collections = [
     {
@@ -246,8 +250,10 @@ function CollectionListing({ title, dark }: { title: string; dark?: boolean }) {
           width: 218,
           borderRadius: '12px',
           backgroundColor: dark ? 'rgba(255, 255, 255, 0.28)' : 'rgba(207, 207, 207, 0.41)',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          cursor: 'pointer'
         }}
+        onClick={() => navigate(routes.collection)}
       >
         <Box
           component="img"
