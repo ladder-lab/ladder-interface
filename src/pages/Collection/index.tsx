@@ -13,6 +13,10 @@ export default function Collection() {
         <MainCard />
         <StatCard />
       </Box>
+      <Typography>Top pairs</Typography>
+      <Box sx={{ display: 'flex', gap: 20 }}>
+        <PairCard /> <PairCard /> <PairCard />
+      </Box>
     </>
   )
 }
@@ -93,6 +97,28 @@ function NumericalCard({ title, value, percentage }: { title: string; value: str
           <Typography>{percentage * 100}%</Typography>
         </Box>
       </Box>
+    </Card>
+  )
+}
+
+function PairCard() {
+  return (
+    <Card padding="20px 17px">
+      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Typography>#1</Typography>
+        <Typography>ERC20-ERC1155</Typography>
+      </Box>
+      <Card light padding="20px 34px 24px">
+        <Box sx={{ display: 'flex' }}>
+          {/* <DualLogo /> */}
+          <Typography>DAI/Tickets for the community #56</Typography>
+        </Box>
+      </Card>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+        <Typography>Liquidity</Typography>
+        <Typography>$5321 (+33%)</Typography>
+      </Box>
+      <Box></Box>
     </Card>
   )
 }
