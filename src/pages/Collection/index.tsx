@@ -13,8 +13,11 @@ import { ReactComponent as ShareIcon } from 'assets/svg/share_icon.svg'
 import { AllTokens } from 'models/allTokens'
 import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
 import { ETHER } from 'constants/token'
+import useBreakpoint from 'hooks/useBreakpoint'
 
 export default function Collection() {
+  const isDownMd = useBreakpoint('md')
+
   const pairCollectionsData = useMemo(() => {
     return [
       {
@@ -55,17 +58,17 @@ export default function Collection() {
 
   return (
     <>
-      <Grid container spacing={20} sx={{ padding: '40px 120px' }}>
-        <Grid item xs={6}>
+      <Grid container spacing={isDownMd ? 0 : 20} sx={{ padding: { xs: 0, md: '40px 120px' } }}>
+        <Grid item xs={12} md={6}>
           <MainCard />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <StatCard />
         </Grid>
-        <Grid item xs={12} mt={28}>
+        <Grid item xs={12} mt={28} sx={{ padding: { xs: 16, md: 0 } }}>
           <Typography sx={{ fontSize: 24, fontWeight: 600 }}>Top pairs</Typography>
         </Grid>
-        <>
+        <Grid container spacing={20} sx={{ padding: { xs: 16, md: 0 } }}>
           {pairCollectionsData.map(
             (
               {
@@ -81,7 +84,7 @@ export default function Collection() {
               },
               idx
             ) => (
-              <Grid key={`collection -${idx}`} item xs={4}>
+              <Grid key={`collection -${idx}`} item xs={12} md={4}>
                 <PairCard
                   no={no}
                   collectionType={collectionType}
@@ -98,7 +101,7 @@ export default function Collection() {
               </Grid>
             )
           )}
-        </>
+        </Grid>
       </Grid>
     </>
   )
@@ -106,6 +109,7 @@ export default function Collection() {
 
 function MainCard() {
   const theme = useTheme()
+  const isDownMd = useBreakpoint('md')
 
   const data = useMemo(() => {
     return {
@@ -118,7 +122,7 @@ function MainCard() {
   }, [])
 
   return (
-    <Card style={{ height: 698, overflow: 'hidden' }}>
+    <Card style={{ height: 698, overflow: 'hidden', borderRadius: isDownMd ? '0' : '12px' }}>
       <Box sx={{ width: '100%', height: 587 }}>
         <Image
           alt="collection-image"
@@ -139,6 +143,7 @@ function MainCard() {
 
 function StatCard() {
   const theme = useTheme()
+  const isDownMd = useBreakpoint('md')
 
   const data = useMemo(() => {
     return {
@@ -150,7 +155,7 @@ function StatCard() {
   }, [])
 
   return (
-    <Card padding="28px 24px" style={{ height: 698 }}>
+    <Card padding="28px 24px" style={{ height: 698, borderRadius: isDownMd ? '0' : '12px' }}>
       <Box sx={{ height: 698 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography sx={{ color: theme.palette.info.main, fontSize: 14, fontWeight: 500 }}>
@@ -172,7 +177,16 @@ function StatCard() {
             <Typography>{data.creator}</Typography>
           </Box>
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 16, mt: 21, mb: 44 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' },
+            justifyContent: 'space-between',
+            gap: 16,
+            mt: 21,
+            mb: 44
+          }}
+        >
           <Button variant="outlined" sx={{ height: 48 }} onClick={() => {}}>
             <LogoText logo={BscLogo} text={'View on BSCscan'} size={'24px'} />
           </Button>
