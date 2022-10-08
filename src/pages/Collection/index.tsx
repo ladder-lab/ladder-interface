@@ -10,6 +10,9 @@ import { ExternalLink } from 'theme/components'
 import DummyCollectionCover from 'assets/images/dummy_collection_cover.png'
 import { ReactComponent as DummyChart } from 'assets/svg/dummy_chart.svg'
 import { ReactComponent as ShareIcon } from 'assets/svg/share_icon.svg'
+import { AllTokens } from 'models/allTokens'
+import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
+import { ETHER } from 'constants/token'
 
 export default function Collection() {
   const pairCollectionsData = useMemo(() => {
@@ -59,8 +62,8 @@ export default function Collection() {
         <Grid item xs={6}>
           <StatCard />
         </Grid>
-        <Grid item xs={12}>
-          <Typography>Top pairs</Typography>
+        <Grid item xs={12} mt={28}>
+          <Typography sx={{ fontSize: 24, fontWeight: 600 }}>Top pairs</Typography>
         </Grid>
         <>
           {pairCollectionsData.map(
@@ -82,6 +85,8 @@ export default function Collection() {
                 <PairCard
                   no={no}
                   collectionType={collectionType}
+                  currency0={ETHER}
+                  currency1={ETHER}
                   title={title}
                   liquidity={liquidity}
                   liquidity_varies_percentage={liquidity_varies_percentage}
@@ -217,8 +222,8 @@ function NumericalCard({ title, value, percentage }: { title: string; value: str
 function PairCard({
   no,
   collectionType,
-  // logo1,
-  // logo2,
+  currency0,
+  currency1,
   title,
   liquidity,
   liquidity_varies_percentage,
@@ -229,6 +234,8 @@ function PairCard({
 }: {
   no: number
   collectionType: string
+  currency0?: AllTokens
+  currency1?: AllTokens
   title: string
   liquidity: number
   liquidity_varies_percentage: number
@@ -237,45 +244,73 @@ function PairCard({
   fees: number
   fees_per_liquidity: number
 }) {
+  const theme = useTheme()
   return (
     <Card padding="20px 17px">
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography>#{no}</Typography>
-        <Typography>{collectionType}</Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 12 }}>
+        <Typography sx={{ fontSize: 16, fontWeight: 500 }}> #{no}</Typography>
+        <Typography sx={{ fontSize: 16, fontWeight: 500, color: theme.palette.info.main }}>{collectionType}</Typography>
       </Box>
       <Card light padding="20px 34px 24px">
-        <Box sx={{ display: 'flex' }}>
-          {/* <DualLogo /> */}
-          <Typography>{title}</Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <DoubleCurrencyLogo currency0={currency0} currency1={currency1} />
+          <Typography sx={{ fontSize: 18, fontWeight: 600, mt: 16 }}>{title}</Typography>
         </Box>
       </Card>
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-        <Typography>Liquidity</Typography>
-        <Typography>
-          ${liquidity} ({liquidity_varies_percentage}%)
-        </Typography>
-      </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'spacw-between' }}>
-          <Typography>Volume (24hrs)</Typography>
-          <Typography>{volume_24h}</Typography>
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'spacw-between' }}>
-          <Typography>Volume (7d)</Typography>
-          <Typography>{volume_7d}</Typography>
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'spacw-between' }}>
-          <Typography>Fees (24hrs)</Typography>
-          <Typography>{fees}</Typography>
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'spacw-between' }}>
-          <Typography>1y Fees/ Liquidity</Typography>
-          <Typography>{fees_per_liquidity}</Typography>
+        <Typography sx={{ mt: 20, fontSize: 20, fontWeight: 600 }}>Liquidity</Typography>
+        <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 4 }}>
+          <Typography sx={{ fontSize: 20, fontWeight: 700, color: theme.palette.text.secondary }}>
+            ${liquidity}
+          </Typography>
+          <Typography sx={{ fontSize: 12, fontWeight: 700, color: theme.palette.text.secondary }}>
+            ({liquidity_varies_percentage}%)
+          </Typography>
         </Box>
       </Box>
-      <ExternalLink underline="always" href="#">
-        View accrued fees and analytics
-      </ExternalLink>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 16, mt: 24, width: '100%' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+          <Typography sx={{ fontSize: 16, fontWeight: 500, color: theme.palette.text.secondary }}>
+            Volume (24hrs)
+          </Typography>
+          <Typography sx={{ fontSize: 16, fontWeight: 700 }}>${volume_24h}</Typography>
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Typography sx={{ fontSize: 16, fontWeight: 500, color: theme.palette.text.secondary }}>
+            Volume (7d)
+          </Typography>
+          <Typography sx={{ fontSize: 16, fontWeight: 700 }}>${volume_7d}</Typography>
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Typography sx={{ fontSize: 16, fontWeight: 500, color: theme.palette.text.secondary }}>
+            Fees (24hrs)
+          </Typography>
+          <Typography sx={{ fontSize: 16, fontWeight: 700 }}>${fees}</Typography>
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Typography sx={{ fontSize: 16, fontWeight: 500, color: theme.palette.text.secondary }}>
+            1y Fees/ Liquidity
+          </Typography>
+          <Typography sx={{ fontSize: 16, fontWeight: 700 }}>
+            {fees_per_liquidity ? '+' : ''}
+            {fees_per_liquidity}%
+          </Typography>
+        </Box>
+      </Box>
+      <Box sx={{ margin: '24px 0', display: 'flex', justifyContent: 'center' }}>
+        <ExternalLink underline="always" href="#">
+          View accrued fees and analytics
+        </ExternalLink>
+      </Box>
+
+      <Box sx={{ display: 'flex', gap: 12 }}>
+        <Button variant="outlined" onClick={() => {}} sx={{ fontSize: 16, height: 48 }}>
+          Add
+        </Button>
+        <Button variant="outlined" onClick={() => {}} sx={{ fontSize: 16, height: 48 }}>
+          Swap
+        </Button>
+      </Box>
     </Card>
   )
 }
