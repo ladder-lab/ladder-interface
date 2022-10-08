@@ -65,11 +65,11 @@ export default function Collection() {
         <Grid item xs={12} md={6}>
           <StatCard />
         </Grid>
-        <Grid item xs={12} mt={28} sx={{ padding: { xs: 16, md: 0 } }}>
-          <Typography sx={{ fontSize: 24, fontWeight: 600 }}>Top pairs</Typography>
-        </Grid>
       </Grid>
       <Grid container spacing={20} sx={{ padding: { xs: 16, md: '0 120px' } }}>
+        <Grid item xs={12} sx={{ padding: { xs: 16, md: 0 } }}>
+          <Typography sx={{ fontSize: 24, fontWeight: 600 }}>Top pairs</Typography>
+        </Grid>
         {pairCollectionsData.map(
           (
             {
@@ -122,7 +122,10 @@ function MainCard() {
   }, [])
 
   return (
-    <Card style={{ height: 698, overflow: 'hidden', borderRadius: isDownMd ? '0' : '12px' }}>
+    <Card
+      color={theme.palette.background.paper}
+      style={{ height: 698, overflow: 'hidden', borderRadius: isDownMd ? '0' : '12px' }}
+    >
       <Box sx={{ width: '100%', height: 587 }}>
         <Image
           alt="collection-image"
@@ -155,7 +158,11 @@ function StatCard() {
   }, [])
 
   return (
-    <Card padding="28px 24px" style={{ height: 698, borderRadius: isDownMd ? '0' : '12px' }}>
+    <Card
+      color={theme.palette.background.paper}
+      padding="28px 24px"
+      style={{ height: 698, borderRadius: isDownMd ? '0' : '12px' }}
+    >
       <Box sx={{ height: 698 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography sx={{ color: theme.palette.info.main, fontSize: 14, fontWeight: 500 }}>
@@ -216,6 +223,8 @@ function StatCard() {
 }
 
 function NumericalCard({ title, value, percentage }: { title: string; value: string; percentage: number }) {
+  const theme = useTheme()
+
   return (
     <Card gray padding="20px 24px">
       <Box>
@@ -223,7 +232,7 @@ function NumericalCard({ title, value, percentage }: { title: string; value: str
           {title}
         </Typography>
         <Box sx={{ display: 'flex', gap: 4, alignItems: 'flex-end' }}>
-          <Typography sx={{ color: '#12151B', fontSize: 32, fontWeight: 700 }}>{value}</Typography>
+          <Typography sx={{ color: theme.palette.text.primary, fontSize: 32, fontWeight: 700 }}>{value}</Typography>
           <Typography sx={{ fontSize: 12 }}>
             {percentage > 0 ? '+' : ''} {percentage * 100}%
           </Typography>
@@ -260,7 +269,7 @@ function PairCard({
 }) {
   const theme = useTheme()
   return (
-    <Card padding="20px 17px">
+    <Card padding="20px 17px" color={theme.palette.background.paper}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 12 }}>
         <Typography sx={{ fontSize: 16, fontWeight: 500 }}> #{no}</Typography>
         <Typography sx={{ fontSize: 16, fontWeight: 500, color: theme.palette.info.main }}>{collectionType}</Typography>
