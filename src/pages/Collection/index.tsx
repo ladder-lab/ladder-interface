@@ -100,7 +100,7 @@ export default function Collection() {
 
 function MainCard() {
   return (
-    <Card style={{ height: 698 }}>
+    <Card style={{ height: 698, overflow: 'hidden' }}>
       <Box sx={{ width: '100%', height: 587 }}>
         <Image
           alt="collection-image"
