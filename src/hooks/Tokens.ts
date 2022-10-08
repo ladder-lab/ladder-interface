@@ -11,7 +11,7 @@ import { TokenList, WrappedTokenInfo } from 'models/tokenList'
 import { listToTokenMap } from 'utils/swap/listUtils'
 import { useUserAddedTokens, useUserAddedTokens1155, useUserAddedTokens721 } from 'state/user/hooks'
 import { Token1155 } from 'constants/token/token1155'
-import { IS_TEST_NET, NETWORK_CHAIN_ID } from 'constants/chain'
+import { NETWORK_CHAIN_ID } from 'constants/chain'
 import { DEFAULT_1155_LIST } from 'constants/default1155List'
 import { DEFAULT_721_LIST } from 'constants/default721List'
 import { Token721 } from 'constants/token/token721'
@@ -107,7 +107,7 @@ export function useAllTokens(): { [address: string]: Token } {
   const allTokens = useDefaultTokenList()
   //add user added tokens
   const tokens = useTokensFromMap(allTokens, true)
-  return useMemo(() => ({ ...tokens, ...(IS_TEST_NET ? testTokens : {}) }), [tokens])
+  return useMemo(() => ({ ...tokens, ...(NETWORK_CHAIN_ID === 4 ? testTokens : {}) }), [tokens])
 }
 
 // parse a name or symbol from a token response
@@ -177,13 +177,27 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
 
 const interface1155 = ['0xd9b67a26']
 export function useToken1155(tokenAddress?: string, tokenId?: string | number): Token1155 | undefined | null {
+  const [meta, setMeta] = useState({ name: 'Erc1155', symbol: 'ERC1155' })
   const { chainId } = useActiveWeb3React()
   const address = isAddress(tokenAddress)
   const nftContract = use1155Contract(address ? address : undefined)
   const is1155Res = useSingleCallResult(nftContract, 'supportsInterface', interface1155)
   const is1155 = !!is1155Res.result?.[0]
-  const nameRes = useSingleCallResult(is1155 ? nftContract : null, 'name')
-  const symbolRes = useSingleCallResult(is1155 ? nftContract : null, 'symbol')
+  useEffect(() => {
+    if (is1155 && nftContract) {
+      ;(async () => {
+        try {
+          const data = await Promise.all([nftContract.name(), nftContract.symbol()])
+          if (data) {
+            setMeta({ name: data[0] ?? 'Erc1155', symbol: data[1] ?? 'ERC1155' })
+          }
+        } catch (e) {}
+      })()
+    }
+  }, [is1155, nftContract])
+
+  // const nameRes = useSingleCallResult(is1155 ? nftContract : null, 'name')
+  // const symbolRes = useSingleCallResult(is1155 ? nftContract : null, 'symbol')
 
   return useMemo(() => {
     if (!chainId || !address || !tokenId) return undefined
@@ -192,10 +206,8 @@ export function useToken1155(tokenAddress?: string, tokenId?: string | number): 
       const token = list.find(token1155 => token1155.address === tokenAddress && token1155.tokenId == tokenId)
       if (token) return token
     }
-    return nameRes.result && is1155
-      ? new Token1155(chainId, address, tokenId, { name: nameRes.result?.[0], symbol: symbolRes.result?.[0] })
-      : undefined
-  }, [address, chainId, is1155, nameRes.result, symbolRes.result, tokenAddress, tokenId])
+    return is1155 ? new Token1155(chainId, address, tokenId, { name: meta.name, symbol: meta.symbol }) : undefined
+  }, [address, chainId, is1155, meta.name, meta.symbol, tokenAddress, tokenId])
 }
 
 const interface721 = ['0x80ac58cd']
