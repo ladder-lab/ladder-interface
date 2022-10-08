@@ -68,40 +68,40 @@ export default function Collection() {
         <Grid item xs={12} mt={28} sx={{ padding: { xs: 16, md: 0 } }}>
           <Typography sx={{ fontSize: 24, fontWeight: 600 }}>Top pairs</Typography>
         </Grid>
-        <Grid container spacing={20} sx={{ padding: { xs: 16, md: 0 } }}>
-          {pairCollectionsData.map(
-            (
-              {
-                no,
-                collectionType,
-                title,
-                liquidity,
-                liquidity_varies_percentage,
-                volume_24h,
-                volume_7d,
-                fees,
-                fees_per_liquidity
-              },
-              idx
-            ) => (
-              <Grid key={`collection -${idx}`} item xs={12} md={4}>
-                <PairCard
-                  no={no}
-                  collectionType={collectionType}
-                  currency0={ETHER}
-                  currency1={ETHER}
-                  title={title}
-                  liquidity={liquidity}
-                  liquidity_varies_percentage={liquidity_varies_percentage}
-                  volume_24h={volume_24h}
-                  volume_7d={volume_7d}
-                  fees={fees}
-                  fees_per_liquidity={fees_per_liquidity}
-                />
-              </Grid>
-            )
-          )}
-        </Grid>
+      </Grid>
+      <Grid container spacing={20} sx={{ padding: { xs: 16, md: '0 120px' } }}>
+        {pairCollectionsData.map(
+          (
+            {
+              no,
+              collectionType,
+              title,
+              liquidity,
+              liquidity_varies_percentage,
+              volume_24h,
+              volume_7d,
+              fees,
+              fees_per_liquidity
+            },
+            idx
+          ) => (
+            <Grid key={`collection -${idx}`} item xs={12} md={4}>
+              <PairCard
+                no={no}
+                collectionType={collectionType}
+                currency0={ETHER}
+                currency1={ETHER}
+                title={title}
+                liquidity={liquidity}
+                liquidity_varies_percentage={liquidity_varies_percentage}
+                volume_24h={volume_24h}
+                volume_7d={volume_7d}
+                fees={fees}
+                fees_per_liquidity={fees_per_liquidity}
+              />
+            </Grid>
+          )
+        )}
       </Grid>
     </>
   )
