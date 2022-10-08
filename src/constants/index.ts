@@ -14,6 +14,7 @@ export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16))
 export const ROUTER_ADDRESS_721: string =
   (
     {
+      [5]: '0xD383bf84C4dB0764c7f7887b489933dE1B7A157A',
       [4]: '0xC61d146BB1965ba0e387aA2Ad94c500a17dfe65F',
       [56]: '',
       [1]: ''
@@ -23,6 +24,7 @@ export const ROUTER_ADDRESS_721: string =
 export const FACTORY_ADDRESS_721: string =
   (
     {
+      [5]: '0x2ee47767bd4127AD652987A6ad7d2c190d8c996D',
       [4]: '0x50A180230A11734FFD1A9A55e80c442387d42931',
       [56]: '',
       [1]: ''
@@ -34,7 +36,8 @@ export const ROUTER_ADDRESS: string =
     {
       [4]: '0x2cB34c38f7FFF789fab70AB69DAA9f7F05a4ecc8',
       [56]: '0x54F0d8485e931c22D542D7b95dbbf5ecdE9C91E8',
-      [1]: ''
+      [1]: '',
+      [5]: '0x6e2c879382520c7B15927902eEf1c0FbC1F8de91'
     } as any
   )[NETWORK_CHAIN_ID] ?? ''
 
@@ -43,7 +46,8 @@ export const FACTORY_ADDRESS =
     {
       [4]: '0xB4AA7ce0558A8EbfC943928d6F3E5ceCc1650a46',
       [56]: '0xa1bf45AF7cDe8c105054611383E8ae3dA65615a3',
-      [1]: ''
+      [1]: '',
+      [5]: '0x83b115AdC58A951B77cD249b41977B2Fd1f13772'
     } as any
   )[NETWORK_CHAIN_ID] ?? ''
 
