@@ -7,6 +7,8 @@ import Divider from 'components/Divider'
 import DummyAvatar from 'assets/svg/dummy_avatar.svg'
 import BscLogo from 'assets/svg/bsc.svg'
 import { ExternalLink } from 'theme/components'
+import DummyCollectionCover from 'assets/images/dummy_collection_cover.png'
+import { ReactComponent as DummyChart } from 'assets/svg/dummy_chart.svg'
 
 export default function Collection() {
   const pairCollectionsData = useMemo(() => {
@@ -99,8 +101,12 @@ export default function Collection() {
 function MainCard() {
   return (
     <Card style={{ height: 698 }}>
-      <Box sx={{ width: 590, height: 587 }}>
-        <Image alt="collection-image" src="#" />
+      <Box sx={{ width: '100%', height: 587 }}>
+        <Image
+          alt="collection-image"
+          src={DummyCollectionCover}
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
       </Box>
       <Box sx={{ width: 590, height: 111, padding: '20px 24px', display: 'grid', gap: 8 }}>
         <Typography>Name: Tickets for the community #56</Typography>
@@ -155,6 +161,9 @@ function StatCard() {
             <NumericalCard title="Total Liquidity" value="2265" percentage={0.05} />
           </Grid>
         </Grid>
+        <Box mt={40} sx={{ width: '100%' }}>
+          <DummyChart style={{ width: '100%' }} />
+        </Box>
       </Box>
     </Card>
   )
