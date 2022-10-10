@@ -1,7 +1,7 @@
 import axios, { AxiosResponse, AxiosPromise, AxiosRequestConfig } from 'axios'
 
 const axiosInstance = axios.create({
-  baseURL: '',
+  baseURL: 'https://dualinvest-testapi.antimatter.finance/web/',
   timeout: 10000,
   headers: { 'content-type': 'application/json', accept: 'application/json' }
 })
