@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Stepper as MuiStepper, StepLabel, Button, Typography, useTheme } from '@mui/material'
 import Step from '@mui/material/Step'
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector'
@@ -13,25 +13,36 @@ import { useIsDarkMode } from 'state/user/hooks'
 export default function Stepper() {
   const isDarkMode = useIsDarkMode()
   const theme = useTheme()
+  const [acitveStep] = useState(1)
+
+  const stepIcon = useCallback(
+    (currentStep: number) => {
+      if (acitveStep > currentStep) {
+        return isDarkMode ? CheckIconDark : CheckIconLight
+      }
+
+      if (acitveStep == currentStep) {
+        return isDarkMode ? LoadingIconDark : LoadingIconLight
+      }
+
+      return isDarkMode ? BgIconDark : BgIconLight
+    },
+    [isDarkMode, acitveStep]
+  )
 
   const steps = useMemo(() => {
     return [
       {
-        icon: isDarkMode ? CheckIconDark : CheckIconLight,
         label: 'LIT-1',
         actionText: 'End',
-        onClick: () => {},
-        completed: true
+        onClick: () => {}
       },
       {
-        icon: isDarkMode ? LoadingIconDark : LoadingIconLight,
         label: 'LIT-2',
         actionText: 'Register',
-        onClick: () => {},
-        active: true
+        onClick: () => {}
       },
       {
-        icon: isDarkMode ? BgIconDark : BgIconLight,
         label: 'LIT-3'
       },
       {
@@ -61,7 +72,7 @@ export default function Stepper() {
         />
       }
     >
-      {steps.map(({ icon, label, actionText, onClick, completed, active }) => (
+      {steps.map(({ label, actionText, onClick }, index) => (
         <Step key={label}>
           <StepLabel
             sx={{
@@ -72,12 +83,12 @@ export default function Stepper() {
                 gap: 36
               }
             }}
-            StepIconComponent={icon}
+            StepIconComponent={stepIcon(index)}
           >
             <Typography
               variant="h5"
               sx={{
-                color: active ? theme.palette.text.primary : theme.palette.text.secondary,
+                color: index == acitveStep ? theme.palette.text.primary : theme.palette.text.secondary,
                 fontWeight: 700,
                 fontSize: 16
               }}
@@ -92,7 +103,7 @@ export default function Stepper() {
                 visibility: onClick ? 'visible' : 'hidden'
               }}
               onClick={onClick}
-              disabled={completed}
+              disabled={acitveStep < index}
             >
               {actionText}
             </Button>
