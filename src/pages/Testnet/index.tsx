@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme, Button, Grid } from '@mui/material'
+import { Box, Typography, useTheme, Button, Grid, styled } from '@mui/material'
 import { ExternalLink } from 'theme/components'
 import Stepper from './Stepper'
 import { ReactComponent as FacuetFirstLight } from 'assets/svg/faucet/firstl.svg'
@@ -16,12 +16,34 @@ import BgLight from 'assets/images/bg_light.png'
 import BgDark from 'assets/images/bg_dark.png'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { useWalletModalToggle } from '../../state/application/hooks'
+import { useActiveWeb3React } from 'hooks'
+import { ClaimState, useTestnetClaim } from 'hooks/useTestnetClaim'
+import ActionButton from 'components/Button/ActionButton'
+
+const StyledButtonWrapper = styled(Box)(({ theme }) => ({
+  maxWidth: 400,
+  width: '100%',
+  '& button': {
+    maxWidth: 400,
+    width: '100%',
+    height: 50,
+    fontSize: 16,
+    padding: 0,
+    [theme.breakpoints.down('md')]: {
+      height: 70,
+      fontSize: 16,
+      padding: '16px 40px'
+    }
+  }
+}))
 
 export default function Testnet() {
   const theme = useTheme()
   const isDarkMode = useIsDarkMode()
   const isDownMd = useBreakpoint('md')
   const toggleWalletModal = useWalletModalToggle()
+  const { account } = useActiveWeb3React()
+  const { testnetClaim, claimState } = useTestnetClaim()
 
   return (
     <Box
@@ -146,18 +168,26 @@ export default function Testnet() {
               <Typography sx={{ fontWeight: 700, fontSize: 32 }}>ladder test faucet</Typography>
               <Typography sx={{ fontWeight: 500, fontSize: 20 }}>Each IP/address can only claim once</Typography>
             </Box>
-            <Button
-              onClick={toggleWalletModal}
-              sx={{
-                maxWidth: 400,
-                width: '100%',
-                height: { xs: 70, md: 50 },
-                fontSize: 16,
-                padding: { xs: '16px 40px', md: 0 }
-              }}
-            >
-              Connect the wallet to claim your test assets
-            </Button>
+            {account ? (
+              <StyledButtonWrapper>
+                <ActionButton
+                  pending={claimState === ClaimState.UNKNOWN}
+                  onAction={testnetClaim}
+                  actionText="Claim your test assets"
+                  error={
+                    claimState === ClaimState.UNCLAIMED
+                      ? undefined
+                      : claimState === ClaimState.CLAIMED
+                      ? 'Test assets Claimed'
+                      : 'Address not registered'
+                  }
+                />
+              </StyledButtonWrapper>
+            ) : (
+              <StyledButtonWrapper>
+                <Button onClick={toggleWalletModal}>Connect the wallet to claim your test assets</Button>
+              </StyledButtonWrapper>
+            )}
           </Box>
 
           <Grid container mt={36} spacing={20}>
