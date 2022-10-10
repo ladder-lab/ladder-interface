@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Stepper as MuiStepper, StepLabel, Button, Typography, useTheme } from '@mui/material'
 import Step from '@mui/material/Step'
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector'
@@ -14,21 +14,6 @@ export default function Stepper() {
   const isDarkMode = useIsDarkMode()
   const theme = useTheme()
   const [acitveStep] = useState(1)
-
-  const stepIcon = useCallback(
-    (currentStep: number) => {
-      if (acitveStep > currentStep) {
-        return isDarkMode ? CheckIconDark : CheckIconLight
-      }
-
-      if (acitveStep == currentStep) {
-        return isDarkMode ? LoadingIconDark : LoadingIconLight
-      }
-
-      return isDarkMode ? BgIconDark : BgIconLight
-    },
-    [isDarkMode, acitveStep]
-  )
 
   const steps = useMemo(() => {
     return [
@@ -55,7 +40,7 @@ export default function Stepper() {
   return (
     <MuiStepper
       alternativeLabel
-      // activeStep={1}
+      activeStep={acitveStep}
       connector={
         <StepConnector
           sx={{
@@ -83,7 +68,7 @@ export default function Stepper() {
                 gap: 36
               }
             }}
-            StepIconComponent={stepIcon(index)}
+            StepIconComponent={StepICon}
           >
             <Typography
               variant="h5"
@@ -112,4 +97,16 @@ export default function Stepper() {
       ))}
     </MuiStepper>
   )
+}
+
+function StepICon({ active, completed }: { active?: boolean; completed?: boolean }) {
+  const isDarkMode = useIsDarkMode()
+
+  if (active) {
+    return isDarkMode ? <LoadingIconDark /> : <LoadingIconLight />
+  }
+  if (completed) {
+    return isDarkMode ? <CheckIconDark /> : <CheckIconLight />
+  }
+  return isDarkMode ? <BgIconDark /> : <BgIconLight />
 }
