@@ -5,6 +5,7 @@ import { isAddress } from 'utils'
 import { useBlockNumber } from 'state/application/hooks'
 import { Token1155 } from 'constants/token/token1155'
 import { NFT } from 'models/allTokens'
+import { NETWORK_CHAIN_ID } from 'constants/chain'
 
 const ERC1155InterfaceId = '0xd9b67a26'
 
@@ -51,8 +52,10 @@ export function useNFTDataCb(
       } catch (e: any) {
         if (!is1155) {
           setIncorrenctToken(true)
+        } else {
+          setToken(new Token1155(chainId ?? NETWORK_CHAIN_ID, contractAddress, tokenId))
         }
-        setNftError(true)
+        // setNftError(true)
         setNftResLoading(false)
       }
     }
