@@ -194,11 +194,19 @@ function StatCard() {
             mb: 44
           }}
         >
-          <Button variant="outlined" sx={{ height: 48 }} onClick={() => {}}>
+          <Button
+            variant="outlined"
+            sx={{ height: 48, borderColor: theme.palette.info.main, color: theme.palette.info.main }}
+            onClick={() => {}}
+          >
             <LogoText logo={BscLogo} text={'View on BSCscan'} size={'24px'} />
           </Button>
 
-          <Button variant="outlined" sx={{ height: 48 }} onClick={() => {}}>
+          <Button
+            variant="outlined"
+            sx={{ height: 48, borderColor: theme.palette.info.main, color: theme.palette.info.main }}
+            onClick={() => {}}
+          >
             View accrued fees and analytics
           </Button>
         </Box>
@@ -321,16 +329,24 @@ function PairCard({
         </Box>
       </Box>
       <Box sx={{ margin: '24px 0', display: 'flex', justifyContent: 'center' }}>
-        <ExternalLink underline="always" href="#">
+        <ExternalLink underline="always" href="#" style={{ color: theme.palette.info.main }}>
           View accrued fees and analytics
         </ExternalLink>
       </Box>
 
       <Box sx={{ display: 'flex', gap: 12 }}>
-        <Button variant="outlined" onClick={() => {}} sx={{ fontSize: 16, height: 48 }}>
+        <Button
+          variant="outlined"
+          onClick={() => {}}
+          sx={{ fontSize: 16, height: 48, borderColor: theme.palette.info.main, color: theme.palette.info.main }}
+        >
           Add
         </Button>
-        <Button variant="outlined" onClick={() => {}} sx={{ fontSize: 16, height: 48 }}>
+        <Button
+          variant="outlined"
+          onClick={() => {}}
+          sx={{ fontSize: 16, height: 48, borderColor: theme.palette.info.main, color: theme.palette.info.main }}
+        >
           Swap
         </Button>
       </Box>
