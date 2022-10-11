@@ -2089,8 +2089,8 @@
     "@pedrouid/environment" "^1.0.1"
 
 "@ladder/sdk@ladder-lab/sdk.git":
-  version "3.0.4"
-  resolved "https://codeload.github.com/ladder-lab/sdk/tar.gz/1c4da1f2ce4b770a486c6f4e281bc63decd5217e"
+  version "3.0.5"
+  resolved "https://codeload.github.com/ladder-lab/sdk/tar.gz/872cf8cf3e7ab18f4b93eb7370caf3c88584de1d"
   dependencies:
     "@uniswap/v2-core" "^1.0.0"
     big.js "^5.2.2"
