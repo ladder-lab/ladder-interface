@@ -119,7 +119,6 @@ export default function ImportPool() {
         <Box mt={35}>
           <Box mb={assetA ? 16 : 0}>
             <CurrencyInputPanel
-              selectedTokenType={assetB ? ('tokenId' in assetB ? 'erc1155' : 'erc20') : undefined}
               value={'0'}
               onChange={() => {}}
               onSelectCurrency={handleAssetA}
@@ -134,7 +133,6 @@ export default function ImportPool() {
 
           <Box mb={assetB ? 16 : 0}>
             <CurrencyInputPanel
-              selectedTokenType={assetA ? ('tokenId' in assetA ? 'erc1155' : 'erc20') : undefined}
               value={'0'}
               onChange={() => {}}
               onSelectCurrency={handleAssetB}
