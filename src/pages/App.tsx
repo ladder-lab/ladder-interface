@@ -17,7 +17,8 @@ import lightBg from 'assets/images/light_bg.png'
 import { useIsDarkMode } from 'state/user/hooks'
 import RemoveLiquidity from './Pool/RemoveLiquidity'
 import Testnet from './Testnet'
-
+import { FACTORY_ADDRESS } from '@ladder/sdk'
+console.log(FACTORY_ADDRESS(5, true))
 const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
   ({ theme, isDarkMode }) => ({
     display: 'flex',
