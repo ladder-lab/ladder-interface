@@ -19,6 +19,8 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 import { useActiveWeb3React } from 'hooks'
 import { ClaimState, useTestnetClaim } from 'hooks/useTestnetClaim'
 import ActionButton from 'components/Button/ActionButton'
+import { Socials } from 'constants/socialLinks'
+import Image from 'components/Image'
 
 const StyledButtonWrapper = styled(Box)(({ theme }) => ({
   maxWidth: 400,
@@ -41,6 +43,7 @@ export default function Testnet() {
   const theme = useTheme()
   const isDarkMode = useIsDarkMode()
   const isDownMd = useBreakpoint('md')
+  const isDownSm = useBreakpoint('sm')
   const toggleWalletModal = useWalletModalToggle()
   const { account } = useActiveWeb3React()
   const { testnetClaim, claimState } = useTestnetClaim()
@@ -98,6 +101,31 @@ export default function Testnet() {
           Ladder Protocol a decentralized NFT AMM, enabling instantd NFT swaps and better price discovery. In fact,
           Ladder is the first protocol that allows you to Swap an NFT as easily as swapping a Token
         </Typography>
+        <Typography>Want to know about Ladder Testnet or Mining, Airdrop? Come and discuss</Typography>
+        <Box display="flex" gap={31} alignItems="center" mt={63}>
+          {Object.keys(Socials).map((key, idx) => {
+            return (
+              <ExternalLink
+                key={idx}
+                href={Socials[key as keyof typeof Socials].link}
+                sx={{
+                  transform: 'rotate3d(0)',
+                  '&:hover': {
+                    transform: 'rotate3d(0,1,0,180deg)'
+                  }
+                }}
+              >
+                <Image
+                  src={Socials[key as keyof typeof Socials].logo1}
+                  alt={`social-media-link-${Socials[key as keyof typeof Socials].title}-bg`}
+                  style={{
+                    width: isDownSm ? 50 : 60
+                  }}
+                />
+              </ExternalLink>
+            )
+          })}
+        </Box>
       </Box>
       <Box
         sx={{
