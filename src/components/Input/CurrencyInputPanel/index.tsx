@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useEffect, useState } from 'react'
+import { ChangeEvent, useCallback, useState } from 'react'
 import { Box, useTheme, Typography, Button, ButtonBase } from '@mui/material'
 import InputNumerical from 'components/Input/InputNumerical'
 import SelectButton from 'components/Button/SelectButton'
@@ -123,10 +123,6 @@ export default function CurrencyInputPanel({
   //     target: { value: is1155 ? token1155Balance : selectedCurrencyBalance?.toExact() ?? '0' }
   //   } as ChangeEvent<HTMLInputElement>)
   // }, [is1155, onChange, selectedCurrencyBalance, token1155Balance])
-
-  useEffect(() => {
-    is721 && onSelectSubTokens && onSelectSubTokens([])
-  }, [currency, is721, onSelectSubTokens])
 
   const subTokenSelection = useCallback(() => {
     if (onSelectSubTokens) {
