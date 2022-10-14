@@ -17,7 +17,6 @@ import lightBg from 'assets/images/light_bg.png'
 import { useIsDarkMode } from 'state/user/hooks'
 import RemoveLiquidity from './Pool/RemoveLiquidity'
 import Testnet from './Testnet'
-import Redirect from 'components/Redirect'
 
 const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
   ({ theme, isDarkMode }) => ({
@@ -75,7 +74,6 @@ export default function App() {
             <BodyWrapper id="body">
               <Popups />
               <Polling />
-              <Redirect />
               {/* <WarningModal /> */}
               <Web3ReactManager>
                 <Routes>
