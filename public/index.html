@@ -41,5 +41,10 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+    <script>
+        const path = window.location.pathname.slice(1)
+  localStorage.setItem('PATH', path)
+  window.location.href = '../'
+    </script>
   </body>
 </html>
