@@ -14,7 +14,7 @@ export const routes = {
 export function liquidityParamBuilder(currencyA: Currency | undefined, currencyB: Currency | undefined) {
   return `/${currencyA === ETHER ? 'ETH' : (currencyA as Token).address}/${
     currencyB === ETHER ? 'ETH' : (currencyB as Token).address
-  }/${checkIs1155(currencyA) ? (currencyA as any).tokenId : checkIs721(currencyA) ? 'erc721' : ''}%${
+  }/${checkIs1155(currencyA) ? (currencyA as any).tokenId : checkIs721(currencyA) ? 'erc721' : ''}_${
     checkIs1155(currencyB) ? (currencyB as any).tokenId : checkIs721(currencyB) ? 'erc721' : ''
   }`
 }
