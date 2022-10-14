@@ -1,2 +1,4 @@
 /*  /index.html  200
 /*  /index.html  404
+/remove-liquidity/*  /index.html  200!
+/add-liquidity/*  /index.html  200!
