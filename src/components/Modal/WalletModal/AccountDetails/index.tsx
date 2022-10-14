@@ -14,8 +14,8 @@ import { OutlinedCard } from 'components/Card'
 const Dot = styled('span')({
   width: 24,
   height: 24,
-  background: 'linear-gradient(135deg, #ffffff 4.17%, rgba(255, 255, 255, 0) 75%)',
-  border: '0.6px solid #ffffff',
+  background: 'linear-gradient(135deg, #cccccc 4.17%, rgba(255, 255, 255, 0) 75%)',
+  border: '0.6px solid #cccccc',
   borderRadius: '50%'
 })
 
