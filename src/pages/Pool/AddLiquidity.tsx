@@ -1,6 +1,6 @@
 import { useCallback, useState, ChangeEvent, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { routes } from 'constants/routes'
+import { liquidityParamSplitter, routes } from 'constants/routes'
 import { Typography, Box, useTheme, Button } from '@mui/material'
 import { ETHER, TokenAmount } from '@ladder/sdk'
 import AppBody from 'components/AppBody'
@@ -37,7 +37,7 @@ export default function AddLiquidy() {
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
 
   const { currencyIdA, currencyIdB, tokenIds } = useParams()
-  const [tokenIdA, tokenIdB] = tokenIds?.split('_') ?? ['', '']
+  const [tokenIdA, tokenIdB] = tokenIds?.split(liquidityParamSplitter) ?? ['', '']
   const [currency0, currency1] = [
     useCurrency(currencyIdA, tokenIdA) ?? undefined,
     useCurrency(currencyIdB, tokenIdB) ?? undefined

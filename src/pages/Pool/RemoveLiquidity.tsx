@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { TransactionResponse } from '@ethersproject/providers'
 import { currencyEquals, Percent, WETH, ETHER } from '@ladder/sdk'
 import { Box, useTheme, Typography, Button, Slider, styled, ButtonBase } from '@mui/material'
-import { liquidityParamBuilder, routes } from 'constants/routes'
+import { liquidityParamBuilder, routes, liquidityParamSplitter } from 'constants/routes'
 import AppBody from 'components/AppBody'
 import Card from 'components/Card'
 import { AllTokens } from 'models/allTokens'
@@ -47,7 +47,7 @@ export default function RemoveLiquidity() {
   const theme = useTheme()
   const { showModal, hideModal } = useModal()
   const { currencyIdA, currencyIdB, tokenIds } = useParams()
-  const [tokenIdA, tokenIdB] = tokenIds?.split('_') ?? ['', '']
+  const [tokenIdA, tokenIdB] = tokenIds?.split(liquidityParamSplitter) ?? ['', '']
 
   const { account, chainId } = useActiveWeb3React()
   const toggleWalletModal = useWalletModalToggle()
