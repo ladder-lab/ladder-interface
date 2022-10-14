@@ -47,7 +47,7 @@ export default function RemoveLiquidity() {
   const theme = useTheme()
   const { showModal, hideModal } = useModal()
   const { currencyIdA, currencyIdB, tokenIds } = useParams()
-  const [tokenIdA, tokenIdB] = tokenIds?.split('%') ?? ['', '']
+  const [tokenIdA, tokenIdB] = tokenIds?.split('_') ?? ['', '']
 
   const { account, chainId } = useActiveWeb3React()
   const toggleWalletModal = useWalletModalToggle()
@@ -245,17 +245,19 @@ export default function RemoveLiquidity() {
         </Box>
 
         <OutputCard value={formattedAmounts[Field.CURRENCY_B]} currency={currencyB} />
-        <Box display={{ xs: 'grid', sm: 'flex' }} justifyContent="space-between" mt={36} mb={52} gap={8}>
-          <Typography sx={{ fontSize: 18 }}>Price</Typography>
-          <Box display="grid" gap={12}>
-            <Typography sx={{ color: theme.palette.text.secondary, fontSize: 18 }}>
-              1 <Token1Text fontSize={18} /> = {pair?.token0Price?.toFixed()} <Token2Text fontSize={18} />
-            </Typography>
-            <Typography sx={{ color: theme.palette.text.secondary, fontSize: 18 }}>
-              1 <Token2Text fontSize={18} /> = {pair?.token1Price?.toFixed() ?? '-'} <Token1Text fontSize={18} />
-            </Typography>
+        {pair && (
+          <Box display={{ xs: 'grid', sm: 'flex' }} justifyContent="space-between" mt={36} mb={52} gap={8}>
+            <Typography sx={{ fontSize: 18 }}>Price</Typography>
+            <Box display="grid" gap={12}>
+              <Typography sx={{ color: theme.palette.text.secondary, fontSize: 18 }}>
+                1 <Token1Text fontSize={18} /> = {pair?.token0Price?.toFixed()} <Token2Text fontSize={18} />
+              </Typography>
+              <Typography sx={{ color: theme.palette.text.secondary, fontSize: 18 }}>
+                1 <Token2Text fontSize={18} /> = {pair?.token1Price?.toFixed() ?? '-'} <Token1Text fontSize={18} />
+              </Typography>
+            </Box>
           </Box>
-        </Box>
+        )}
         <Box display={{ xs: 'grid', sm: 'flex' }} gap={8}>
           {!account ? (
             <Button onClick={toggleWalletModal}>Connect Wallet</Button>
@@ -283,14 +285,16 @@ export default function RemoveLiquidity() {
         </Box>
       </AppBody>
       <Box maxWidth={680} width="100%" mb={100}>
-        <PositionCard
-          assetA={assets[0]}
-          assetB={assets[1]}
-          lpBalance={balance?.toExact()}
-          liquidityA={pair?.reserve0.toExact()}
-          liquidityB={pair?.reserve1.toExact()}
-          poolShare={poolTokenPercentage}
-        />
+        {assets[0] && assets[1] && pair && (
+          <PositionCard
+            assetA={assets[0]}
+            assetB={assets[1]}
+            lpBalance={balance?.toExact()}
+            liquidityA={pair?.reserve0.toExact()}
+            liquidityB={pair?.reserve1.toExact()}
+            poolShare={poolTokenPercentage}
+          />
+        )}
       </Box>
     </>
   )
