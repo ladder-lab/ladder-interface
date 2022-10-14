@@ -23,7 +23,6 @@ import { useTransactionAdder } from 'state/transactions/hooks'
 import useDebouncedChangeHandler from 'utils/useDebouncedChangeHandler'
 import ActionButton from 'components/Button/ActionButton'
 import ConfirmRemoveModal from 'components/Modal/ConfirmRemoveModal'
-import { useCurrencyBalance, useTokenTotalSupply } from 'state/wallet/hooks'
 import { getTokenText } from 'utils/checkIs1155'
 import useModal from 'hooks/useModal'
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
@@ -59,14 +58,16 @@ export default function RemoveLiquidity() {
 
   // burn state
   const { independentField, typedValue } = useBurnState()
-  const { pair, parsedAmounts, error } = useDerivedBurnInfo(currencyA ?? undefined, currencyB ?? undefined)
+  const { pair, parsedAmounts, error, lpBalance, poolShare } = useDerivedBurnInfo(
+    currencyA ?? undefined,
+    currencyB ?? undefined
+  )
   const { onUserInput: _onUserInput } = useBurnActionHandlers()
   const { burnCallback, burnApproveCallback, setSignatureData, approval, signatureData } = useBurnCallback(
     currencyA,
     currencyB
   )
-  const balance = useCurrencyBalance(account ?? undefined, pair?.liquidityToken)
-  const totalSupply = useTokenTotalSupply(pair?.liquidityToken)
+  const balance = lpBalance
   const isValid = !error
 
   const formattedAmounts = {
@@ -85,7 +86,7 @@ export default function RemoveLiquidity() {
       independentField === Field.CURRENCY_B ? typedValue : parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? ''
   }
 
-  const poolTokenPercentage = totalSupply && balance ? new Percent(balance.raw, totalSupply.raw).toFixed() + '%' : '-'
+  const poolTokenPercentage = poolShare + '%'
 
   // wrapped onUserInput to clear signatures
   const onUserInput = useCallback(
@@ -167,6 +168,8 @@ export default function RemoveLiquidity() {
 
   const { Token1Text, Token2Text } = getTokenText(assets[0], assets[1])
 
+  const priceA = pair?.token0Price.equalTo('0') ? '0' : pair?.token0Price?.toFixed() ?? '-'
+  const priceB = pair?.token1Price.equalTo('0') ? '0' : pair?.token1Price?.toFixed() ?? '-'
   return (
     <>
       <ConfirmRemoveModal
@@ -174,8 +177,8 @@ export default function RemoveLiquidity() {
         onConfirm={handleRemove}
         onDismiss={handleDismissConfirmation}
         val={formattedAmounts[Field.LIQUIDITY]}
-        priceA={pair?.token0Price?.toFixed() ?? '-'}
-        priceB={pair?.token1Price?.toFixed() ?? '-'}
+        priceA={priceA}
+        priceB={priceB}
         tokenA={currencyA}
         tokenB={currencyB}
         valA={formattedAmounts[Field.CURRENCY_A]}
@@ -250,10 +253,10 @@ export default function RemoveLiquidity() {
             <Typography sx={{ fontSize: 18 }}>Price</Typography>
             <Box display="grid" gap={12}>
               <Typography sx={{ color: theme.palette.text.secondary, fontSize: 18 }}>
-                1 <Token1Text fontSize={18} /> = {pair?.token0Price?.toFixed()} <Token2Text fontSize={18} />
+                1 <Token1Text fontSize={18} /> = {priceA} <Token2Text fontSize={18} />
               </Typography>
               <Typography sx={{ color: theme.palette.text.secondary, fontSize: 18 }}>
-                1 <Token2Text fontSize={18} /> = {pair?.token1Price?.toFixed() ?? '-'} <Token1Text fontSize={18} />
+                1 <Token2Text fontSize={18} /> = {priceB} <Token1Text fontSize={18} />
               </Typography>
             </Box>
           </Box>

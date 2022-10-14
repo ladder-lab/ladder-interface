@@ -68,8 +68,7 @@ export default function Swap() {
   const { [Field.INPUT]: fromAsset, [Field.OUTPUT]: toAsset } = currencies
 
   const [fromErc721SubTokens, setFromErc721SubTokens] = useState<Token721[] | null>(null)
-  const [toErc721SubTokens, setToErc721SubTokens] = useState<Token721[] | null>([])
-
+  const [toErc721SubTokens, setToErc721SubTokens] = useState<Token721[] | null>(null)
   // const {
   //   wrapType,
   //   execute: onWrap,
@@ -293,7 +292,7 @@ export default function Swap() {
     } else {
       resetSubTokenSelection(Field.OUTPUT)
     }
-  }, [fromAsset, fromErc721SubTokens, onSubTokenSelection, resetSubTokenSelection, toAsset, toErc721SubTokens])
+  }, [onSubTokenSelection, resetSubTokenSelection, toAsset, toErc721SubTokens])
 
   return (
     <>
