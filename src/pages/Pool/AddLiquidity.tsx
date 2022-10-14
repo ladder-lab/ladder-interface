@@ -37,7 +37,7 @@ export default function AddLiquidy() {
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
 
   const { currencyIdA, currencyIdB, tokenIds } = useParams()
-  const [tokenIdA, tokenIdB] = tokenIds?.split('&') ?? ['', '']
+  const [tokenIdA, tokenIdB] = tokenIds?.split('%') ?? ['', '']
   const [currency0, currency1] = [
     useCurrency(currencyIdA, tokenIdA) ?? undefined,
     useCurrency(currencyIdB, tokenIdB) ?? undefined

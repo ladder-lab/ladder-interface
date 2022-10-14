@@ -47,7 +47,7 @@ export default function RemoveLiquidity() {
   const theme = useTheme()
   const { showModal, hideModal } = useModal()
   const { currencyIdA, currencyIdB, tokenIds } = useParams()
-  const [tokenIdA, tokenIdB] = tokenIds?.split('&') ?? ['', '']
+  const [tokenIdA, tokenIdB] = tokenIds?.split('%') ?? ['', '']
 
   const { account, chainId } = useActiveWeb3React()
   const toggleWalletModal = useWalletModalToggle()
