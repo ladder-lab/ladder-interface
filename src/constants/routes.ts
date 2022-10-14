@@ -19,4 +19,4 @@ export function liquidityParamBuilder(currencyA: Currency | undefined, currencyB
   }`
 }
 
-export const liquidityParamSplitter = '%'
+export const liquidityParamSplitter = '&'
