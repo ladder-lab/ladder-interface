@@ -1,6 +1,6 @@
 import { useCallback, useState, ChangeEvent, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { routes } from 'constants/routes'
+import { liquidityParamSplitter, routes } from 'constants/routes'
 import { Typography, Box, useTheme, Button } from '@mui/material'
 import { ETHER, TokenAmount } from '@ladder/sdk'
 import AppBody from 'components/AppBody'
@@ -30,6 +30,7 @@ import { useCurrency } from 'hooks/Tokens'
 import { getSymbol } from 'utils/getSymbol'
 import { checkIs721 } from 'utils/checkIs1155'
 import { Token721 } from 'constants/token/token721'
+import { trimNumberString } from 'utils/trimNumberString'
 
 export default function AddLiquidy() {
   const [currencyA, setCurrencyA] = useState<undefined | AllTokens>(undefined)
@@ -37,7 +38,7 @@ export default function AddLiquidy() {
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
 
   const { currencyIdA, currencyIdB, tokenIds } = useParams()
-  const [tokenIdA, tokenIdB] = tokenIds?.split('&') ?? ['', '']
+  const [tokenIdA, tokenIdB] = tokenIds?.split(liquidityParamSplitter) ?? ['', '']
   const [currency0, currency1] = [
     useCurrency(currencyIdA, tokenIdA) ?? undefined,
     useCurrency(currencyIdB, tokenIdB) ?? undefined
@@ -194,6 +195,9 @@ export default function AddLiquidy() {
     [onSetTokenIds]
   )
 
+  const priceA = pair?.token1Price.equalTo('0') ? '0' : pair?.token0Price?.toFixed(8) ?? '-'
+  const priceB = pair?.token0Price.equalTo('0') ? '0' : pair?.token1Price?.toFixed(8) ?? '-'
+
   return (
     <>
       <ConfirmSupplyModal
@@ -201,8 +205,8 @@ export default function AddLiquidy() {
         onConfirm={handleAddCb}
         tokenA={currencyA}
         tokenB={currencyB}
-        priceA={pair?.token1Price?.toFixed(8) ?? ''}
-        priceB={pair?.token0Price?.toFixed(8) ?? ''}
+        priceA={priceA}
+        priceB={priceB}
         valA={formattedAmounts[Field.CURRENCY_A]}
         valB={formattedAmounts[Field.CURRENCY_B]}
         isOpen={showConfirm}
@@ -252,8 +256,8 @@ export default function AddLiquidy() {
             <>
               <PriceAndPoolShare
                 data={{
-                  [`${currencyA?.name} per ${currencyB?.name}`]: pair?.token0Price?.toFixed() ?? '-',
-                  [`${currencyB?.name} per ${currencyA?.name}`]: pair?.token1Price?.toFixed() ?? '-',
+                  [`${currencyA?.name} per ${currencyB?.name}`]: trimNumberString(priceB, 2) ?? '-',
+                  [`${currencyB?.name} per ${currencyA?.name}`]: trimNumberString(priceA, 2) ?? '-',
                   ['Share of pool']: `${shareOfPool}
                       %`
                 }}

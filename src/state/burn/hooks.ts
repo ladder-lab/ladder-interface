@@ -28,6 +28,8 @@ export function useDerivedBurnInfo(
     [Field.CURRENCY_B]?: CurrencyAmount
   }
   error?: string
+  lpBalance: undefined | TokenAmount
+  poolShare: string
 } {
   const { account, chainId } = useActiveWeb3React()
 
@@ -99,6 +101,9 @@ export function useDerivedBurnInfo(
       }
     }
   }
+  const poolShare = totalSupply && userLiquidity ? new Percent(userLiquidity.raw, totalSupply.raw).toFixed(2) : '0'
+
+  const removeAll = typedValue === '100' && poolShare === '100.00'
 
   const parsedAmounts: {
     [Field.LIQUIDITY_PERCENT]: Percent
@@ -113,11 +118,19 @@ export function useDerivedBurnInfo(
         : undefined,
     [Field.CURRENCY_A]:
       tokenA && percentToRemove && percentToRemove.greaterThan('0') && liquidityValueA
-        ? new TokenAmount(tokenA, percentToRemove.multiply(liquidityValueA.raw).quotient)
+        ? removeAll
+          ? pair?.token0.equals(tokenA)
+            ? pair?.reserve0
+            : pair?.reserve1
+          : new TokenAmount(tokenA, percentToRemove.multiply(liquidityValueA.raw).quotient)
         : undefined,
     [Field.CURRENCY_B]:
       tokenB && percentToRemove && percentToRemove.greaterThan('0') && liquidityValueB
-        ? new TokenAmount(tokenB, percentToRemove.multiply(liquidityValueB.raw).quotient)
+        ? removeAll
+          ? pair?.token0.equals(tokenB)
+            ? pair?.reserve0
+            : pair?.reserve1
+          : new TokenAmount(tokenB, percentToRemove.multiply(liquidityValueB.raw).quotient)
         : undefined
   }
 
@@ -130,7 +143,7 @@ export function useDerivedBurnInfo(
     error = error ?? 'Enter an amount'
   }
 
-  return { pair, parsedAmounts, error }
+  return { pair, parsedAmounts, error, lpBalance: userLiquidity, poolShare }
 }
 
 export function useBurnActionHandlers(): {

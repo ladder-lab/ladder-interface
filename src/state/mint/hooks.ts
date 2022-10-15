@@ -98,8 +98,9 @@ export function useDerivedMintInfo(
   const totalSupply = useTotalSupply(pair?.liquidityToken)
   const lpBalance = useTokenBalance(account ?? undefined, pair?.liquidityToken)
 
+  const noReserves = pair?.token0Price.equalTo('0') && pair?.token1Price.equalTo('0')
   const noLiquidity: boolean =
-    pairState === PairState.NOT_EXISTS || Boolean(totalSupply && JSBI.equal(totalSupply.raw, ZERO))
+    pairState === PairState.NOT_EXISTS || Boolean(totalSupply && JSBI.equal(totalSupply.raw, ZERO)) || !!noReserves
 
   // balances
 
@@ -178,7 +179,7 @@ export function useDerivedMintInfo(
       ]
 
       if (pair && totalSupply && tokenAmountA && tokenAmountB) {
-        if (+tokenAmountA?.toExact() === 0 || +tokenAmountB?.toExact() === 0) {
+        if (+tokenAmountA?.toExact() === 0 || +tokenAmountB?.toExact() === 0 || noReserves) {
           return undefined
         }
         return pair.getLiquidityMinted(totalSupply, tokenAmountA, tokenAmountB)
@@ -189,7 +190,7 @@ export function useDerivedMintInfo(
       console.error(e)
       return undefined
     }
-  }, [parsedAmounts, chainId, pair, totalSupply])
+  }, [parsedAmounts, chainId, pair, totalSupply, noReserves])
 
   const poolTokenPercentage = useMemo(() => {
     if (totalSupply && pair?.liquidityToken) {

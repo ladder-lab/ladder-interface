@@ -5,13 +5,14 @@ import ERC2721_ABI from 'constants/abis/erc721.json'
 import { use1155Contract, use721Contract, useMulticallContract } from '../../hooks/useContract'
 import { getContract, isAddress } from '../../utils'
 import { useSingleContractMultipleData, useMultipleContractSingleData, useSingleCallResult } from '../multicall/hooks'
-import { Currency, ETHER, Token, JSBI, CurrencyAmount, TokenAmount } from '@ladder/sdk'
+import { Currency, ETHER, Token, JSBI, CurrencyAmount, TokenAmount, ChainId } from '@ladder/sdk'
 import { useActiveWeb3React } from 'hooks'
 import { useAllTokens } from 'hooks/Tokens'
 import { Token1155 } from 'constants/token/token1155'
 import { checkIs1155, checkIs721 } from 'utils/checkIs1155'
 import { useBlockNumber } from 'state/application/hooks'
 import { Token721 } from 'constants/token/token721'
+import { isTest721 } from 'constants/default721List'
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -297,11 +298,16 @@ export function useToken721BalanceTokens(tokenAmount?: TokenAmount): {
       setLoading(true)
       try {
         const indexes = await Promise.all(calls)
+
         const tokens = indexes.map(
           id =>
             new Token721(chainId, tokenAmount.token.address, id.toString(), {
               name: tokenAmount.token.name,
-              symbol: tokenAmount.token.symbol
+              symbol: tokenAmount.token.symbol,
+              uri:
+                chainId === ChainId.GÖRLI && isTest721(tokenAmount.token.address)
+                  ? `https://info.chainswap.com/${tokenAmount.token.name.split(' ').join('')}/${id}.jpg`
+                  : undefined
             })
         )
         setTokens(tokens)

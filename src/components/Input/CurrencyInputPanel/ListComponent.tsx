@@ -83,13 +83,13 @@ export function CollectionListComponent({
   // const itemKey = useCallback((index: number, data: any) => key(data[index]), [key])
 
   const Rows = useCallback(
-    ({ data, index }: any) => {
+    ({ data, index, style }: any) => {
       const collection: Token721 = data[index]
       const onClickCollection = () => {
         onSelect && onSelect(collection)
       }
 
-      return <CurrencyRow currency={collection} onClick={onClickCollection} />
+      return <CurrencyRow currency={collection} onClick={onClickCollection} style={style} />
     },
     [onSelect]
   )
@@ -124,12 +124,12 @@ const ListItem = styled('div')({
   justifyContent: 'space-between'
 })
 
-function CurrencyRow({ currency, onClick }: { currency: Currency; onClick: () => void }) {
+function CurrencyRow({ currency, onClick, style }: { currency: Currency; onClick: () => void; style: any }) {
   const { account } = useActiveWeb3React()
   const balance = useCurrencyBalance(account ?? undefined, currency)
 
   return (
-    <ListItem onClick={onClick}>
+    <ListItem onClick={onClick} style={style}>
       <Box display="flex">
         <CurrencyLogo currency={currency} style={{ width: '30px', height: '30px' }} />
         <Box display="flex" flexDirection="column" marginLeft="16px">
