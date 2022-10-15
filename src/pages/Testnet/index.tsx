@@ -1,17 +1,6 @@
-import { Box, Typography, useTheme, Button, Grid, styled } from '@mui/material'
+import { Box, Typography, useTheme, Button, styled, Stack, Link } from '@mui/material'
 import { ExternalLink } from 'theme/components'
-import Stepper from './Stepper'
-import { ReactComponent as FacuetFirstLight } from 'assets/svg/faucet/firstl.svg'
-import { ReactComponent as FacuetSecondLight } from 'assets/svg/faucet/secondl.svg'
-import { ReactComponent as FacuetThirdLight } from 'assets/svg/faucet/thirdl.svg'
-import { ReactComponent as FacuetFirstDark } from 'assets/svg/faucet/firstd.svg'
-import { ReactComponent as FacuetSecondDark } from 'assets/svg/faucet/secondd.svg'
-import { ReactComponent as FacuetThirdDark } from 'assets/svg/faucet/thirdd.svg'
 import { useIsDarkMode } from 'state/user/hooks'
-import { ReactComponent as BgLowerLeftLight } from 'assets/svg/bg/lowerleftl.svg'
-import { ReactComponent as BgLowerRightLight } from 'assets/svg/bg/lowerrightl.svg'
-import { ReactComponent as BgLowerLeftDark } from 'assets/svg/bg/lowerleftd.svg'
-import { ReactComponent as BgLowerRightDark } from 'assets/svg/bg/lowerrightd.svg'
 import BgLight from 'assets/images/bg_light.png'
 import BgDark from 'assets/images/bg_dark.png'
 import useBreakpoint from 'hooks/useBreakpoint'
@@ -21,6 +10,15 @@ import { ClaimState, useTestnetClaim } from 'hooks/useTestnetClaim'
 import ActionButton from 'components/Button/ActionButton'
 import { Socials } from 'constants/socialLinks'
 import Image from 'components/Image'
+import { isAddress } from 'utils'
+import Collapse from 'components/Collapse'
+import Input from 'components/Input'
+import ClaimableItem from './ClaimableItem'
+import TaskItem from './TaskItem'
+import { Timer } from 'components/Timer'
+import { useMemo, useState } from 'react'
+import { Token } from 'constants/token'
+import { ChainId } from 'constants/chain'
 
 const StyledButtonWrapper = styled(Box)(({ theme }) => ({
   maxWidth: 400,
@@ -39,14 +37,128 @@ const StyledButtonWrapper = styled(Box)(({ theme }) => ({
   }
 }))
 
+const StyledCardWrapper = styled(Box)(({ theme }) => ({
+  border: `1px solid ${theme.color.color1}`,
+  borderRadius: '16px',
+  padding: '30px 28px',
+  [theme.breakpoints.down('md')]: {
+    padding: '16px'
+  }
+}))
+
+const RowBetween = styled(Box)(({}) => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center'
+}))
+
+const StyledQATitle = styled(Box)(({ theme }) => ({
+  fontSize: 20,
+  marginBottom: 16,
+  [theme.breakpoints.down('md')]: {
+    fontSize: 16
+  }
+}))
+
+const StyledQABody = styled(Box)(({ theme }) => ({
+  fontSize: 20,
+  color: theme.palette.text.secondary,
+  [theme.breakpoints.down('md')]: {
+    fontSize: 16
+  }
+}))
+
+const faucetTokens = [
+  {
+    token: new Token(ChainId.GÖRLI, '0xd4C70114d12b05eACE5749dF0878891570BB0BEE', 18, 'mt', 'MTEST'),
+    amount: '1,000'
+  }
+]
+
 export default function Testnet() {
   const theme = useTheme()
   const isDarkMode = useIsDarkMode()
-  const isDownMd = useBreakpoint('md')
   const isDownSm = useBreakpoint('sm')
   const toggleWalletModal = useWalletModalToggle()
   const { account } = useActiveWeb3React()
-  const { testnetClaim, claimState } = useTestnetClaim()
+  const { testnetClaim, claimState } = useTestnetClaim(account || undefined)
+  const [queryAddress, setQueryAddress] = useState('')
+  const { claimState: queryClaimState } = useTestnetClaim(isAddress(queryAddress) ? queryAddress : undefined)
+
+  // const qaTableData = [
+  //   [
+  //     'SBT Holder (ETH Mergee)',
+  //     'Merge SOUve SBT',
+  //     '',
+  //     <Link
+  //       key={0}
+  //       sx={{
+  //         wordBreak: 'break-all',
+  //         color: theme.palette.text.primary,
+  //         textDecorationColor: theme.palette.text.primary
+  //       }}
+  //       target="_blank"
+  //       href="https://app.quest3.xyz/event/12514312412"
+  //     >
+  //       https://app.quest3.xyz/event/12514312412
+  //     </Link>
+  //   ],
+  //   ['', 'Platinum GENESIS SBT', '', ''],
+  //   ['', 'Platinum FINALITY SBT', '', ''],
+  //   [
+  //     'SBT Holder (Ladder Testnet-MUADAO)',
+  //     'Ladder Testnet SBT',
+  //     '1657',
+  //     <Link
+  //       key={0}
+  //       sx={{
+  //         wordBreak: 'break-all',
+  //         color: theme.palette.text.primary,
+  //         textDecorationColor: theme.palette.text.primary
+  //       }}
+  //       target="_blank"
+  //       href="https://app.quest3.xyz/event/12514312412"
+  //     >
+  //       https://app.quest3.xyz/event/12514312412
+  //     </Link>
+  //   ],
+  //   ['NFT Bluechip + Hot Project Holder', 'Bluechip NFT', '', 'BAYC / MAYC / CRYPTOPUNK / MOONBIRDS / AZUKI / DOODLES'],
+  //   ['', 'Top 10 ETH gas burning projects', '', ''],
+  //   ['Gleam Airdrops', 'Gleam #1', '', ''],
+  //   ['', 'Gleam #2', '', ''],
+  //   ['Partners Whitelist', '[TBD]', '', '']
+  // ]
+
+  const queryNotice = useMemo(() => {
+    return (
+      <>
+        {queryAddress && ClaimState.UNKNOWN !== queryClaimState && (
+          <Box mt={10}>
+            {queryClaimState === ClaimState.NOT_REGISTERED ? (
+              <Typography textAlign={isDownSm ? 'center' : 'left'} color={theme.palette.error.main} fontWeight={500}>
+                Oops! Unfortunately, you are not eligible for this test, but you can stay tuned for our follow-up
+                activities.
+              </Typography>
+            ) : (
+              <Typography textAlign={isDownSm ? 'center' : 'left'} color={theme.palette.info.main} fontWeight={500}>
+                Congratulations! Because you are{' '}
+                <Link
+                  sx={{
+                    fontWeight: 700,
+                    color: theme.palette.info.main,
+                    textDecorationColor: theme.palette.info.main
+                  }}
+                >
+                  the holder of Platinum GENESIS SBT
+                </Link>
+                , you can continue to participate in this beta event!
+              </Typography>
+            )}
+          </Box>
+        )}
+      </>
+    )
+  }, [isDownSm, queryAddress, queryClaimState, theme.palette.error.main, theme.palette.info.main])
 
   return (
     <Box
@@ -67,6 +179,7 @@ export default function Testnet() {
           // pt: theme.height.header,
           // pb: 120,
           padding: `${theme.height.header} 16px 120px`,
+          pt: 120,
           backgroundImage: `url(${isDarkMode ? BgDark : BgLight})`,
           backgroundPosition: 'top',
           backgroundRepeat: 'no-repeat',
@@ -82,10 +195,10 @@ export default function Testnet() {
             },
             fontWeight: 700,
             textAlign: 'center',
-            maxWidth: 980
+            maxWidth: 1200
           }}
         >
-          Incredible liquidity pool! Quickly find real-time value of NFTs.
+          Providing liquidity for your NFT swaps
         </Typography>
         <Typography
           sx={{
@@ -98,249 +211,257 @@ export default function Testnet() {
             maxWidth: 900
           }}
         >
-          Ladder Protocol a decentralized NFT AMM, enabling instantd NFT swaps and better price discovery. In fact,
-          Ladder is the first protocol that allows you to Swap an NFT as easily as swapping a Token
+          Ladder Protocol a decentralized NFT AMM,enabling instantd NFT swaps and better price discovery. In fact,
+          Ladder is the first protocol that allows you to Swap an NFT as easily as swapping a Token.
         </Typography>
-        <Typography>Want to know about Ladder Testnet or Mining, Airdrop? Come and discuss</Typography>
-        <Box display="flex" gap={31} alignItems="center" mt={63}>
-          {Object.keys(Socials).map((key, idx) => {
-            return (
-              <ExternalLink
-                key={idx}
-                href={Socials[key as keyof typeof Socials].link}
-                sx={{
-                  transform: 'rotate3d(0)',
-                  '&:hover': {
-                    transform: 'rotate3d(0,1,0,180deg)'
-                  }
-                }}
-              >
-                <Image
-                  src={Socials[key as keyof typeof Socials].logo1}
-                  alt={`social-media-link-${Socials[key as keyof typeof Socials].title}-bg`}
-                  style={{
-                    width: isDownSm ? 50 : 60
+        <Typography mt={60}>Want to know about Ladder Testnet or Mining, Airdrop? Come and discuss</Typography>
+        <Box>
+          <Stack direction={'row'} spacing={31}>
+            {Object.keys(Socials).map((key, idx) => {
+              return (
+                <ExternalLink
+                  key={idx}
+                  href={Socials[key as keyof typeof Socials].link}
+                  sx={{
+                    transform: 'rotate3d(0)',
+                    '&:hover': {
+                      transform: 'rotate3d(0,1,0,180deg)'
+                    }
                   }}
-                />
-              </ExternalLink>
-            )
-          })}
+                >
+                  <Image
+                    src={Socials[key as keyof typeof Socials].logo1}
+                    alt={`social-media-link-${Socials[key as keyof typeof Socials].title}-bg`}
+                    style={{
+                      width: isDownSm ? 50 : 60
+                    }}
+                  />
+                </ExternalLink>
+              )
+            })}
+          </Stack>
         </Box>
       </Box>
-      <Box
+
+      <Stack
+        spacing={40}
         sx={{
           width: '100%',
           height: '100%',
           background: theme.palette.background.paper,
           padding: {
-            xs: '62px 16px 214px',
-            md: '100px 46px 117px'
+            xs: '42px 16px 114px',
+            md: '70px 45px 40px'
           }
         }}
       >
-        <Box
-          sx={{
-            width: '100%',
-            height: '100%',
-            margin: '0 auto',
-            maxWidth: theme.width.maxContent
-          }}
-        >
-          <Box sx={{ width: '100%', overflow: 'auto', padding: 18 }}>
-            <Stepper />
-          </Box>
-
-          <Typography
-            variant="h5"
-            sx={{
-              fontSize: {
-                xs: 16,
-                md: 20
-              },
-              fontWeight: 700,
-              mt: {
-                xs: 40,
-                md: 100
-              },
-              mb: 24
-            }}
+        <StyledCardWrapper>
+          <Collapse
+            defaultOpen
+            title={
+              <RowBetween flexWrap={'wrap'}>
+                <Box display={'flex'} flexWrap={'wrap'}>
+                  <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                    Round 1
+                  </Typography>
+                  <Typography fontSize={16} fontWeight={600}>
+                    Ladder ETH Main Testnet-Round 1
+                  </Typography>
+                </Box>
+                <Typography fontSize={16} sx={{ mt: { xs: 6 } }} fontWeight={600}>
+                  Distance to end: <Timer timer={1665906135000} />
+                </Typography>
+              </RowBetween>
+            }
           >
-            Ladder incentivized testnet stage 2
-          </Typography>
-          <Typography sx={{ lineHeight: '170%', mb: 32, fontSize: { xs: 16, md: 20 } }}>
-            We gonna Airdrop another 3000 raffle whitelist to participate in testnet activity,and we will start
-            Alpha-test in the stage with LAD rewards.
-            <br /> 1. This version of the product (Ladder V2) will support the creation of Pairs between any
-            ERC721/ERC1155/ERC20 <br /> 2. Support for asset Swap routing of associated Pairs
-          </Typography>
+            <Stack mt="56px" spacing={56}>
+              <Box>
+                <RowBetween flexWrap={'wrap'}>
+                  <StepTitle step={1} title="Verify Eligibility" />
+                </RowBetween>
+                <Box
+                  mt={28}
+                  display="grid"
+                  sx={{
+                    gridTemplateColumns: { xs: '1fr', sm: '1fr 182px 350px' },
+                    alignItems: 'center'
+                  }}
+                  gap="12px"
+                >
+                  <Input
+                    value={queryAddress}
+                    onChange={e => setQueryAddress(e.target.value)}
+                    onBlur={() => {
+                      if (!isAddress(queryAddress)) setQueryAddress('')
+                    }}
+                    height="52px"
+                    placeholder="Please enter your address"
+                  />
+                  {isDownSm && queryNotice}
+                  <Button
+                    variant="outlined"
+                    sx={{
+                      height: 52,
+                      borderColor: theme => theme.palette.info.main,
+                      color: theme => theme.palette.info.main
+                    }}
+                  >
+                    Check eligibility
+                  </Button>
+                  <Link
+                    sx={{
+                      textAlign: 'center',
+                      color: theme.palette.text.primary,
+                      textDecorationColor: theme.palette.text.primary
+                    }}
+                  >
+                    View Testnet Participant Qualification
+                  </Link>
+                </Box>
+                {!isDownSm && queryNotice}
+              </Box>
 
-          <ExternalLink href="#" underline="always" sx={{ fontSize: 20, color: theme.palette.info.main }}>
-            More Details
-          </ExternalLink>
+              <Box>
+                <RowBetween>
+                  <StepTitle step={2} title="Claim Test Asset" />
+                </RowBetween>
+                <Box>
+                  <Box
+                    mt={28}
+                    sx={{
+                      display: 'grid',
+                      gridTemplateColumns: { xs: '1fr', sm: '5fr 5fr 1.6fr' },
+                      alignItems: 'center',
+                      gap: '24px 10px',
+                      padding: '20px',
+                      backgroundColor: theme.palette.background.default,
+                      borderRadius: theme.shape.borderRadius + 'px'
+                    }}
+                  >
+                    {faucetTokens.map((item, index) => (
+                      <ClaimableItem key={index} token={item.token} amount={item.amount} />
+                    ))}
+                    <ClaimableItem nftInfo={{ name: 'laddertest-erc1155' }} amount={'5'} />
+                    <ClaimableItem nftInfo={{ name: 'laddertest-erc721' }} amount={'20'} />
+                  </Box>
+                  <Box display={'flex'} flexDirection="row-reverse" mt={16}>
+                    <StyledButtonWrapper>
+                      {account ? (
+                        <StyledButtonWrapper>
+                          <ActionButton
+                            pending={claimState === ClaimState.UNKNOWN}
+                            onAction={testnetClaim}
+                            actionText="Claim your test assets"
+                            error={
+                              claimState === ClaimState.UNCLAIMED
+                                ? undefined
+                                : claimState === ClaimState.CLAIMED
+                                ? 'Test assets Claimed'
+                                : 'Address not registered'
+                            }
+                          />
+                        </StyledButtonWrapper>
+                      ) : (
+                        <StyledButtonWrapper>
+                          <Button onClick={toggleWalletModal}>Connect the wallet to claim your test assets</Button>
+                        </StyledButtonWrapper>
+                      )}
+                    </StyledButtonWrapper>
+                  </Box>
+                </Box>
+              </Box>
 
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              mt: { xs: 90, md: 120 },
-              width: '100%',
-              flexDirection: {
-                xs: 'column',
-                md: 'row'
-              },
-              gap: 28
-            }}
+              <Box>
+                <StepTitle step={3} title="Complete testnet tasks" />
+                <Stack spacing={12} mt={28}>
+                  <TaskItem completed />
+                  <TaskItem completed />
+                  <TaskItem completed={false} />
+                  <TaskItem completed={false} />
+                </Stack>
+              </Box>
+            </Stack>
+          </Collapse>
+        </StyledCardWrapper>
+
+        <StyledCardWrapper>
+          <Collapse
+            defaultOpen
+            title={
+              <RowBetween flexWrap="wrap">
+                <Box display={'flex'} flexWrap="wrap">
+                  <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                    Round 2
+                  </Typography>
+                  <Typography fontSize={16} fontWeight={600}>
+                    Ladder ETH Main Testnet-Round 2
+                  </Typography>
+                </Box>
+                <Typography sx={{ mt: { xs: 6 } }} fontSize={16} fontWeight={600}>
+                  coming soon
+                </Typography>
+              </RowBetween>
+            }
           >
-            <Box sx={{ display: 'grid', gap: 16 }}>
-              <Typography sx={{ fontWeight: 700, fontSize: 32 }}>ladder test faucet</Typography>
-              <Typography sx={{ fontWeight: 500, fontSize: 20 }}>Each IP/address can only claim once</Typography>
-            </Box>
-            {account ? (
-              <StyledButtonWrapper>
-                <ActionButton
-                  pending={claimState === ClaimState.UNKNOWN}
-                  onAction={testnetClaim}
-                  actionText="Claim your test assets"
-                  error={
-                    claimState === ClaimState.UNCLAIMED
-                      ? undefined
-                      : claimState === ClaimState.CLAIMED
-                      ? 'Test assets Claimed'
-                      : 'Address not registered'
-                  }
-                />
-              </StyledButtonWrapper>
-            ) : (
-              <StyledButtonWrapper>
-                <Button onClick={toggleWalletModal}>Connect the wallet to claim your test assets</Button>
-              </StyledButtonWrapper>
-            )}
-          </Box>
-
-          <Grid container mt={36} spacing={20}>
-            <Grid item xs={12} md={4}>
-              <FaucetCard
-                icon={isDarkMode ? <FacuetFirstDark /> : <FacuetFirstLight />}
-                title="laddertest-erc20"
-                link="#"
-                amount={0}
-                onClick={() => {}}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <FaucetCard
-                icon={isDarkMode ? <FacuetSecondDark /> : <FacuetSecondLight />}
-                title="laddertest-erc20"
-                link="#"
-                amount={0}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <FaucetCard
-                icon={isDarkMode ? <FacuetThirdDark /> : <FacuetThirdLight />}
-                title="laddertest-erc20"
-                link="#"
-                amount={0}
-              />
-            </Grid>
-          </Grid>
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Typography
-              variant="h5"
-              sx={{ fontSize: { xs: 20, md: 32 }, fontWeight: 700, mb: 24, mt: { xs: 102, md: 180 } }}
-            >
-              Feedback
+            <Typography fontSize={16} mt={38} textAlign="center" color={theme.palette.text.secondary} fontWeight={600}>
+              We have more plans in the works, so stay tuned!
             </Typography>
-            <Typography sx={{ textAlign: 'center', mb: { xs: 40, md: 61 }, fontSize: { xs: 16, md: 20 } }}>
-              Please leave your feedback to us, help us improve products!
-            </Typography>
-            <Button onClick={() => {}} sx={{ width: 226, height: 52, fontSize: 16 }}>
-              Write Feedback
-            </Button>
-          </Box>
-        </Box>
-      </Box>
-      {isDarkMode ? (
-        <BgLowerLeftDark style={{ position: 'absolute', left: 0, bottom: isDownMd ? -115 : 0 }} />
-      ) : (
-        <BgLowerLeftLight style={{ position: 'absolute', left: 0, bottom: isDownMd ? -115 : 0 }} />
-      )}
+          </Collapse>
+        </StyledCardWrapper>
 
-      {isDarkMode ? (
-        <BgLowerRightDark style={{ position: 'absolute', right: 0, bottom: isDownMd ? -115 : 0 }} />
-      ) : (
-        <BgLowerRightLight style={{ position: 'absolute', right: 0, bottom: isDownMd ? -115 : 0 }} />
-      )}
+        <StyledCardWrapper>
+          <Collapse
+            defaultOpen
+            title={
+              <RowBetween>
+                <Box display={'flex'}>
+                  <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                    Q&A
+                  </Typography>
+                </Box>
+              </RowBetween>
+            }
+          >
+            <Stack spacing={44}>
+              <Box mt={56}>
+                <StyledQATitle>1. Who can participate in this R1 Testnet</StyledQATitle>
+                {/* <Table
+                  fontSize="15px"
+                  header={['Qualification', 'Source', 'Number', 'Note']}
+                  rows={qaTableData}
+                ></Table> */}
+                <StyledQABody>Planning</StyledQABody>
+              </Box>
+              <Box>
+                <StyledQATitle>2. What happens after R1 testnet?</StyledQATitle>
+                <StyledQABody>Planning</StyledQABody>
+              </Box>
+              <Box>
+                <StyledQATitle>3. What is a Ladder?</StyledQATitle>
+                <StyledQABody>Slogan/Introduction</StyledQABody>
+              </Box>
+              <Box>
+                <StyledQATitle>4. Where can I see upcoming event updates?</StyledQATitle>
+                <StyledQABody>social link entry</StyledQABody>
+              </Box>
+            </Stack>
+          </Collapse>
+        </StyledCardWrapper>
+      </Stack>
     </Box>
   )
 }
 
-function FaucetCard({
-  icon,
-  title,
-  link,
-  amount,
-  onClick
-}: {
-  icon: JSX.Element
-  title: string
-  link: string
-  amount: number
-  onClick?: () => void
-}) {
-  const isDarkMode = useIsDarkMode()
+function StepTitle({ title, step }: { step: number | string; title: string }) {
+  const theme = useTheme()
   return (
-    <Box
-      sx={{
-        borderRadius: '16px',
-        padding: {
-          xs: '36px 20px',
-          md: '36px 40px 24px'
-        },
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        width: '100%',
-        boxShadow: isDarkMode ? 'none' : '0px 4px 11px rgba(51, 51, 51, 0.07)',
-        height: 308,
-        background: theme => (isDarkMode ? theme.palette.background.default : theme.palette.background.paper)
-      }}
-    >
-      {icon}
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          width: '100%',
-          mt: {
-            xs: 36,
-            md: 60
-          },
-          mb: 34,
-          flexDirection: { xs: 'column', md: 'row' },
-          gap: 14
-        }}
-      >
-        <ExternalLink
-          href={link}
-          showIcon
-          sx={{ fontSize: { xs: 16, md: 20 }, color: theme => theme.palette.text.primary }}
-        >
-          {title}
-        </ExternalLink>
-        <Typography sx={{ fontSize: { xs: 16, md: 20 } }}> amount: {amount}</Typography>
-      </Box>
-      {onClick && (
-        <Button
-          variant="outlined"
-          onClick={onClick}
-          sx={{ borderColor: theme => theme.palette.info.main, color: theme => theme.palette.info.main }}
-        >
-          Import Token
-        </Button>
-      )}
+    <Box display={'flex'}>
+      <Typography fontSize={16} fontWeight={600} color={theme.palette.text.secondary} mr={12}>
+        Step {step}
+      </Typography>
+      <Typography fontSize={16} fontWeight={600}>
+        {title}
+      </Typography>
     </Box>
   )
 }
