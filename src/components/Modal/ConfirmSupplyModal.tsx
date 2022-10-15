@@ -132,7 +132,7 @@ function AddLiquidityDetails({
           {token2Val}
         </Typography>
       </Box>
-      {!rateToken1Token2 && !rateToken2Token1 ? null : (
+      {(!rateToken1Token2 && !rateToken2Token1) || (rateToken1Token2 === '0' && rateToken2Token1 === '0') ? null : (
         <Box
           display={{ xs: 'grid', md: 'flex' }}
           justifyContent="space-between"
