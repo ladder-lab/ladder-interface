@@ -73,7 +73,7 @@ export default function CurrencyList({
       </Box>
       <Divider />
 
-      <Box height={isDownMd ? 290 : 450} paddingTop={'24px'} position="relative">
+      <Box minHeight={isDownMd ? 290 : 450} paddingTop={'24px'} position="relative">
         {searchToken && !searchTokenIsAdded ? (
           <ListItem onClick={onClick}>
             <Box display="flex">

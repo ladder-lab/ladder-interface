@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { TransactionResponse } from '@ethersproject/providers'
 import { currencyEquals, Percent, WETH, ETHER } from '@ladder/sdk'
 import { Box, useTheme, Typography, Button, Slider, styled, ButtonBase } from '@mui/material'
-import { liquidityParamBuilder, routes } from 'constants/routes'
+import { liquidityParamBuilder, routes, liquidityParamSplitter } from 'constants/routes'
 import AppBody from 'components/AppBody'
 import Card from 'components/Card'
 import { AllTokens } from 'models/allTokens'
@@ -23,7 +23,6 @@ import { useTransactionAdder } from 'state/transactions/hooks'
 import useDebouncedChangeHandler from 'utils/useDebouncedChangeHandler'
 import ActionButton from 'components/Button/ActionButton'
 import ConfirmRemoveModal from 'components/Modal/ConfirmRemoveModal'
-import { useCurrencyBalance, useTokenTotalSupply } from 'state/wallet/hooks'
 import { getTokenText } from 'utils/checkIs1155'
 import useModal from 'hooks/useModal'
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
@@ -47,7 +46,7 @@ export default function RemoveLiquidity() {
   const theme = useTheme()
   const { showModal, hideModal } = useModal()
   const { currencyIdA, currencyIdB, tokenIds } = useParams()
-  const [tokenIdA, tokenIdB] = tokenIds?.split('&') ?? ['', '']
+  const [tokenIdA, tokenIdB] = tokenIds?.split(liquidityParamSplitter) ?? ['', '']
 
   const { account, chainId } = useActiveWeb3React()
   const toggleWalletModal = useWalletModalToggle()
@@ -59,14 +58,16 @@ export default function RemoveLiquidity() {
 
   // burn state
   const { independentField, typedValue } = useBurnState()
-  const { pair, parsedAmounts, error } = useDerivedBurnInfo(currencyA ?? undefined, currencyB ?? undefined)
+  const { pair, parsedAmounts, error, lpBalance, poolShare } = useDerivedBurnInfo(
+    currencyA ?? undefined,
+    currencyB ?? undefined
+  )
   const { onUserInput: _onUserInput } = useBurnActionHandlers()
   const { burnCallback, burnApproveCallback, setSignatureData, approval, signatureData } = useBurnCallback(
     currencyA,
     currencyB
   )
-  const balance = useCurrencyBalance(account ?? undefined, pair?.liquidityToken)
-  const totalSupply = useTokenTotalSupply(pair?.liquidityToken)
+  const balance = lpBalance
   const isValid = !error
 
   const formattedAmounts = {
@@ -85,7 +86,7 @@ export default function RemoveLiquidity() {
       independentField === Field.CURRENCY_B ? typedValue : parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? ''
   }
 
-  const poolTokenPercentage = totalSupply && balance ? new Percent(balance.raw, totalSupply.raw).toFixed() + '%' : '-'
+  const poolTokenPercentage = poolShare + '%'
 
   // wrapped onUserInput to clear signatures
   const onUserInput = useCallback(
@@ -167,6 +168,8 @@ export default function RemoveLiquidity() {
 
   const { Token1Text, Token2Text } = getTokenText(assets[0], assets[1])
 
+  const priceA = pair?.token0Price.equalTo('0') ? '0' : pair?.token0Price?.toFixed() ?? '-'
+  const priceB = pair?.token1Price.equalTo('0') ? '0' : pair?.token1Price?.toFixed() ?? '-'
   return (
     <>
       <ConfirmRemoveModal
@@ -174,8 +177,8 @@ export default function RemoveLiquidity() {
         onConfirm={handleRemove}
         onDismiss={handleDismissConfirmation}
         val={formattedAmounts[Field.LIQUIDITY]}
-        priceA={pair?.token0Price?.toFixed() ?? '-'}
-        priceB={pair?.token1Price?.toFixed() ?? '-'}
+        priceA={priceA}
+        priceB={priceB}
         tokenA={currencyA}
         tokenB={currencyB}
         valA={formattedAmounts[Field.CURRENCY_A]}
@@ -245,17 +248,19 @@ export default function RemoveLiquidity() {
         </Box>
 
         <OutputCard value={formattedAmounts[Field.CURRENCY_B]} currency={currencyB} />
-        <Box display={{ xs: 'grid', sm: 'flex' }} justifyContent="space-between" mt={36} mb={52} gap={8}>
-          <Typography sx={{ fontSize: 18 }}>Price</Typography>
-          <Box display="grid" gap={12}>
-            <Typography sx={{ color: theme.palette.text.secondary, fontSize: 18 }}>
-              1 <Token1Text fontSize={18} /> = {pair?.token0Price?.toFixed()} <Token2Text fontSize={18} />
-            </Typography>
-            <Typography sx={{ color: theme.palette.text.secondary, fontSize: 18 }}>
-              1 <Token2Text fontSize={18} /> = {pair?.token1Price?.toFixed() ?? '-'} <Token1Text fontSize={18} />
-            </Typography>
+        {pair && (
+          <Box display={{ xs: 'grid', sm: 'flex' }} justifyContent="space-between" mt={36} mb={52} gap={8}>
+            <Typography sx={{ fontSize: 18 }}>Price</Typography>
+            <Box display="grid" gap={12}>
+              <Typography sx={{ color: theme.palette.text.secondary, fontSize: 18 }}>
+                1 <Token1Text fontSize={18} /> = {priceA} <Token2Text fontSize={18} />
+              </Typography>
+              <Typography sx={{ color: theme.palette.text.secondary, fontSize: 18 }}>
+                1 <Token2Text fontSize={18} /> = {priceB} <Token1Text fontSize={18} />
+              </Typography>
+            </Box>
           </Box>
-        </Box>
+        )}
         <Box display={{ xs: 'grid', sm: 'flex' }} gap={8}>
           {!account ? (
             <Button onClick={toggleWalletModal}>Connect Wallet</Button>
@@ -283,14 +288,16 @@ export default function RemoveLiquidity() {
         </Box>
       </AppBody>
       <Box maxWidth={680} width="100%" mb={100}>
-        <PositionCard
-          assetA={assets[0]}
-          assetB={assets[1]}
-          lpBalance={balance?.toExact()}
-          liquidityA={pair?.reserve0.toExact()}
-          liquidityB={pair?.reserve1.toExact()}
-          poolShare={poolTokenPercentage}
-        />
+        {assets[0] && assets[1] && pair && (
+          <PositionCard
+            assetA={assets[0]}
+            assetB={assets[1]}
+            lpBalance={balance?.toExact()}
+            liquidityA={pair?.reserve0.toExact()}
+            liquidityB={pair?.reserve1.toExact()}
+            poolShare={poolTokenPercentage}
+          />
+        )}
       </Box>
     </>
   )
