@@ -1,7 +1,6 @@
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
-import { useActiveWeb3React } from 'hooks'
 import { useCallback, useEffect, useState } from 'react'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { Axios } from 'utils/axios'
@@ -15,10 +14,9 @@ export enum ClaimState {
   UNCLAIMED
 }
 
-export function useTestnetClaim() {
+export function useTestnetClaim(account: string | undefined) {
   const [data, setData] = useState<null | { proof: string[]; index: string }>(null)
   const [claimState, setClaimState] = useState<ClaimState>(ClaimState.UNKNOWN)
-  const { account } = useActiveWeb3React()
   const { showModal, hideModal } = useModal()
   const contract = useMerkleContract()
   const addTransaction = useTransactionAdder()
