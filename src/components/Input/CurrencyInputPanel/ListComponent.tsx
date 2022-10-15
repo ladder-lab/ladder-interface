@@ -124,7 +124,7 @@ const ListItem = styled('div')({
   justifyContent: 'space-between'
 })
 
-function CurrencyRow({ currency, onClick, style }: { currency: Currency; onClick: () => void; style: any }) {
+function CurrencyRow({ currency, onClick, style }: { currency: Currency; onClick: () => void; style?: any }) {
   const { account } = useActiveWeb3React()
   const balance = useCurrencyBalance(account ?? undefined, currency)
 

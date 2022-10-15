@@ -306,7 +306,7 @@ export function useToken721BalanceTokens(tokenAmount?: TokenAmount): {
               symbol: tokenAmount.token.symbol,
               uri:
                 chainId === ChainId.GÖRLI && isTest721(tokenAmount.token.address)
-                  ? `https://info.chainswap.com/${tokenAmount.token.name.split(' ').join('')}/${id}.jpg`
+                  ? `https://info.chainswap.com/${tokenAmount.token?.name?.split(' ').join('')}/${id}.jpg`
                   : undefined
             })
         )

@@ -33,11 +33,19 @@ declare module '@mui/material/styles/createTheme' {
     gradient: Gradient
     height: Height
     width: Width
+    color: {
+      color1: string
+      color2: string
+    }
   }
   interface Theme {
     gradient: Gradient
     height: Height
     width: Width
+    color: {
+      color1: string
+      color2: string
+    }
   }
 }
 
@@ -341,6 +349,10 @@ export const theme = createTheme({
     allVariants: {
       fontFamily: FONTS.content
     }
+  },
+  color: {
+    color1: '#eee',
+    color2: '#FCFCFC'
   }
 })
 
@@ -354,6 +366,10 @@ export const themeDark = createTheme({
     allVariants: {
       fontFamily: FONTS.content
     }
+  },
+  color: {
+    color1: '#343739',
+    color2: '#212324'
   }
 })
 
