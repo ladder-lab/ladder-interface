@@ -104,12 +104,14 @@ export default function SelectCurrencyModal({
 
   const commonCur = useMemo(() => {
     const curList: Currency[] = [ETHER]
-    Object.keys(allTokens).map(key => {
-      const token = allTokens[key as keyof typeof allTokens]
-      if (token?.symbol && COMMON_CURRENCIES.includes(token.symbol)) {
-        curList.push(token)
-      }
-    })
+    Object.keys(allTokens)
+      .map(key => {
+        const token = allTokens[key as keyof typeof allTokens]
+        if (token?.symbol && COMMON_CURRENCIES.includes(token.symbol)) {
+          curList.push(token)
+        }
+      })
+      .slice(0, 4)
     return curList
   }, [allTokens])
 

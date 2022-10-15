@@ -90,15 +90,13 @@ function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean):
   }, [chainId, userAddedTokens, tokenMap, includeUserAdded])
 }
 const testTokens = {
-  '0xD64b11169B87030EB5647Add8265d2F1D30cF2e6': new WrappedTokenInfo(
+  '0xd4C70114d12b05eACE5749dF0878891570BB0BEE': new WrappedTokenInfo(
     {
-      chainId: 4,
-      address: '0xD64b11169B87030EB5647Add8265d2F1D30cF2e6',
+      chainId: 5,
+      address: '0xd4C70114d12b05eACE5749dF0878891570BB0BEE',
       decimals: 18,
-      symbol: 'TEST',
-      name: 'Test Coin',
-      logoURI:
-        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735/logo.png'
+      symbol: 'MTEST',
+      name: 'MTEST'
     },
     []
   )
@@ -107,7 +105,7 @@ export function useAllTokens(): { [address: string]: Token } {
   const allTokens = useDefaultTokenList()
   //add user added tokens
   const tokens = useTokensFromMap(allTokens, true)
-  return useMemo(() => ({ ...tokens, ...(NETWORK_CHAIN_ID === 4 ? testTokens : {}) }), [tokens])
+  return useMemo(() => ({ ...tokens, ...(NETWORK_CHAIN_ID === 5 ? testTokens : {}) }), [tokens])
 }
 
 // parse a name or symbol from a token response
