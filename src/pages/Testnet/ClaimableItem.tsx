@@ -61,7 +61,7 @@ export default function ClaimableItem({
           </Link>
         )}
       </Box>
-      <Typography fontWeight={600} color={theme.palette.text.secondary}>
+      <Typography sx={{ mb: { xs: 15, sm: 0 } }} fontWeight={600} color={theme.palette.text.secondary}>
         Amount: <span style={{ color: theme.palette.info.main }}>{amount}</span>/{amount} Claimable
       </Typography>
       {!isDownMd && (
