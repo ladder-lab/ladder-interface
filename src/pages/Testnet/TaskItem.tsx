@@ -1,7 +1,14 @@
 import { Box, Typography, useTheme } from '@mui/material'
+import { routes } from 'constants/routes'
+import { useActiveWeb3React } from 'hooks'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Axios } from 'utils/axios'
+import { TestnetNFTSwapDataProp, useTestnetNFTSwapData } from 'hooks/useTestnetBacked'
 
-export default function TaskItem({ completed }: { completed: boolean }) {
+function TaskItem({ title, completed, to }: { title: string; completed: boolean; to?: () => void }) {
   const theme = useTheme()
+  const navigate = useNavigate()
   return (
     <Box
       sx={{
@@ -17,7 +24,7 @@ export default function TaskItem({ completed }: { completed: boolean }) {
       }}
     >
       <Typography fontSize={16} fontWeight={600} mr={10}>
-        {completed ? <s>Finish at least 1 ERC 721 SELL</s> : 'Finish at least 1 ERC 721 SELL'}
+        {completed ? <s>{title}</s> : title}
       </Typography>
       {completed ? (
         <Box display={'flex'} alignItems="center">
@@ -42,8 +49,10 @@ export default function TaskItem({ completed }: { completed: boolean }) {
         <Box
           display={'flex'}
           alignItems="center"
+          onClick={to ? to : () => navigate(routes.swap)}
           sx={{
-            cursor: 'pointer'
+            cursor: 'pointer',
+            mt: { xs: 10, sm: 0 }
           }}
         >
           <Typography mr={10} fontWeight={600} color={theme.palette.info.main}>
@@ -65,5 +74,64 @@ export default function TaskItem({ completed }: { completed: boolean }) {
         </Box>
       )}
     </Box>
+  )
+}
+
+function PairCheck({ account }: { account: string | undefined }) {
+  const [isFin, setIsFin] = useState(false)
+  useEffect(() => {
+    if (!account) {
+      setIsFin(false)
+      return
+    }
+    Axios.get('/checkLpByAddress', { address: account })
+      .then(res => {
+        if (res.data?.data) {
+          setIsFin(true)
+        } else {
+          setIsFin(false)
+        }
+      })
+      .catch(() => setIsFin(false))
+  }, [account])
+
+  return <TaskItem title="Become Pool LP Test-NFT/Test Token pair" completed={isFin} />
+}
+
+function NFTTransCheck({
+  swapTokens,
+  type
+}: {
+  swapTokens: TestnetNFTSwapDataProp[] | undefined
+  type: 'ERC721' | 'ERC1155'
+}) {
+  const buyCompleted = useMemo(
+    () => (swapTokens ? swapTokens.filter(item => item.buyToken === type).length > 0 : false),
+    [swapTokens, type]
+  )
+  const sellCompleted = useMemo(
+    () => (swapTokens ? swapTokens.filter(item => item.sellToken === type).length > 0 : false),
+    [swapTokens, type]
+  )
+
+  return (
+    <>
+      <TaskItem title={`Finish at least 1 ${type} BUY`} completed={buyCompleted} />
+      <TaskItem title={`Finish at least 1 ${type} SELL`} completed={sellCompleted} />
+    </>
+  )
+}
+
+export default function TaskBox() {
+  const { account } = useActiveWeb3React()
+  const NFT721SwapData = useTestnetNFTSwapData(account || undefined, 2)
+  const NFT1155SwapData = useTestnetNFTSwapData(account || undefined, 1)
+
+  return (
+    <>
+      <PairCheck account={account || undefined} />
+      <NFTTransCheck swapTokens={NFT721SwapData} type="ERC721" />
+      <NFTTransCheck swapTokens={NFT1155SwapData} type="ERC1155" />
+    </>
   )
 }
