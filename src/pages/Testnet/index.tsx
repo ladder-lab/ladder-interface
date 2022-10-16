@@ -14,7 +14,7 @@ import { isAddress } from 'utils'
 import Collapse from 'components/Collapse'
 import Input from 'components/Input'
 import ClaimableItem from './ClaimableItem'
-import TaskItem from './TaskItem'
+import TaskBox from './TaskItem'
 import { Timer } from 'components/Timer'
 import { useMemo, useState } from 'react'
 import { Token } from 'constants/token'
@@ -264,7 +264,7 @@ export default function Testnet() {
                   <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
                     Round 1
                   </Typography>
-                  <Typography fontSize={16} fontWeight={600}>
+                  <Typography fontSize={16} sx={{ mt: { xs: 6 } }} fontWeight={600}>
                     Ladder ETH Main Testnet-Round 1
                   </Typography>
                 </Box>
@@ -332,7 +332,7 @@ export default function Testnet() {
                       display: 'grid',
                       gridTemplateColumns: { xs: '1fr', sm: '5fr 5fr 1.6fr' },
                       alignItems: 'center',
-                      gap: '24px 10px',
+                      gap: { xs: '10px', sm: '24px 10px' },
                       padding: '20px',
                       backgroundColor: theme.palette.background.default,
                       borderRadius: theme.shape.borderRadius + 'px'
@@ -374,10 +374,7 @@ export default function Testnet() {
               <Box>
                 <StepTitle step={3} title="Complete testnet tasks" />
                 <Stack spacing={12} mt={28}>
-                  <TaskItem completed />
-                  <TaskItem completed />
-                  <TaskItem completed={false} />
-                  <TaskItem completed={false} />
+                  <TaskBox />
                 </Stack>
               </Box>
             </Stack>
@@ -393,7 +390,7 @@ export default function Testnet() {
                   <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
                     Round 2
                   </Typography>
-                  <Typography fontSize={16} fontWeight={600}>
+                  <Typography fontSize={16} sx={{ mt: { xs: 6 } }} fontWeight={600}>
                     Ladder ETH Main Testnet-Round 2
                   </Typography>
                 </Box>
