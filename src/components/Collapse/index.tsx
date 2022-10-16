@@ -18,10 +18,10 @@ export default function Collapse({
     <Box>
       <Box
         display={'grid'}
-        alignItems="center"
         sx={{
           gridTemplateColumns: { xs: '1fr 36px', sm: '1fr 52px' },
-          gap: { xs: 16, sm: 28 }
+          gap: { xs: 16, sm: 28 },
+          alignItems: { xs: 'flex-start', sm: 'center' }
         }}
       >
         {title}
