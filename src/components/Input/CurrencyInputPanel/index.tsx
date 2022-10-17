@@ -190,7 +190,7 @@ export default function CurrencyInputPanel({
                 <SwapTypeButton
                   selected={swapType === SwapType.AUTO}
                   text={SwapType.AUTO}
-                  helperText="Auto selcet NFT token ID"
+                  helperText="You will receive non-selective/random NFT after each swap."
                   onClick={() => {
                     setSwapType(SwapType.AUTO)
                     onSelectSubTokens && onSelectSubTokens([])
@@ -202,7 +202,9 @@ export default function CurrencyInputPanel({
                 selected={swapType === SwapType.MANUAL}
                 text={SwapType.MANUAL}
                 helperText={
-                  enableAuto && !pairAddress ? 'Choose the input token first' : 'Selcet NFT token ID by yourself'
+                  enableAuto && !pairAddress
+                    ? 'Choose the input token first'
+                    : 'You can choose specific NFTs from the pool.'
                 }
                 onClick={handleOpenIdSelectionModal}
               />
