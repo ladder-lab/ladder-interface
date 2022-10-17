@@ -16,7 +16,6 @@ import { DEFAULT_1155_LIST } from 'constants/default1155List'
 import { DEFAULT_721_LIST } from 'constants/default721List'
 import { Token721 } from 'constants/token/token721'
 import ERC721_ABI from 'constants/abis/erc721.json'
-import { TokenType } from 'models/allTokens'
 
 // Check if currency is included in custom list from user storage
 export function useIsUserAddedToken(currency: Currency | undefined | null): boolean {

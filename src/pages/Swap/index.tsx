@@ -286,9 +286,13 @@ export default function Swap() {
   }, [fromAsset, fromErc721SubTokens, onSubTokenSelection, resetSubTokenSelection])
 
   useEffect(() => {
-    if (toAsset && checkIs721(toAsset) && toErc721SubTokens) {
-      const ids: any[] = toErc721SubTokens.map(({ tokenId }) => tokenId).filter(id => id !== undefined)
-      onSubTokenSelection(Field.OUTPUT, toAsset, ids)
+    if (toAsset && checkIs721(toAsset)) {
+      if (toErc721SubTokens) {
+        const ids: any[] = toErc721SubTokens.map(({ tokenId }) => tokenId).filter(id => id !== undefined)
+        onSubTokenSelection(Field.OUTPUT, toAsset, ids)
+      } else {
+        onSubTokenSelection(Field.OUTPUT, toAsset, [])
+      }
     } else {
       resetSubTokenSelection(Field.OUTPUT)
     }
