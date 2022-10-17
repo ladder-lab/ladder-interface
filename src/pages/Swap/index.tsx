@@ -437,16 +437,16 @@ export default function Swap() {
                   }}
                   disableAction={
                     !isValid ||
-                    (priceImpactSeverity > 3 && !isExpertMode) ||
+                    // (priceImpactSeverity > 3 && !isExpertMode) ||
                     !!swapCallbackError ||
                     (showApproveFlow && approval !== ApprovalState.APPROVED)
                   }
                   error={
                     swapInputError
                       ? swapInputError
-                      : priceImpactSeverity > 3 && !isExpertMode
-                      ? `Price Impact Too High`
-                      : undefined
+                      : // : priceImpactSeverity > 3 && !isExpertMode
+                        // ? `Price Impact Too High`
+                        undefined
                   }
                 />
               </Box>

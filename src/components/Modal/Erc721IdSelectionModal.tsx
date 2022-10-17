@@ -169,7 +169,9 @@ export default function Erc721IdSelectionModal({
               </Box>
             ) : (
               <Grid container spacing={6} width="100%">
-                {searchIdToken === null && (
+                {(searchIdToken === null ||
+                  filteredAvailableTokens?.length === 0 ||
+                  (!filteredAvailableTokens && !loading)) && (
                   <Box width={'100%'} display="flex" alignItems="center" justifyContent="center" mt={100}>
                     <Typography
                       textAlign="center"
