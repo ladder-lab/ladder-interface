@@ -40,7 +40,7 @@ function Web3StatusInner() {
     const txs = Object.values(allTransactions)
     return txs.filter(isTransactionRecent).sort(newTransactionsFirst)
   }, [allTransactions])
-  const pending = sortedRecentTransactions.filter(tx => !tx.receipt).map(tx => tx.hash)
+  const pending = sortedRecentTransactions.filter(tx => !tx.receipt && tx.from === account).map(tx => tx.hash)
   const hasPendingTransactions = !!pending.length
   const toggleWalletModal = useWalletModalToggle()
   const theme = useTheme()
@@ -132,8 +132,8 @@ export default function Web3Status() {
     return txs.filter(isTransactionRecent).sort(newTransactionsFirst)
   }, [allTransactions])
 
-  const pending = sortedRecentTransactions.filter(tx => !tx.receipt).map(tx => tx.hash)
-  const confirmed = sortedRecentTransactions.filter(tx => tx.receipt).map(tx => tx.hash)
+  const pending = sortedRecentTransactions.filter(tx => !tx.receipt && tx.from === account).map(tx => tx.hash)
+  const confirmed = sortedRecentTransactions.filter(tx => tx.receipt && tx.from === account).map(tx => tx.hash)
 
   if (!contextNetwork.active && !active) {
     return null
