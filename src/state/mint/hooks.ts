@@ -11,7 +11,7 @@ import { wrappedCurrency, wrappedCurrencyAmount } from '../../utils/wrappedCurre
 import { AppDispatch, AppState } from '../index'
 import { tryParseAmount } from '../swap/hooks'
 import { useCurrencyBalance, useTokenBalance } from '../wallet/hooks'
-import { Field, setTokenIds, typeInput } from './actions'
+import { Field, resetMintState, setTokenIds, typeInput } from './actions'
 
 const ZERO = JSBI.BigInt(0)
 
@@ -23,6 +23,7 @@ export function useMintActionHandlers(noLiquidity: boolean | undefined): {
   onFieldAInput: (typedValue: string) => void
   onFieldBInput: (typedValue: string) => void
   onSetTokenIds: (tokenIds: Array<string | number>) => void
+  onResetMintState: () => void
 } {
   const dispatch = useDispatch<AppDispatch>()
 
@@ -46,10 +47,15 @@ export function useMintActionHandlers(noLiquidity: boolean | undefined): {
     [dispatch]
   )
 
+  const onResetMintState = useCallback(() => {
+    dispatch(resetMintState())
+  }, [dispatch])
+
   return {
     onFieldAInput,
     onFieldBInput,
-    onSetTokenIds
+    onSetTokenIds,
+    onResetMintState
   }
 }
 
