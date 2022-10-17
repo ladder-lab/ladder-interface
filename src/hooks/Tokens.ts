@@ -16,6 +16,7 @@ import { DEFAULT_1155_LIST } from 'constants/default1155List'
 import { DEFAULT_721_LIST } from 'constants/default721List'
 import { Token721 } from 'constants/token/token721'
 import ERC721_ABI from 'constants/abis/erc721.json'
+import { TokenType } from 'models/allTokens'
 
 // Check if currency is included in custom list from user storage
 export function useIsUserAddedToken(currency: Currency | undefined | null): boolean {
@@ -185,7 +186,7 @@ export function useToken1155(tokenAddress?: string, tokenId?: string | number): 
   useEffect(() => {
     if (tokenAddress && library)
       checkTokenType(tokenAddress, library).then(r => {
-        if (r === 'ERC1155') {
+        if (r === 'erc1155') {
           setIs1155(true)
         }
       })
@@ -233,7 +234,7 @@ export function useToken721(
   useEffect(() => {
     if (tokenAddress && library)
       checkTokenType(tokenAddress, library).then(r => {
-        if (r === 'ERC721') {
+        if (r === 'erc721') {
           setIs721(true)
         }
       })
@@ -266,30 +267,38 @@ export function useToken721WithLoadingIndicator(
   return { loading: !!loading, token721: token721 }
 }
 
-export function useCurrency(currencyId: string | undefined, tokenId?: string | number): Currency | null | undefined {
+export function useCurrency(
+  currencyId: string | undefined,
+  tokenId?: string | number,
+  tokenStandard?: string
+): Currency | null | undefined {
   const { library } = useActiveWeb3React()
   const isETH = currencyId?.toUpperCase() === 'ETH'
   const [tokenType, setTokenType] = useState<undefined | string>(undefined)
 
   useEffect(() => {
+    if (!isETH && tokenStandard) {
+      setTokenType(tokenStandard)
+      return
+    }
     setTokenType(undefined)
     if (isETH || !currencyId || !library) return
     if (!!tokenId) {
       if (tokenId === 'erc721') {
-        setTokenType('ERC721')
+        setTokenType('erc721')
         return
       }
-      setTokenType('ERC1155')
+      setTokenType('erc1155')
       return
     }
     checkTokenType(currencyId, library).then(r => {
       setTokenType(r)
     })
-  }, [currencyId, isETH, library, tokenId])
+  }, [currencyId, isETH, library, tokenId, tokenStandard])
 
-  const token1155 = useToken1155(!isETH && tokenType === 'ERC1155' ? currencyId : undefined, tokenId)
-  const token = useToken(!isETH && tokenType === 'ERC20' ? currencyId : undefined)
-  const token721 = useToken721(!isETH && tokenType === 'ERC721' ? currencyId : undefined)
+  const token1155 = useToken1155(!isETH && tokenType === 'erc1155' ? currencyId : undefined, tokenId)
+  const token = useToken(!isETH && tokenType === 'erc20' ? currencyId : undefined)
+  const token721 = useToken721(!isETH && tokenType === 'erc721' ? currencyId : undefined)
 
   return !!token721 ? token721 : !!token1155 ? token1155 : isETH ? ETHER : token
 }
@@ -299,14 +308,14 @@ async function checkTokenType(address: string, library: any) {
   try {
     const res = await nftContract.supportsInterface(interface721[0])
     if (res === true) {
-      return 'ERC721'
+      return 'erc721'
     }
     const res2 = await nftContract.supportsInterface(interface1155[0])
     if (res2 === true) {
-      return 'ERC1155'
+      return 'erc1155'
     }
-    return 'ERC20'
+    return 'erc20'
   } catch (e) {
-    return 'ERC20'
+    return 'erc20'
   }
 }

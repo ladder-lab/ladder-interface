@@ -44,15 +44,18 @@ function SwapTypeButton({
   onClick,
   text,
   helperText,
-  selected
+  selected,
+  disabled
 }: {
   onClick: () => void
   text: string
   helperText: string
   selected: boolean
+  disabled?: boolean
 }) {
   return (
     <ButtonBase
+      disabled={disabled}
       onClick={onClick}
       sx={{
         height: 22,
@@ -181,7 +184,7 @@ export default function CurrencyInputPanel({
                 <SwapTypeButton
                   selected={swapType === SwapType.AUTO}
                   text={SwapType.AUTO}
-                  helperText="auto..."
+                  helperText="Auto selcet NFT token ID"
                   onClick={() => {
                     setSwapType(SwapType.AUTO)
                     onSelectSubTokens && onSelectSubTokens([])
@@ -189,9 +192,12 @@ export default function CurrencyInputPanel({
                 />
               )}
               <SwapTypeButton
+                disabled={enableAuto && !pairAddress}
                 selected={swapType === SwapType.MANUAL}
                 text={SwapType.MANUAL}
-                helperText="choose by yourself..."
+                helperText={
+                  enableAuto && !pairAddress ? 'Choose the input token first' : 'Selcet NFT token ID by yourself'
+                }
                 onClick={handleOpenIdSelectionModal}
               />
             </Box>
