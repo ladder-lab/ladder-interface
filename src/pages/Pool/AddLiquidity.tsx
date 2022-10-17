@@ -195,8 +195,8 @@ export default function AddLiquidy() {
     [onSetTokenIds]
   )
 
-  const priceA = pair?.token1Price.equalTo('0') ? '0' : pair?.token0Price?.toFixed(8) ?? '-'
-  const priceB = pair?.token0Price.equalTo('0') ? '0' : pair?.token1Price?.toFixed(8) ?? '-'
+  const priceA = pair?.token1Price.equalTo('0') ? '0' : pair?.token0Price?.toSignificant(8) ?? '-'
+  const priceB = pair?.token0Price.equalTo('0') ? '0' : pair?.token1Price?.toSignificant(8) ?? '-'
 
   return (
     <>
@@ -256,8 +256,8 @@ export default function AddLiquidy() {
             <>
               <PriceAndPoolShare
                 data={{
-                  [`${currencyA?.name} per ${currencyB?.name}`]: trimNumberString(priceB, 2) ?? '-',
-                  [`${currencyB?.name} per ${currencyA?.name}`]: trimNumberString(priceA, 2) ?? '-',
+                  [`${currencyA?.name} per ${currencyB?.name}`]: priceB ?? '-',
+                  [`${currencyB?.name} per ${currencyA?.name}`]: priceA ?? '-',
                   ['Share of pool']: `${shareOfPool}
                       %`
                 }}
