@@ -2,19 +2,23 @@ import { Token1155 } from './token/token1155'
 import SampleNftImg from 'assets/images/sample-nft.png'
 import { ChainId } from '@ladder/sdk'
 
-const testUriNames = ['asset', 'StarTownies', 'parallel', 'Satche', 'LarisWar']
-
 const test1155List = [
-  '0x58dCF8B3Ee8C9D8255a6d8615e73e2AE1CFc4D2E',
-  '0xCcF4c4Cf1103DCBE69BDD85e50189bdc2AC21dC1',
-  '0x73a0934bbe35dC203B656e497080416b3C9F812a',
-  '0x0309CE2e95796e4eB6D3a0f5708b8980fBA10732',
-  '0x52ABc0c05d81E67B7781752e9e49DC169C43e965'
+  '0x322dE6C57eAEDbc01ab9695Ad37E0d1541014CA0',
+  '0x1F25b15E58fE4B3E3866eed0263203D6318059D8',
+  '0x11Da20BE3C3C14dAAFfBbe21743BF38D8567c7D5',
+  '0x4afd442Ffb1Db26F647C09cFEd1046141C694043',
+  '0x8Ff71Db9cBDae961b1f3bF092E815408968e2c38',
+  '0xF57b4Cd37FdF1503D3233aA498A0eE86C4b73c58',
+  '0xB6281d059A011982f46B885AaBA52dA608933757',
+  '0x3AD70F216c0be1DFB6761C957D33dE1291ca1B79',
+  '0x33d26866424F7791eB46A274F43344F6c9981A3b',
+  '0x27b1940Ebc0C54A7cEF7ebc3b5A23133582A9feF'
 ]
 const TEST_1155_LIST = test1155List.map((address, idx) => {
-  const name: string = testUriNames[idx]
-  return new Token1155(ChainId.GÖRLI, address, 1, {
-    uri: `https://info.chainswap.com/${name}/${name}.jpg`
+  return new Token1155(ChainId.GÖRLI, address, '1', {
+    name: `Test NFT-ERC1155-${idx + 1}`,
+    symbol: `TNT-${idx + 1}`,
+    uri: ` https://info.chainswap.com/file/tnt-${idx + 1}.jpg`
   })
 })
 

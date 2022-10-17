@@ -38,7 +38,7 @@ export function useSwapActionHandlers(): {
         selectCurrency({
           field,
           currencyId: 'address' in currency ? currency.address : currency === ETHER ? 'ETH' : '',
-          tokenId: 'tokenId' in currency ? currency.tokenId : undefined,
+          tokenId: is1155?.tokenId,
           standard: is1155 ? 'erc1155' : is721 ? 'erc721' : 'erc20'
         })
       )
