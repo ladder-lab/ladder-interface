@@ -174,13 +174,23 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
 }
 
 const interface1155 = ['0xd9b67a26']
+
 export function useToken1155(tokenAddress?: string, tokenId?: string | number): Token1155 | undefined | null {
+  const [is1155, setIs1155] = useState(false)
   const [meta, setMeta] = useState({ name: 'Erc1155', symbol: 'ERC1155' })
-  const { chainId } = useActiveWeb3React()
+  const { chainId, library } = useActiveWeb3React()
   const address = isAddress(tokenAddress)
   const nftContract = use1155Contract(address ? address : undefined)
-  const is1155Res = useSingleCallResult(nftContract, 'supportsInterface', interface1155)
-  const is1155 = !!is1155Res.result?.[0]
+
+  useEffect(() => {
+    if (tokenAddress && library)
+      checkTokenType(tokenAddress, library).then(r => {
+        if (r === 'ERC1155') {
+          setIs1155(true)
+        }
+      })
+  }, [library, tokenAddress])
+
   useEffect(() => {
     if (is1155 && nftContract) {
       ;(async () => {
@@ -194,9 +204,6 @@ export function useToken1155(tokenAddress?: string, tokenId?: string | number): 
     }
   }, [is1155, nftContract])
 
-  // const nameRes = useSingleCallResult(is1155 ? nftContract : null, 'name')
-  // const symbolRes = useSingleCallResult(is1155 ? nftContract : null, 'symbol')
-
   return useMemo(() => {
     if (!chainId || !address || !tokenId) return undefined
     const list = DEFAULT_1155_LIST[chainId ?? NETWORK_CHAIN_ID]
@@ -209,18 +216,28 @@ export function useToken1155(tokenAddress?: string, tokenId?: string | number): 
 }
 
 const interface721 = ['0x80ac58cd']
+
 export function useToken721(
   tokenAddress?: string,
   tokenId?: string | number | undefined,
   loadingCb?: any
 ): Token721 | undefined | null {
-  const { chainId } = useActiveWeb3React()
+  const [is721, setIs721] = useState(false)
+  const { chainId, library } = useActiveWeb3React()
   const address = isAddress(tokenAddress)
   const nftContract = use721Contract(address ? address : undefined)
-  const is721Res = useSingleCallResult(nftContract, 'supportsInterface', interface721)
-  const is721 = !!is721Res.result?.[0]
+
   const nameRes = useSingleCallResult(is721 ? nftContract : null, 'name')
   const symbolRes = useSingleCallResult(is721 ? nftContract : null, 'symbol')
+
+  useEffect(() => {
+    if (tokenAddress && library)
+      checkTokenType(tokenAddress, library).then(r => {
+        if (r === 'ERC721') {
+          setIs721(true)
+        }
+      })
+  }, [library, tokenAddress])
 
   useEffect(() => {
     loadingCb && loadingCb(!!nameRes?.loading)
@@ -230,7 +247,7 @@ export function useToken721(
     if (!chainId || !address) return undefined
     const list = DEFAULT_721_LIST[chainId ?? NETWORK_CHAIN_ID]
     if (list) {
-      const token = list.find(token721 => token721.address === tokenAddress && token721.tokenId == tokenId)
+      const token = list.find(token721 => token721.address === tokenAddress)
       if (token) return token
     }
     return nameRes.result && is721
@@ -255,30 +272,42 @@ export function useCurrency(currencyId: string | undefined, tokenId?: string | n
   const [tokenType, setTokenType] = useState<undefined | string>(undefined)
 
   useEffect(() => {
+    setTokenType(undefined)
     if (isETH || !currencyId || !library) return
-    if (tokenId) {
+    if (!!tokenId) {
       if (tokenId === 'erc721') {
         setTokenType('ERC721')
         return
       }
+      setTokenType('ERC1155')
       return
     }
-    ;(async () => {
-      const nftContract = getContract(currencyId, ERC721_ABI, library)
-      try {
-        const res = await nftContract.supportsInterface(interface721[0])
-        if (res === true) {
-          setTokenType('ERC721')
-        }
-      } catch (e) {
-        setTokenType('ERC20')
-      }
-    })()
+    checkTokenType(currencyId, library).then(r => {
+      setTokenType(r)
+    })
   }, [currencyId, isETH, library, tokenId])
 
-  const token1155 = useToken1155(!isETH && tokenId ? currencyId : undefined, tokenId)
-  const token = useToken(isETH || tokenId ? undefined : tokenType === 'ERC20' ? currencyId : undefined)
-  const token721 = useToken721(isETH ? undefined : tokenType === 'ERC721' ? currencyId : undefined)
+  const token1155 = useToken1155(!isETH && tokenType === 'ERC1155' ? currencyId : undefined, tokenId)
+  const token = useToken(!isETH && tokenType === 'ERC20' ? currencyId : undefined)
+  const token721 = useToken721(!isETH && tokenType === 'ERC721' ? currencyId : undefined)
 
   return !!token721 ? token721 : !!token1155 ? token1155 : isETH ? ETHER : token
+}
+
+async function checkTokenType(address: string, library: any) {
+  console.log(111)
+  const nftContract = getContract(address, ERC721_ABI, library)
+  try {
+    const res = await nftContract.supportsInterface(interface721[0])
+    if (res === true) {
+      return 'ERC721'
+    }
+    const res2 = await nftContract.supportsInterface(interface1155[0])
+    if (res2 === true) {
+      return 'ERC1155'
+    }
+    return 'ERC20'
+  } catch (e) {
+    return 'ERC20'
+  }
 }
