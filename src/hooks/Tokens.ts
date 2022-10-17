@@ -295,7 +295,6 @@ export function useCurrency(currencyId: string | undefined, tokenId?: string | n
 }
 
 async function checkTokenType(address: string, library: any) {
-  console.log(111)
   const nftContract = getContract(address, ERC721_ABI, library)
   try {
     const res = await nftContract.supportsInterface(interface721[0])

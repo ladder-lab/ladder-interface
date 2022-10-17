@@ -15,6 +15,10 @@ const test721List = [
   { address: '0xBA1a650Abd084AbF42742AB7df5f7E65D458481B', name: 'Azuki', symbol: 'AZUKI' }
 ]
 
+export const getTest721uri = (name: string) => {
+  return `https://info.chainswap.com/${name.split(' ').join('')}/0.jpg`
+}
+
 export const isTest721 = (address: string) => {
   const testAsset = test721List.find(item => item.address == address)
   return !!testAsset
@@ -24,7 +28,7 @@ const TEST_721_LIST = test721List.map(({ address, name, symbol }) => {
   return new Token721(ChainId.GÖRLI, address, undefined, {
     name,
     symbol,
-    uri: `https://info.chainswap.com/${name.split(' ').join('')}/0.jpg`
+    uri: getTest721uri(name)
   })
 })
 
