@@ -30,7 +30,6 @@ import { useCurrency } from 'hooks/Tokens'
 import { getSymbol } from 'utils/getSymbol'
 import { checkIs721 } from 'utils/checkIs1155'
 import { Token721 } from 'constants/token/token721'
-import { trimNumberString } from 'utils/trimNumberString'
 
 export default function AddLiquidy() {
   const [currencyA, setCurrencyA] = useState<undefined | AllTokens>(undefined)
@@ -65,7 +64,7 @@ export default function AddLiquidy() {
     poolTokenPercentage,
     error
   } = useDerivedMintInfo(currencyA, currencyB)
-  const { onFieldAInput, onFieldBInput, onSetTokenIds } = useMintActionHandlers(noLiquidity)
+  const { onFieldAInput, onFieldBInput, onSetTokenIds, onResetMintState } = useMintActionHandlers(noLiquidity)
   const shareOfPool =
     noLiquidity && price
       ? '100'
@@ -185,7 +184,12 @@ export default function AddLiquidy() {
         setCurrencyB(currency1)
       }
     }
+    return
   }, [currency0, currency1])
+
+  useEffect(() => {
+    return onResetMintState
+  }, [onResetMintState])
 
   const handleTokenIds = useCallback(
     (tokens: Token721[]) => {

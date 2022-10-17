@@ -50,7 +50,7 @@ export default function CurrencyList({
   return (
     <>
       {children}
-      <Box display="flex" gap={20} margin="20px 0">
+      <Box display="flex" gap={20} margin="20px 0" flexWrap={'wrap'}>
         {commonCurlist?.map((currency: Currency) => (
           <ButtonBase
             onClick={() => {
