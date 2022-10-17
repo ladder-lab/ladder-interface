@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useState } from 'react'
 import { Box, useTheme, Typography, Button, ButtonBase } from '@mui/material'
 import InputNumerical from 'components/Input/InputNumerical'
 import SelectButton from 'components/Button/SelectButton'
@@ -150,6 +150,12 @@ export default function CurrencyInputPanel({
     subTokenSelection()
     setSwapType(SwapType.MANUAL)
   }, [subTokenSelection])
+
+  useEffect(() => {
+    if (enableAuto && swapType === SwapType.AUTO && onSelectSubTokens) {
+      onSelectSubTokens([])
+    }
+  }, [enableAuto, onSelectSubTokens, swapType])
 
   return (
     <>
