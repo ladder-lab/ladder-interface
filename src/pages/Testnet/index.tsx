@@ -264,7 +264,7 @@ export default function Testnet() {
                   <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
                     Round 1
                   </Typography>
-                  <Typography fontSize={16} sx={{ mt: { xs: 6 } }} fontWeight={600}>
+                  <Typography fontSize={16} sx={{ mt: { xs: 6, sm: 0 } }} fontWeight={600}>
                     Ladder ETH Main Testnet-Round 1
                   </Typography>
                 </Box>
@@ -390,7 +390,7 @@ export default function Testnet() {
                   <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
                     Round 2
                   </Typography>
-                  <Typography fontSize={16} sx={{ mt: { xs: 6 } }} fontWeight={600}>
+                  <Typography fontSize={16} sx={{ mt: { xs: 6, sm: 0 } }} fontWeight={600}>
                     Ladder ETH Main Testnet-Round 2
                   </Typography>
                 </Box>
