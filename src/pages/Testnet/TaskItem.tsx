@@ -5,12 +5,24 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Axios } from 'utils/axios'
 import { TestnetNFTSwapDataProp, useTestnetNFTSwapData } from 'hooks/useTestnetBacked'
+import Pencil from 'assets/images/pencil.png'
 
-function TaskItem({ title, completed, to }: { title: string; completed: boolean; to?: () => void }) {
+function TaskItem({
+  title,
+  completed,
+  to,
+  style
+}: {
+  title: string | JSX.Element
+  completed: boolean
+  to?: () => void
+  style?: React.CSSProperties | undefined
+}) {
   const theme = useTheme()
   const navigate = useNavigate()
   return (
     <Box
+      style={style}
       sx={{
         height: { xs: 'auto', sm: 52 },
         backgroundColor: theme.palette.background.default,
@@ -20,14 +32,14 @@ function TaskItem({ title, completed, to }: { title: string; completed: boolean;
         justifyContent: 'space-between',
         flexWrap: 'wrap',
         alignItems: 'center',
-        padding: '16px 20px'
+        padding: { xs: '6px 20px 16px 20px', sm: '16px 20px' }
       }}
     >
-      <Typography fontSize={16} fontWeight={600} mr={10}>
+      <Typography fontSize={16} fontWeight={600} mr={10} sx={{ mt: { xs: 10, sm: 0 } }}>
         {completed ? <s>{title}</s> : title}
       </Typography>
       {completed ? (
-        <Box display={'flex'} alignItems="center">
+        <Box display={'flex'} alignItems="center" sx={{ mt: { xs: 10, sm: 0 } }}>
           <Typography mr={10} fontWeight={600} color={theme.palette.info.main}>
             Completed
           </Typography>
@@ -124,6 +136,7 @@ function NFTTransCheck({
 
 export default function TaskBox() {
   const { account } = useActiveWeb3React()
+  const theme = useTheme()
   const NFT721SwapData = useTestnetNFTSwapData(account || undefined, 2)
   const NFT1155SwapData = useTestnetNFTSwapData(account || undefined, 1)
 
@@ -132,6 +145,19 @@ export default function TaskBox() {
       <PairCheck account={account || undefined} />
       <NFTTransCheck swapTokens={NFT721SwapData} type="ERC721" />
       <NFTTransCheck swapTokens={NFT1155SwapData} type="ERC1155" />
+      <TaskItem
+        style={{ border: `1px solid ${theme.palette.info.main}`, backgroundColor: 'transparent' }}
+        title={
+          <Box display={'flex'}>
+            <Typography mr={10} color={theme.palette.info.main} fontWeight={600} fontSize={16}>
+              Submit feedback
+            </Typography>
+            <img src={Pencil} width={20} />
+          </Box>
+        }
+        completed={false}
+        to={() => window.open('https://forms.gle/47YEmvHWjSjLvkiE9')}
+      />
     </>
   )
 }
