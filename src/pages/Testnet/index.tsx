@@ -243,8 +243,7 @@ export default function Testnet() {
         </Box>
       </Box>
 
-      <Stack
-        spacing={40}
+      <Box
         sx={{
           width: '100%',
           height: '100%',
@@ -255,7 +254,8 @@ export default function Testnet() {
           }
         }}
       >
-        <Box
+        <Stack
+          spacing={40}
           sx={{
             width: '100%',
             maxWidth: '1144px',
@@ -508,8 +508,8 @@ export default function Testnet() {
               </Stack>
             </Collapse>
           </StyledCardWrapper>
-        </Box>
-      </Stack>
+        </Stack>
+      </Box>
     </Box>
   )
 }
