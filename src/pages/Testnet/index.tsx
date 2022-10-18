@@ -255,195 +255,209 @@ export default function Testnet() {
           }
         }}
       >
-        <StyledCardWrapper>
-          <Collapse
-            defaultOpen
-            title={
-              <RowBetween flexWrap={'wrap'}>
-                <Box display={'flex'} flexWrap={'wrap'}>
-                  <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
-                    Round 1
-                  </Typography>
-                  <Typography fontSize={16} sx={{ mt: { xs: 6, sm: 0 } }} fontWeight={600}>
-                    Ladder ETH Main Testnet-Round 1
-                  </Typography>
-                </Box>
-                <Typography fontSize={16} sx={{ mt: { xs: 6 } }} fontWeight={600}>
-                  Distance to end: <Timer timer={1665906135000} />
-                </Typography>
-              </RowBetween>
-            }
-          >
-            <Stack mt="56px" spacing={56}>
-              <Box>
+        <Box
+          sx={{
+            width: '100%',
+            maxWidth: '1144px',
+            margin: 'auto'
+          }}
+        >
+          <StyledCardWrapper>
+            <Collapse
+              defaultOpen
+              title={
                 <RowBetween flexWrap={'wrap'}>
-                  <StepTitle step={1} title="Verify Eligibility" />
+                  <Box display={'flex'} flexWrap={'wrap'}>
+                    <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                      Round 1
+                    </Typography>
+                    <Typography fontSize={16} sx={{ mt: { xs: 6, sm: 0 } }} fontWeight={600}>
+                      Ladder ETH Main Testnet-Round 1
+                    </Typography>
+                  </Box>
+                  <Typography fontSize={16} sx={{ mt: { xs: 6 } }} fontWeight={600}>
+                    Distance to end: <Timer timer={1665906135000} />
+                  </Typography>
                 </RowBetween>
-                <Box
-                  mt={28}
-                  display="grid"
-                  sx={{
-                    gridTemplateColumns: { xs: '1fr', sm: '1fr 182px 350px' },
-                    alignItems: 'center'
-                  }}
-                  gap="12px"
-                >
-                  <Input
-                    value={queryAddress}
-                    onChange={e => setQueryAddress(e.target.value)}
-                    onBlur={() => {
-                      if (!isAddress(queryAddress)) setQueryAddress('')
-                    }}
-                    height="52px"
-                    placeholder="Please enter your address"
-                  />
-                  {isDownSm && queryNotice}
-                  <Button
-                    variant="outlined"
-                    sx={{
-                      height: 52,
-                      borderColor: theme => theme.palette.info.main,
-                      color: theme => theme.palette.info.main
-                    }}
-                  >
-                    Check eligibility
-                  </Button>
-                  <Link
-                    sx={{
-                      textAlign: 'center',
-                      color: theme.palette.text.primary,
-                      textDecorationColor: theme.palette.text.primary
-                    }}
-                  >
-                    View Testnet Participant Qualification
-                  </Link>
-                </Box>
-                {!isDownSm && queryNotice}
-              </Box>
-
-              <Box>
-                <RowBetween>
-                  <StepTitle step={2} title="Claim Test Asset" />
-                </RowBetween>
+              }
+            >
+              <Stack mt="56px" spacing={56}>
                 <Box>
+                  <RowBetween flexWrap={'wrap'}>
+                    <StepTitle step={1} title="Verify Eligibility" />
+                  </RowBetween>
                   <Box
                     mt={28}
+                    display="grid"
                     sx={{
-                      display: 'grid',
-                      gridTemplateColumns: { xs: '1fr', sm: '5fr 5fr 1.6fr' },
-                      alignItems: 'center',
-                      gap: { xs: '10px', sm: '24px 10px' },
-                      padding: '20px',
-                      backgroundColor: theme.palette.background.default,
-                      borderRadius: theme.shape.borderRadius + 'px'
+                      gridTemplateColumns: { xs: '1fr', sm: '1fr 182px 350px' },
+                      alignItems: 'center'
                     }}
+                    gap="12px"
                   >
-                    {faucetTokens.map((item, index) => (
-                      <ClaimableItem key={index} token={item.token} amount={item.amount} />
-                    ))}
-                    <ClaimableItem nftInfo={{ name: 'laddertest-erc1155' }} amount={'5'} />
-                    <ClaimableItem nftInfo={{ name: 'laddertest-erc721' }} amount={'20'} />
+                    <Input
+                      value={queryAddress}
+                      onChange={e => setQueryAddress(e.target.value)}
+                      onBlur={() => {
+                        if (!isAddress(queryAddress)) setQueryAddress('')
+                      }}
+                      height="52px"
+                      placeholder="Please enter your address"
+                    />
+                    {isDownSm && queryNotice}
+                    <Button
+                      variant="outlined"
+                      sx={{
+                        height: 52,
+                        borderColor: theme => theme.palette.info.main,
+                        color: theme => theme.palette.info.main
+                      }}
+                    >
+                      Check eligibility
+                    </Button>
+                    <Link
+                      sx={{
+                        textAlign: 'center',
+                        color: theme.palette.text.primary,
+                        textDecorationColor: theme.palette.text.primary
+                      }}
+                    >
+                      View Testnet Participant Qualification
+                    </Link>
                   </Box>
-                  <Box display={'flex'} flexDirection="row-reverse" mt={16}>
-                    <StyledButtonWrapper>
-                      {account ? (
-                        <StyledButtonWrapper>
-                          <ActionButton
-                            pending={claimState === ClaimState.UNKNOWN}
-                            onAction={testnetClaim}
-                            actionText="Claim your test assets"
-                            error={
-                              claimState === ClaimState.UNCLAIMED
-                                ? undefined
-                                : claimState === ClaimState.CLAIMED
-                                ? 'Test assets Claimed'
-                                : 'Address not registered'
-                            }
-                          />
-                        </StyledButtonWrapper>
-                      ) : (
-                        <StyledButtonWrapper>
-                          <Button onClick={toggleWalletModal}>Connect the wallet to claim your test assets</Button>
-                        </StyledButtonWrapper>
-                      )}
-                    </StyledButtonWrapper>
+                  {!isDownSm && queryNotice}
+                </Box>
+
+                <Box>
+                  <RowBetween>
+                    <StepTitle step={2} title="Claim Test Asset" />
+                  </RowBetween>
+                  <Box>
+                    <Box
+                      mt={28}
+                      sx={{
+                        display: 'grid',
+                        gridTemplateColumns: { xs: '1fr', sm: '5fr 5fr 1.6fr' },
+                        alignItems: 'center',
+                        gap: { xs: '10px', sm: '24px 10px' },
+                        padding: '20px',
+                        backgroundColor: theme.palette.background.default,
+                        borderRadius: theme.shape.borderRadius + 'px'
+                      }}
+                    >
+                      {faucetTokens.map((item, index) => (
+                        <ClaimableItem key={index} token={item.token} amount={item.amount} />
+                      ))}
+                      <ClaimableItem nftInfo={{ name: 'laddertest-erc1155' }} amount={'5'} />
+                      <ClaimableItem nftInfo={{ name: 'laddertest-erc721' }} amount={'20'} />
+                    </Box>
+                    <Box display={'flex'} flexDirection="row-reverse" mt={16}>
+                      <StyledButtonWrapper>
+                        {account ? (
+                          <StyledButtonWrapper>
+                            <ActionButton
+                              pending={claimState === ClaimState.UNKNOWN}
+                              onAction={testnetClaim}
+                              actionText="Claim your test assets"
+                              error={
+                                claimState === ClaimState.UNCLAIMED
+                                  ? undefined
+                                  : claimState === ClaimState.CLAIMED
+                                  ? 'Test assets Claimed'
+                                  : 'Address not registered'
+                              }
+                            />
+                          </StyledButtonWrapper>
+                        ) : (
+                          <StyledButtonWrapper>
+                            <Button onClick={toggleWalletModal}>Connect the wallet to claim your test assets</Button>
+                          </StyledButtonWrapper>
+                        )}
+                      </StyledButtonWrapper>
+                    </Box>
                   </Box>
                 </Box>
-              </Box>
 
-              <Box>
-                <StepTitle step={3} title="Complete testnet tasks" />
-                <Stack spacing={12} mt={28}>
-                  <TaskBox />
-                </Stack>
-              </Box>
-            </Stack>
-          </Collapse>
-        </StyledCardWrapper>
-
-        <StyledCardWrapper>
-          <Collapse
-            defaultOpen
-            title={
-              <RowBetween flexWrap="wrap">
-                <Box display={'flex'} flexWrap="wrap">
-                  <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
-                    Round 2
-                  </Typography>
-                  <Typography fontSize={16} sx={{ mt: { xs: 6, sm: 0 } }} fontWeight={600}>
-                    Ladder ETH Main Testnet-Round 2
-                  </Typography>
+                <Box>
+                  <StepTitle step={3} title="Complete testnet tasks" />
+                  <Stack spacing={12} mt={28}>
+                    <TaskBox />
+                  </Stack>
                 </Box>
-                <Typography sx={{ mt: { xs: 6 } }} fontSize={16} fontWeight={600}>
-                  coming soon
-                </Typography>
-              </RowBetween>
-            }
-          >
-            <Typography fontSize={16} mt={38} textAlign="center" color={theme.palette.text.secondary} fontWeight={600}>
-              We have more plans in the works, so stay tuned!
-            </Typography>
-          </Collapse>
-        </StyledCardWrapper>
+              </Stack>
+            </Collapse>
+          </StyledCardWrapper>
 
-        <StyledCardWrapper>
-          <Collapse
-            defaultOpen
-            title={
-              <RowBetween>
-                <Box display={'flex'}>
-                  <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
-                    Q&A
+          <StyledCardWrapper>
+            <Collapse
+              defaultOpen
+              title={
+                <RowBetween flexWrap="wrap">
+                  <Box display={'flex'} flexWrap="wrap">
+                    <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                      Round 2
+                    </Typography>
+                    <Typography fontSize={16} sx={{ mt: { xs: 6, sm: 0 } }} fontWeight={600}>
+                      Ladder ETH Main Testnet-Round 2
+                    </Typography>
+                  </Box>
+                  <Typography sx={{ mt: { xs: 6 } }} fontSize={16} fontWeight={600}>
+                    coming soon
                   </Typography>
-                </Box>
-              </RowBetween>
-            }
-          >
-            <Stack spacing={44}>
-              <Box mt={56}>
-                <StyledQATitle>1. Who can participate in this R1 Testnet</StyledQATitle>
-                {/* <Table
+                </RowBetween>
+              }
+            >
+              <Typography
+                fontSize={16}
+                mt={38}
+                textAlign="center"
+                color={theme.palette.text.secondary}
+                fontWeight={600}
+              >
+                We have more plans in the works, so stay tuned!
+              </Typography>
+            </Collapse>
+          </StyledCardWrapper>
+
+          <StyledCardWrapper>
+            <Collapse
+              defaultOpen
+              title={
+                <RowBetween>
+                  <Box display={'flex'}>
+                    <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                      Q&A
+                    </Typography>
+                  </Box>
+                </RowBetween>
+              }
+            >
+              <Stack spacing={44}>
+                <Box mt={56}>
+                  <StyledQATitle>1. Who can participate in this R1 Testnet</StyledQATitle>
+                  {/* <Table
                   fontSize="15px"
                   header={['Qualification', 'Source', 'Number', 'Note']}
                   rows={qaTableData}
                 ></Table> */}
-                <StyledQABody>Planning</StyledQABody>
-              </Box>
-              <Box>
-                <StyledQATitle>2. What happens after R1 testnet?</StyledQATitle>
-                <StyledQABody>Planning</StyledQABody>
-              </Box>
-              <Box>
-                <StyledQATitle>3. What is a Ladder?</StyledQATitle>
-                <StyledQABody>Slogan/Introduction</StyledQABody>
-              </Box>
-              <Box>
-                <StyledQATitle>4. Where can I see upcoming event updates?</StyledQATitle>
-                <StyledQABody>social link entry</StyledQABody>
-              </Box>
-            </Stack>
-          </Collapse>
-        </StyledCardWrapper>
+                  <StyledQABody>Planning</StyledQABody>
+                </Box>
+                <Box>
+                  <StyledQATitle>2. What happens after R1 testnet?</StyledQATitle>
+                  <StyledQABody>Planning</StyledQABody>
+                </Box>
+                <Box>
+                  <StyledQATitle>3. What is a Ladder?</StyledQATitle>
+                  <StyledQABody>Slogan/Introduction</StyledQABody>
+                </Box>
+                <Box>
+                  <StyledQATitle>4. Where can I see upcoming event updates?</StyledQATitle>
+                  <StyledQABody>social link entry</StyledQABody>
+                </Box>
+              </Stack>
+            </Collapse>
+          </StyledCardWrapper>
+        </Box>
       </Stack>
     </Box>
   )
