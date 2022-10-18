@@ -76,7 +76,7 @@ export default function ERC721List({
       <Input
         value={searchQueryNFT}
         onChange={handleInput}
-        placeholder="Search address"
+        placeholder="Search name or paste address"
         // outlined
         startAdornment={<SearchIcon />}
         onKeyDown={handleEnter721}
