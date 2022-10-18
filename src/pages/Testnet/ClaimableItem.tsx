@@ -8,11 +8,13 @@ import { addTokenToMetamask, getEtherscanLink } from 'utils'
 export default function ClaimableItem({
   token,
   nftInfo,
-  amount
+  amount,
+  claimable
 }: {
   token?: Token
   nftInfo?: { name: string }
   amount: string
+  claimable: string
 }) {
   const theme = useTheme()
   const isDownMd = useBreakpoint('sm')
@@ -76,7 +78,7 @@ export default function ClaimableItem({
         )}
       </Box>
       <Typography sx={{ mb: { xs: 15, sm: 0 } }} fontWeight={600} color={theme.palette.text.secondary}>
-        Amount: <span style={{ color: theme.palette.info.main }}>{amount}</span>/{amount} Claimable
+        Amount: <span style={{ color: theme.palette.info.main }}>{claimable}</span>/{amount} Claimable
       </Typography>
       {!isDownMd && (
         <>
