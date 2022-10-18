@@ -346,10 +346,23 @@ export default function Testnet() {
                       }}
                     >
                       {faucetTokens.map((item, index) => (
-                        <ClaimableItem key={index} token={item.token} amount={item.amount} />
+                        <ClaimableItem
+                          key={index}
+                          token={item.token}
+                          amount={item.amount}
+                          claimable={claimState === ClaimState.UNCLAIMED ? item.amount : '0'}
+                        />
                       ))}
-                      <ClaimableItem nftInfo={{ name: 'laddertest-erc1155' }} amount={'5'} />
-                      <ClaimableItem nftInfo={{ name: 'laddertest-erc721' }} amount={'20'} />
+                      <ClaimableItem
+                        nftInfo={{ name: 'laddertest-erc1155' }}
+                        amount={'5'}
+                        claimable={claimState === ClaimState.UNCLAIMED ? '5' : '0'}
+                      />
+                      <ClaimableItem
+                        nftInfo={{ name: 'laddertest-erc721' }}
+                        amount={'20'}
+                        claimable={claimState === ClaimState.UNCLAIMED ? '20' : '0'}
+                      />
                     </Box>
                     <Box display={'flex'} flexDirection="row-reverse" mt={16}>
                       <StyledButtonWrapper>
@@ -434,25 +447,63 @@ export default function Testnet() {
             >
               <Stack spacing={44}>
                 <Box mt={56}>
-                  <StyledQATitle>1. Who can participate in this R1 Testnet</StyledQATitle>
+                  <StyledQATitle>1. What is Ladder?</StyledQATitle>
                   {/* <Table
                   fontSize="15px"
                   header={['Qualification', 'Source', 'Number', 'Note']}
                   rows={qaTableData}
                 ></Table> */}
-                  <StyledQABody>Planning</StyledQABody>
+                  <StyledQABody>
+                    {`Ladder is a unique AMM (Automated Market Maker) that will provide instant liquidity for NFT's
+                    including ERC-20, ERC-721, ERC-1155. Unlike other NFT marketplaces which operate on an order book
+                    style of exchange, Ladder protocol takes a different approach by using Automated Market Makers and
+                    limit orders. By doing so, we aim to provide instant swaps for NFTs with low slippage and low fees!`}
+                    <br />
+                    <br />
+                    {`On Ladder, now you can see how much certainty your NFT is backed by, or you can buy any NFT in the
+                    Pool, achieve arbitrage between the NFT AMM Pool and the floor price in other markets, or earn a
+                    commission for providing liquidity to your NFT. Ladder builds an infinite door for NFT'S!`}
+                  </StyledQABody>
                 </Box>
                 <Box>
-                  <StyledQATitle>2. What happens after R1 testnet?</StyledQATitle>
-                  <StyledQABody>Planning</StyledQABody>
+                  <StyledQATitle>2. Who can participate in the Round 1 Testnet?</StyledQATitle>
+                  <StyledQABody>
+                    Participants for Ladder Testnet will include: Holders of the Ladder ETH Merge SBT Holders of the
+                    MUADAO Ladder Testnet SBT NFT Bluechip + Hot Project Holders Holders of the Gleam Ladder Testnet
+                    Airdrops.
+                  </StyledQABody>
                 </Box>
                 <Box>
-                  <StyledQATitle>3. What is a Ladder?</StyledQATitle>
-                  <StyledQABody>Slogan/Introduction</StyledQABody>
+                  <StyledQATitle>3. What happens after Round 1 Testnet?</StyledQATitle>
+                  <StyledQABody>
+                    After round 1 of Testnet is completed, participants who completed their testing of round 1 Ladder
+                    Testnet results of participants will be taken into account. We will follow up with Testnet round 2
+                    in the near future. Pay attention to our Twitter account for opportunities to participate in round 2
+                    of ladder testnet.
+                  </StyledQABody>
                 </Box>
                 <Box>
-                  <StyledQATitle>4. Where can I see upcoming event updates?</StyledQATitle>
-                  <StyledQABody>social link entry</StyledQABody>
+                  <StyledQATitle>4. Where can I see upcoming events?</StyledQATitle>
+                  <StyledQABody>
+                    <Box>
+                      Twitter:{' '}
+                      <Link target={'_blank'} href="https://twitter.com/Laddertop_NFT">
+                        https://twitter.com/Laddertop_NFT
+                      </Link>
+                    </Box>
+                    <Box>
+                      Link3:{' '}
+                      <Link target={'_blank'} href="https://link3.to/ladder">
+                        https://link3.to/ladder
+                      </Link>
+                    </Box>
+                    <Box>
+                      Discord:{' '}
+                      <Link target={'_blank'} href="https://discord.gg/sabGRPhwUM">
+                        https://discord.gg/sabGRPhwUM
+                      </Link>
+                    </Box>
+                  </StyledQABody>
                 </Box>
               </Stack>
             </Collapse>
