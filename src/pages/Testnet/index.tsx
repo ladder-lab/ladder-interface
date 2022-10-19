@@ -75,6 +75,8 @@ const faucetTokens = [
   }
 ]
 
+const activeTimeStamp = [1666238460000, 1666843260000]
+
 export default function Testnet() {
   const theme = useTheme()
   const isDarkMode = useIsDarkMode()
@@ -159,6 +161,16 @@ export default function Testnet() {
       </>
     )
   }, [isDownSm, queryAddress, queryClaimState, theme.palette.error.main, theme.palette.info.main])
+
+  const activeTimeStatus = useMemo(() => {
+    const curTime = new Date().getTime()
+    if (curTime < activeTimeStamp[0]) {
+      return 'soon'
+    } else if (curTime >= activeTimeStamp[0] && curTime < activeTimeStamp[1]) {
+      return 'active'
+    }
+    return 'end'
+  }, [])
 
   return (
     <Box
@@ -276,7 +288,17 @@ export default function Testnet() {
                     </Typography>
                   </Box>
                   <Typography fontSize={16} sx={{ mt: { xs: 6 } }} fontWeight={600}>
-                    Distance to end: <Timer timer={1665906135000} />
+                    {activeTimeStatus === 'soon' ? (
+                      <>
+                        Distance to start: <Timer timer={activeTimeStamp[0]} />
+                      </>
+                    ) : activeTimeStatus === 'active' ? (
+                      <>
+                        Distance to end: <Timer timer={activeTimeStamp[1]} />
+                      </>
+                    ) : (
+                      'End'
+                    )}
                   </Typography>
                 </RowBetween>
               }
