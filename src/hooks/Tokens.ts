@@ -90,13 +90,23 @@ function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean):
   }, [chainId, userAddedTokens, tokenMap, includeUserAdded])
 }
 const testTokens = {
-  '0xd4C70114d12b05eACE5749dF0878891570BB0BEE': new WrappedTokenInfo(
+  '0x0F85225ab45b77DA055c5B5f9e5F4F919A1D17EA ': new WrappedTokenInfo(
     {
       chainId: 5,
-      address: '0xd4C70114d12b05eACE5749dF0878891570BB0BEE',
+      address: '0x0F85225ab45b77DA055c5B5f9e5F4F919A1D17EA',
       decimals: 18,
-      symbol: 'MTEST',
-      name: 'MTEST'
+      symbol: 'tWETH',
+      name: 'testETH-LadderV2-ETH-Testnet'
+    },
+    []
+  ),
+  '0x314195C69d8F0236939a31f64cB367764672CA0f ': new WrappedTokenInfo(
+    {
+      chainId: 5,
+      address: '0x314195C69d8F0236939a31f64cB367764672CA0f',
+      decimals: 18,
+      symbol: 'tUSDC',
+      name: 'testUSDC-LadderV2-USDC-Testnet'
     },
     []
   )
