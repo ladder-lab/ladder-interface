@@ -87,7 +87,7 @@
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
-    "@ladder/sdk": "ladder-lab/sdk.git#test_goerli",
+    "@ladder/sdk": "ladder-lab/sdk.git",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.7",
     "@uniswap/default-token-list": "^2.0.0",
