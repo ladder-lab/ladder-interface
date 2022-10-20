@@ -1,8 +1,9 @@
-import { Percent, JSBI, WETH, ChainId, Token } from '@ladder/sdk'
+import { Percent, JSBI, WETH, ChainId, Token, FACTORY_ADDRESS as sdkFactory } from '@ladder/sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
 import { NETWORK_CHAIN_ID } from './chain'
 import { DEFAULT_1155_LIST } from './default1155List'
+console.log('1155 FACTORY', sdkFactory(5))
 
 type ChainTokenList = {
   readonly [chainId in ChainId]: Token[]
