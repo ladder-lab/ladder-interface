@@ -2090,7 +2090,7 @@
 
 "@ladder/sdk@ladder-lab/sdk.git#master":
   version "3.0.5"
-  resolved "https://codeload.github.com/ladder-lab/sdk/tar.gz/f1462829c220727f013affefd2b48c8d0bef1e6b"
+  resolved "https://codeload.github.com/ladder-lab/sdk/tar.gz/3c4b82cb0cffa4a40d863a8becd2aefb796fecbe"
   dependencies:
     "@uniswap/v2-core" "^1.0.0"
     big.js "^5.2.2"
