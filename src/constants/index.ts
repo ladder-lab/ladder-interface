@@ -3,8 +3,8 @@ import { AbstractConnector } from '@web3-react/abstract-connector'
 import { fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
 import { NETWORK_CHAIN_ID } from './chain'
 import { DEFAULT_1155_LIST } from './default1155List'
-console.log('1155 FACTORY', sdkFactory(5))
-console.log('721 FACTORY', sdkFactory(5))
+console.log('1155 FACTORY', sdkFactory(5, false))
+console.log('721 FACTORY', sdkFactory(5, true))
 
 type ChainTokenList = {
   readonly [chainId in ChainId]: Token[]
