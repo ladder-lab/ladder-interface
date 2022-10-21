@@ -91,6 +91,7 @@ function TaskItem({
 
 function PairCheck({ account }: { account: string | undefined }) {
   const [isFin, setIsFin] = useState(false)
+  const navigate = useNavigate()
   useEffect(() => {
     if (!account) {
       setIsFin(false)
@@ -107,7 +108,7 @@ function PairCheck({ account }: { account: string | undefined }) {
       .catch(() => setIsFin(false))
   }, [account])
 
-  return <TaskItem title="Become Pool LP Test-NFT/Test Token pair" completed={isFin} />
+  return <TaskItem title="Become Pool LP Test-NFT/Test Token pair" completed={isFin} to={() => navigate(routes.pool)} />
 }
 
 function NFTTransCheck({
