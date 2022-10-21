@@ -10,11 +10,13 @@ import Pencil from 'assets/images/pencil.png'
 function TaskItem({
   title,
   completed,
+  rightText,
   to,
   style
 }: {
   title: string | JSX.Element
   completed: boolean
+  rightText?: string
   to?: () => void
   style?: React.CSSProperties | undefined
 }) {
@@ -68,7 +70,7 @@ function TaskItem({
           }}
         >
           <Typography mr={10} fontWeight={600} color={theme.palette.info.main}>
-            To Finish
+            {rightText || 'To Finish'}
           </Typography>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clipPath="url(#clip0_7887_10926)">
@@ -156,6 +158,7 @@ export default function TaskBox() {
             <img src={Pencil} width={20} />
           </Box>
         }
+        rightText="Submit"
         completed={false}
         to={() => window.open('https://forms.gle/47YEmvHWjSjLvkiE9')}
       />
