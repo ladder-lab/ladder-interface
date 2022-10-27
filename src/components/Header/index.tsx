@@ -22,7 +22,7 @@ import NetworkSelect from './NetworkSelect'
 import { useDarkModeManager } from 'state/user/hooks'
 import MainLogo from 'components/MainLogo'
 import useBreakpoint from 'hooks/useBreakpoint'
-// import { ReactComponent as AboutIcon } from 'assets/svg/menu/about.svg'
+import { ReactComponent as AboutIcon } from 'assets/svg/menu/about.svg'
 // import { ReactComponent as HelpCenterIcon } from 'assets/svg/menu/help_center.svg'
 // import { ReactComponent as RequestFeatureIcon } from 'assets/svg/menu/request_feature.svg'
 import { ReactComponent as DiscordIcon } from 'assets/svg/menu/discord.svg'
@@ -308,7 +308,7 @@ export function DesktopMenu() {
 
   const options = useMemo(() => {
     return [
-      // { title: 'About', link: '#', icon: <AboutIcon /> },
+      { title: 'About', link: 'https://www.ladder.top/about', icon: <AboutIcon /> },
       // { title: 'Help Center', link: '#', icon: <HelpCenterIcon /> },
       // { title: 'Request Features', link: '#', icon: <RequestFeatureIcon /> },
       { title: 'Discord', link: 'https://discord.gg/KWgkFMt9qZ', icon: <DiscordIcon /> },

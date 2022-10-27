@@ -19,6 +19,7 @@ import { Timer } from 'components/Timer'
 import { useMemo, useState } from 'react'
 import { Token } from 'constants/token'
 import { ChainId } from 'constants/chain'
+import { ReactComponent as Explore } from 'assets/svg/explore.svg'
 
 const StyledButtonWrapper = styled(Box)(({ theme }) => ({
   maxWidth: 400,
@@ -404,7 +405,7 @@ export default function Testnet() {
                         claimable={claimState === ClaimState.UNCLAIMED ? '20' : '0'}
                       />
                     </Box>
-                    <Box display={'flex'} flexDirection="row-reverse" mt={16}>
+                    <Box display={'flex'} flexDirection="row-reverse" mt={16} alignItems="center">
                       <StyledButtonWrapper>
                         {account ? (
                           <StyledButtonWrapper>
@@ -427,6 +428,18 @@ export default function Testnet() {
                           </StyledButtonWrapper>
                         )}
                       </StyledButtonWrapper>
+                      <Box margin="0 15px">
+                        <Link
+                          display={'flex'}
+                          alignItems="center"
+                          fontWeight={600}
+                          href="https://faucet.paradigm.xyz/ "
+                          target={'_blank'}
+                        >
+                          Goerli Faucet
+                          <Explore />
+                        </Link>
+                      </Box>
                     </Box>
                   </Box>
                 </Box>
