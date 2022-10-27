@@ -22,14 +22,14 @@ import NetworkSelect from './NetworkSelect'
 import { useDarkModeManager } from 'state/user/hooks'
 import MainLogo from 'components/MainLogo'
 import useBreakpoint from 'hooks/useBreakpoint'
-import { ReactComponent as AboutIcon } from 'assets/svg/menu/about.svg'
-import { ReactComponent as HelpCenterIcon } from 'assets/svg/menu/help_center.svg'
-import { ReactComponent as RequestFeatureIcon } from 'assets/svg/menu/request_feature.svg'
+// import { ReactComponent as AboutIcon } from 'assets/svg/menu/about.svg'
+// import { ReactComponent as HelpCenterIcon } from 'assets/svg/menu/help_center.svg'
+// import { ReactComponent as RequestFeatureIcon } from 'assets/svg/menu/request_feature.svg'
 import { ReactComponent as DiscordIcon } from 'assets/svg/menu/discord.svg'
 // import { ReactComponent as LanguageIcon } from 'assets/svg/menu/language.svg'
 import { ReactComponent as DarkThemeIcon } from 'assets/svg/menu/dark_theme.svg'
-import { ReactComponent as DocsIcon } from 'assets/svg/menu/docs.svg'
-import { ReactComponent as LegalPrivacyIcon } from 'assets/svg/menu/legal_privacy.svg'
+// import { ReactComponent as DocsIcon } from 'assets/svg/menu/docs.svg'
+// import { ReactComponent as LegalPrivacyIcon } from 'assets/svg/menu/legal_privacy.svg'
 
 interface TabContent {
   title: string
@@ -302,20 +302,20 @@ function MenuButton({ onClick }: { onClick: () => void }) {
   )
 }
 
-function DesktopMenu() {
+export function DesktopMenu() {
   const theme = useTheme()
   const [darkMode, toggleDarkMode] = useDarkModeManager()
 
   const options = useMemo(() => {
     return [
-      { title: 'About', link: '#', icon: <AboutIcon /> },
-      { title: 'Help Center', link: '#', icon: <HelpCenterIcon /> },
-      { title: 'Request Features', link: '#', icon: <RequestFeatureIcon /> },
+      // { title: 'About', link: '#', icon: <AboutIcon /> },
+      // { title: 'Help Center', link: '#', icon: <HelpCenterIcon /> },
+      // { title: 'Request Features', link: '#', icon: <RequestFeatureIcon /> },
       { title: 'Discord', link: 'https://discord.gg/KWgkFMt9qZ', icon: <DiscordIcon /> },
       // { title: 'Language', link: '#', icon: <LanguageIcon /> },
-      { title: darkMode ? 'LightMode' : 'Dark Theme', action: toggleDarkMode, icon: <DarkThemeIcon /> },
-      { title: 'Docs', link: '#', icon: <DocsIcon /> },
-      { title: 'Legal&Privacy', link: '#', icon: <LegalPrivacyIcon /> }
+      { title: darkMode ? 'LightMode' : 'Dark Theme', action: toggleDarkMode, icon: <DarkThemeIcon /> }
+      // { title: 'Docs', link: '#', icon: <DocsIcon /> },
+      // { title: 'Legal&Privacy', link: '#', icon: <LegalPrivacyIcon /> }
     ]
   }, [darkMode, toggleDarkMode])
 
@@ -324,8 +324,8 @@ function DesktopMenu() {
       sx={{
         background: theme.palette.background.default,
         borderRadius: '10px',
-        width: 180,
-        position: 'absolute',
+        width: { sx: '100%', sm: 180 },
+        position: { sx: 'unset', sm: 'absolute' },
         right: 0,
         top: '87px',
         padding: '10px 0'
