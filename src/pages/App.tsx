@@ -17,6 +17,7 @@ import lightBg from 'assets/images/light_bg.png'
 import { useIsDarkMode } from 'state/user/hooks'
 import RemoveLiquidity from './Pool/RemoveLiquidity'
 import Testnet from './Testnet'
+import Statistics from './Statistics'
 
 const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
   ({ theme, isDarkMode }) => ({
@@ -80,6 +81,7 @@ export default function App() {
                   <Route path={routes.testnet} element={<Testnet />} />
                   <Route path={routes.swap} element={<Swap />} />
                   <Route path={routes.pool} element={<Pool />} />
+                  <Route path={routes.statistics} element={<Statistics />} />
                   <Route path={routes.importPool} element={<ImportPool />} />
                   <Route path={routes.addLiquidity} element={<AddLiquidity />}>
                     <Route path={routes.removeLiquidityParams.slice(1)} element={<AddLiquidity />} />
