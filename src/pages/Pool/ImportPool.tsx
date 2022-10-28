@@ -48,7 +48,8 @@ export default function ImportPool() {
   const position: TokenAmount | undefined = useTokenBalance(account ?? undefined, pair?.liquidityToken)
   const hasPosition = Boolean(position && JSBI.greaterThan(position.raw, JSBI.BigInt(0)))
   const totalSupply = useTokenTotalSupply(pair?.liquidityToken)
-  const poolTokenPercentage = totalSupply && position ? new Percent(position.raw, totalSupply.raw).toFixed() + '%' : '-'
+  const poolTokenPercentage =
+    totalSupply && position ? new Percent(position.raw, totalSupply.raw).toFixed(2).trimTrailingZero() + '%' : '-'
 
   const handleAssetA = useCallback((currency: AllTokens) => {
     setAssetA(currency)
@@ -150,10 +151,10 @@ export default function ImportPool() {
             <PositionCard
               assetA={assets[0]}
               assetB={assets[1]}
-              lpBalance={position?.toExact()}
+              lpBalance={position?.toFixed(6, undefined, 2).trimTrailingZero()}
               error={error}
-              liquidityA={pair?.reserve0.toExact()}
-              liquidityB={pair?.reserve1.toExact()}
+              liquidityA={pair?.reserve0.toFixed(6, undefined, 2).trimTrailingZero()}
+              liquidityB={pair?.reserve1.toFixed(6, undefined, 2).trimTrailingZero()}
               poolShare={poolTokenPercentage}
             />
           </Box>

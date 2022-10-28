@@ -434,8 +434,8 @@ export default function Swap() {
               onChange={() => setSummaryExpanded(!summaryExpanded)}
               margin="20px 0 0"
               gasFee="8.23"
-              slippage={+(priceImpactWithoutFee?.toFixed() ?? 0)}
-              minReceiveQty={slippageAdjustedAmounts.OUTPUT?.toExact() ?? '-'}
+              slippage={+(priceImpactWithoutFee?.toFixed(2) ?? 0)}
+              minReceiveQty={slippageAdjustedAmounts.OUTPUT?.toFixed(6) ?? '-'}
               routerTokens={trade?.route.path.slice(1, -1)}
             />
           )}

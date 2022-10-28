@@ -79,11 +79,15 @@ export default function RemoveLiquidity() {
     [Field.LIQUIDITY]:
       (independentField as Field) === Field.LIQUIDITY
         ? typedValue
-        : parsedAmounts[Field.LIQUIDITY]?.toSignificant(6) ?? '',
+        : parsedAmounts[Field.LIQUIDITY]?.toSignificant(6).trimTrailingZero() ?? '',
     [Field.CURRENCY_A]:
-      independentField === Field.CURRENCY_A ? typedValue : parsedAmounts[Field.CURRENCY_A]?.toSignificant(6) ?? '',
+      independentField === Field.CURRENCY_A
+        ? typedValue
+        : parsedAmounts[Field.CURRENCY_A]?.toSignificant(6).trimTrailingZero() ?? '',
     [Field.CURRENCY_B]:
-      independentField === Field.CURRENCY_B ? typedValue : parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? ''
+      independentField === Field.CURRENCY_B
+        ? typedValue
+        : parsedAmounts[Field.CURRENCY_B]?.toSignificant(6).trimTrailingZero() ?? ''
   }
 
   const poolTokenPercentage = poolShare + '%'
@@ -168,8 +172,12 @@ export default function RemoveLiquidity() {
 
   const { Token1Text, Token2Text } = getTokenText(assets[0], assets[1])
 
-  const priceA = pair?.token0Price.equalTo('0') ? '0' : pair?.token0Price?.toFixed() ?? '-'
-  const priceB = pair?.token1Price.equalTo('0') ? '0' : pair?.token1Price?.toFixed() ?? '-'
+  const priceA = pair?.token0Price.equalTo('0')
+    ? '0'
+    : pair?.token0Price?.toFixed(6, undefined, 2).trimTrailingZero() ?? '-'
+  const priceB = pair?.token1Price.equalTo('0')
+    ? '0'
+    : pair?.token1Price?.toFixed(6, undefined, 2).trimTrailingZero() ?? '-'
   return (
     <>
       <ConfirmRemoveModal
@@ -235,7 +243,7 @@ export default function RemoveLiquidity() {
 
         <InputCard
           value={formattedAmounts[Field.LIQUIDITY]}
-          balance={balance?.toExact() ?? ''}
+          balance={balance?.toFixed(6, undefined, 2) ?? ''}
           currency0={currencyA}
           currency1={currencyB}
         />
@@ -292,9 +300,9 @@ export default function RemoveLiquidity() {
           <PositionCard
             assetA={assets[0]}
             assetB={assets[1]}
-            lpBalance={balance?.toExact()}
-            liquidityA={pair?.reserve0.toExact()}
-            liquidityB={pair?.reserve1.toExact()}
+            lpBalance={balance?.toFixed(6).trimTrailingZero()}
+            liquidityA={pair?.reserve0.toFixed(6).trimTrailingZero()}
+            liquidityB={pair?.reserve1.toFixed(6).trimTrailingZero()}
             poolShare={poolTokenPercentage}
           />
         )}

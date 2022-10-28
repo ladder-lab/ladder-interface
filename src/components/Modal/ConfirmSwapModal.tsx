@@ -76,13 +76,13 @@ export default function ConfirmSwapModal({
         <SwapPanel
           from={from}
           to={to}
-          fromVal={trade?.inputAmount.toExact() ?? '-'}
-          toVal={trade?.outputAmount.toExact() ?? '-'}
+          fromVal={trade?.inputAmount.toFixed(6) ?? '-'}
+          toVal={trade?.outputAmount.toFixed(6) ?? '-'}
           tokenIds={tokenIds}
         />
         <Typography fontSize={16} mt={16} mb={24}>
           {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {trade?.outputAmount.currency.name ?? '-'} ={' '}
-          {trade?.inputAmount.toExact()} {trade?.inputAmount.currency.name} ($1.0000)
+          {trade?.inputAmount.toFixed(6)} {trade?.inputAmount.currency.name} ($1.0000)
         </Typography>
         {showAcceptChanges && <PriceUpdateNotification onDismiss={onAcceptChanges} />}
         <Typography sx={{ fontSize: 16, color: theme.palette.text.secondary, mt: 24, mb: 24 }}>
@@ -90,10 +90,10 @@ export default function ConfirmSwapModal({
           {token1Text} or the transaction will revert.
         </Typography>
         <SwapDetails
-          ExpectedQty={trade?.outputAmount?.toExact() ?? ''}
+          ExpectedQty={trade?.outputAmount?.toFixed(6) ?? ''}
           priceImpact={priceImpact ?? ''}
           slippage={allowedSlippage / 100 + ''}
-          MinReceiveQty={slippageAdjustedAmounts.OUTPUT?.toExact() ?? ''}
+          MinReceiveQty={slippageAdjustedAmounts.OUTPUT?.toFixed(6) ?? ''}
           NetworkFee="8.23"
           toAsset={to}
         />

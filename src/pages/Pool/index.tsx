@@ -156,7 +156,9 @@ export default function Pool() {
                 const totalSupply = totalSupplies?.[liquidityTokensWithBalances[idx].liquidityToken.address]
                 pair.reserveOf
                 const poolTokenPercentage =
-                  totalSupply && balance ? new Percent(balance.raw, totalSupply.raw).toFixed() + '%' : '-'
+                  totalSupply && balance
+                    ? new Percent(balance.raw, totalSupply.raw).toFixed(2, undefined, 2).trimTrailingZero() + '%'
+                    : '-'
 
                 return (
                   <Grid item xs={12} md={6} lg={4} key={pair.liquidityToken.address}>
@@ -165,10 +167,10 @@ export default function Pool() {
                       currency1={amountB.token}
                       title={`${token1Text} / ${token2Text}
                       `}
-                      reserve0={amountA.toExact()}
-                      reserve1={amountB.toExact()}
+                      reserve0={amountA.toFixed(6, undefined, 2).trimTrailingZero()}
+                      reserve1={amountB.toFixed(6, undefined, 2).trimTrailingZero()}
                       shareAmount={poolTokenPercentage}
-                      tokenAmount={balance ? balance?.toExact() : '-'}
+                      tokenAmount={balance ? balance?.toFixed(6, undefined, 2).trimTrailingZero() : '-'}
                       onAdd={() => navigate(routes.addLiquidity + liquidityParamBuilder(amountA.token, amountB.token))}
                       onRemove={() =>
                         navigate(routes.removeLiquidity + liquidityParamBuilder(amountA.token, amountB.token))

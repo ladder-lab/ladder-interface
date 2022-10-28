@@ -37,7 +37,7 @@ function TaskItem({
         padding: { xs: '6px 20px 16px 20px', sm: '16px 20px' }
       }}
     >
-      <Typography fontSize={16} fontWeight={600} mr={10} sx={{ mt: { xs: 10, sm: 0 } }}>
+      <Typography fontSize={16} fontWeight={600} mr={10} sx={{ mt: { xs: 10, sm: 0 } }} component="div">
         {completed ? <s>{title}</s> : title}
       </Typography>
       {completed ? (

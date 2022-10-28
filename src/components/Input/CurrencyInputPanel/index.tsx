@@ -120,13 +120,6 @@ export default function CurrencyInputPanel({
     }
   }, [disableCurrencySelect, showModal, onSelectCurrency, selectedTokenType])
 
-  // const handleMax = useCallback(() => {
-  //   if (!selectedCurrencyBalance && !token1155Balance) return
-  //   onChange({
-  //     target: { value: is1155 ? token1155Balance : selectedCurrencyBalance?.toExact() ?? '0' }
-  //   } as ChangeEvent<HTMLInputElement>)
-  // }, [is1155, onChange, selectedCurrencyBalance, token1155Balance])
-
   const subTokenSelection = useCallback(() => {
     if (onSelectSubTokens) {
       showModal(

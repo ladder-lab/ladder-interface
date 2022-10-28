@@ -210,7 +210,12 @@ export default function Header() {
                   </PlainSelect>
                 </Box>
               ) : link ? (
-                <ExternalLink href={link} className={'link'} key={link + idx} style={{ fontSize: 14 }}>
+                <ExternalLink
+                  href={link}
+                  className={'link'}
+                  key={link + idx}
+                  style={{ fontSize: 14, pointerEvents: 'none' }}
+                >
                   {titleContent ?? title}
                 </ExternalLink>
               ) : (
