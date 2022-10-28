@@ -51,7 +51,7 @@ export default function ConfirmSupplyModal({
               wordBreak: 'break-all'
             }}
           >
-            {liquidityMinted?.toExact() ?? '-'}
+            {liquidityMinted?.toSignificant(6) ?? '-'}
           </Typography>
           <DoubleCurrencyLogo currency0={tokenA} currency1={tokenB} size={28} />
         </Box>

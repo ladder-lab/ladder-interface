@@ -102,11 +102,11 @@ export default function AddLiquidy() {
   )
 
   const handleMaxInputA = useCallback(() => {
-    onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')
+    onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toFixed(6, undefined, 0) ?? '')
   }, [maxAmounts, onFieldAInput])
 
   const handleMaxInputB = useCallback(() => {
-    onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
+    onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toFixed(6, undefined, 0) ?? '')
   }, [maxAmounts, onFieldBInput])
 
   const handleAddCb = useCallback(() => {
@@ -207,8 +207,12 @@ export default function AddLiquidy() {
     return flipOrder ? [currencyA, currencyB] : [currencyB, currencyA]
   }, [flipOrder, currencyA, currencyB])
 
-  const priceA = pair?.token0Price.equalTo('0') ? '0' : pair?.token0Price?.toFixed() ?? '-'
-  const priceB = pair?.token1Price.equalTo('0') ? '0' : pair?.token1Price?.toFixed() ?? '-'
+  const priceA = pair?.token0Price.equalTo('0')
+    ? '0'
+    : pair?.token0Price?.toFixed(6, undefined, 2).trimTrailingZero() ?? '-'
+  const priceB = pair?.token1Price.equalTo('0')
+    ? '0'
+    : pair?.token1Price?.toFixed(6, undefined, 2).trimTrailingZero() ?? '-'
 
   return (
     <>

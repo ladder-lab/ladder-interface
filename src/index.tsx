@@ -16,6 +16,15 @@ import MulticallUpdater from './state/multicall/updater'
 import TransactionUpdater from './state/transactions/updater'
 import getLibrary from './utils/getLibrary'
 import { Buffer } from 'buffer'
+declare global {
+  interface String {
+    trimTrailingZero(): string
+  }
+}
+
+String.prototype.trimTrailingZero = function (this: string) {
+  return this.replace(/(\.[0-9]*[1-9])0+$|\.0*$/, '$1')
+}
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 

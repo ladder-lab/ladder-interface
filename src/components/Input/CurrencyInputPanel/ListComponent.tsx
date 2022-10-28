@@ -140,7 +140,7 @@ function CurrencyRow({ currency, onClick, style }: { currency: Currency; onClick
       <span style={{ fontWeight: 500 }}>
         {balance ? (
           <StyledBalanceText title={balance.toExact()} sx={{}}>
-            {balance.toSignificant(4)}
+            {balance.toSignificant(6)}
           </StyledBalanceText>
         ) : account ? (
           <Spinner />
