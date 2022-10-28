@@ -337,7 +337,7 @@ export default function SelectCurrencyModal({
               pointerEvents: 'none',
               position: 'absolute',
               bottom: 0,
-              height: 100,
+              height: 50,
               width: '100%',
               background: `linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, ${theme.palette.background.paper} 100%);`
             }}
