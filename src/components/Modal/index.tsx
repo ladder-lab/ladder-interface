@@ -17,6 +17,7 @@ interface Props {
   padding?: string
   hasBorder?: boolean
   background?: string
+  height?: string
   backdropColor?: string
   closeVariant?: 'button' | 'plain'
 }
@@ -39,6 +40,7 @@ export default function Modal(props: Props) {
     maxWidth,
     padding,
     background,
+    height,
     backdropColor,
     closeVariant
   } = props
@@ -71,6 +73,7 @@ export default function Modal(props: Props) {
               border: hasBorder ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid transparent',
               boxShadow: 'unset',
               padding: 0,
+              height: height || 'unset',
               boxSizing: 'border-box',
               borderRadius: '12px',
               marginBottom: { xs: 0, sm: '10vh' },
@@ -86,7 +89,7 @@ export default function Modal(props: Props) {
                     width: '100%!important',
                     maxWidth: 'unset!important',
                     maxHeight: `calc(100vh - ${theme.height.mobileHeader})`,
-                    height: 'auto',
+                    height: height || 'auto',
                     borderRadius: '12px',
                     marginTop: theme.height.mobileHeader,
                     marginBottom: 0,

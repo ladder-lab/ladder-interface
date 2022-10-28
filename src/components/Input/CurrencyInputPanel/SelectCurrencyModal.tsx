@@ -22,6 +22,7 @@ import useBreakpoint from 'hooks/useBreakpoint'
 import { useAddUserToken, useIsDarkMode, useTrackedToken1155List } from 'state/user/hooks'
 import { Token1155 } from 'constants/token/token1155'
 import ERC721List from './ERC721List'
+import { useCurrencyModalListHeight } from 'hooks/useScreenSize'
 
 export enum Mode {
   ERC20 = 'erc20',
@@ -185,6 +186,7 @@ export default function SelectCurrencyModal({
       addUserToken(searchToken)
     }
   }, [addUserToken, searchToken, searchTokenIsAdded])
+  const modalHeight = useCurrencyModalListHeight('0px')
 
   return (
     <>
@@ -192,6 +194,7 @@ export default function SelectCurrencyModal({
       <Modal
         width="100%"
         maxWidth="680px"
+        height={modalHeight}
         closeIcon
         closeVariant="button"
         padding={isDownMd ? '28px 16px' : '32px 32px'}
@@ -334,7 +337,7 @@ export default function SelectCurrencyModal({
               pointerEvents: 'none',
               position: 'absolute',
               bottom: 0,
-              height: 200,
+              height: 100,
               width: '100%',
               background: `linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, ${theme.palette.background.paper} 100%);`
             }}
