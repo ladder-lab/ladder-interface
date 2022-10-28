@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { parseUnits } from '@ethersproject/units'
 import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount, Trade } from '@ladder/sdk'
@@ -169,10 +169,13 @@ export function useDerivedSwapInfo(): {
 
   const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
 
-  const currencies: { [field in Field]?: Currency } = {
-    [Field.INPUT]: inputCurrencyRaw ?? undefined,
-    [Field.OUTPUT]: outputCurrencyRaw ?? undefined
-  }
+  const currencies: { [field in Field]?: Currency } = useMemo(
+    () => ({
+      [Field.INPUT]: inputCurrencyRaw ?? undefined,
+      [Field.OUTPUT]: outputCurrencyRaw ?? undefined
+    }),
+    [inputCurrencyRaw, outputCurrencyRaw]
+  )
 
   const is721Input = checkIs721(currencies[Field.INPUT])
   const is721Output = checkIs721(currencies[Field.OUTPUT])
