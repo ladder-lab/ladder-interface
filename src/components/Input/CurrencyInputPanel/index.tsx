@@ -243,7 +243,7 @@ export default function CurrencyInputPanel({
         ) : (
           <Box flexGrow={1}>
             <InputNumerical
-              placeholder={placeholder ?? 'Enter amount to swap'}
+              placeholder={placeholder ?? 'Enter amount'}
               value={value.toString()}
               onChange={onChange}
               type={'number'}

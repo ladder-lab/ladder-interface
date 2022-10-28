@@ -1,6 +1,5 @@
 import { parseUnits } from '@ethersproject/units'
-import { CurrencyAmount, Token, TokenAmount, Currency, ETHER } from 'constants/token'
-import JSBI from 'jsbi'
+import { CurrencyAmount, Token, TokenAmount, Currency, ETHER, JSBI } from '@ladder/sdk'
 
 export function tryParseAmount(value?: string, currency?: Currency): CurrencyAmount | undefined {
   if (!value || !currency) {

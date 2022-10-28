@@ -98,7 +98,7 @@ export default function Swap() {
       // showWrap
       // ? parsedAmounts[independentField]?.toExact() ?? ''
       //   :
-      parsedAmounts[dependentField]?.toExact() ?? ''
+      parsedAmounts[dependentField]?.toFixed(6, undefined, 0) ?? ''
   }
 
   const slippageAdjustedAmounts = useMemo(
