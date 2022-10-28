@@ -74,7 +74,7 @@ export function CollectionListComponent({
   options: Token721[]
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>
 }) {
-  const isDownMd = useBreakpoint('md')
+  // const isDownMd = useBreakpoint('md')
 
   // const key = useCallback((collection: Token721): string => {
   //   return collection ? collection.tokenId?.toString() || idx + '' : ''
@@ -96,7 +96,7 @@ export function CollectionListComponent({
 
   return (
     <FixedSizeList
-      height={isDownMd ? 290 : 365}
+      height={365}
       width="100%"
       itemCount={options.length}
       itemSize={56}
