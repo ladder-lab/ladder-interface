@@ -5,7 +5,7 @@ import { useCallback, useState } from 'react'
 import { AllTokens } from 'models/allTokens'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import Tag from 'components/Tag'
-import { checkIs1155, checkIs721 } from 'utils/checkIs1155'
+import { checkIs1155, checkIs721, getTokenText } from 'utils/checkIs1155'
 import Copy from 'components/essential/Copy'
 // import SampleNftImg from 'assets/images/sample-nft.png'
 import LogoText from 'components/LogoText'
@@ -58,7 +58,7 @@ export function AssetAccordion({
       >
         <CurrencyLogo currency={token} style={{ width: 36 }} />
         <Box display="flex" flexDirection="column" gap={8} width="100%">
-          <Typography color={theme.palette.text.secondary}>Name: {getName(token) ?? '-'}</Typography>
+          <Typography color={theme.palette.text.secondary}>Name: {getTokenText(token).token1Text ?? '-'}</Typography>
           <Typography
             color={theme.palette.text.secondary}
             component="div"

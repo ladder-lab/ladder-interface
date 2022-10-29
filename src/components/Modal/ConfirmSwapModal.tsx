@@ -65,7 +65,7 @@ export default function ConfirmSwapModal({
     [originalTrade, trade]
   )
 
-  const { token1Text } = getTokenText(to)
+  const { token1Text, token2Text } = getTokenText(to, from)
 
   return (
     <Modal closeIcon customIsOpen={isOpen} customOnDismiss={onDismiss}>
@@ -81,8 +81,8 @@ export default function ConfirmSwapModal({
           tokenIds={tokenIds}
         />
         <Typography fontSize={16} mt={16} mb={24}>
-          {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {trade?.outputAmount.currency.name ?? '-'} ={' '}
-          {trade?.inputAmount.toFixed(6)} {trade?.inputAmount.currency.name} ($1.0000)
+          {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {token2Text ?? '-'} ={' '}
+          {trade?.inputAmount.toFixed(6)} {token1Text} ($1.0000)
         </Typography>
         {showAcceptChanges && <PriceUpdateNotification onDismiss={onAcceptChanges} />}
         <Typography sx={{ fontSize: 16, color: theme.palette.text.secondary, mt: 24, mb: 24 }}>
@@ -135,9 +135,9 @@ function SwapPanelRow({
       </Box>
       <Box display={'flex'} flexDirection="column" gap={8} alignItems="flex-end" width="50%">
         <Tag>{type}</Tag>
-        <Typography fontSize={type === 'ERC20' ? 16 : 20} textAlign="right">
+        <Typography fontSize={16} textAlign="right">
           {type !== 'ERC20' ? asset?.name : asset?.symbol}
-          {type === 'ERC1155' ? ` #${filter1155(asset)?.tokenId}` : ''}
+          {type === 'ERC1155' ? `#${filter1155(asset)?.tokenId}` : ''}
         </Typography>
         {tokenIds && type === 'ERC721' && <Typography>{tokenIds.map(id => `#${id} `)}</Typography>}
       </Box>
