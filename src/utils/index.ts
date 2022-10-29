@@ -165,5 +165,18 @@ export function addTokenToMetamask(address: string, symbol: string, decimals: nu
 
 export function scrollToElement(id: string) {
   const element = document.getElementById(id)
-  element?.scrollIntoView({ behavior: 'smooth' })
+  element?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+}
+
+export function formatMillion(value: number, currencyText = '', fractionDigits = 1) {
+  if (value / 1_000_000_000 >= 1) {
+    return currencyText + Number((value / 1_000_000_000).toFixed(fractionDigits)).toLocaleString() + 'b'
+  }
+  if (value / 1_000_000 >= 1) {
+    return currencyText + Number((value / 1_000_000).toFixed(fractionDigits)).toLocaleString() + 'm'
+  }
+  if (value / 1_000 >= 1) {
+    return currencyText + Number((value / 1_000).toFixed(fractionDigits)).toLocaleString() + 'k'
+  }
+  return currencyText + Number(value.toFixed(fractionDigits)).toLocaleString()
 }
