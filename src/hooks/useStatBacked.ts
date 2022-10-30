@@ -2,7 +2,7 @@ import { ChainId } from '@ladder/sdk'
 import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
 import { PoolPairType } from 'pages/Statistics'
 import { Order } from 'pages/Statistics/StatTable'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Axios, StatBaseURL } from 'utils/axios'
 
 export interface StatTopTokensProp {
@@ -398,5 +398,63 @@ export function useTransactionsList(chainId: ChainId) {
       setOrderBy: (orderBy: number | string) => setOrderBy(orderBy)
     },
     result
+  }
+}
+
+export interface StatisticsTVLProp {
+  id: number
+  tvl: string
+  volume: string
+  chainId: ChainId
+  timestamp: number
+}
+
+export function useStatisticsOverviewData(chainId: ChainId) {
+  const [loading, setLoading] = useState<boolean>(false)
+  const [result, setResult] = useState<StatisticsTVLProp[]>([])
+
+  useEffect(() => {
+    ;(async () => {
+      setLoading(true)
+      try {
+        const res = await Axios.get(StatBaseURL + 'getLadderStatistics', {
+          chainId
+        })
+        setLoading(false)
+        const data = res.data.data as any
+        if (!data) {
+          setResult([])
+          return
+        }
+        setResult(
+          data.map((item: any) =>
+            Object.assign(item, {
+              id: Number(item.id),
+              chainId: Number(item.chainId),
+              timestamp: Number(item.timestamp)
+            })
+          )
+        )
+      } catch (error) {
+        setResult([])
+        setLoading(false)
+        console.error('useStatisticsTVL', error)
+      }
+    })()
+  }, [chainId])
+
+  const total = useMemo(() => {
+    return {
+      TVLTotal: result.length ? result.map(item => Number(item.tvl) || 0).reduce((a, b) => Number(a) + Number(b)) : 0,
+      volumeTotal: result.length
+        ? result.map(item => Number(item.volume) || 0).reduce((a, b) => Number(a) + Number(b))
+        : 0
+    }
+  }, [result])
+
+  return {
+    loading: loading,
+    result,
+    ...total
   }
 }

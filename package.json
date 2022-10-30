@@ -96,7 +96,9 @@
     "dayjs": "^1.11.3",
     "decimal.js-light": "^2.5.1",
     "jsbi": "^4.3.0",
+    "lightweight-charts": "^3.7.0",
     "lottie-web": "^5.9.6",
+    "moment": "^2.29.4",
     "toformat": "^2.0.0"
   }
 }

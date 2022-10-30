@@ -1,8 +1,10 @@
 import { ChainId, Token } from '@ladder/sdk'
 import { Box, useTheme, styled, Typography, Stack, Tooltip, Link } from '@mui/material'
+import AreaChart from 'components/Chart'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { StyledPollingDot } from 'components/essential/Polling'
 import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
+import { routes } from 'constants/routes'
 import { Token1155 } from 'constants/token/token1155'
 import { Token721 } from 'constants/token/token721'
 import { useAllTokens, useToken } from 'hooks/Tokens'
@@ -11,11 +13,13 @@ import {
   useTopPoolsList,
   useTransactionsList,
   StatTransactionsType,
-  StatTransactionsProp
+  StatTransactionsProp,
+  useStatisticsOverviewData
 } from 'hooks/useStatBacked'
 import { useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useTrackedToken1155List, useTrackedToken721List } from 'state/user/hooks'
-import { formatMillion, getEtherscanLink, scrollToElement, shortenAddress } from 'utils'
+import { formatMillion, getEtherscanLink, scrollToElement, shortenAddress, timeStampToFormat } from 'utils'
 import StatTable, { TableHeadCellsProp, TableRowCellsProp } from './StatTable'
 
 const RowBetween = styled(Box)(({}) => ({
@@ -106,7 +110,9 @@ export default function Statistics() {
           <RowBetween padding="20px 0">
             <RowBetween>
               <Stack direction={'row'} spacing={24} alignItems="center">
-                <StyledTabText className="active">Overview</StyledTabText>
+                <StyledTabText className="active" onClick={() => scrollToElement('Overview')}>
+                  Overview
+                </StyledTabText>
                 <StyledTabText onClick={() => scrollToElement('TopTokens')}>Tokens</StyledTabText>
                 <StyledTabText onClick={() => scrollToElement('TopPools')}>Pools</StyledTabText>
                 <StyledTabText onClick={() => scrollToElement('Transactions')}>Transactions</StyledTabText>
@@ -124,12 +130,76 @@ export default function Statistics() {
           margin: '30px auto 80px'
         }}
       >
+        <OverviewData chainId={curChainId} />
+
         <TopTokensList chainId={curChainId} />
 
         <TopPoolsList chainId={curChainId} />
 
         <TransList chainId={curChainId} />
       </Stack>
+    </Box>
+  )
+}
+
+function OverviewData({ chainId }: { chainId: ChainId }) {
+  const { TVLTotal, result, volumeTotal } = useStatisticsOverviewData(chainId)
+  const tvlData = useMemo(() => {
+    return result
+      .filter((_, i) => i === 0)
+      .map(item => ({ time: timeStampToFormat(item.timestamp), value: Number(item.tvl) }))
+  }, [result])
+
+  const volumeData = useMemo(() => {
+    return result
+      .filter((_, i) => i === 0)
+      .map(item => ({ time: timeStampToFormat(item.timestamp), value: Number(item.volume) }))
+  }, [result])
+
+  const theme = useTheme()
+  return (
+    <Box id="Overview">
+      <Typography mb={16} fontWeight={500} fontSize={16} color={theme.palette.text.primary} mr={8}>
+        LADDER Overview
+      </Typography>
+      <Box
+        display={'grid'}
+        sx={{
+          gridTemplateColumns: '1fr 1fr',
+          gap: 20
+        }}
+      >
+        <Box
+          padding="20px"
+          sx={{
+            borderRadius: '12px',
+            backgroundColor: theme.palette.background.paper
+          }}
+        >
+          <Stack>
+            <Typography fontSize={16}>TVL</Typography>
+            <Typography fontSize={32} fontWeight={600}>
+              {formatMillion(TVLTotal, '$', 2)}
+            </Typography>
+          </Stack>
+          <AreaChart id="transaction-tvl" unit="$" height={200} areaSeriesData={tvlData} />
+        </Box>
+        <Box
+          padding="20px"
+          sx={{
+            borderRadius: '12px',
+            backgroundColor: theme.palette.background.paper
+          }}
+        >
+          <Stack>
+            <Typography fontSize={16}>Volume 24H</Typography>
+            <Typography fontSize={32} fontWeight={600}>
+              {formatMillion(volumeTotal, '$', 2)}
+            </Typography>
+          </Stack>
+          <AreaChart id="transaction-volume" unit="$" height={200} areaSeriesData={volumeData} />
+        </Box>
+      </Box>
     </Box>
   )
 }
@@ -218,7 +288,6 @@ function TopPoolsList({ chainId }: { chainId: ChainId }) {
         <ShowTopPoolsCurrencyBox
           chainId={chainId}
           tokenId={item.tokenId}
-          pair={item.pair}
           token0Info={{
             address: item.token0,
             type: item.token0Type
@@ -439,7 +508,6 @@ function ShowTopPoolsCurrencyBox({
   token0Info,
   token1Info,
   tokenId,
-  pair,
   chainId
 }: {
   token0Info: {
@@ -451,7 +519,6 @@ function ShowTopPoolsCurrencyBox({
     address: string
   }
   tokenId: number
-  pair: string
   chainId: ChainId
 }) {
   const token0 = useGetLocalToken(token0Info.type, chainId, token0Info.address)
@@ -469,12 +536,19 @@ function ShowTopPoolsCurrencyBox({
     }
     return [token1, token0]
   }, [token0, token0Info.type, token1, token1Info.type])
+  const navigate = useNavigate()
 
   return (
     <Link
       display={'flex'}
       alignItems="center"
-      href={getEtherscanLink(chainId, pair, 'token')}
+      sx={{ cursor: 'pointer' }}
+      onClick={e => {
+        e.preventDefault()
+        navigate(
+          `${routes.addLiquidity}/${sortTokens[0]?.address}/${sortTokens[1]?.address}${tokenId ? '/' + tokenId : ''}`
+        )
+      }}
       target="_blank"
       underline="hover"
     >
