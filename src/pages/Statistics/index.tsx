@@ -218,6 +218,7 @@ function TopPoolsList({ chainId }: { chainId: ChainId }) {
         <ShowTopPoolsCurrencyBox
           chainId={chainId}
           tokenId={item.tokenId}
+          pair={item.pair}
           token0Info={{
             address: item.token0,
             type: item.token0Type
@@ -410,13 +411,13 @@ function ShowTopTokensCurrencyBox({ type, chainId, address }: { type: Mode; chai
   const token = useGetLocalToken(type, chainId, address)
 
   return (
-    <Box display={'flex'}>
+    <Link display={'flex'} href={getEtherscanLink(chainId, address, 'token')} target="_blank" underline="hover">
       <CurrencyLogo currency={token} />
       <Box ml={8}>
         <Typography>{token?.name || '-'}</Typography>
         <Typography textAlign={'left'}>{token?.symbol}</Typography>
       </Box>
-    </Box>
+    </Link>
   )
 }
 
@@ -424,6 +425,7 @@ function ShowTopPoolsCurrencyBox({
   token0Info,
   token1Info,
   tokenId,
+  pair,
   chainId
 }: {
   token0Info: {
@@ -435,6 +437,7 @@ function ShowTopPoolsCurrencyBox({
     address: string
   }
   tokenId: number
+  pair: string
   chainId: ChainId
 }) {
   const token0 = useGetLocalToken(token0Info.type, chainId, token0Info.address)
@@ -454,13 +457,19 @@ function ShowTopPoolsCurrencyBox({
   }, [token0, token0Info.type, token1, token1Info.type])
 
   return (
-    <Box display={'flex'} alignItems="center">
+    <Link
+      display={'flex'}
+      alignItems="center"
+      href={getEtherscanLink(chainId, pair, 'token')}
+      target="_blank"
+      underline="hover"
+    >
       <CurrencyLogo currency={sortTokens[0]} />
       <CurrencyLogo style={{ marginLeft: -8 }} currency={sortTokens[1]} />
       <Typography ml={8}>{sortTokens[0]?.symbol || '-'}/</Typography>
       <Typography>{sortTokens[1]?.symbol || '-'}</Typography>
       {(token0Info.type !== Mode.ERC20 || token1Info.type !== Mode.ERC20) && <Typography ml={8}>#{tokenId}</Typography>}
-    </Box>
+    </Link>
   )
 }
 
