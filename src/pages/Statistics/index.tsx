@@ -309,8 +309,22 @@ function TransList({ chainId }: { chainId: ChainId }) {
         )
     },
     { label: `${formatMillion(Number(item.totalValue), '$ ', 2)}` },
-    { label: `${formatMillion(Number(item.buyAmount), '$ ', 2)}` },
-    { label: `${formatMillion(Number(item.sellAmount), '$ ', 2)}` },
+    {
+      label: (
+        <Box display={'flex'} justifyContent="center" alignItems={'center'}>
+          {`${formatMillion(Number(item.buyAmount), '', 2)}`}{' '}
+          <ShowTokenSymbol chainId={chainId} address={item.buyToken} type={item.buyTokenType} />
+        </Box>
+      )
+    },
+    {
+      label: (
+        <Box display={'flex'} justifyContent="center" alignItems={'center'}>
+          {`${formatMillion(Number(item.sellAmount), '', 2)}`}{' '}
+          <ShowTokenSymbol chainId={chainId} address={item.sellToken} type={item.sellTokenType} />
+        </Box>
+      )
+    },
     {
       label: (
         <Link href={getEtherscanLink(chainId, item.account, 'address')} target="_blank" underline="hover">
@@ -497,4 +511,10 @@ function ShowTransactionsLiquidityName({ item, chainId }: { chainId: ChainId; it
       Remove Liquidity
     </Link>
   )
+}
+
+function ShowTokenSymbol({ type, chainId, address }: { type: Mode; chainId: ChainId; address: string }) {
+  const token = useGetLocalToken(type, chainId, address)
+
+  return <>{token?.symbol}</>
 }
