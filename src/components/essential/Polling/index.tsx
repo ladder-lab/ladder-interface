@@ -34,7 +34,7 @@ const StyledPolling = styled('div')(({ theme }) => ({
   }
 }))
 
-const StyledPollingDot = styled('div')(({ theme }) => ({
+export const StyledPollingDot = styled('div')(({ theme }) => ({
   width: '8px',
   height: '8px',
   minHeight: '8px',

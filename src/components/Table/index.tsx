@@ -73,7 +73,7 @@ const StyledTableHead = styled(TableHead)(({ theme }) => ({
     whiteSpace: 'pre',
     lineHeight: '12px',
     background: 'rgba(255, 255, 255, 0.08)',
-    padding: '12px 20px 12px 0',
+    padding: '24px 20px 24px 0',
     color: theme.palette.text.secondary,
     backgroundColor: theme.palette.background.default,
     borderBottom: 'none',

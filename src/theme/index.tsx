@@ -36,6 +36,8 @@ declare module '@mui/material/styles/createTheme' {
     color: {
       color1: string
       color2: string
+      color3: string
+      color4: string
     }
   }
   interface Theme {
@@ -45,6 +47,8 @@ declare module '@mui/material/styles/createTheme' {
     color: {
       color1: string
       color2: string
+      color3: string
+      color4: string
     }
   }
 }
@@ -352,7 +356,9 @@ export const theme = createTheme({
   },
   color: {
     color1: '#eee',
-    color2: '#FCFCFC'
+    color2: '#FCFCFC',
+    color3: '#F6F6F6',
+    color4: '#fff'
   }
 })
 
@@ -369,7 +375,9 @@ export const themeDark = createTheme({
   },
   color: {
     color1: '#343739',
-    color2: '#212324'
+    color2: '#212324',
+    color3: '#343739',
+    color4: '#000'
   }
 })
 

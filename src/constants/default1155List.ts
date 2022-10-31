@@ -14,7 +14,7 @@ const test1155List = [
   '0x33d26866424F7791eB46A274F43344F6c9981A3b',
   '0x27b1940Ebc0C54A7cEF7ebc3b5A23133582A9feF'
 ]
-const TEST_1155_LIST = test1155List.map((address, idx) => {
+export const TEST_1155_LIST = test1155List.map((address, idx) => {
   return new Token1155(ChainId.GÖRLI, address, '1', {
     name: `Test NFT-ERC1155-${idx + 1}`,
     symbol: `TNT-${idx + 1}`,
