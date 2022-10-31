@@ -39,7 +39,7 @@ export function SwapSummary({
 }) {
   const theme = useTheme()
   const isDownMd = useBreakpoint('md')
-  const { Token1Text, Token2Text } = getTokenText(fromAsset, toAsset)
+  const { Token1Text, Token2Text, token2Text } = getTokenText(fromAsset, toAsset)
 
   const summary = useMemo(() => {
     return (
@@ -76,7 +76,7 @@ export function SwapSummary({
             </Box>
 
             <Typography>
-              {toVal} <span style={{ color: theme.palette.text.secondary }}>{toAsset?.symbol}s</span>
+              {toVal} <span style={{ color: theme.palette.text.secondary }}>{token2Text}s</span>
             </Typography>
           </Box>
           <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -107,7 +107,7 @@ export function SwapSummary({
             </Box>
 
             <Typography>
-              {minReceiveQty} <span style={{ color: theme.palette.text.secondary }}>{toAsset?.symbol}s</span>
+              {minReceiveQty} <span style={{ color: theme.palette.text.secondary }}>{token2Text}s</span>
             </Typography>
           </Box>
           <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -138,7 +138,18 @@ export function SwapSummary({
         </Box>
       </>
     )
-  }, [isDownMd, theme.palette.text.secondary, toVal, toAsset, slippage, minReceiveQty, gasFee, routerTokens, fromAsset])
+  }, [
+    isDownMd,
+    theme.palette.text.secondary,
+    toVal,
+    token2Text,
+    slippage,
+    minReceiveQty,
+    gasFee,
+    routerTokens,
+    fromAsset,
+    toAsset
+  ])
 
   return <Accordion summary={summary} details={details} expanded={expanded} onChange={onChange} margin={margin} />
 }
