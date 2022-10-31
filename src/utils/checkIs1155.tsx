@@ -38,12 +38,19 @@ export function getTokenText(token1: AllTokens | undefined, token2?: AllTokens |
   }
 
   const token1Is1155 = checkIs1155(token1)
+  const token1Is721 = checkIs721(token1)
+  const tokenIsNFT = token1Is1155 || token1Is721
 
-  const token1Text = (token1Is1155 ? token1?.name + ' #' + (token1 as Token1155).tokenId ?? '-' : token1?.symbol) ?? ''
+  const token1Text =
+    (token1Is1155
+      ? token1?.name + ' #' + (token1 as Token1155).tokenId ?? '-'
+      : tokenIsNFT
+      ? token1?.name
+      : token1?.symbol) ?? ''
   const Token1Text = token1Is1155
     ? ({ fontSize, color }: { fontSize?: string | number; color?: string | undefined }) => (
         <Typography component="span" color={color ?? 'primary'} fontSize={fontSize}>
-          {token1?.name + ' #' + (token1 as Token1155).tokenId ?? '-'}{' '}
+          {token1Text}
         </Typography>
       )
     : () => <>{token1Text}</>
@@ -61,11 +68,18 @@ export function getTokenText(token1: AllTokens | undefined, token2?: AllTokens |
     }
   }
   const token2Is1155 = checkIs1155(token2)
-  const token2Text = (token2Is1155 ? token2?.name + ' #' + (token2 as Token1155).tokenId ?? '-' : token2?.symbol) ?? ''
-  const Token2Text = token2Is1155
+  const token2Is721 = checkIs721(token2)
+  const token2IsNFT = token2Is1155 || token2Is721
+  const token2Text =
+    (token2Is1155
+      ? token2?.name + ' #' + (token2 as Token1155).tokenId ?? '-'
+      : token2IsNFT
+      ? token2?.name
+      : token2?.symbol) ?? ''
+  const Token2Text = token2IsNFT
     ? ({ fontSize, color }: { fontSize?: string | number; color?: string | undefined }) => (
         <Typography component="span" color={color ?? 'primary'} fontSize={fontSize}>
-          {token2?.name + ' #' + (token2 as Token1155).tokenId ?? '-'}{' '}
+          {token2Text}
         </Typography>
       )
     : () => <>{token2Text}</>
