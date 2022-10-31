@@ -9,7 +9,7 @@ import { Token721 } from 'constants/token/token721'
 import { useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { shortenAddress } from 'utils'
-import { StatTransList, TopPoolsList, useGetLocalToken } from '..'
+import { PoolPairType, StatTransList, TopPoolsList, useGetLocalToken } from '..'
 
 export default function Tokens() {
   const theme = useTheme()
@@ -21,12 +21,23 @@ export default function Tokens() {
     token1155Id: string
   }>()
   const curChainId = Number(chainId) as ChainId
-  const _token = useGetLocalToken(type as Mode, curChainId, address || '')
+  const _token = useGetLocalToken(type as Mode, curChainId, address || '', Number(token1155Id))
+
   const token = useMemo(() => {
     if (type === Mode.ERC721) return _token as Token721
     if (type === Mode.ERC1155) return _token as Token1155
     return _token as Token
   }, [_token, type])
+
+  const supportPoolPairTypes = useMemo(() => {
+    if (type === Mode.ERC721) {
+      return [PoolPairType.ERC20_ERC721]
+    }
+    if (type === Mode.ERC1155) {
+      return [PoolPairType.ERC20_ERC1155]
+    }
+    return undefined
+  }, [type])
 
   return (
     <Box
@@ -70,7 +81,7 @@ export default function Tokens() {
           </Box>
         </Box>
 
-        <TopPoolsList chainId={curChainId} token={address} />
+        <TopPoolsList supportPoolPairTypes={supportPoolPairTypes} chainId={curChainId} token={address} />
 
         <StatTransList chainId={curChainId} token={address} />
       </Stack>

@@ -141,11 +141,11 @@ const topPoolsListDataHandler = (list: any) => {
     })
   )
 }
-export function useTopPoolsList(chainId: ChainId, token?: string) {
+export function useTopPoolsList(chainId: ChainId, token?: string, defaultPoolPairType?: PoolPairType) {
   const [currentPage, setCurrentPage] = useState(1)
   const [order, setOrder] = useState<Order>('desc')
   const [orderBy, setOrderBy] = useState<string | number>('')
-  const [type, setType] = useState(PoolPairType.ERC20_ERC20)
+  const [type, setType] = useState(defaultPoolPairType || PoolPairType.ERC20_ERC20)
 
   const [firstLoadData, setFirstLoadData] = useState(true)
   const [loading, setLoading] = useState<boolean>(false)
@@ -279,7 +279,7 @@ const transactionsListDataHandler = (list: any) => {
   return list.map((item: any) =>
     Object.assign(item, {
       buyTokenType:
-        item.sellTokenType === 'ERC20' ? Mode.ERC20 : item.sellTokenType === 'ERC721' ? Mode.ERC721 : Mode.ERC1155,
+        item.buyTokenType === 'ERC20' ? Mode.ERC20 : item.buyTokenType === 'ERC721' ? Mode.ERC721 : Mode.ERC1155,
       sellTokenType:
         item.sellTokenType === 'ERC20' ? Mode.ERC20 : item.sellTokenType === 'ERC721' ? Mode.ERC721 : Mode.ERC1155,
       type: StatTransactionsType.SWAPS

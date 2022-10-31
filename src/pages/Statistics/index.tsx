@@ -278,8 +278,22 @@ function TopTokensList({ chainId }: { chainId: ChainId }) {
   )
 }
 
-export function TopPoolsList({ chainId, token }: { chainId: ChainId; token?: string }) {
-  const { search: poolsSearch, result, page, order, loading } = useTopPoolsList(chainId, token)
+export function TopPoolsList({
+  chainId,
+  token,
+  supportPoolPairTypes
+}: {
+  chainId: ChainId
+  token?: string
+  supportPoolPairTypes?: PoolPairType[]
+}) {
+  const {
+    search: poolsSearch,
+    result,
+    page,
+    order,
+    loading
+  } = useTopPoolsList(chainId, token, supportPoolPairTypes?.[0] || PoolPairType.ERC20_ERC20)
   const theme = useTheme()
 
   const headers: TableHeadCellsProp[] = [
@@ -322,7 +336,7 @@ export function TopPoolsList({ chainId, token }: { chainId: ChainId; token?: str
           <Typography fontWeight={500} fontSize={16} color={theme.palette.text.primary} mr={8}>
             {token ? 'Top Pairs' : 'Top Pools'}
           </Typography>
-          {Object.values(PoolPairType).map(item => (
+          {(supportPoolPairTypes || Object.values(PoolPairType)).map(item => (
             <StyledTabButtonText
               key={item}
               className={item === poolsSearch.type ? 'active' : ''}
@@ -394,7 +408,7 @@ export function StatTransList({ chainId, token }: { chainId: ChainId; token?: st
     {
       label: (
         <Box display={'flex'} justifyContent="center" alignItems={'center'}>
-          {`${formatMillion(Number(item.buyAmount), '', 2)}`}{' '}
+          {`${formatMillion(Number(item.buyAmount), '', 4)}`}{' '}
           <ShowTokenSymbol chainId={chainId} address={item.buyToken} type={item.buyTokenType} />
         </Box>
       )
@@ -402,7 +416,7 @@ export function StatTransList({ chainId, token }: { chainId: ChainId; token?: st
     {
       label: (
         <Box display={'flex'} justifyContent="center" alignItems={'center'}>
-          {`${formatMillion(Number(item.sellAmount), '', 2)}`}{' '}
+          {`${formatMillion(Number(item.sellAmount), '', 4)}`}{' '}
           <ShowTokenSymbol chainId={chainId} address={item.sellToken} type={item.sellTokenType} />
         </Box>
       )
@@ -498,13 +512,16 @@ export function useGetLocalToken(
     }
     if (Mode.ERC1155 === type) {
       for (const token of allToken1155) {
-        if (
-          token1155Id !== undefined &&
-          token.chainId === chainId &&
-          chainId === 5 &&
-          token.address.toLowerCase() === address.toLowerCase()
-        ) {
-          return TEST_1155_LIST.filter(i => i.address.toLowerCase() === token.address)[0]
+        if (token.chainId === chainId && chainId === 5 && token.address.toLowerCase() === address.toLowerCase()) {
+          if (!token1155Id) {
+            return token
+          }
+          const _token = TEST_1155_LIST.filter(i => i.address.toLowerCase() === token.address.toLowerCase())[0]
+          return new Token1155(chainId, token.address, token1155Id, {
+            name: _token.name,
+            symbol: _token.symbol,
+            uri: _token.uri
+          })
         }
       }
     }
