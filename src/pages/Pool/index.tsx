@@ -170,7 +170,7 @@ export default function Pool() {
                       reserve0={amountA.toFixed(6, undefined, 2).trimTrailingZero()}
                       reserve1={amountB.toFixed(6, undefined, 2).trimTrailingZero()}
                       shareAmount={poolTokenPercentage}
-                      tokenAmount={balance ? balance?.toFixed(6, undefined, 2).trimTrailingZero() : '-'}
+                      tokenAmount={balance ? balance?.toExact() : '-'}
                       onAdd={() => navigate(routes.addLiquidity + liquidityParamBuilder(amountA.token, amountB.token))}
                       onRemove={() =>
                         navigate(routes.removeLiquidity + liquidityParamBuilder(amountA.token, amountB.token))
