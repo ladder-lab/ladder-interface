@@ -9,6 +9,7 @@ export interface StatTopTokensProp {
   Volume: string
   price: string
   token: string
+  tokenId?: number
   tvl: string
   type: Mode
 }
@@ -140,7 +141,7 @@ const topPoolsListDataHandler = (list: any) => {
     })
   )
 }
-export function useTopPoolsList(chainId: ChainId) {
+export function useTopPoolsList(chainId: ChainId, token?: string) {
   const [currentPage, setCurrentPage] = useState(1)
   const [order, setOrder] = useState<Order>('desc')
   const [orderBy, setOrderBy] = useState<string | number>('')
@@ -161,16 +162,18 @@ export function useTopPoolsList(chainId: ChainId) {
     }
     setCurrentPage(1)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, type])
+  }, [chainId, type, token])
 
   useEffect(() => {
     ;(async () => {
       setLoading(true)
       try {
+        const filter = token ? { token } : {}
         const res = await Axios.get(StatBaseURL + 'getPoolList', {
           chainId,
           type: type === PoolPairType.ERC20_ERC20 ? 1 : type === PoolPairType.ERC20_ERC721 ? 2 : 3,
           pageSize,
+          ...filter,
           pageNum: currentPage,
           order,
           orderBy
@@ -191,7 +194,7 @@ export function useTopPoolsList(chainId: ChainId) {
         console.error('useTopPoolsList', error)
       }
     })()
-  }, [chainId, currentPage, order, orderBy, type])
+  }, [chainId, currentPage, order, orderBy, token, type])
 
   useEffect(() => {
     ;(async () => {
@@ -200,11 +203,13 @@ export function useTopPoolsList(chainId: ChainId) {
         return
       }
       try {
+        const filter = token ? { token } : {}
         const res = await Axios.get(StatBaseURL + 'getPoolList', {
           chainId,
           type: type === PoolPairType.ERC20_ERC20 ? 1 : type === PoolPairType.ERC20_ERC721 ? 2 : 3,
           pageSize,
           pageNum: currentPage,
+          ...filter,
           order,
           orderBy
         })
@@ -281,7 +286,7 @@ const transactionsListDataHandler = (list: any) => {
     })
   )
 }
-export function useTransactionsList(chainId: ChainId) {
+export function useTransactionsList(chainId: ChainId, token?: string) {
   const [currentPage, setCurrentPage] = useState(1)
   const [order, setOrder] = useState<Order>('desc')
   const [orderBy, setOrderBy] = useState<string | number>('')
@@ -302,12 +307,13 @@ export function useTransactionsList(chainId: ChainId) {
     }
     setCurrentPage(1)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, type])
+  }, [chainId, type, token])
 
   useEffect(() => {
     ;(async () => {
       setLoading(true)
       try {
+        const filter = token ? { token } : {}
         const res = await Axios.get(StatBaseURL + 'getSwapRecords', {
           chainId,
           type:
@@ -320,6 +326,7 @@ export function useTransactionsList(chainId: ChainId) {
               : '',
           pageSize,
           pageNum: currentPage,
+          ...filter,
           order,
           orderBy
         })
@@ -339,7 +346,7 @@ export function useTransactionsList(chainId: ChainId) {
         console.error('useTransactionsList', error)
       }
     })()
-  }, [chainId, currentPage, order, orderBy, type])
+  }, [chainId, currentPage, order, orderBy, token, type])
 
   useEffect(() => {
     ;(async () => {
@@ -348,6 +355,7 @@ export function useTransactionsList(chainId: ChainId) {
         return
       }
       try {
+        const filter = token ? { token } : {}
         const res = await Axios.get(StatBaseURL + 'getSwapRecords', {
           chainId,
           type:
@@ -359,6 +367,7 @@ export function useTransactionsList(chainId: ChainId) {
               ? 3
               : '',
           pageSize,
+          ...filter,
           pageNum: currentPage,
           order,
           orderBy
@@ -456,5 +465,73 @@ export function useStatisticsOverviewData(chainId: ChainId) {
     loading: loading,
     result,
     ...total
+  }
+}
+
+export interface StatPoolDetailProp {
+  Volume: string
+  tvl: string
+  pair: {
+    id: number
+    token0Address: string
+    token1Address: string
+    pair: string
+    token0Type: Mode
+    token1Type: Mode
+    tokenId: number
+    chainId: ChainId
+  }
+}
+
+export function usePoolDetailData(chainId: ChainId, pair: string) {
+  const [loading, setLoading] = useState<boolean>(false)
+  const [result, setResult] = useState<StatPoolDetailProp>()
+
+  useEffect(() => {
+    ;(async () => {
+      setLoading(true)
+      try {
+        const res = await Axios.get(StatBaseURL + 'getPoolDetail', {
+          chainId,
+          pair
+        })
+        setLoading(false)
+        const data = res.data.data as any
+        if (!data) {
+          setResult(undefined)
+          return
+        }
+        const _pair = Object.assign(data.pair, {
+          id: Number(data.pair.id),
+          chainId: Number(data.pair.chainId),
+          token0Type:
+            data.pair.token0Type === 'ERC20'
+              ? Mode.ERC20
+              : data.pair.token0Type === 'ERC721'
+              ? Mode.ERC721
+              : Mode.ERC1155,
+          token1Type:
+            data.pair.token1Type === 'ERC20'
+              ? Mode.ERC20
+              : data.pair.token1Type === 'ERC721'
+              ? Mode.ERC721
+              : Mode.ERC1155
+        })
+        setResult({
+          tvl: data.tvl,
+          Volume: data.Volume,
+          pair: _pair
+        })
+      } catch (error) {
+        setResult(undefined)
+        setLoading(false)
+        console.error('usePoolDetailData', error)
+      }
+    })()
+  }, [chainId, pair])
+
+  return {
+    loading: loading,
+    result
   }
 }

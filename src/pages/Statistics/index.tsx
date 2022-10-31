@@ -4,6 +4,7 @@ import AreaChart from 'components/Chart'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { StyledPollingDot } from 'components/essential/Polling'
 import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
+import { TEST_1155_LIST } from 'constants/default1155List'
 import { routes } from 'constants/routes'
 import { Token1155 } from 'constants/token/token1155'
 import { Token721 } from 'constants/token/token721'
@@ -130,19 +131,19 @@ export default function Statistics() {
           margin: '30px auto 80px'
         }}
       >
-        <OverviewData chainId={curChainId} />
+        {/* <OverviewData chainId={curChainId} /> */}
 
         <TopTokensList chainId={curChainId} />
 
         <TopPoolsList chainId={curChainId} />
 
-        <TransList chainId={curChainId} />
+        <StatTransList chainId={curChainId} />
       </Stack>
     </Box>
   )
 }
 
-function OverviewData({ chainId }: { chainId: ChainId }) {
+export function OverviewData({ chainId }: { chainId: ChainId }) {
   const { TVLTotal, result, volumeTotal } = useStatisticsOverviewData(chainId)
   const tvlData = useMemo(() => {
     return result
@@ -220,7 +221,16 @@ function TopTokensList({ chainId }: { chainId: ChainId }) {
   ]
   const rows: TableRowCellsProp[][] = result.map((item, index) => [
     { label: page.pageSize * (page.currentPage - 1) + 1 + index },
-    { label: <ShowTopTokensCurrencyBox type={topTokensSearch.type} chainId={chainId} address={item.token} /> },
+    {
+      label: (
+        <ShowTopTokensCurrencyBox
+          type={topTokensSearch.type}
+          chainId={chainId}
+          address={item.token}
+          token1155Id={item.tokenId}
+        />
+      )
+    },
     { label: `${formatMillion(Number(item.price), '$ ', 2)}` },
     { label: `${formatMillion(Number(item.Volume), '$ ', 2)}` },
     { label: `${formatMillion(Number(item.tvl), '$ ', 2)}` }
@@ -268,8 +278,8 @@ function TopTokensList({ chainId }: { chainId: ChainId }) {
   )
 }
 
-function TopPoolsList({ chainId }: { chainId: ChainId }) {
-  const { search: poolsSearch, result, page, order, loading } = useTopPoolsList(chainId)
+export function TopPoolsList({ chainId, token }: { chainId: ChainId; token?: string }) {
+  const { search: poolsSearch, result, page, order, loading } = useTopPoolsList(chainId, token)
   const theme = useTheme()
 
   const headers: TableHeadCellsProp[] = [
@@ -287,6 +297,7 @@ function TopPoolsList({ chainId }: { chainId: ChainId }) {
       label: (
         <ShowTopPoolsCurrencyBox
           chainId={chainId}
+          pair={item.pair}
           tokenId={item.tokenId}
           token0Info={{
             address: item.token0,
@@ -309,7 +320,7 @@ function TopPoolsList({ chainId }: { chainId: ChainId }) {
       <RowBetween mb={18}>
         <Stack direction={'row'} spacing={8} alignItems="center">
           <Typography fontWeight={500} fontSize={16} color={theme.palette.text.primary} mr={8}>
-            Top Pools
+            {token ? 'Top Pairs' : 'Top Pools'}
           </Typography>
           {Object.values(PoolPairType).map(item => (
             <StyledTabButtonText
@@ -321,9 +332,11 @@ function TopPoolsList({ chainId }: { chainId: ChainId }) {
             </StyledTabButtonText>
           ))}
         </Stack>
-        <Typography fontWeight={500} fontSize={16} color={theme.palette.text.primary}>
-          Explore
-        </Typography>
+        {!token && (
+          <Typography fontWeight={500} fontSize={16} color={theme.palette.text.primary}>
+            Explore
+          </Typography>
+        )}
       </RowBetween>
       <Box
         sx={{
@@ -346,8 +359,8 @@ function TopPoolsList({ chainId }: { chainId: ChainId }) {
   )
 }
 
-function TransList({ chainId }: { chainId: ChainId }) {
-  const { result, page, order, loading } = useTransactionsList(chainId)
+export function StatTransList({ chainId, token }: { chainId: ChainId; token?: string }) {
+  const { result, page, order, loading } = useTransactionsList(chainId, token)
   const theme = useTheme()
 
   const headers: TableHeadCellsProp[] = [
@@ -463,7 +476,12 @@ function ShowTime({ timeStamp, showTime }: { timeStamp: number; showTime?: boole
   return <>{str}</>
 }
 
-function useGetLocalToken(type: Mode, chainId: ChainId, address: string): Token | Token1155 | Token721 | undefined {
+export function useGetLocalToken(
+  type: Mode,
+  chainId: ChainId,
+  address: string,
+  token1155Id?: number
+): Token | Token1155 | Token721 | undefined {
   const allTokens = useAllTokens()
   const allToken1155 = useTrackedToken1155List()
   const tokenOptions = useTrackedToken721List()
@@ -471,43 +489,83 @@ function useGetLocalToken(type: Mode, chainId: ChainId, address: string): Token 
 
   return useMemo(() => {
     if (erc20Token) return erc20Token
-    for (const token of Object.values(allTokens)) {
-      if (token.chainId === chainId && token.address.toLowerCase() === address.toLowerCase()) {
-        return token
+    if (Mode.ERC20 === type) {
+      for (const token of Object.values(allTokens)) {
+        if (token.chainId === chainId && token.address.toLowerCase() === address.toLowerCase()) {
+          return token
+        }
       }
     }
-    for (const token of allToken1155) {
-      if (token.chainId === chainId && token.address.toLowerCase() === address.toLowerCase()) {
-        return token
+    if (Mode.ERC1155 === type) {
+      for (const token of allToken1155) {
+        if (
+          token1155Id !== undefined &&
+          token.chainId === chainId &&
+          chainId === 5 &&
+          token.address.toLowerCase() === address.toLowerCase()
+        ) {
+          return TEST_1155_LIST.filter(i => i.address.toLowerCase() === token.address)[0]
+        }
       }
     }
-    for (const token of tokenOptions) {
-      if (token.chainId === chainId && token.address.toLowerCase() === address.toLowerCase()) {
-        return token
+    if (Mode.ERC721 === type) {
+      for (const token of tokenOptions) {
+        if (token.chainId === chainId && token.address.toLowerCase() === address.toLowerCase()) {
+          return token
+        }
       }
     }
     return undefined
-  }, [address, allToken1155, allTokens, chainId, erc20Token, tokenOptions])
+  }, [address, allToken1155, allTokens, chainId, erc20Token, token1155Id, tokenOptions, type])
 }
 
-function ShowTopTokensCurrencyBox({ type, chainId, address }: { type: Mode; chainId: ChainId; address: string }) {
+function ShowTopTokensCurrencyBox({
+  type,
+  chainId,
+  address,
+  token1155Id
+}: {
+  type: Mode
+  chainId: ChainId
+  address: string
+  token1155Id: number | undefined
+}) {
   const token = useGetLocalToken(type, chainId, address)
+  const navigate = useNavigate()
 
   return (
-    <Link display={'flex'} href={getEtherscanLink(chainId, address, 'token')} target="_blank" underline="hover">
+    <Link
+      display={'flex'}
+      // href={getEtherscanLink(chainId, address, 'token')}
+      sx={{ cursor: 'pointer' }}
+      onClick={() => {
+        navigate(
+          routes.statisticsTokens +
+            `/${type}/${chainId}/${address}` +
+            (type === Mode.ERC1155 ? `/${token1155Id}` : '/0')
+        )
+      }}
+      target="_blank"
+      underline="hover"
+    >
       <CurrencyLogo currency={token} />
       <Box ml={8}>
-        <Typography>{token?.name || '-'}</Typography>
+        <Typography>
+          {token?.name || '-'} {type === Mode.ERC1155 ? '#' + token1155Id : ''}
+        </Typography>
         <Typography textAlign={'left'}>{token?.symbol}</Typography>
       </Box>
     </Link>
   )
 }
 
-function ShowTopPoolsCurrencyBox({
+export function ShowTopPoolsCurrencyBox({
   token0Info,
   token1Info,
   tokenId,
+  fontSize,
+  fontWeight,
+  pair,
   chainId
 }: {
   token0Info: {
@@ -519,8 +577,12 @@ function ShowTopPoolsCurrencyBox({
     address: string
   }
   tokenId: number
+  pair: string
   chainId: ChainId
+  fontSize?: number
+  fontWeight?: number
 }) {
+  const theme = useTheme()
   const token0 = useGetLocalToken(token0Info.type, chainId, token0Info.address)
   const token1 = useGetLocalToken(token1Info.type, chainId, token1Info.address)
 
@@ -539,25 +601,28 @@ function ShowTopPoolsCurrencyBox({
   const navigate = useNavigate()
 
   return (
-    <Link
+    <Box
       display={'flex'}
       alignItems="center"
       sx={{ cursor: 'pointer' }}
-      onClick={e => {
-        e.preventDefault()
-        navigate(
-          `${routes.addLiquidity}/${sortTokens[0]?.address}/${sortTokens[1]?.address}${tokenId ? '/' + tokenId : ''}`
-        )
+      onClick={() => {
+        navigate(`${routes.statisticsPools}/${chainId}/${pair}`)
       }}
-      target="_blank"
-      underline="hover"
     >
-      <CurrencyLogo currency={sortTokens[0]} />
-      <CurrencyLogo style={{ marginLeft: -8 }} currency={sortTokens[1]} />
-      <Typography ml={8}>{sortTokens[0]?.symbol || '-'}/</Typography>
-      <Typography>{sortTokens[1]?.symbol || '-'}</Typography>
-      {(token0Info.type !== Mode.ERC20 || token1Info.type !== Mode.ERC20) && <Typography ml={8}>#{tokenId}</Typography>}
-    </Link>
+      <CurrencyLogo size={fontSize ? fontSize + 'px' : '24px'} currency={sortTokens[0]} />
+      <CurrencyLogo size={fontSize ? fontSize + 'px' : '24px'} style={{ marginLeft: -8 }} currency={sortTokens[1]} />
+      <Typography fontSize={fontSize} fontWeight={fontWeight} color={theme.palette.text.primary} ml={8}>
+        {sortTokens[0]?.symbol || '-'}/
+      </Typography>
+      <Typography fontSize={fontSize} fontWeight={fontWeight} color={theme.palette.text.primary}>
+        {sortTokens[1]?.symbol || '-'}
+      </Typography>
+      {(token0Info.type === Mode.ERC1155 || token1Info.type === Mode.ERC1155) && (
+        <Typography fontSize={fontSize} fontWeight={fontWeight} color={theme.palette.text.primary} ml={8}>
+          #{tokenId}
+        </Typography>
+      )}
+    </Box>
   )
 }
 
