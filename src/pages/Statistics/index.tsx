@@ -281,11 +281,13 @@ function TopTokensList({ chainId }: { chainId: ChainId }) {
 export function TopPoolsList({
   chainId,
   token,
-  supportPoolPairTypes
+  supportPoolPairTypes,
+  defaultPoolPairType
 }: {
   chainId: ChainId
   token?: string
   supportPoolPairTypes?: PoolPairType[]
+  defaultPoolPairType?: PoolPairType | undefined
 }) {
   const {
     search: poolsSearch,
@@ -293,7 +295,7 @@ export function TopPoolsList({
     page,
     order,
     loading
-  } = useTopPoolsList(chainId, token, supportPoolPairTypes?.[0] || PoolPairType.ERC20_ERC20)
+  } = useTopPoolsList(chainId, token, defaultPoolPairType || PoolPairType.ERC20_ERC20)
   const theme = useTheme()
 
   const headers: TableHeadCellsProp[] = [

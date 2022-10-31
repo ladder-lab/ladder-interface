@@ -81,7 +81,12 @@ export default function Tokens() {
           </Box>
         </Box>
 
-        <TopPoolsList supportPoolPairTypes={supportPoolPairTypes} chainId={curChainId} token={address} />
+        <TopPoolsList
+          supportPoolPairTypes={[]}
+          defaultPoolPairType={supportPoolPairTypes?.[0]}
+          chainId={curChainId}
+          token={address}
+        />
 
         <StatTransList chainId={curChainId} token={address} />
       </Stack>
