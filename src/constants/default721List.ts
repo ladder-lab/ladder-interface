@@ -3,7 +3,7 @@ import SampleNftImg from 'assets/images/sample-nft.png'
 import { ChainId } from '@ladder/sdk'
 
 const test721List = [
-  { address: '0x54C0ac6D96D7B79c2941FaA33e61188611F4d813', name: 'Bored Ape Yacht Club', synbol: 'BAYC' },
+  { address: '0x54C0ac6D96D7B79c2941FaA33e61188611F4d813', name: 'Mutant Ape Yacht Club', synbol: 'BAYC' },
   { address: '0x9D88b325faA7b4C3E845c493fF282ed317414F6f', name: 'CryptoPunks', symbol: 'cp' },
   { address: '0x9cd61d732a7BFb6D3C1E7F1b26e5aafB3A5763cd', name: 'Chromie Squiggle ', symbol: 'CS' },
   { address: '0x0516eD436C66FC45E3353A784F64674F7DFD5940', name: 'Pudgy Penguins ', symbol: 'PPG' },
