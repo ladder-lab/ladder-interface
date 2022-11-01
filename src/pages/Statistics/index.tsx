@@ -1,27 +1,47 @@
 import { ChainId, Token } from '@ladder/sdk'
-import { Box, useTheme, styled, Typography, Stack, Tooltip, Link } from '@mui/material'
+import {
+  Box,
+  useTheme,
+  styled,
+  Typography,
+  Stack,
+  Tooltip,
+  Link,
+  MenuItem,
+  Popper,
+  ClickAwayListener,
+  Divider
+} from '@mui/material'
 import AreaChart from 'components/Chart'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { StyledPollingDot } from 'components/essential/Polling'
 import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
+import LogoText from 'components/LogoText'
+import { ChainList } from 'constants/chain'
 import { TEST_1155_LIST } from 'constants/default1155List'
 import { routes } from 'constants/routes'
 import { Token1155 } from 'constants/token/token1155'
 import { Token721 } from 'constants/token/token721'
 import { useAllTokens, useToken } from 'hooks/Tokens'
+import useBreakpoint from 'hooks/useBreakpoint'
 import {
   useTopTokensList,
   useTopPoolsList,
   useTransactionsList,
   StatTransactionsType,
   StatTransactionsProp,
-  useStatisticsOverviewData
+  useStatisticsOverviewData,
+  useSearchTokenInfo
 } from 'hooks/useStatBacked'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useTrackedToken1155List, useTrackedToken721List } from 'state/user/hooks'
-import { formatMillion, getEtherscanLink, scrollToElement, shortenAddress, timeStampToFormat } from 'utils'
+import { useIsDarkMode, useTrackedToken1155List, useTrackedToken721List } from 'state/user/hooks'
+import { formatMillion, getEtherscanLink, isAddress, scrollToElement, shortenAddress, timeStampToFormat } from 'utils'
 import StatTable, { TableHeadCellsProp, TableRowCellsProp } from './StatTable'
+import Image from 'components/Image'
+import Select from 'components/Select/Select'
+import Input from 'components/Input'
+import { Loader } from 'components/AnimatedSvg/Loader'
 
 const RowBetween = styled(Box)(({}) => ({
   display: 'flex',
@@ -57,13 +77,25 @@ const StyledTabButtonText = styled(Box)(({ theme }) => ({
 }))
 
 export enum PoolPairType {
+  ERC20_ERC721 = 'ERC20 - ERC721',
   ERC20_ERC20 = 'ERC20 - ERC20',
-  ERC20_ERC1155 = 'ERC20 - ERC1155',
-  ERC20_ERC721 = 'ERC20 - ERC721'
+  ERC20_ERC1155 = 'ERC20 - ERC1155'
 }
 
 export default function Statistics() {
   const curChainId = ChainId.GÖRLI
+  const isDownSm = useBreakpoint('sm')
+  const isDarkMode = useIsDarkMode()
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const [searchText, setSearchText] = useState('')
+  const open = Boolean(anchorEl)
+  const popperId = open ? 'simple-popper' : undefined
+
   const theme = useTheme()
   return (
     <Box
@@ -109,7 +141,7 @@ export default function Statistics() {
             </Box>
           </RowBetween>
           <RowBetween padding="20px 0">
-            <RowBetween>
+            <RowBetween width={'100%'}>
               <Stack direction={'row'} spacing={24} alignItems="center">
                 <StyledTabText className="active" onClick={() => scrollToElement('Overview')}>
                   Overview
@@ -118,6 +150,58 @@ export default function Statistics() {
                 <StyledTabText onClick={() => scrollToElement('TopPools')}>Pools</StyledTabText>
                 <StyledTabText onClick={() => scrollToElement('Transactions')}>Transactions</StyledTabText>
               </Stack>
+
+              {open && (
+                <Box
+                  sx={{
+                    position: 'fixed',
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    left: 0,
+                    zIndex: 1,
+                    background: isDarkMode ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.2)'
+                  }}
+                ></Box>
+              )}
+              <Box display={'flex'} alignItems="center">
+                <Select defaultValue={curChainId} value={curChainId} width="max-content" height={'40px'}>
+                  {ChainList.map(option => (
+                    <MenuItem value={option.id} key={option.id} selected={curChainId === option.id}>
+                      {isDownSm ? (
+                        <Image src={option.logo} style={{ height: 20, width: 20, margin: '5px 0 0' }} />
+                      ) : (
+                        <LogoText logo={option.logo} text={option.symbol} gapSize={'small'} fontSize={14} />
+                      )}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
+                  <Box ml={10}>
+                    <Input
+                      value={searchText}
+                      height="40px"
+                      placeholder="Address"
+                      onChange={e => setSearchText(e.target.value)}
+                      aria-describedby={popperId}
+                      onClick={handleClick}
+                    />
+                    <Popper
+                      placement="bottom-end"
+                      id={popperId}
+                      open={open}
+                      anchorEl={anchorEl}
+                      sx={{
+                        zIndex: theme.zIndex.tooltip,
+                        width: '100%',
+                        maxWidth: 400
+                      }}
+                    >
+                      <SearchBox searchText={searchText} chainId={curChainId} />
+                    </Popper>
+                  </Box>
+                </ClickAwayListener>
+              </Box>
             </RowBetween>
           </RowBetween>
         </Box>
@@ -243,7 +327,7 @@ function TopTokensList({ chainId }: { chainId: ChainId }) {
           <Typography fontWeight={500} fontSize={16} color={theme.palette.text.primary} mr={8}>
             Top Tokens
           </Typography>
-          {Object.values(Mode).map(item => (
+          {[Mode.ERC721, Mode.ERC20, Mode.ERC1155].map(item => (
             <StyledTabButtonText
               key={item}
               className={item === topTokensSearch.type ? 'active' : ''}
@@ -253,9 +337,9 @@ function TopTokensList({ chainId }: { chainId: ChainId }) {
             </StyledTabButtonText>
           ))}
         </Stack>
-        <Typography fontWeight={500} fontSize={16} color={theme.palette.text.primary}>
+        {/* <Typography fontWeight={500} fontSize={16} color={theme.palette.text.primary}>
           Explore
-        </Typography>
+        </Typography> */}
       </RowBetween>
       <Box
         sx={{
@@ -295,7 +379,7 @@ export function TopPoolsList({
     page,
     order,
     loading
-  } = useTopPoolsList(chainId, token, defaultPoolPairType || PoolPairType.ERC20_ERC20)
+  } = useTopPoolsList(chainId, token, defaultPoolPairType || PoolPairType.ERC20_ERC721)
   const theme = useTheme()
 
   const headers: TableHeadCellsProp[] = [
@@ -348,11 +432,11 @@ export function TopPoolsList({
             </StyledTabButtonText>
           ))}
         </Stack>
-        {!token && (
+        {/* {!token && (
           <Typography fontWeight={500} fontSize={16} color={theme.palette.text.primary}>
             Explore
           </Typography>
-        )}
+        )} */}
       </RowBetween>
       <Box
         sx={{
@@ -675,4 +759,67 @@ function ShowTokenSymbol({ type, chainId, address }: { type: Mode; chainId: Chai
   const token = useGetLocalToken(type, chainId, address)
 
   return <>{token?.symbol}</>
+}
+
+function SearchBox({ searchText, chainId }: { searchText: string; chainId: ChainId }) {
+  const theme = useTheme()
+  const searchAddress = isAddress(searchText) ? searchText : ''
+  const { result: searchTokenInfo, loading } = useSearchTokenInfo(chainId, searchAddress)
+
+  return (
+    <Box
+      sx={{
+        border: 1,
+        p: '20px',
+        borderColor: theme.palette.primary.main,
+        borderRadius: '8px',
+        minHeight: 100,
+        bgcolor: 'background.paper'
+      }}
+    >
+      {!searchText.trim() ? (
+        <Typography textAlign={'center'}>Input token or pair address search.</Typography>
+      ) : !searchAddress ? (
+        <Typography textAlign={'center'}>Invalid address.</Typography>
+      ) : loading ? (
+        <Loader />
+      ) : (
+        <Stack spacing={12}>
+          <Box>
+            <Typography mb={10} fontSize={18} fontWeight={500}>
+              Tokens
+            </Typography>
+            {searchTokenInfo.tokens.length === 0 && (
+              <Typography color={theme.palette.text.secondary}>No Data</Typography>
+            )}
+            {searchTokenInfo.tokens.map(item => (
+              <ShowTopTokensCurrencyBox
+                key={item.token}
+                chainId={chainId}
+                address={item.token}
+                token1155Id={item.tokenId}
+                type={item.tokenType}
+              />
+            ))}
+          </Box>
+          <Divider />
+          <Box>
+            <Typography mb={10} fontSize={18} fontWeight={500}>
+              Pools
+            </Typography>
+            {!searchTokenInfo.pool && <Typography color={theme.palette.text.secondary}>No Data</Typography>}
+            {searchTokenInfo.pool && (
+              <ShowTopPoolsCurrencyBox
+                chainId={chainId}
+                pair={searchTokenInfo.pool.pair}
+                token0Info={{ type: searchTokenInfo.pool.token0Type, address: searchTokenInfo.pool.token0Address }}
+                token1Info={{ type: searchTokenInfo.pool.token1Type, address: searchTokenInfo.pool.token1Address }}
+                tokenId={searchTokenInfo.pool.tokenId}
+              />
+            )}
+          </Box>
+        </Stack>
+      )}
+    </Box>
+  )
 }

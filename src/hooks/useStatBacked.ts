@@ -19,7 +19,7 @@ export function useTopTokensList(chainId: ChainId) {
   const [currentPage, setCurrentPage] = useState(1)
   const [order, setOrder] = useState<Order>('desc')
   const [orderBy, setOrderBy] = useState<string | number>('')
-  const [type, setType] = useState(Mode.ERC20)
+  const [type, setType] = useState(Mode.ERC721)
 
   const [firstLoadData, setFirstLoadData] = useState(true)
   const [loading, setLoading] = useState<boolean>(false)
@@ -529,6 +529,88 @@ export function usePoolDetailData(chainId: ChainId, pair: string) {
       }
     })()
   }, [chainId, pair])
+
+  return {
+    loading: loading,
+    result
+  }
+}
+
+export interface SearchTokenInfoProp {
+  pool: {
+    chainId: ChainId
+    id: number
+    pair: string
+    token0Address: string
+    token0Type: Mode
+    token1Address: string
+    token1Type: Mode
+    tokenId: number
+  } | null
+  tokens: {
+    tokenId: number
+    tokenType: Mode
+    token: string
+  }[]
+}
+
+export function useSearchTokenInfo(chainId: ChainId, token: string) {
+  const [loading, setLoading] = useState<boolean>(false)
+  const [result, setResult] = useState<SearchTokenInfoProp>({ pool: null, tokens: [] })
+
+  useEffect(() => {
+    ;(async () => {
+      if (!chainId || !token) {
+        setResult({ pool: null, tokens: [] })
+        return
+      }
+      setLoading(true)
+      try {
+        const res = await Axios.get(StatBaseURL + 'getTokenInfo', {
+          chainId,
+          token
+        })
+        setLoading(false)
+        const data = res.data.data as any
+        if (!data) {
+          setResult({ pool: null, tokens: [] })
+          return
+        }
+        const ret = {
+          tokens: data.tokens
+            ? data.tokens.map((item: any) =>
+                Object.assign(item, {
+                  tokenType:
+                    item.tokenType === 'ERC20' ? Mode.ERC20 : item.tokenType === 'ERC721' ? Mode.ERC721 : Mode.ERC1155
+                })
+              )
+            : [],
+          pool: data.pool
+            ? Object.assign(data.pool, {
+                token0Type:
+                  data.pool.token0Type === 'ERC20'
+                    ? Mode.ERC20
+                    : data.pool.token0Type === 'ERC721'
+                    ? Mode.ERC721
+                    : Mode.ERC1155,
+                token1Type:
+                  data.pool.token1Type === 'ERC20'
+                    ? Mode.ERC20
+                    : data.pool.token1Type === 'ERC721'
+                    ? Mode.ERC721
+                    : Mode.ERC1155,
+                id: Number(data.pool.id)
+              })
+            : null
+        }
+        setResult(ret)
+      } catch (error) {
+        setResult({ pool: null, tokens: [] })
+        setLoading(false)
+        console.error('useSearchTokenInfo', error)
+      }
+    })()
+  }, [chainId, token])
 
   return {
     loading: loading,
