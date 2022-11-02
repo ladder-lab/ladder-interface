@@ -807,16 +807,19 @@ function SearchBox({ searchText, chainId }: { searchText: string; chainId: Chain
             <Typography mb={10} fontSize={18} fontWeight={500}>
               Pools
             </Typography>
-            {!searchTokenInfo.pool && <Typography color={theme.palette.text.secondary}>No Data</Typography>}
-            {searchTokenInfo.pool && (
-              <ShowTopPoolsCurrencyBox
-                chainId={chainId}
-                pair={searchTokenInfo.pool.pair}
-                token0Info={{ type: searchTokenInfo.pool.token0Type, address: searchTokenInfo.pool.token0Address }}
-                token1Info={{ type: searchTokenInfo.pool.token1Type, address: searchTokenInfo.pool.token1Address }}
-                tokenId={searchTokenInfo.pool.tokenId}
-              />
-            )}
+            {!searchTokenInfo.pools.length && <Typography color={theme.palette.text.secondary}>No Data</Typography>}
+            <Stack spacing={10}>
+              {searchTokenInfo.pools.map(item => (
+                <ShowTopPoolsCurrencyBox
+                  key={item.pair}
+                  chainId={chainId}
+                  pair={item.pair}
+                  token0Info={{ type: item.token0Type, address: item.token0 }}
+                  token1Info={{ type: item.token1Type, address: item.token1 }}
+                  tokenId={item.tokenId}
+                />
+              ))}
+            </Stack>
           </Box>
         </Stack>
       )}

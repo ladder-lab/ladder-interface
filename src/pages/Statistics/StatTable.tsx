@@ -147,7 +147,7 @@ export default function StatTable({
                   }}
                 >
                   <TableCell colSpan={6}>
-                    {emptyRows === pageSize && !loading && <span style={{ textAlign: 'center' }}>No Data</span>}
+                    {emptyRows === pageSize && !loading && <Box style={{ textAlign: 'center' }}>No Data</Box>}
                   </TableCell>
                 </TableRow>
               )}
