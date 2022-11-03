@@ -5,13 +5,20 @@ import { Order } from 'pages/Statistics/StatTable'
 import { useEffect, useMemo, useState } from 'react'
 import { Axios, StatBaseURL } from 'utils/axios'
 
+export interface StatTokenInfo {
+  symbol: string
+  name: string
+  logo: string
+  address: string
+  type: Mode
+  tokenId?: number
+}
+
 export interface StatTopTokensProp {
   Volume: string
   price: string
-  token: string
-  tokenId?: number
+  token: StatTokenInfo
   tvl: string
-  type: Mode
 }
 const pageSize = 5
 
@@ -58,7 +65,19 @@ export function useTopTokensList(chainId: ChainId) {
           return
         }
         setCount(Number(data.total))
-        setResult(data.list.map((item: any) => ({ ...item, type })))
+        setResult(
+          data.list.map((item: any) => ({
+            ...item,
+            token: {
+              symbol: item.symbol,
+              name: item.name,
+              logo: item.logo,
+              address: item.token,
+              tokenId: item.tokenId,
+              type
+            }
+          }))
+        )
       } catch (error) {
         setResult([])
         setCount(0)
@@ -88,7 +107,19 @@ export function useTopTokensList(chainId: ChainId) {
           return
         }
         setCount(Number(data.total))
-        setResult(data.list.map((item: any) => ({ ...item, type })))
+        setResult(
+          data.list.map((item: any) => ({
+            ...item,
+            token: {
+              symbol: item.symbol,
+              name: item.name,
+              logo: item.logo,
+              address: item.token,
+              tokenId: item.tokenId,
+              type
+            }
+          }))
+        )
         toTimeRefresh()
       } catch (error) {
         toTimeRefresh()
@@ -122,13 +153,11 @@ export function useTopTokensList(chainId: ChainId) {
 }
 
 export interface StatTopPoolsProp {
-  token1Type: Mode
   tokenId: number
   Volume: string
-  token0: string
+  token0: StatTokenInfo
   Volume7: string
-  token1: string
-  token0Type: Mode
+  token1: StatTokenInfo
   tvl: string
   pair: string
 }
@@ -136,12 +165,25 @@ export interface StatTopPoolsProp {
 const topPoolsListDataHandler = (list: any) => {
   return list.map((item: any) =>
     Object.assign(item, {
-      token0Type: item.token0Type === 1 ? Mode.ERC20 : item.token0Type === 2 ? Mode.ERC721 : Mode.ERC1155,
-      token1Type: item.token1Type === 1 ? Mode.ERC20 : item.token1Type === 2 ? Mode.ERC721 : Mode.ERC1155
+      token0: {
+        ...item[item.token0],
+        type: item.token0Type === 1 ? Mode.ERC20 : item.token0Type === 2 ? Mode.ERC721 : Mode.ERC1155,
+        address: item.token0
+      },
+      token1: {
+        ...item[item.token1],
+        address: item.token1,
+        type: item.token1Type === 1 ? Mode.ERC20 : item.token1Type === 2 ? Mode.ERC721 : Mode.ERC1155
+      }
     })
   )
 }
-export function useTopPoolsList(chainId: ChainId, token?: string, defaultPoolPairType?: PoolPairType) {
+export function useTopPoolsList(
+  chainId: ChainId | undefined,
+  token?: string,
+  defaultPoolPairType?: PoolPairType,
+  token1155Id?: number
+) {
   const [currentPage, setCurrentPage] = useState(1)
   const [order, setOrder] = useState<Order>('desc')
   const [orderBy, setOrderBy] = useState<string | number>('')
@@ -166,9 +208,16 @@ export function useTopPoolsList(chainId: ChainId, token?: string, defaultPoolPai
 
   useEffect(() => {
     ;(async () => {
+      if (!chainId) {
+        setResult([])
+        return
+      }
       setLoading(true)
       try {
-        const filter = token ? { token } : {}
+        const filter: any = token ? { token } : {}
+        if (PoolPairType.ERC20_ERC1155 === type) {
+          filter.tokenId = token1155Id
+        }
         const res = await Axios.get(StatBaseURL + 'getPoolList', {
           chainId,
           type: type === PoolPairType.ERC20_ERC20 ? 1 : type === PoolPairType.ERC20_ERC721 ? 2 : 3,
@@ -194,16 +243,23 @@ export function useTopPoolsList(chainId: ChainId, token?: string, defaultPoolPai
         console.error('useTopPoolsList', error)
       }
     })()
-  }, [chainId, currentPage, order, orderBy, token, type])
+  }, [chainId, currentPage, order, orderBy, token, token1155Id, type])
 
   useEffect(() => {
     ;(async () => {
+      if (!chainId) {
+        setResult([])
+        return
+      }
       if (timeRefresh === -1) {
         toTimeRefresh()
         return
       }
       try {
-        const filter = token ? { token } : {}
+        const filter: any = token ? { token } : {}
+        if (PoolPairType.ERC20_ERC1155 === type) {
+          filter.tokenId = token1155Id
+        }
         const res = await Axios.get(StatBaseURL + 'getPoolList', {
           chainId,
           type: type === PoolPairType.ERC20_ERC20 ? 1 : type === PoolPairType.ERC20_ERC721 ? 2 : 3,
@@ -260,13 +316,10 @@ export enum StatTransactionsType {
 
 export interface StatTransactionsProp {
   totalValue: string
-  tokenId: number
-  buyToken: string
-  sellTokenType: Mode
+  buyToken: StatTokenInfo
   pair: string
-  sellToken: string
+  sellToken: StatTokenInfo
   buyAmount: string
-  buyTokenType: Mode
   chainId: ChainId
   sellAmount: string
   account: string
@@ -286,7 +339,7 @@ const transactionsListDataHandler = (list: any) => {
     })
   )
 }
-export function useTransactionsList(chainId: ChainId, token?: string) {
+export function useTransactionsList(chainId: ChainId, token?: string, pair?: string) {
   const [currentPage, setCurrentPage] = useState(1)
   const [order, setOrder] = useState<Order>('desc')
   const [orderBy, setOrderBy] = useState<string | number>('')
@@ -314,6 +367,7 @@ export function useTransactionsList(chainId: ChainId, token?: string) {
       setLoading(true)
       try {
         const filter = token ? { token } : {}
+        const filterPair = pair ? { pair } : {}
         const res = await Axios.get(StatBaseURL + 'getSwapRecords', {
           chainId,
           type:
@@ -327,6 +381,7 @@ export function useTransactionsList(chainId: ChainId, token?: string) {
           pageSize,
           pageNum: currentPage,
           ...filter,
+          ...filterPair,
           order,
           orderBy
         })
@@ -346,7 +401,7 @@ export function useTransactionsList(chainId: ChainId, token?: string) {
         console.error('useTransactionsList', error)
       }
     })()
-  }, [chainId, currentPage, order, orderBy, token, type])
+  }, [chainId, currentPage, order, orderBy, pair, token, type])
 
   useEffect(() => {
     ;(async () => {
@@ -356,6 +411,7 @@ export function useTransactionsList(chainId: ChainId, token?: string) {
       }
       try {
         const filter = token ? { token } : {}
+        const filterPair = pair ? { pair } : {}
         const res = await Axios.get(StatBaseURL + 'getSwapRecords', {
           chainId,
           type:
@@ -368,6 +424,7 @@ export function useTransactionsList(chainId: ChainId, token?: string) {
               : '',
           pageSize,
           ...filter,
+          ...filterPair,
           pageNum: currentPage,
           order,
           orderBy
@@ -485,43 +542,25 @@ export interface StatPoolDetailProp {
 
 export function usePoolDetailData(chainId: ChainId, pair: string) {
   const [loading, setLoading] = useState<boolean>(false)
-  const [result, setResult] = useState<StatPoolDetailProp>()
+  const [result, setResult] = useState<StatTopPoolsProp>()
 
   useEffect(() => {
     ;(async () => {
       setLoading(true)
       try {
-        const res = await Axios.get(StatBaseURL + 'getPoolDetail', {
+        const res = await Axios.get(StatBaseURL + 'getPoolList', {
           chainId,
-          pair
+          pair,
+          pageNum: 1,
+          pageSize: 1
         })
         setLoading(false)
         const data = res.data.data as any
-        if (!data) {
+        if (!data?.list?.length) {
           setResult(undefined)
           return
         }
-        const _pair = Object.assign(data.pair, {
-          id: Number(data.pair.id),
-          chainId: Number(data.pair.chainId),
-          token0Type:
-            data.pair.token0Type === 'ERC20'
-              ? Mode.ERC20
-              : data.pair.token0Type === 'ERC721'
-              ? Mode.ERC721
-              : Mode.ERC1155,
-          token1Type:
-            data.pair.token1Type === 'ERC20'
-              ? Mode.ERC20
-              : data.pair.token1Type === 'ERC721'
-              ? Mode.ERC721
-              : Mode.ERC1155
-        })
-        setResult({
-          tvl: data.tvl,
-          Volume: data.Volume,
-          pair: _pair
-        })
+        setResult(topPoolsListDataHandler(data.list)[0])
       } catch (error) {
         setResult(undefined)
         setLoading(false)
@@ -536,23 +575,82 @@ export function usePoolDetailData(chainId: ChainId, pair: string) {
   }
 }
 
+export function useTokenDetailData(chainId: ChainId, token: string, mode: Mode, token1155Id?: number) {
+  const [loading, setLoading] = useState<boolean>(false)
+  const [result, setResult] = useState<StatTokenInfo>()
+
+  useEffect(() => {
+    ;(async () => {
+      setLoading(true)
+      try {
+        if (mode === Mode.ERC1155) {
+          const res = await Axios.get(StatBaseURL + 'getPoolList', {
+            chainId,
+            token,
+            tokenId: token1155Id,
+            pageNum: 1,
+            pageSize: 1,
+            type: 3
+          })
+          setLoading(false)
+          const data = res.data.data as any
+          const _data = data?.list?.[0]?.[token]
+          if (!_data) {
+            setResult(undefined)
+            return
+          }
+
+          setResult({ ..._data, type: Mode.ERC1155, address: token })
+        } else {
+          const res = await Axios.get(StatBaseURL + 'getTokenInfo', {
+            chainId,
+            token
+          })
+          setLoading(false)
+          const data = res.data.data as any
+          if (!data?.tokens?.length) {
+            setResult(undefined)
+            return
+          }
+          setResult({
+            ...data.tokens[0],
+            address: data.tokens[0].token,
+            type:
+              data.tokens[0].tokenType === 1 ? Mode.ERC20 : data.tokens[0].tokenType === 2 ? Mode.ERC721 : Mode.ERC1155
+          })
+        }
+      } catch (error) {
+        setResult(undefined)
+        setLoading(false)
+        console.error('useTokenDetailData', error)
+      }
+    })()
+  }, [chainId, mode, token, token1155Id])
+
+  return {
+    loading: loading,
+    result
+  }
+}
+
 export interface SearchTokenInfoProp {
   pools: StatTopPoolsProp[]
-  tokens: {
-    tokenId: number
-    tokenType: Mode
-    token: string
-  }[]
+  tokens: StatTokenInfo[]
+  is1155Token: boolean
 }
 
 export function useSearchTokenInfo(chainId: ChainId, token: string) {
   const [loading, setLoading] = useState<boolean>(false)
-  const [result, setResult] = useState<SearchTokenInfoProp>({ pools: [], tokens: [] })
+  const [result, setResult] = useState<SearchTokenInfoProp>({
+    pools: [],
+    tokens: [],
+    is1155Token: false
+  })
 
   useEffect(() => {
     ;(async () => {
       if (!chainId || !token) {
-        setResult({ pools: [], tokens: [] })
+        setResult({ pools: [], tokens: [], is1155Token: false })
         return
       }
       setLoading(true)
@@ -564,68 +662,25 @@ export function useSearchTokenInfo(chainId: ChainId, token: string) {
         setLoading(false)
         const data = res.data.data as any
         if (!data) {
-          setResult({ pools: [], tokens: [] })
+          setResult({ pools: [], tokens: [], is1155Token: false })
           return
         }
-        const tokens: {
-          tokenId: number
-          tokenType: Mode
-          token: string
-        }[] = data.tokens
-          ? data.tokens.map((item: any) =>
-              Object.assign(item, {
-                tokenType:
-                  item.tokenType === 'ERC20' ? Mode.ERC20 : item.tokenType === 'ERC721' ? Mode.ERC721 : Mode.ERC1155
-              })
-            )
-          : []
-        const pools = data.pool
-          ? [
-              Object.assign(data.pool, {
-                token0Type:
-                  data.pool.token0Type === 'ERC20'
-                    ? Mode.ERC20
-                    : data.pool.token0Type === 'ERC721'
-                    ? Mode.ERC721
-                    : Mode.ERC1155,
-                token1Type:
-                  data.pool.token1Type === 'ERC20'
-                    ? Mode.ERC20
-                    : data.pool.token1Type === 'ERC721'
-                    ? Mode.ERC721
-                    : Mode.ERC1155,
-                token0: data.pool.token0Address,
-                token1: data.pool.token1Address
-              })
-            ]
-          : []
-        if (pools.length === 0 && tokens.length > 0) {
-          const poolsRes = await Promise.all(
-            tokens.map(item =>
-              Axios.get(StatBaseURL + 'getPoolList', {
-                chainId,
-                token: item.token,
-                type: item.tokenType === Mode.ERC20 ? 1 : item.tokenType === Mode.ERC721 ? 2 : 3,
-                pageSize,
-                pageNum: 1
-              })
-            )
-          )
 
-          let _pools: StatTopPoolsProp[] = []
-          for (const res1 of poolsRes) {
-            const _item = res1.data.data?.list
-            if (!_item) {
-              continue
-            }
-            _pools = [..._pools, ...topPoolsListDataHandler(_item)]
-          }
-          setResult({ pools: _pools, tokens })
-        } else {
-          setResult({ pools, tokens })
-        }
+        const tokens: StatTokenInfo[] =
+          data.tokens?.map((item: any) => ({
+            ...item,
+            address: item.token,
+            type: item.tokenType === 1 ? Mode.ERC20 : item.tokenType === 2 ? Mode.ERC721 : Mode.ERC1155
+          })) || []
+        const pools = topPoolsListDataHandler(data.pool instanceof Array ? data.pool : [data.pool])
+        const is1155 =
+          tokens.length === 1 &&
+          tokens[0].type === Mode.ERC1155 &&
+          tokens[0].address.toLowerCase() === token.toLowerCase()
+
+        setResult({ pools, tokens, is1155Token: is1155 })
       } catch (error) {
-        setResult({ pools: [], tokens: [] })
+        setResult({ pools: [], tokens: [], is1155Token: false })
         setLoading(false)
         console.error('useSearchTokenInfo', error)
       }

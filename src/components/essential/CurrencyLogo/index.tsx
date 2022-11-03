@@ -17,12 +17,14 @@ export default function CurrencyLogo({
   currency,
   size = '24px',
   style,
-  currencySymbol
+  currencySymbol,
+  logoUrl
 }: {
   currency?: Currency
   size?: string
   style?: React.CSSProperties
   currencySymbol?: string
+  logoUrl?: string
 }) {
   const { chainId } = useActiveWeb3React()
 
@@ -78,7 +80,7 @@ export default function CurrencyLogo({
         objectFit: 'cover',
         background: '#ffffff'
       }}
-      srcs={srcs}
+      srcs={logoUrl ? [logoUrl, ...srcs] : srcs}
       alt={`${currency?.symbol ?? 'token'} logo`}
     />
   )

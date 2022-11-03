@@ -38,34 +38,30 @@ export default function Pools() {
           <Typography fontWeight={500} color={theme.palette.text.primary}>
             Pools
           </Typography>
-          {poolDetailData ? (
+          {poolDetailData && (
             <ShowTopPoolsCurrencyBox
-              token0Info={{ type: poolDetailData.pair.token0Type, address: poolDetailData.pair.token0Address }}
-              token1Info={{ type: poolDetailData.pair.token1Type, address: poolDetailData.pair.token1Address }}
+              token0Info={poolDetailData.token0}
+              token1Info={poolDetailData.token1}
               chainId={curChainId}
-              pair={poolDetailData.pair.pair}
-              tokenId={poolDetailData.pair.tokenId}
+              pair={pair || ''}
             />
-          ) : (
-            '-'
           )}
         </Breadcrumbs>
 
         <Box pt={22} pb={10}>
           {poolDetailData && (
             <ShowTopPoolsCurrencyBox
+              token0Info={poolDetailData.token0}
+              token1Info={poolDetailData.token1}
+              chainId={curChainId}
+              pair={pair || ''}
               fontSize={32}
               fontWeight={500}
-              token0Info={{ type: poolDetailData.pair.token0Type, address: poolDetailData.pair.token0Address }}
-              token1Info={{ type: poolDetailData.pair.token1Type, address: poolDetailData.pair.token1Address }}
-              chainId={curChainId}
-              pair={poolDetailData.pair.pair}
-              tokenId={poolDetailData.pair.tokenId}
             />
           )}
         </Box>
 
-        <StatTransList chainId={curChainId} />
+        <StatTransList chainId={curChainId} pair={pair} />
       </Stack>
     </Box>
   )
