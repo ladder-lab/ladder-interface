@@ -331,10 +331,23 @@ export interface StatTransactionsProp {
 const transactionsListDataHandler = (list: any) => {
   return list.map((item: any) =>
     Object.assign(item, {
-      buyTokenType:
-        item.buyTokenType === 'ERC20' ? Mode.ERC20 : item.buyTokenType === 'ERC721' ? Mode.ERC721 : Mode.ERC1155,
-      sellTokenType:
-        item.sellTokenType === 'ERC20' ? Mode.ERC20 : item.sellTokenType === 'ERC721' ? Mode.ERC721 : Mode.ERC1155,
+      buyToken: {
+        symbol: item.buyTokenSymbol,
+        name: item.buyTokenName,
+        logo: item.buyTokenUri,
+        address: item.buyToken,
+        type: item.buyTokenType === 'ERC20' ? Mode.ERC20 : item.buyTokenType === 'ERC721' ? Mode.ERC721 : Mode.ERC1155,
+        tokenId: item.tokenId
+      },
+      sellToken: {
+        symbol: item.sellTokenSymbol,
+        name: item.sellTokenName,
+        logo: item.sellTokenUri,
+        address: item.sellToken,
+        type:
+          item.sellTokenType === 'ERC20' ? Mode.ERC20 : item.sellTokenType === 'ERC721' ? Mode.ERC721 : Mode.ERC1155,
+        tokenId: item.tokenId
+      },
       type: StatTransactionsType.SWAPS
     })
   )
@@ -584,7 +597,7 @@ export function useTokenDetailData(chainId: ChainId, token: string, mode: Mode, 
       setLoading(true)
       try {
         if (mode === Mode.ERC1155) {
-          const res = await Axios.get(StatBaseURL + 'getPoolList', {
+          const res = await Axios.get(StatBaseURL + 'getTokenList', {
             chainId,
             token,
             tokenId: token1155Id,
@@ -594,7 +607,7 @@ export function useTokenDetailData(chainId: ChainId, token: string, mode: Mode, 
           })
           setLoading(false)
           const data = res.data.data as any
-          const _data = data?.list?.[0]?.[token]
+          const _data = data?.list?.[0]
           if (!_data) {
             setResult(undefined)
             return
