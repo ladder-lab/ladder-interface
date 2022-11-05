@@ -14,7 +14,7 @@ import {
 } from '@mui/material'
 import AreaChart from 'components/Chart'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
-import { StyledPollingDot } from 'components/essential/Polling'
+// import { StyledPollingDot } from 'components/essential/Polling'
 import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
 import LogoText from 'components/LogoText'
 import { ChainList } from 'constants/chain'
@@ -68,6 +68,7 @@ const StyledTabButtonText = styled(Box)(({ theme }) => ({
   padding: '6px 16px',
   borderRadius: '15px',
   textTransform: 'uppercase',
+  marginRight: 8,
   ['&.active']: {
     color: theme.palette.common.white,
     backgroundColor: '#1F9898'
@@ -113,10 +114,11 @@ export default function Statistics() {
           sx={{
             width: '100%',
             maxWidth: '1300px',
+            padding: { sm: 0, xs: '0 15px' },
             margin: 'auto'
           }}
         >
-          <RowBetween padding="12px 0">
+          {/* <RowBetween padding="12px 0">
             <Box display={'flex'} alignItems="center">
               <Box
                 display={'flex'}
@@ -137,9 +139,9 @@ export default function Statistics() {
               </Box>
               <Typography ml={16}>ETH Price: $1.18k</Typography>
             </Box>
-          </RowBetween>
+          </RowBetween> */}
           <RowBetween padding="20px 0">
-            <RowBetween width={'100%'}>
+            <RowBetween width={'100%'} flexWrap={'wrap'}>
               <Stack direction={'row'} spacing={24} alignItems="center">
                 <StyledTabText className="active" onClick={() => scrollToElement('Overview')}>
                   Overview
@@ -162,7 +164,7 @@ export default function Statistics() {
                   }}
                 ></Box>
               )}
-              <Box display={'flex'} alignItems="center">
+              <Box display={'flex'} alignItems="center" sx={{ mt: { sm: 0, xs: 15 } }}>
                 <Select defaultValue={curChainId} value={curChainId} width="max-content" height={'40px'}>
                   {ChainList.map(option => (
                     <MenuItem value={option.id} key={option.id} selected={curChainId === option.id}>
@@ -209,6 +211,7 @@ export default function Statistics() {
         spacing={28}
         sx={{
           width: '100%',
+          padding: { sm: 30, xs: '20px 15px' },
           maxWidth: '1144px',
           margin: '30px auto 80px'
         }}
@@ -399,20 +402,23 @@ export function TopPoolsList({
   return (
     <Box id="TopPools">
       <RowBetween mb={18}>
-        <Stack direction={'row'} spacing={8} alignItems="center">
-          <Typography fontWeight={500} fontSize={16} color={theme.palette.text.primary} mr={8}>
+        <RowBetween flexWrap="wrap">
+          <Typography fontWeight={500} fontSize={16} color={theme.palette.text.primary} mr={16}>
             {token ? 'Top Pairs' : 'Top Pools'}
           </Typography>
-          {(supportPoolPairTypes || Object.values(PoolPairType)).map(item => (
-            <StyledTabButtonText
-              key={item}
-              className={item === poolsSearch.type ? 'active' : ''}
-              onClick={() => poolsSearch.setType(item)}
-            >
-              {item}
-            </StyledTabButtonText>
-          ))}
-        </Stack>
+          <Box display="flex" flexWrap={'wrap'}>
+            {(supportPoolPairTypes || Object.values(PoolPairType)).map(item => (
+              <StyledTabButtonText
+                sx={{ mt: { sm: 0, xs: 10 } }}
+                key={item}
+                className={item === poolsSearch.type ? 'active' : ''}
+                onClick={() => poolsSearch.setType(item)}
+              >
+                {item}
+              </StyledTabButtonText>
+            ))}
+          </Box>
+        </RowBetween>
         {/* {!token && (
           <Typography fontWeight={500} fontSize={16} color={theme.palette.text.primary}>
             Explore
@@ -621,7 +627,7 @@ function ShowTopTokensCurrencyBox({ chainId, tokenInfo }: { chainId: ChainId; to
     >
       <CurrencyLogo logoUrl={tokenInfo.logo} />
       <Box ml={8}>
-        <Typography>
+        <Typography textAlign={'left'}>
           {tokenInfo.name || '-'} {tokenInfo.type === Mode.ERC1155 ? '#' + tokenInfo.tokenId : ''}
         </Typography>
         <Typography textAlign={'left'}>{tokenInfo.symbol}</Typography>

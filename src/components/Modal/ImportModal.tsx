@@ -63,7 +63,7 @@ export default function ImportModal({
               label="Token Contract Address"
               value={contractAddress}
               onChange={e => setContractAddress(e.target.value)}
-              helperText="..."
+              // helperText="..."
               error={nftRes?.incorrectToken}
               // if (nftRes.incorrectToken) return setError('Contract types other than ERC-1155 are temporarily not supported')
             />
@@ -73,7 +73,7 @@ export default function ImportModal({
               </Typography>
             )}
           </Box>
-          <Input label="Token ID" value={tokenId} onChange={e => setTokenId(e.target.value)} helperText="..." />
+          <Input label="Token ID" value={tokenId} onChange={e => setTokenId(e.target.value)} />
         </Box>
         <ActionButton
           pending={nftRes.loading}

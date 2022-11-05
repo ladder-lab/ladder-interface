@@ -240,8 +240,8 @@ export default function Testnet() {
             maxWidth: 900
           }}
         >
-          Ladder Protocol a decentralized NFT AMM,enabling instantd NFT swaps and better price discovery. In fact,
-          Ladder is the first protocol that allows you to Swap an NFT as easily as swapping a Token.
+          Ladder Protocol a decentralized NFT AMM,enabling instant NFT swaps and better price discovery. In fact, Ladder
+          is the first protocol that allows you to Swap an NFT as easily as swapping a Token.
         </Typography>
         <Typography mt={60}>Want to know about Ladder Testnet or Mining, Airdrop? Come and discuss</Typography>
         <Box>

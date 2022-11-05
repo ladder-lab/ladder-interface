@@ -18,8 +18,7 @@ export default function Pools() {
   return (
     <Box
       sx={{
-        pt: 30,
-        pb: 30,
+        padding: { sm: 30, xs: '20px 15px' },
         width: '100%',
         maxWidth: '1300px',
         margin: 'auto'
@@ -33,7 +32,7 @@ export default function Pools() {
             fontWeight={500}
             color={theme.palette.text.primary}
           >
-            Home
+            Statistics
           </Typography>
           <Typography fontWeight={500} color={theme.palette.text.primary}>
             Pools

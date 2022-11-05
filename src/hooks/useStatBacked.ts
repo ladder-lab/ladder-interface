@@ -19,14 +19,22 @@ export interface StatTopTokensProp {
   price: string
   token: StatTokenInfo
   tvl: string
+  transfers: number
 }
 const pageSize = 5
 
-export function useTopTokensList(chainId: ChainId) {
+export function useTopTokensList(
+  chainId: ChainId,
+  defaultMode?: Mode,
+  defaultPageSize?: number,
+  token?: string,
+  token1155Id?: number
+) {
   const [currentPage, setCurrentPage] = useState(1)
   const [order, setOrder] = useState<Order>('desc')
   const [orderBy, setOrderBy] = useState<string | number>('')
-  const [type, setType] = useState(Mode.ERC721)
+  const [_pageSize] = useState(defaultPageSize || pageSize)
+  const [type, setType] = useState(defaultMode || Mode.ERC721)
 
   const [firstLoadData, setFirstLoadData] = useState(true)
   const [loading, setLoading] = useState<boolean>(false)
@@ -49,10 +57,15 @@ export function useTopTokensList(chainId: ChainId) {
     ;(async () => {
       setLoading(true)
       try {
+        const filter: any = token ? { token } : {}
+        if (Mode.ERC1155 === type) {
+          filter.tokenId = token1155Id
+        }
         const res = await Axios.get(StatBaseURL + 'getTokenList', {
           chainId,
           type: type === Mode.ERC20 ? 1 : type === Mode.ERC721 ? 2 : 3,
-          pageSize,
+          ...filter,
+          pageSize: _pageSize,
           pageNum: currentPage,
           order,
           orderBy
@@ -85,7 +98,7 @@ export function useTopTokensList(chainId: ChainId) {
         console.error('useTopTokensList', error)
       }
     })()
-  }, [chainId, currentPage, order, orderBy, type])
+  }, [chainId, currentPage, order, orderBy, _pageSize, type, token, token1155Id])
 
   useEffect(() => {
     ;(async () => {
@@ -94,10 +107,15 @@ export function useTopTokensList(chainId: ChainId) {
         return
       }
       try {
+        const filter: any = token ? { token } : {}
+        if (Mode.ERC1155 === type) {
+          filter.tokenId = token1155Id
+        }
         const res = await Axios.get(StatBaseURL + 'getTokenList', {
           chainId,
           type: type === Mode.ERC20 ? 1 : type === Mode.ERC721 ? 2 : 3,
-          pageSize,
+          ...filter,
+          pageSize: _pageSize,
           pageNum: currentPage,
           order,
           orderBy
@@ -135,8 +153,8 @@ export function useTopTokensList(chainId: ChainId) {
       setCurrentPage: (page: number) => setCurrentPage(page),
       currentPage,
       count,
-      totalPage: Math.ceil(count / pageSize),
-      pageSize
+      totalPage: Math.ceil(count / _pageSize),
+      pageSize: _pageSize
     },
     search: {
       type,
@@ -182,12 +200,14 @@ export function useTopPoolsList(
   chainId: ChainId | undefined,
   token?: string,
   defaultPoolPairType?: PoolPairType,
-  token1155Id?: number
+  token1155Id?: number,
+  defaultPageSize?: number
 ) {
   const [currentPage, setCurrentPage] = useState(1)
   const [order, setOrder] = useState<Order>('desc')
   const [orderBy, setOrderBy] = useState<string | number>('')
   const [type, setType] = useState(defaultPoolPairType || PoolPairType.ERC20_ERC20)
+  const [_pageSize] = useState(defaultPageSize || pageSize)
 
   const [firstLoadData, setFirstLoadData] = useState(true)
   const [loading, setLoading] = useState<boolean>(false)
@@ -221,7 +241,7 @@ export function useTopPoolsList(
         const res = await Axios.get(StatBaseURL + 'getPoolList', {
           chainId,
           type: type === PoolPairType.ERC20_ERC20 ? 1 : type === PoolPairType.ERC20_ERC721 ? 2 : 3,
-          pageSize,
+          pageSize: _pageSize,
           ...filter,
           pageNum: currentPage,
           order,
@@ -243,7 +263,7 @@ export function useTopPoolsList(
         console.error('useTopPoolsList', error)
       }
     })()
-  }, [chainId, currentPage, order, orderBy, token, token1155Id, type])
+  }, [_pageSize, chainId, currentPage, order, orderBy, token, token1155Id, type])
 
   useEffect(() => {
     ;(async () => {
@@ -263,7 +283,7 @@ export function useTopPoolsList(
         const res = await Axios.get(StatBaseURL + 'getPoolList', {
           chainId,
           type: type === PoolPairType.ERC20_ERC20 ? 1 : type === PoolPairType.ERC20_ERC721 ? 2 : 3,
-          pageSize,
+          pageSize: _pageSize,
           pageNum: currentPage,
           ...filter,
           order,
@@ -290,8 +310,8 @@ export function useTopPoolsList(
       setCurrentPage: (page: number) => setCurrentPage(page),
       currentPage,
       count,
-      totalPage: Math.ceil(count / pageSize),
-      pageSize
+      totalPage: Math.ceil(count / _pageSize),
+      pageSize: _pageSize
     },
     search: {
       type,

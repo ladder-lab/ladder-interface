@@ -10,7 +10,7 @@ export const routes = {
   removeLiquidityParams: '/:currencyIdA/:currencyIdB/:tokenIds',
   testnet: '/testnet',
   explorer: '/explorer',
-  collection: '/collection/:collectionId',
+  collectionParams: '/:type/:chainId/:address/:token1155Id',
   statistics: '/statistics',
   statisticsTokens: '/statistics/tokens',
   statisticsTokensParams: '/:type/:chainId/:address/:token1155Id',

@@ -84,7 +84,7 @@ export default function App() {
                 <Routes>
                   <Route path={routes.testnet} element={<Testnet />} />
                   <Route path={routes.explorer} element={<Explorer />} />
-                  <Route path={routes.collection} element={<Collection />} />
+                  <Route path={routes.explorer + routes.collectionParams} element={<Collection />} />
                   <Route path={routes.swap} element={<Swap />} />
                   <Route path={routes.pool} element={<Pool />} />
                   <Route path={routes.statistics} element={<Statistics />} />

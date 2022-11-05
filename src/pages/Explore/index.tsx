@@ -1,4 +1,4 @@
-import { Box, useTheme, IconButton, styled, Typography } from '@mui/material'
+import { Box, useTheme, IconButton, styled, Typography, Backdrop, CircularProgress } from '@mui/material'
 import { ReactComponent as Twitter } from 'assets/svg/socials/twitter.svg'
 import { ReactComponent as Discord } from 'assets/svg/socials/discord.svg'
 import { ReactComponent as Website } from 'assets/svg/socials/website.svg'
@@ -16,10 +16,109 @@ import useBreakpoint from 'hooks/useBreakpoint'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { routes } from 'constants/routes'
+import { useActiveWeb3React } from 'hooks'
+import { NETWORK_CHAIN_ID } from 'constants/chain'
+import { useTopPoolsList, useTopTokensList } from 'hooks/useStatBacked'
+import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
+import { formatMillion } from 'utils'
+import { PoolPairType, ShowTopPoolsCurrencyBox } from 'pages/Statistics'
+
+const defaultPageSize = 9
 
 export default function Explore() {
   const theme = useTheme()
+  const { chainId } = useActiveWeb3React()
   // const isDarkMode = useIsDarkMode()
+
+  const { result: list721, loading: list721Loading } = useTopTokensList(
+    chainId || NETWORK_CHAIN_ID,
+    Mode.ERC721,
+    defaultPageSize
+  )
+
+  const { result: list1155, loading: list1155Loading } = useTopTokensList(
+    chainId || NETWORK_CHAIN_ID,
+    Mode.ERC1155,
+    defaultPageSize
+  )
+  const ERC721Collection: CollectionsProp[] = useMemo(
+    () =>
+      list721.map(item => ({
+        title: item.token.name || '-',
+        imgPath: item.token.logo,
+        amount: `${formatMillion(Number(item.tvl), '$ ', 2)}`,
+        route: routes.explorer + `/${Mode.ERC721}/${chainId}/${item.token.address}/${item.token.tokenId || 0}`,
+        percentage: ''
+      })),
+    [chainId, list721]
+  )
+  const ERC1155Collection: CollectionsProp[] = useMemo(
+    () =>
+      list1155.map(item => ({
+        title: item.token.name || '-',
+        imgPath: item.token.logo,
+        amount: `${formatMillion(Number(item.tvl), '$ ', 2)}`,
+        route: routes.explorer + `/${Mode.ERC1155}/${chainId}/${item.token.address}/${item.token.tokenId || 0}`,
+        percentage: ''
+      })),
+    [chainId, list1155]
+  )
+
+  const { result: list721Pool, loading: list721PoolLoading } = useTopPoolsList(
+    chainId || NETWORK_CHAIN_ID,
+    undefined,
+    PoolPairType.ERC20_ERC721,
+    undefined,
+    defaultPageSize
+  )
+
+  const { result: list1155Pool, loading: list1155PoolLoading } = useTopPoolsList(
+    chainId || NETWORK_CHAIN_ID,
+    undefined,
+    PoolPairType.ERC20_ERC1155,
+    undefined,
+    defaultPageSize
+  )
+  const pool721Collection: CollectionsProp[] = useMemo(
+    () =>
+      list721Pool.map(item => ({
+        title: (
+          <ShowTopPoolsCurrencyBox
+            chainId={chainId || NETWORK_CHAIN_ID}
+            pair={item.pair}
+            token0Info={item.token0}
+            token1Info={item.token1}
+            key={0}
+          />
+        ),
+        imgPath: item.token0.type !== Mode.ERC20 ? item.token0.logo : item.token1.logo,
+        amount: `${formatMillion(Number(item.tvl), '$ ', 2)}`,
+        route: routes.statisticsPools + `/${chainId}/${item.pair}`,
+        percentage: ''
+      })),
+    [chainId, list721Pool]
+  )
+
+  const pool1155Collection: CollectionsProp[] = useMemo(
+    () =>
+      list1155Pool.map(item => ({
+        title: (
+          <ShowTopPoolsCurrencyBox
+            chainId={chainId || NETWORK_CHAIN_ID}
+            pair={item.pair}
+            token0Info={item.token0}
+            token1Info={item.token1}
+            key={0}
+          />
+        ),
+        imgPath: item.token0.type !== Mode.ERC20 ? item.token0.logo : item.token1.logo,
+        amount: `${formatMillion(Number(item.tvl), '$ ', 2)}`,
+        route: routes.statisticsPools + `/${chainId}/${item.pair}`,
+        percentage: ''
+      })),
+    [chainId, list1155Pool]
+  )
+
   return (
     <Box
       sx={{
@@ -30,6 +129,12 @@ export default function Explore() {
         backgroundSize: '100% 100%'
       }}
     >
+      <Backdrop
+        sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }}
+        open={list1155PoolLoading || list721Loading || list721PoolLoading || list1155Loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Box
         sx={{
           padding: {
@@ -55,11 +160,12 @@ export default function Explore() {
             <NumericCard title="Volume(24hrs)" value={'1,732,654,325'} />
           </Box>
         </Box>
-        <CollectionHighLight />
+        <CollectionHighLight collections={ERC721Collection.slice(0, 3)} />
       </Box>
-      <CollectionListing title="Popular ERC721 Collection" dark />
-      <CollectionListing title="Top ERC-721 Liquidity Pool" />
-      <CollectionListing title="Top ERC-1155 Liquidity Pool" dark />
+      <CollectionListing collections={ERC721Collection} title="Popular ERC721 Collection" dark />
+      <CollectionListing collections={ERC1155Collection} title="Popular ERC1155 Collection" />
+      <CollectionListing collections={pool721Collection} title="Top ERC-721 Liquidity Pool" dark />
+      <CollectionListing collections={pool1155Collection} title="Top ERC-1155 Liquidity Pool" />
     </Box>
   )
 }
@@ -107,29 +213,14 @@ function NumericCard({ title, value }: { title: string; value: string }) {
   )
 }
 
-function CollectionHighLight() {
+function CollectionHighLight({ collections }: { collections: CollectionsProp[] }) {
   const isDarkMode = useIsDarkMode()
   const isDownMd = useBreakpoint('md')
   const navigate = useNavigate()
 
   const items = useMemo(() => {
-    // Dummy data
-    const collections = [
-      {
-        title: 'San Francisco – Oakland Bay Bridge, United States',
-        imgPath: 'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60'
-      },
-      {
-        title: 'Bird',
-        imgPath: 'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60'
-      },
-      {
-        title: 'Bali, Indonesia',
-        imgPath: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250'
-      }
-    ]
-    return collections.map((collection: any, index: number) => (
-      <Box key={index} onClick={() => navigate(routes.collection)} sx={{ cursor: 'pointer' }}>
+    return collections.map((collection, index: number) => (
+      <Box key={index} onClick={() => navigate(collection.route)} sx={{ cursor: 'pointer' }}>
         <Box
           component="img"
           sx={{
@@ -141,11 +232,11 @@ function CollectionHighLight() {
             borderRadius: '24px'
           }}
           src={collection.imgPath}
-          alt={collection.title}
+          alt={'Token logo'}
         />
       </Box>
     ))
-  }, [isDownMd])
+  }, [collections, isDownMd, navigate])
 
   return (
     <Box
@@ -179,108 +270,65 @@ function CollectionHighLight() {
   )
 }
 
-function CollectionListing({ title, dark }: { title: string; dark?: boolean }) {
+interface CollectionsProp {
+  title: string | JSX.Element
+  route: string
+  imgPath: string
+  amount: string
+  percentage: string
+}
+
+function CollectionListing({
+  title,
+  dark,
+  collections
+}: {
+  title: string
+  dark?: boolean
+  collections: CollectionsProp[]
+}) {
   const isDownMd = useBreakpoint('md')
   const navigate = useNavigate()
 
-  const collections = [
-    {
-      title: 'Item Listed via Acution',
-      imgPath: 'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60',
-      amount: '$562,265.25',
-      percentage: '+5.73%'
-    },
-    {
-      title: 'Item Listed via Acution',
-      imgPath: 'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60',
-      amount: '$562,265.25',
-      percentage: '+5.73%'
-    },
-    {
-      title: 'Item Listed via Acution',
-      imgPath: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250',
-      amount: '$562,265.25',
-      percentage: '+5.73%'
-    },
-    {
-      title: 'Item Listed via Acution',
-      imgPath: 'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60',
-      amount: '$562,265.25',
-      percentage: '+5.73%'
-    },
-    {
-      title: 'Item Listed via Acution',
-      imgPath: 'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60',
-      amount: '$562,265.25',
-      percentage: '+5.73%'
-    },
-    {
-      title: 'Item Listed via Acution',
-      imgPath: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250',
-      amount: '$562,265.25',
-      percentage: '+5.73%'
-    },
-    {
-      title: 'Item Listed via Acution',
-      imgPath: 'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60',
-      amount: '$562,265.25',
-      percentage: '+5.73%'
-    },
-    {
-      title: 'Item Listed via Acution',
-      imgPath: 'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60',
-      amount: '$562,265.25',
-      percentage: '+5.73%'
-    },
-    {
-      title: 'Item Listed via Acution',
-      imgPath: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250',
-      amount: '$562,265.25',
-      percentage: '+5.73%'
-    }
-  ]
-
-  const items = useMemo(() => {
-    return collections.map(({ title, imgPath, amount, percentage }: any, index: number) => (
+  const items = collections.map(({ title, imgPath, amount, percentage, route }, index: number) => (
+    <Box
+      key={index}
+      sx={{
+        height: 280,
+        maxWidth: 218,
+        width: 218,
+        borderRadius: '12px',
+        backgroundColor: dark ? 'rgba(255, 255, 255, 0.28)' : 'rgba(207, 207, 207, 0.41)',
+        overflow: 'hidden',
+        cursor: 'pointer'
+      }}
+      onClick={() => navigate(route)}
+    >
       <Box
-        key={index}
+        component="img"
         sx={{
-          height: 280,
-          maxWidth: 218,
-          width: 218,
-          borderRadius: '12px',
-          backgroundColor: dark ? 'rgba(255, 255, 255, 0.28)' : 'rgba(207, 207, 207, 0.41)',
-          overflow: 'hidden',
-          cursor: 'pointer'
+          height: 168,
+          display: 'block',
+          width: '100%',
+          objectFit: 'contain'
         }}
-        onClick={() => navigate(routes.collection)}
-      >
-        <Box
-          component="img"
-          sx={{
-            height: 168,
-            display: 'block'
-          }}
-          src={imgPath}
-          alt={title}
-        />
-        <Box sx={{ padding: 16 }}>
-          <Typography sx={{ mb: 21, color: dark ? '#FFFFFF' : '#333333' }}>{title}</Typography>
-          <Typography sx={{ color: dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(51, 51, 51, 0.5)' }}>
-            Total Liquidity
+        src={imgPath}
+        alt={'Token logo'}
+      />
+      <Box sx={{ padding: 16 }}>
+        <Typography sx={{ mb: 21, color: dark ? '#FFFFFF' : '#333333' }}>{title}</Typography>
+        <Typography sx={{ color: dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(51, 51, 51, 0.5)' }}>
+          Total Liquidity
+        </Typography>
+        <Box sx={{ display: 'flex', gap: 4, alignItems: 'flex-end' }}>
+          <Typography sx={{ fontSize: 20, fontWeight: 700, color: dark ? '#FFFFFF' : '#333333' }}>{amount}</Typography>
+          <Typography sx={{ fontSize: 14, color: dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(51, 51, 51, 0.5)' }}>
+            {percentage}
           </Typography>
-          <Box sx={{ display: 'flex', gap: 4, alignItems: 'flex-end' }}>
-            <Typography sx={{ fontSize: 20, fontWeight: 700, color: dark ? '#FFFFFF' : '#333333' }}>
-              {amount}
-            </Typography>
-            <Typography sx={{ fontSize: 14, color: dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(51, 51, 51, 0.5)' }}>
-              {percentage}
-            </Typography>
-          </Box>
         </Box>
       </Box>
-    ))
-  }, [isDownMd])
+    </Box>
+  ))
 
   return (
     <Box

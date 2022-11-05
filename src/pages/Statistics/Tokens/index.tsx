@@ -39,8 +39,7 @@ export default function Tokens() {
   return (
     <Box
       sx={{
-        pt: 30,
-        pb: 30,
+        padding: { sm: 30, xs: '20px 15px' },
         width: '100%',
         maxWidth: '1300px',
         margin: 'auto'
@@ -54,7 +53,7 @@ export default function Tokens() {
             fontWeight={500}
             color={theme.palette.text.primary}
           >
-            Home
+            Statistics
           </Typography>
           <Typography fontWeight={500} color={theme.palette.text.primary}>
             Tokens
