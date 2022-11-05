@@ -4,7 +4,7 @@ import { FixedSizeList } from 'react-window'
 import Modal from 'components/Modal'
 import CurrencyList from './CurrencyList'
 import Input from 'components/Input'
-import QuestionHelper from 'components/essential/QuestionHelper'
+// import QuestionHelper from 'components/essential/QuestionHelper'
 import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
 import NftList from './ERC1155List'
 import { COMMON_CURRENCIES } from 'constants/currencies'
@@ -17,11 +17,12 @@ import { useTokenComparator } from 'utils/swap/sorting'
 import { AllTokens, NFT, TokenType } from 'models/allTokens'
 import useModal from 'hooks/useModal'
 import ImportModal from 'components/Modal/ImportModal'
-import { HelperText } from 'constants/helperText'
+// import { HelperText } from 'constants/helperText'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { useAddUserToken, useIsDarkMode, useTrackedToken1155List } from 'state/user/hooks'
 import { Token1155 } from 'constants/token/token1155'
 import ERC721List from './ERC721List'
+import { useCurrencyModalListHeight } from 'hooks/useScreenSize'
 
 export enum Mode {
   ERC20 = 'erc20',
@@ -104,12 +105,14 @@ export default function SelectCurrencyModal({
 
   const commonCur = useMemo(() => {
     const curList: Currency[] = [ETHER]
-    Object.keys(allTokens).map(key => {
-      const token = allTokens[key as keyof typeof allTokens]
-      if (token?.symbol && COMMON_CURRENCIES.includes(token.symbol)) {
-        curList.push(token)
-      }
-    })
+    Object.keys(allTokens)
+      .map(key => {
+        const token = allTokens[key as keyof typeof allTokens]
+        if (token?.symbol && COMMON_CURRENCIES.includes(token.symbol)) {
+          curList.push(token)
+        }
+      })
+      .slice(0, 4)
     return curList
   }, [allTokens])
 
@@ -183,6 +186,7 @@ export default function SelectCurrencyModal({
       addUserToken(searchToken)
     }
   }, [addUserToken, searchToken, searchTokenIsAdded])
+  const modalHeight = useCurrencyModalListHeight('0px')
 
   return (
     <>
@@ -190,6 +194,7 @@ export default function SelectCurrencyModal({
       <Modal
         width="100%"
         maxWidth="680px"
+        height={modalHeight}
         closeIcon
         closeVariant="button"
         padding={isDownMd ? '28px 16px' : '32px 32px'}
@@ -206,11 +211,11 @@ export default function SelectCurrencyModal({
           >
             {mode === Mode.ERC20 ? 'Select a Token' : 'Select a NFT'}
           </Typography>
-          <QuestionHelper
+          {/* <QuestionHelper
             text={mode === Mode.ERC20 ? HelperText.selectToken : HelperText.selectNft}
             size={isDownMd ? 18.33 : 22}
             style={{ color: theme.palette.text.secondary }}
-          />
+          /> */}
         </Box>
         <Box display="flex" gap={20} padding="31px 0 30px" alignItems="center">
           <ModeButton
@@ -332,7 +337,7 @@ export default function SelectCurrencyModal({
               pointerEvents: 'none',
               position: 'absolute',
               bottom: 0,
-              height: 200,
+              height: 50,
               width: '100%',
               background: `linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, ${theme.palette.background.paper} 100%);`
             }}

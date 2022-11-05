@@ -4,10 +4,10 @@ import { Box, Typography, styled, ButtonBase } from '@mui/material'
 import useModal from 'hooks/useModal'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { Token, Currency } from '@ladder/sdk'
-import useBreakpoint from 'hooks/useBreakpoint'
 import LogoText from 'components/LogoText'
 import Divider from 'components/Divider'
 import { CurrencyListComponent } from './ListComponent'
+import { useCurrencyModalListHeight } from 'hooks/useScreenSize'
 
 interface Props {
   selectedCurrency?: Currency | null
@@ -40,17 +40,18 @@ export default function CurrencyList({
   showETH
 }: Props) {
   const { hideModal } = useModal()
-  const isDownMd = useBreakpoint('md')
 
   const onClick = useCallback(() => {
     onSelectCurrency && searchToken && onSelectCurrency(searchToken)
     hideModal()
   }, [hideModal, onSelectCurrency, searchToken])
 
+  const listHeight = useCurrencyModalListHeight('360px')
+
   return (
     <>
       {children}
-      <Box display="flex" gap={20} margin="20px 0">
+      <Box display="flex" gap={20} margin="20px 0" flexWrap={'wrap'}>
         {commonCurlist?.map((currency: Currency) => (
           <ButtonBase
             onClick={() => {
@@ -73,7 +74,7 @@ export default function CurrencyList({
       </Box>
       <Divider />
 
-      <Box height={isDownMd ? 290 : 450} paddingTop={'24px'} position="relative">
+      <Box height={listHeight} overflow="auto" paddingTop={'24px'} position="relative">
         {searchToken && !searchTokenIsAdded ? (
           <ListItem onClick={onClick}>
             <Box display="flex">

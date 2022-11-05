@@ -44,15 +44,18 @@ function SwapTypeButton({
   onClick,
   text,
   helperText,
-  selected
+  selected,
+  disabled
 }: {
   onClick: () => void
   text: string
   helperText: string
   selected: boolean
+  disabled?: boolean
 }) {
   return (
     <ButtonBase
+      disabled={disabled}
       onClick={onClick}
       sx={{
         height: 22,
@@ -117,17 +120,6 @@ export default function CurrencyInputPanel({
     }
   }, [disableCurrencySelect, showModal, onSelectCurrency, selectedTokenType])
 
-  // const handleMax = useCallback(() => {
-  //   if (!selectedCurrencyBalance && !token1155Balance) return
-  //   onChange({
-  //     target: { value: is1155 ? token1155Balance : selectedCurrencyBalance?.toExact() ?? '0' }
-  //   } as ChangeEvent<HTMLInputElement>)
-  // }, [is1155, onChange, selectedCurrencyBalance, token1155Balance])
-
-  useEffect(() => {
-    is721 && onSelectSubTokens && onSelectSubTokens([])
-  }, [currency, is721, onSelectSubTokens])
-
   const subTokenSelection = useCallback(() => {
     if (onSelectSubTokens) {
       showModal(
@@ -151,6 +143,12 @@ export default function CurrencyInputPanel({
     subTokenSelection()
     setSwapType(SwapType.MANUAL)
   }, [subTokenSelection])
+
+  useEffect(() => {
+    if (enableAuto && swapType === SwapType.AUTO && onSelectSubTokens) {
+      onSelectSubTokens([])
+    }
+  }, [enableAuto, onSelectSubTokens, swapType])
 
   return (
     <>
@@ -185,7 +183,7 @@ export default function CurrencyInputPanel({
                 <SwapTypeButton
                   selected={swapType === SwapType.AUTO}
                   text={SwapType.AUTO}
-                  helperText="auto..."
+                  helperText="You will receive non-selective/random NFT after each swap."
                   onClick={() => {
                     setSwapType(SwapType.AUTO)
                     onSelectSubTokens && onSelectSubTokens([])
@@ -193,9 +191,14 @@ export default function CurrencyInputPanel({
                 />
               )}
               <SwapTypeButton
+                disabled={enableAuto && !pairAddress}
                 selected={swapType === SwapType.MANUAL}
                 text={SwapType.MANUAL}
-                helperText="choose by yourself..."
+                helperText={
+                  enableAuto && !pairAddress
+                    ? 'Choose the input token first'
+                    : 'You can choose specific NFTs from the pool.'
+                }
                 onClick={handleOpenIdSelectionModal}
               />
             </Box>
@@ -240,7 +243,7 @@ export default function CurrencyInputPanel({
         ) : (
           <Box flexGrow={1}>
             <InputNumerical
-              placeholder={placeholder ?? 'Enter amount to swap'}
+              placeholder={placeholder ?? 'Enter amount'}
               value={value.toString()}
               onChange={onChange}
               type={'number'}

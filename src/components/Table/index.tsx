@@ -9,7 +9,9 @@ import {
   styled,
   IconButton,
   Collapse,
-  TableSortLabel
+  TableSortLabel,
+  useTheme,
+  Stack
 } from '@mui/material'
 import { useState } from 'react'
 import useBreakpoint from '../../hooks/useBreakpoint'
@@ -59,7 +61,7 @@ const StyledTableContainer = styled(TableContainer)({
   '& table': {
     width: '100%',
     borderCollapse: 'separate',
-    borderSpacing: '0 8px'
+    borderSpacing: '0'
   }
 })
 
@@ -71,8 +73,9 @@ const StyledTableHead = styled(TableHead)(({ theme }) => ({
     whiteSpace: 'pre',
     lineHeight: '12px',
     background: 'rgba(255, 255, 255, 0.08)',
-    padding: '12px 20px 12px 0',
+    padding: '24px 20px 24px 0',
     color: theme.palette.text.secondary,
+    backgroundColor: theme.palette.background.default,
     borderBottom: 'none',
     '& .MuiTableSortLabel-root': {
       fontWeight: 400,
@@ -94,7 +97,7 @@ const StyledTableRow = styled(TableRow, { shouldForwardProp: () => true })<{
   variant: 'outlined' | 'grey'
   fontSize?: string
 }>(({ variant, theme, fontSize }) => ({
-  height: 80,
+  height: 52,
   borderRadius: '16px',
   overflow: 'hidden',
   position: 'relative',
@@ -117,24 +120,30 @@ const StyledTableRow = styled(TableRow, { shouldForwardProp: () => true })<{
     '&:first-of-type': {
       borderLeft: '1px solid',
       borderColor: variant === 'outlined' ? '#00000010' : 'transparent',
-      paddingLeft: '20px',
-      borderTopLeftRadius: 16,
-      borderBottomLeftRadius: 16
+      paddingLeft: '20px'
+      // borderTopLeftRadius: 16,
+      // borderBottomLeftRadius: 16
     },
     '&:last-child': {
       borderRight: '1px solid',
       borderColor: variant === 'outlined' ? '#00000010' : 'transparent',
-      paddingRight: '20px',
-      borderTopRightRadius: 16,
-      borderBottomRightRadius: 16
+      paddingRight: '20px'
+      // borderTopRightRadius: 16,
+      // borderBottomRightRadius: 16
     }
   },
-  '&:hover': {
-    '& + tr .MuiCollapse-root': {
-      backgroundColor: variant === 'outlined' ? '#E2E7F020' : '#E2E7F0'
-    },
-    backgroundColor: variant === 'outlined' ? '#E2E7F020' : '#E2E7F0'
+  '&:nth-of-type(odd)': {
+    backgroundColor: 'transparent'
+  },
+  '&:nth-of-type(even)': {
+    backgroundColor: theme.color.color2
   }
+  // '&:hover': {
+  //   '& + tr .MuiCollapse-root': {
+  //     backgroundColor: variant === 'outlined' ? '#E2E7F020' : '#E2E7F0'
+  //   },
+  //   backgroundColor: variant === 'outlined' ? '#E2E7F020' : '#E2E7F0'
+  // }
 }))
 
 const Card = styled('div')({
@@ -200,21 +209,35 @@ export default function Table({
   orderBy?: string
   createSortfunction?: (label: string) => () => void
 }) {
+  const theme = useTheme()
   const matches = useBreakpoint('md')
 
   return (
     <>
       {matches ? (
-        <>
+        <Stack spacing={16}>
           {rows.map((data, index) => (
             <Card key={index}>
               <Box display="flex" flexDirection="column" gap="16px">
                 {header.map((headerString, index) => (
                   <CardRow key={index}>
-                    <Typography variant="inherit" component="div" fontSize={12} color="#000000" sx={{ opacity: 0.5 }}>
+                    <Typography
+                      variant="inherit"
+                      component="div"
+                      fontSize={13}
+                      color={theme.palette.text.secondary}
+                      // sx={{ opacity: 0.5 }}
+                    >
                       {headerString}
                     </Typography>
-                    <Typography sx={{ color: theme => theme.palette.text.secondary }} component="div">
+                    <Typography
+                      display={'flex'}
+                      justifyContent="right"
+                      maxWidth={'70%'}
+                      textAlign="right"
+                      sx={{ color: theme => theme.palette.text.secondary }}
+                      component="div"
+                    >
                       {data[index] ?? null}
                     </Typography>
                     {collapsible && index + 1 === header.length && (
@@ -233,7 +256,7 @@ export default function Table({
               </Box>
             </Card>
           ))}
-        </>
+        </Stack>
       ) : (
         <StyledTableContainer>
           <table>

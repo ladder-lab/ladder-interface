@@ -16,6 +16,7 @@ import { Token } from '@ladder/sdk'
 import { AllTokens } from 'models/allTokens'
 import useModal from 'hooks/useModal'
 import { Loader } from 'components/AnimatedSvg/Loader'
+import { useCurrencyModalListHeight } from 'hooks/useScreenSize'
 
 export default function ERC721List({
   onSelectCurrency
@@ -68,6 +69,8 @@ export default function ERC721List({
     }
   }, [addUserToken, searchTokenIsAddedNFT, searchTokenNFT])
 
+  const listHeight = useCurrencyModalListHeight('310px')
+
   return (
     <>
       <Typography fontSize={16} fontWeight={500} mb={16}>
@@ -76,14 +79,14 @@ export default function ERC721List({
       <Input
         value={searchQueryNFT}
         onChange={handleInput}
-        placeholder="Search address"
+        placeholder="Search name or paste address"
         // outlined
         startAdornment={<SearchIcon />}
         onKeyDown={handleEnter721}
         height={isDownMd ? 48 : 60}
       />
 
-      <Box sx={{ overflow: 'auto', minHeight: isDownMd ? 357 : 500 }}>
+      <Box sx={{ overflow: 'auto', height: listHeight }}>
         <Box paddingTop={'24px'} position="relative">
           {loading && (
             <Box marginTop="40px" position="absolute" left="50%" sx={{ transform: 'translateX(-50%)' }}>

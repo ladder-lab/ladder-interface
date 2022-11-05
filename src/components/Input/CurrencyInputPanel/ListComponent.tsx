@@ -74,7 +74,7 @@ export function CollectionListComponent({
   options: Token721[]
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>
 }) {
-  const isDownMd = useBreakpoint('md')
+  // const isDownMd = useBreakpoint('md')
 
   // const key = useCallback((collection: Token721): string => {
   //   return collection ? collection.tokenId?.toString() || idx + '' : ''
@@ -83,20 +83,20 @@ export function CollectionListComponent({
   // const itemKey = useCallback((index: number, data: any) => key(data[index]), [key])
 
   const Rows = useCallback(
-    ({ data, index }: any) => {
+    ({ data, index, style }: any) => {
       const collection: Token721 = data[index]
       const onClickCollection = () => {
         onSelect && onSelect(collection)
       }
 
-      return <CurrencyRow currency={collection} onClick={onClickCollection} />
+      return <CurrencyRow currency={collection} onClick={onClickCollection} style={style} />
     },
     [onSelect]
   )
 
   return (
     <FixedSizeList
-      height={isDownMd ? 290 : 365}
+      height={365}
       width="100%"
       itemCount={options.length}
       itemSize={56}
@@ -124,12 +124,12 @@ const ListItem = styled('div')({
   justifyContent: 'space-between'
 })
 
-function CurrencyRow({ currency, onClick }: { currency: Currency; onClick: () => void }) {
+function CurrencyRow({ currency, onClick, style }: { currency: Currency; onClick: () => void; style?: any }) {
   const { account } = useActiveWeb3React()
   const balance = useCurrencyBalance(account ?? undefined, currency)
 
   return (
-    <ListItem onClick={onClick}>
+    <ListItem onClick={onClick} style={style}>
       <Box display="flex">
         <CurrencyLogo currency={currency} style={{ width: '30px', height: '30px' }} />
         <Box display="flex" flexDirection="column" marginLeft="16px">
@@ -140,7 +140,7 @@ function CurrencyRow({ currency, onClick }: { currency: Currency; onClick: () =>
       <span style={{ fontWeight: 500 }}>
         {balance ? (
           <StyledBalanceText title={balance.toExact()} sx={{}}>
-            {balance.toSignificant(4)}
+            {balance.toSignificant(6)}
           </StyledBalanceText>
         ) : account ? (
           <Spinner />

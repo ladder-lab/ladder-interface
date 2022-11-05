@@ -11,7 +11,7 @@ import { wrappedCurrency, wrappedCurrencyAmount } from '../../utils/wrappedCurre
 import { AppDispatch, AppState } from '../index'
 import { tryParseAmount } from '../swap/hooks'
 import { useCurrencyBalance, useTokenBalance } from '../wallet/hooks'
-import { Field, setTokenIds, typeInput } from './actions'
+import { Field, resetMintState, setTokenIds, typeInput } from './actions'
 
 const ZERO = JSBI.BigInt(0)
 
@@ -23,6 +23,7 @@ export function useMintActionHandlers(noLiquidity: boolean | undefined): {
   onFieldAInput: (typedValue: string) => void
   onFieldBInput: (typedValue: string) => void
   onSetTokenIds: (tokenIds: Array<string | number>) => void
+  onResetMintState: () => void
 } {
   const dispatch = useDispatch<AppDispatch>()
 
@@ -46,10 +47,15 @@ export function useMintActionHandlers(noLiquidity: boolean | undefined): {
     [dispatch]
   )
 
+  const onResetMintState = useCallback(() => {
+    dispatch(resetMintState())
+  }, [dispatch])
+
   return {
     onFieldAInput,
     onFieldBInput,
-    onSetTokenIds
+    onSetTokenIds,
+    onResetMintState
   }
 }
 
@@ -98,8 +104,9 @@ export function useDerivedMintInfo(
   const totalSupply = useTotalSupply(pair?.liquidityToken)
   const lpBalance = useTokenBalance(account ?? undefined, pair?.liquidityToken)
 
+  const noReserves = pair?.token0Price.equalTo('0') && pair?.token1Price.equalTo('0')
   const noLiquidity: boolean =
-    pairState === PairState.NOT_EXISTS || Boolean(totalSupply && JSBI.equal(totalSupply.raw, ZERO))
+    pairState === PairState.NOT_EXISTS || Boolean(totalSupply && JSBI.equal(totalSupply.raw, ZERO)) || !!noReserves
 
   // balances
 
@@ -178,7 +185,7 @@ export function useDerivedMintInfo(
       ]
 
       if (pair && totalSupply && tokenAmountA && tokenAmountB) {
-        if (+tokenAmountA?.toExact() === 0 || +tokenAmountB?.toExact() === 0) {
+        if (+tokenAmountA?.toExact() === 0 || +tokenAmountB?.toExact() === 0 || noReserves) {
           return undefined
         }
         return pair.getLiquidityMinted(totalSupply, tokenAmountA, tokenAmountB)
@@ -189,7 +196,7 @@ export function useDerivedMintInfo(
       console.error(e)
       return undefined
     }
-  }, [parsedAmounts, chainId, pair, totalSupply])
+  }, [parsedAmounts, chainId, pair, totalSupply, noReserves])
 
   const poolTokenPercentage = useMemo(() => {
     if (totalSupply && pair?.liquidityToken) {

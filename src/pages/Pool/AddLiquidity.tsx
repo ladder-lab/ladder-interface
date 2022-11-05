@@ -1,6 +1,6 @@
-import { useCallback, useState, ChangeEvent, useEffect } from 'react'
+import { useCallback, useState, ChangeEvent, useEffect, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { routes } from 'constants/routes'
+import { liquidityParamSplitter, routes } from 'constants/routes'
 import { Typography, Box, useTheme, Button } from '@mui/material'
 import { ETHER, TokenAmount } from '@ladder/sdk'
 import AppBody from 'components/AppBody'
@@ -30,6 +30,8 @@ import { useCurrency } from 'hooks/Tokens'
 import { getSymbol } from 'utils/getSymbol'
 import { checkIs721 } from 'utils/checkIs1155'
 import { Token721 } from 'constants/token/token721'
+import { generateErc20 } from 'utils/getHashAddress'
+import { wrappedCurrency } from 'utils/wrappedCurrency'
 
 export default function AddLiquidy() {
   const [currencyA, setCurrencyA] = useState<undefined | AllTokens>(undefined)
@@ -37,12 +39,12 @@ export default function AddLiquidy() {
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
 
   const { currencyIdA, currencyIdB, tokenIds } = useParams()
-  const [tokenIdA, tokenIdB] = tokenIds?.split('&') ?? ['', '']
+  const [tokenIdA, tokenIdB] = tokenIds?.split(liquidityParamSplitter) ?? ['', '']
   const [currency0, currency1] = [
     useCurrency(currencyIdA, tokenIdA) ?? undefined,
     useCurrency(currencyIdB, tokenIdB) ?? undefined
   ]
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const navigate = useNavigate()
   const { showModal, hideModal } = useModal()
   const toggleWallet = useWalletModalToggle()
@@ -64,7 +66,7 @@ export default function AddLiquidy() {
     poolTokenPercentage,
     error
   } = useDerivedMintInfo(currencyA, currencyB)
-  const { onFieldAInput, onFieldBInput, onSetTokenIds } = useMintActionHandlers(noLiquidity)
+  const { onFieldAInput, onFieldBInput, onSetTokenIds, onResetMintState } = useMintActionHandlers(noLiquidity)
   const shareOfPool =
     noLiquidity && price
       ? '100'
@@ -100,11 +102,11 @@ export default function AddLiquidy() {
   )
 
   const handleMaxInputA = useCallback(() => {
-    onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')
+    onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toFixed(6, undefined, 0) ?? '')
   }, [maxAmounts, onFieldAInput])
 
   const handleMaxInputB = useCallback(() => {
-    onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
+    onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toFixed(6, undefined, 0) ?? '')
   }, [maxAmounts, onFieldBInput])
 
   const handleAddCb = useCallback(() => {
@@ -184,7 +186,12 @@ export default function AddLiquidy() {
         setCurrencyB(currency1)
       }
     }
+    return
   }, [currency0, currency1])
+
+  useEffect(() => {
+    return onResetMintState
+  }, [onResetMintState])
 
   const handleTokenIds = useCallback(
     (tokens: Token721[]) => {
@@ -193,6 +200,19 @@ export default function AddLiquidy() {
     },
     [onSetTokenIds]
   )
+  const flipOrder =
+    pair?.token0.address === ((generateErc20(wrappedCurrency(currencyA, chainId)) as any)?.address ?? '')
+
+  const assets = useMemo(() => {
+    return flipOrder ? [currencyA, currencyB] : [currencyB, currencyA]
+  }, [flipOrder, currencyA, currencyB])
+
+  const priceA = pair?.token0Price.equalTo('0')
+    ? '0'
+    : pair?.token0Price?.toFixed(6, undefined, 2).trimTrailingZero() ?? '-'
+  const priceB = pair?.token1Price.equalTo('0')
+    ? '0'
+    : pair?.token1Price?.toFixed(6, undefined, 2).trimTrailingZero() ?? '-'
 
   return (
     <>
@@ -201,8 +221,8 @@ export default function AddLiquidy() {
         onConfirm={handleAddCb}
         tokenA={currencyA}
         tokenB={currencyB}
-        priceA={pair?.token1Price?.toFixed(8) ?? ''}
-        priceB={pair?.token0Price?.toFixed(8) ?? ''}
+        priceA={flipOrder ? priceA : priceB}
+        priceB={flipOrder ? priceB : priceA}
         valA={formattedAmounts[Field.CURRENCY_A]}
         valB={formattedAmounts[Field.CURRENCY_B]}
         isOpen={showConfirm}
@@ -252,8 +272,8 @@ export default function AddLiquidy() {
             <>
               <PriceAndPoolShare
                 data={{
-                  [`${currencyA?.name} per ${currencyB?.name}`]: pair?.token0Price?.toFixed() ?? '-',
-                  [`${currencyB?.name} per ${currencyA?.name}`]: pair?.token1Price?.toFixed() ?? '-',
+                  [`${assets[1]?.name} per ${assets[0]?.name}`]: priceA ?? '-',
+                  [`${assets[0]?.name} per ${assets[1]?.name}`]: priceB ?? '-',
                   ['Share of pool']: `${shareOfPool}
                       %`
                 }}

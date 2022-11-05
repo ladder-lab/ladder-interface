@@ -21,7 +21,7 @@ export const SUPPORT_NETWORK_CHAIN_IDS: ChainId[] = process.env.REACT_APP_CHAIN_
   ? process.env.REACT_APP_CHAIN_IDS.split(',').map(v => Number(v) as ChainId)
   : [ChainId.MAINNET]
 
-export const IS_TEST_NET = !!(NETWORK_CHAIN_ID === ChainId.RINKEBY)
+export const IS_TEST_NET = !!(NETWORK_CHAIN_ID === ChainId.GÖRLI)
 
 export const AllChainList = [
   {
@@ -47,6 +47,14 @@ export const AllChainList = [
     name: 'Kovan Testnet',
     id: ChainId.KOVAN,
     hex: '0x2a'
+  },
+  {
+    icon: <ETH />,
+    logo: EthUrl,
+    symbol: 'GÖRLI',
+    name: 'GÖRLI Testnet',
+    id: ChainId.GÖRLI,
+    hex: '0x5'
   },
   {
     icon: <BSC height={20} width={20} />,
@@ -133,6 +141,17 @@ export const SUPPORTED_NETWORKS: {
       decimals: 18
     },
     rpcUrls: ['https://bsc-dataseed.binance.org'],
-    blockExplorerUrls: ['https://bscscan.com']
+    blockExplorerUrls: ['https://bscscan.com/']
+  },
+  [ChainId.GÖRLI]: {
+    chainId: '0x5',
+    chainName: 'GÖRLI Testnet',
+    nativeCurrency: {
+      name: 'Goerli',
+      symbol: 'ETH',
+      decimals: 18
+    },
+    rpcUrls: ['https://goerli.infura.io/v3/bf5759dec68b48629379e1d53ababd45'],
+    blockExplorerUrls: ['https://goerli.etherscan.io/']
   }
 }

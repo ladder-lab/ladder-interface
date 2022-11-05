@@ -8,6 +8,7 @@ import { ChainId, SUPPORTED_NETWORKS } from '../constants/chain'
 import { ROUTER_ADDRESS, ROUTER_ADDRESS_721 } from 'constants/index'
 import V2RouterABI from 'constants/abis/v2Router.json'
 import router721ABI from 'constants/abis/router721.json'
+import moment from 'moment'
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -145,4 +146,47 @@ export function getRouterContract721(_: number, library: Web3Provider, account?:
 
 export function escapeRegExp(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
+}
+
+export function addTokenToMetamask(address: string, symbol: string, decimals: number, image = '') {
+  window.ethereum?.request &&
+    window.ethereum?.request({
+      method: 'wallet_watchAsset',
+      params: {
+        type: 'ERC20', // Initially only supports ERC20, but eventually more!
+        options: {
+          address, // The address that the token is at.
+          symbol, // A ticker symbol or shorthand, up to 5 chars.
+          decimals, // The number of decimals in the token
+          image // A string url of the token logo
+        }
+      }
+    })
+}
+
+export function scrollToElement(id: string) {
+  const element = document.getElementById(id)
+  element?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+}
+
+export function formatMillion(value: number, currencyText = '', fractionDigits = 1) {
+  if (value / 1_000_000_000 >= 1) {
+    return currencyText + Number((value / 1_000_000_000).toFixed(fractionDigits)).toLocaleString() + 'b'
+  }
+  if (value / 1_000_000 >= 1) {
+    return currencyText + Number((value / 1_000_000).toFixed(fractionDigits)).toLocaleString() + 'm'
+  }
+  if (value / 1_000 >= 1) {
+    return currencyText + Number((value / 1_000).toFixed(fractionDigits)).toLocaleString() + 'k'
+  }
+  return currencyText + Number(value.toFixed(fractionDigits)).toLocaleString()
+}
+
+export function timeStampToFormat(timeStamp: number | Date | undefined, format = 'Y-MM-DD HH:mm:ss') {
+  if (!timeStamp) return '--'
+  if (timeStamp instanceof Date) {
+    return moment(timeStamp).format(format)
+  }
+  timeStamp = timeStamp.toString().length <= 10 ? timeStamp * 1000 : timeStamp
+  return moment(timeStamp).format(format)
 }

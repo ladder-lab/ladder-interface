@@ -14,8 +14,8 @@ import { OutlinedCard } from 'components/Card'
 const Dot = styled('span')({
   width: 24,
   height: 24,
-  background: 'linear-gradient(135deg, #ffffff 4.17%, rgba(255, 255, 255, 0) 75%)',
-  border: '0.6px solid #ffffff',
+  background: 'linear-gradient(135deg, #cccccc 4.17%, rgba(255, 255, 255, 0) 75%)',
+  border: '0.6px solid #cccccc',
   borderRadius: '50%'
 })
 
@@ -131,9 +131,15 @@ export default function AccountDetails({
           <Box display="grid" gap="16px" width="100%">
             <Box display="flex" justifyContent="space-between" width="100%" fontWeight={500}>
               <Typography variant="inherit">Recent Transactions</Typography>
-              <Button variant="text" onClick={clearAllTransactionsCallback}>
+              <Typography
+                sx={{
+                  cursor: 'pointer',
+                  color: theme.palette.info.main
+                }}
+                onClick={clearAllTransactionsCallback}
+              >
                 (clear all)
-              </Button>
+              </Typography>
             </Box>
             <Box display="grid">
               {renderTransactions(pendingTransactions)}

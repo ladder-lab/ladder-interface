@@ -21,6 +21,7 @@ import LogoBase from 'components/essential/CurrencyLogo/LogoBase'
 import InputNumerical from 'components/Input/InputNumerical'
 import Close from '@mui/icons-material/Close'
 import SwitchToggle from 'components/SwitchToggle'
+import { useCurrencyModalListHeight } from 'hooks/useScreenSize'
 
 export default function Erc721IdSelectionModal({
   // isOpen,
@@ -96,11 +97,15 @@ export default function Erc721IdSelectionModal({
     }
   }, [filteredAvailableTokens, selectAll, setTokens])
 
+  const listHeight = useCurrencyModalListHeight(isDownMd ? '400px' : '375px')
+  const modalHeight = useCurrencyModalListHeight('0px')
+
   return (
     <Modal
       // customIsOpen={isOpen}
       customOnDismiss={onDismiss}
       width="100%"
+      height={modalHeight}
       maxWidth="680px"
       closeIcon
       closeVariant="button"
@@ -160,7 +165,7 @@ export default function Erc721IdSelectionModal({
           </Box>
         </Box>
       </Box>
-      <Box sx={{ overflow: 'auto', height: isDownMd ? 257 : 400, margin: '20px 0' }}>
+      <Box sx={{ overflow: 'auto', height: listHeight, margin: '20px 0' }}>
         <Box display="flex" flexDirection="column" gap={20}>
           <Box sx={{ minHeight: 290, width: '100%' }}>
             {loading || poolLoading ? (
@@ -169,7 +174,9 @@ export default function Erc721IdSelectionModal({
               </Box>
             ) : (
               <Grid container spacing={6} width="100%">
-                {searchIdToken === null && (
+                {(searchIdToken === null ||
+                  filteredAvailableTokens?.length === 0 ||
+                  (!filteredAvailableTokens && !loading)) && (
                   <Box width={'100%'} display="flex" alignItems="center" justifyContent="center" mt={100}>
                     <Typography
                       textAlign="center"
@@ -222,7 +229,7 @@ export default function Erc721IdSelectionModal({
       </Box>
       <Box>
         <Box
-          margin="25px 0 10px"
+          margin="15px 0 0"
           sx={{
             display: 'flex',
             alignItems: 'center',

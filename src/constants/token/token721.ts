@@ -1,4 +1,4 @@
-import { ChainId, NETWORK_CHAIN_ID } from '../chain'
+import { ChainId, IS_TEST_NET } from '../chain'
 import { Token } from '@ladder/sdk'
 import { Axios } from 'utils/axios'
 
@@ -29,7 +29,7 @@ export class Token721 extends Token {
     this.name = metadata?.name ?? 'ERC721'
     this.symbol = metadata?.symbol ?? 'NFT'
 
-    if ((!metadata || !metadata.uri) && NETWORK_CHAIN_ID !== 4) {
+    if ((!metadata || !metadata.uri) && !IS_TEST_NET) {
       if (tokenId) {
         Axios.getMetadata(address, tokenId)
           .then(r => {

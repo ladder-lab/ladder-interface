@@ -1,7 +1,7 @@
 {
   "name": "interface",
   "description": "Interface",
-  "homepage": ".",
+  "homepage": "/",
   "private": true,
   "devDependencies": {
     "@babel/plugin-syntax-typescript": "^7.18.6",
@@ -87,7 +87,7 @@
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
-    "@ladder/sdk": "ladder-lab/sdk.git",
+    "@ladder/sdk": "ladder-lab/sdk.git#master",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.7",
     "@types/react-swipeable-views": "^0.13.1",
@@ -98,9 +98,11 @@
     "dayjs": "^1.11.3",
     "decimal.js-light": "^2.5.1",
     "jsbi": "^4.3.0",
+    "lightweight-charts": "^3.7.0",
     "lottie-web": "^5.9.6",
     "react-swipeable-views": "^0.14.0",
     "react-swipeable-views-utils": "^0.14.0",
+    "moment": "^2.29.4",
     "toformat": "^2.0.0"
   }
 }

@@ -1,7 +1,10 @@
 import axios, { AxiosResponse, AxiosPromise, AxiosRequestConfig } from 'axios'
+import qs from 'qs'
+
+export const StatBaseURL = 'https://test-nftapi.antimatter.finance/web/'
 
 const axiosInstance = axios.create({
-  baseURL: '',
+  baseURL: 'https://dualinvest-testapi.antimatter.finance/web/',
   timeout: 10000,
   headers: { 'content-type': 'application/json', accept: 'application/json' }
 })
@@ -20,9 +23,10 @@ export const Axios = {
     url: string,
     data: { [key: string]: any },
     params = {},
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
+    isFormData?: boolean
   ): AxiosPromise<ResponseType<T>> {
-    return axiosInstance.post(url, data, { params, ...config })
+    return axiosInstance.post(url, isFormData ? qs.stringify(data) : data, { params, ...config })
   },
   getMetadata(contractAddress: string, tokenId: string | number): AxiosPromise<NFTResponseType> {
     return axiosToken1155Instance.post('', {

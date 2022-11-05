@@ -19,6 +19,9 @@ import RemoveLiquidity from './Pool/RemoveLiquidity'
 import Testnet from './Testnet'
 import Explorer from './Explore'
 import Collection from './Collection'
+import Statistics from './Statistics'
+import StatisticsTokens from './Statistics/Tokens'
+import StatisticsPools from './Statistics/Pools'
 
 const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
   ({ theme, isDarkMode }) => ({
@@ -84,6 +87,12 @@ export default function App() {
                   <Route path={routes.collection} element={<Collection />} />
                   <Route path={routes.swap} element={<Swap />} />
                   <Route path={routes.pool} element={<Pool />} />
+                  <Route path={routes.statistics} element={<Statistics />} />
+                  <Route
+                    path={routes.statisticsTokens + routes.statisticsTokensParams}
+                    element={<StatisticsTokens />}
+                  />
+                  <Route path={routes.statisticsPools + routes.statisticsPoolsParams} element={<StatisticsPools />} />
                   <Route path={routes.importPool} element={<ImportPool />} />
                   <Route path={routes.addLiquidity} element={<AddLiquidity />}>
                     <Route path={routes.removeLiquidityParams.slice(1)} element={<AddLiquidity />} />

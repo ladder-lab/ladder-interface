@@ -6,10 +6,12 @@ import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
 import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
 import ERC721_PAIR_ABI from '../constants/abis/erc721Pair.json'
+import TEST_NFT_URI_ABI from '../constants/abis/testNftUri.json'
 import WETH_ABI from '../constants/abis/weth.json'
 import ERC20_ABI from '../constants/abis/erc20.json'
 import ERC1155_ABI from '../constants/abis/erc1155.json'
 import ERC721_ABI from '../constants/abis/erc721.json'
+import MERKLE_TREE_ABI from '../constants/abis/merkleTree.json'
 import UNISOCKS_ABI from '../constants/abis/unisocks.json'
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
 import { getContract } from '../utils'
@@ -18,6 +20,7 @@ import {
   ARGENT_WALLET_DETECTOR_ABI,
   ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS
 } from '../constants/abis/argent-wallet-detector'
+import { MERKLE_TREE_ADDRESS, TEST_NFT_URI_ADDRESS } from 'constants/index'
 
 // returns null on errors
 export function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -104,4 +107,12 @@ export function use721Contract(address: string | undefined, withSignerIfPossible
 
 export function use721PairContract(address: string | undefined, withSignerIfPossible?: boolean): Contract | null {
   return useContract(address, ERC721_PAIR_ABI, withSignerIfPossible)
+}
+
+export function useMerkleContract(): Contract | null {
+  return useContract(MERKLE_TREE_ADDRESS, MERKLE_TREE_ABI, true)
+}
+
+export function useTestNftUriContract(): Contract | null {
+  return useContract(TEST_NFT_URI_ADDRESS, TEST_NFT_URI_ABI, false)
 }

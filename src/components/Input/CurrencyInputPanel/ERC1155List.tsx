@@ -5,11 +5,11 @@ import { AllTokens } from 'models/allTokens'
 import { shortenAddress } from 'utils'
 import useModal from 'hooks/useModal'
 import { useIsDarkMode } from 'state/user/hooks'
-import useBreakpoint from 'hooks/useBreakpoint'
 import { Currency } from '@ladder/sdk'
 import { useToken1155Balance, useToken1155Balances } from 'state/wallet/hooks'
 import { Loader } from 'components/AnimatedSvg/Loader'
 import LogoBase from 'components/essential/CurrencyLogo/LogoBase'
+import { useCurrencyModalListHeight } from 'hooks/useScreenSize'
 
 interface Props {
   selectedCurrency?: Currency | null
@@ -31,13 +31,14 @@ export default function NftList({
   importToken
 }: Props) {
   const { hideModal } = useModal()
-  const isDownMd = useBreakpoint('md')
   const { balances, loading } = useToken1155Balances(currencyOptions)
   const sortedList = useMemo(() => {
     return balances?.sort((amount1, amount2) => {
       return amount1.greaterThan(amount2) ? -1 : 1
     })
   }, [balances])
+
+  const listHeight = useCurrencyModalListHeight('310px')
 
   return (
     <>
@@ -46,7 +47,7 @@ export default function NftList({
       <Grid
         container
         spacing={20}
-        sx={{ overflow: 'auto', height: isDownMd ? 357 : 517, pb: 100 }}
+        sx={{ overflow: 'auto', height: listHeight }}
         paddingTop={'24px'}
         position="relative"
       >

@@ -65,24 +65,24 @@ export default function ConfirmSwapModal({
     [originalTrade, trade]
   )
 
-  const { token1Text } = getTokenText(to)
+  const { token1Text, token2Text } = getTokenText(to, from)
 
   return (
     <Modal closeIcon customIsOpen={isOpen} customOnDismiss={onDismiss}>
-      <Box padding="33px 32px">
+      <Box padding={{ xs: '30px 20px', md: '33px 32px' }}>
         <Typography fontSize={28} mb={39} fontWeight={500}>
           Confirm Swap
         </Typography>
         <SwapPanel
           from={from}
           to={to}
-          fromVal={trade?.inputAmount.toExact() ?? '-'}
-          toVal={trade?.outputAmount.toExact() ?? '-'}
+          fromVal={trade?.inputAmount.toFixed(6) ?? '-'}
+          toVal={trade?.outputAmount.toFixed(6) ?? '-'}
           tokenIds={tokenIds}
         />
         <Typography fontSize={16} mt={16} mb={24}>
-          {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {trade?.outputAmount.currency.name ?? '-'} ={' '}
-          {trade?.inputAmount.toExact()} {trade?.inputAmount.currency.name} ($1.0000)
+          {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {token2Text ?? '-'} ={' '}
+          {trade?.inputAmount.toFixed(6)} {token1Text} ($1.0000)
         </Typography>
         {showAcceptChanges && <PriceUpdateNotification onDismiss={onAcceptChanges} />}
         <Typography sx={{ fontSize: 16, color: theme.palette.text.secondary, mt: 24, mb: 24 }}>
@@ -90,10 +90,10 @@ export default function ConfirmSwapModal({
           {token1Text} or the transaction will revert.
         </Typography>
         <SwapDetails
-          ExpectedQty={trade?.outputAmount?.toExact() ?? ''}
+          ExpectedQty={trade?.outputAmount?.toFixed(6) ?? ''}
           priceImpact={priceImpact ?? ''}
           slippage={allowedSlippage / 100 + ''}
-          MinReceiveQty={slippageAdjustedAmounts.OUTPUT?.toExact() ?? ''}
+          MinReceiveQty={slippageAdjustedAmounts.OUTPUT?.toFixed(6) ?? ''}
           NetworkFee="8.23"
           toAsset={to}
         />
@@ -125,17 +125,19 @@ function SwapPanelRow({
       <Box sx={{ display: 'flex', gap: 14, position: 'relative', width: '100%', alignItems: 'center' }}>
         <CurrencyLogo currency={asset} size="36px" />
         <Box display="grid" gap={5}>
-          <Typography fontSize={24}>{value}</Typography>
+          <Typography fontSize={24} sx={{ wordBreak: 'break-all' }}>
+            {value}
+          </Typography>
           {approx && (
             <Typography sx={{ fontSize: 12, color: theme => theme.palette.text.secondary }}>~${approx}</Typography>
           )}
         </Box>
       </Box>
-      <Box display="flex" flexDirection="column" gap={8} alignItems="flex-end" width="50%">
+      <Box display={'flex'} flexDirection="column" gap={8} alignItems="flex-end" width="50%">
         <Tag>{type}</Tag>
-        <Typography fontSize={type === 'ERC20' ? 16 : 20} textAlign="right">
+        <Typography fontSize={16} textAlign="right">
           {type !== 'ERC20' ? asset?.name : asset?.symbol}
-          {type === 'ERC1155' ? ` #${filter1155(asset)?.tokenId}` : ''}
+          {type === 'ERC1155' ? `#${filter1155(asset)?.tokenId}` : ''}
         </Typography>
         {tokenIds && type === 'ERC721' && <Typography>{tokenIds.map(id => `#${id} `)}</Typography>}
       </Box>
@@ -221,17 +223,18 @@ function SwapDetails({
         mb: 40
       }}
     >
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Box display="flex" alignItems="center" gap={9}>
+      <Box display={{ xs: 'grid', md: 'flex' }} justifyContent="space-between" alignItems="center" gap={3}>
+        <Box display={'flex'} alignItems="center" gap={9}>
           <Typography>Expected Output</Typography>
           <QuestionHelper text={HelperText.expectedOuptut} />
         </Box>
 
-        <Typography>
-          {ExpectedQty} <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
+        <Typography sx={{ wordBreak: 'break-all' }}>
+          {ExpectedQty} {ExpectedQty.length > 22 && <br />}{' '}
+          <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
         </Typography>
       </Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Box display={{ xs: 'grid', md: 'flex' }} justifyContent="space-between" alignItems="center" gap={3}>
         <Box display="flex" alignItems="center" gap={9}>
           <Typography>Price Impact</Typography>
           <QuestionHelper text={HelperText.priceImpact} />
@@ -239,19 +242,22 @@ function SwapDetails({
 
         <Typography sx={{ color: theme.palette.text.secondary }}>{priceImpact}%</Typography>
       </Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Box display={{ xs: 'grid', md: 'flex' }} justifyContent="space-between" alignItems="center" gap={3}>
         <Box display="flex" alignItems="center" gap={9}>
           <Typography sx={{ color: theme.palette.text.secondary }}>
-            Minimum received after slippage ({slippage}%)
+            Minimum received <br />
+            after slippage ({slippage}%)
           </Typography>
           <QuestionHelper text={HelperText.minReceived} />
         </Box>
 
         <Typography>
-          {MinReceiveQty} <span style={{ color: theme.palette.text.secondary }}>{toAsset?.symbol ?? '-'}s</span>
+          {MinReceiveQty}
+          {MinReceiveQty.length > 22 && <br />}{' '}
+          <span style={{ color: theme.palette.text.secondary }}>{toAsset?.symbol ?? '-'}s</span>
         </Typography>
       </Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Box display={{ xs: 'grid', md: 'flex' }} justifyContent="space-between" alignItems="center" gap={3}>
         <Box display="flex" alignItems="center" gap={9}>
           <Typography sx={{ color: theme.palette.text.secondary }}>Network Fee</Typography>
           <QuestionHelper text={HelperText.networkFee} />

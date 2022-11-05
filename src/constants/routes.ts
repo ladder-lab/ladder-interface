@@ -10,13 +10,22 @@ export const routes = {
   removeLiquidityParams: '/:currencyIdA/:currencyIdB/:tokenIds',
   testnet: '/testnet',
   explorer: '/explorer',
-  collection: '/collection/:collectionId'
+  collection: '/collection/:collectionId',
+  statistics: '/statistics',
+  statisticsTokens: '/statistics/tokens',
+  statisticsTokensParams: '/:type/:chainId/:address/:token1155Id',
+  statisticsPools: '/statistics/pair_pools',
+  statisticsPoolsParams: '/:chainId/:pair'
 }
 
 export function liquidityParamBuilder(currencyA: Currency | undefined, currencyB: Currency | undefined) {
   return `/${currencyA === ETHER ? 'ETH' : (currencyA as Token).address}/${
     currencyB === ETHER ? 'ETH' : (currencyB as Token).address
-  }/${checkIs1155(currencyA) ? (currencyA as any).tokenId : checkIs721(currencyA) ? 'erc721' : ''}&${
+  }/${
+    checkIs1155(currencyA) ? (currencyA as any).tokenId : checkIs721(currencyA) ? 'erc721' : ''
+  }${liquidityParamSplitter}${
     checkIs1155(currencyB) ? (currencyB as any).tokenId : checkIs721(currencyB) ? 'erc721' : ''
   }`
 }
+
+export const liquidityParamSplitter = '&'

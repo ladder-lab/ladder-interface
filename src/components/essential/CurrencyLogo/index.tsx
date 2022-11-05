@@ -8,6 +8,7 @@ import tokenLogoUriList from 'assets/tokenLogoUriList.json'
 import { Token1155 } from 'constants/token/token1155'
 import { NETWORK_CHAIN_ID, SUPPORTED_NETWORKS } from 'constants/chain'
 import { useActiveWeb3React } from 'hooks'
+import { Token721 } from 'constants/token/token721'
 
 export const getTokenLogoURL = (address: string) =>
   `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`
@@ -16,12 +17,14 @@ export default function CurrencyLogo({
   currency,
   size = '24px',
   style,
-  currencySymbol
+  currencySymbol,
+  logoUrl
 }: {
   currency?: Currency
   size?: string
   style?: React.CSSProperties
   currencySymbol?: string
+  logoUrl?: string
 }) {
   const { chainId } = useActiveWeb3React()
 
@@ -42,8 +45,9 @@ export default function CurrencyLogo({
       const uri = (tokenLogoUriList as any)[currencySymbol]
       if (uri) return [uri]
     }
+    if (!currency) return []
 
-    if (currency instanceof Token1155) {
+    if (currency instanceof Token1155 || currency instanceof Token721) {
       if (currency.uri) {
         return [currency.uri]
       }
@@ -76,7 +80,7 @@ export default function CurrencyLogo({
         objectFit: 'cover',
         background: '#ffffff'
       }}
-      srcs={srcs}
+      srcs={logoUrl ? [logoUrl, ...srcs] : srcs}
       alt={`${currency?.symbol ?? 'token'} logo`}
     />
   )

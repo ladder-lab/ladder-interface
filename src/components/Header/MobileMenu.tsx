@@ -4,7 +4,8 @@ import { NavLink } from 'react-router-dom'
 import { Box, MenuItem, styled, Theme, Drawer } from '@mui/material'
 
 import { ExternalLink } from 'theme/components'
-import { Tabs } from '.'
+import { DesktopMenu, Tabs } from '.'
+import Divider from 'components/Divider'
 
 const StyledNavLink = styled(NavLink)({})
 
@@ -78,6 +79,8 @@ export default function MobileMenu({ isOpen, onDismiss }: { isOpen: boolean; onD
             )
           )
         })}
+        <Divider />
+        <DesktopMenu />
       </Box>
     </Drawer>
   )

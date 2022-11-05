@@ -1,8 +1,10 @@
-import { Percent, JSBI, WETH, ChainId, Token } from '@ladder/sdk'
+import { Percent, JSBI, WETH, ChainId, Token, FACTORY_ADDRESS as sdkFactory } from '@ladder/sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
 import { NETWORK_CHAIN_ID } from './chain'
 import { DEFAULT_1155_LIST } from './default1155List'
+console.log('1155 FACTORY', sdkFactory(5, false))
+console.log('721 FACTORY', sdkFactory(5, true))
 
 type ChainTokenList = {
   readonly [chainId in ChainId]: Token[]
@@ -14,6 +16,7 @@ export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16))
 export const ROUTER_ADDRESS_721: string =
   (
     {
+      [5]: '0xB2d06a54f2DBC5a2b608358c034be6aA88646Df4',
       [4]: '0xC61d146BB1965ba0e387aA2Ad94c500a17dfe65F',
       [56]: '',
       [1]: ''
@@ -23,6 +26,7 @@ export const ROUTER_ADDRESS_721: string =
 export const FACTORY_ADDRESS_721: string =
   (
     {
+      [5]: '0xfE354EA7a06f6dBDEF06F087C4Be5A6d4E021442',
       [4]: '0x50A180230A11734FFD1A9A55e80c442387d42931',
       [56]: '',
       [1]: ''
@@ -34,7 +38,8 @@ export const ROUTER_ADDRESS: string =
     {
       [4]: '0x2cB34c38f7FFF789fab70AB69DAA9f7F05a4ecc8',
       [56]: '0x54F0d8485e931c22D542D7b95dbbf5ecdE9C91E8',
-      [1]: ''
+      [1]: '',
+      [5]: '0x6ECBC55F9087b86aF9AADF553F086EfdAC5c1458'
     } as any
   )[NETWORK_CHAIN_ID] ?? ''
 
@@ -43,9 +48,13 @@ export const FACTORY_ADDRESS =
     {
       [4]: '0xB4AA7ce0558A8EbfC943928d6F3E5ceCc1650a46',
       [56]: '0xa1bf45AF7cDe8c105054611383E8ae3dA65615a3',
-      [1]: ''
+      [1]: '',
+      [5]: '0x075333bF761555D28D78E40232ABdC548083C3D7'
     } as any
   )[NETWORK_CHAIN_ID] ?? ''
+
+export const MERKLE_TREE_ADDRESS = '0x0f81E7cF07db3B58359e66113bB9a1a792b8c9e6'
+export const TEST_NFT_URI_ADDRESS = '0x5D0F0780c6f7d95780D50de1413919E8CdD5579d'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
@@ -72,7 +81,8 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [ChainId.RINKEBY]: [
     ...WETH_ONLY[ChainId.RINKEBY],
     new Token(ChainId.RINKEBY, '0xD64b11169B87030EB5647Add8265d2F1D30cF2e6', 18, 'TEST', 'Test Coin')
-  ]
+  ],
+  [ChainId.GÖRLI]: [...WETH_ONLY[ChainId.GÖRLI]]
 }
 
 /**
@@ -92,7 +102,8 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   [ChainId.RINKEBY]: [
     ...WETH_ONLY[ChainId.RINKEBY],
     new Token(ChainId.RINKEBY, '0xD64b11169B87030EB5647Add8265d2F1D30cF2e6', 18, 'TEST', 'Test Coin')
-  ]
+  ],
+  [ChainId.GÖRLI]: [...WETH_ONLY[ChainId.GÖRLI]]
 }
 
 export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } = {
