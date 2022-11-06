@@ -88,6 +88,7 @@ export default function Explore() {
             pair={item.pair}
             token0Info={item.token0}
             token1Info={item.token1}
+            color={'#FFFFFF'}
             key={0}
           />
         ),

@@ -642,6 +642,7 @@ export function ShowTopPoolsCurrencyBox({
   fontSize,
   fontWeight,
   pair,
+  color,
   chainId
 }: {
   token0Info: StatTokenInfo
@@ -650,6 +651,7 @@ export function ShowTopPoolsCurrencyBox({
   chainId: ChainId
   fontSize?: number
   fontWeight?: number
+  color?: string
 }) {
   const theme = useTheme()
   const navigate = useNavigate()
@@ -665,19 +667,19 @@ export function ShowTopPoolsCurrencyBox({
     >
       <CurrencyLogo size={fontSize ? fontSize + 'px' : '24px'} logoUrl={token0Info.logo} />
       <CurrencyLogo size={fontSize ? fontSize + 'px' : '24px'} style={{ marginLeft: -8 }} logoUrl={token1Info.logo} />
-      <Typography fontSize={fontSize} fontWeight={fontWeight} color={theme.palette.text.primary} ml={8}>
+      <Typography fontSize={fontSize} fontWeight={fontWeight} color={color || theme.palette.text.primary} ml={8}>
         {token0Info.symbol}
       </Typography>
       {token0Info.type === Mode.ERC1155 && (
-        <Typography fontSize={fontSize} fontWeight={fontWeight} color={theme.palette.text.primary} ml={8}>
+        <Typography fontSize={fontSize} fontWeight={fontWeight} color={color || theme.palette.text.primary} ml={8}>
           #{token0Info.tokenId}
         </Typography>
       )}
-      <Typography fontSize={fontSize} fontWeight={fontWeight} color={theme.palette.text.primary}>
+      <Typography fontSize={fontSize} fontWeight={fontWeight} color={color || theme.palette.text.primary}>
         /{token1Info.symbol}
       </Typography>
       {token1Info.type === Mode.ERC1155 && (
-        <Typography fontSize={fontSize} fontWeight={fontWeight} color={theme.palette.text.primary} ml={8}>
+        <Typography fontSize={fontSize} fontWeight={fontWeight} color={color || theme.palette.text.primary} ml={8}>
           #{token1Info.tokenId}
         </Typography>
       )}
