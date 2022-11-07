@@ -170,7 +170,7 @@ export default function Pool() {
                       reserve0={amountA.toFixed(6, undefined, 2).trimTrailingZero()}
                       reserve1={amountB.toFixed(6, undefined, 2).trimTrailingZero()}
                       shareAmount={poolTokenPercentage}
-                      tokenAmount={balance ? balance?.toFixed(6, undefined, 2).trimTrailingZero() : '-'}
+                      tokenAmount={balance ? balance?.toExact() : '-'}
                       onAdd={() => navigate(routes.addLiquidity + liquidityParamBuilder(amountA.token, amountB.token))}
                       onRemove={() =>
                         navigate(routes.removeLiquidity + liquidityParamBuilder(amountA.token, amountB.token))
@@ -266,7 +266,7 @@ function PoolCard({
       <Box display="grid" gap={12} mt={16} mb={16}>
         <Box display="flex" justifyContent="space-between">
           <Typography sx={{ color: theme.palette.text.secondary, fontSize: 16, mr: 5 }} whiteSpace="nowrap">
-            Your pool tokens
+            Your LP
           </Typography>
           <Typography
             fontSize={16}
@@ -280,7 +280,7 @@ function PoolCard({
           </Typography>
         </Box>
         <Box display="flex" justifyContent="space-between">
-          <Typography sx={{ color: theme.palette.text.secondary, fontSize: 16 }}>Your pool share</Typography>
+          <Typography sx={{ color: theme.palette.text.secondary, fontSize: 16 }}>Your share</Typography>
           <Typography fontSize={16}>{shareAmount}</Typography>
         </Box>
       </Box>

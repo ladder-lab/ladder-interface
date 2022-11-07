@@ -28,7 +28,7 @@ import TransactionSubmittedModal from 'components/Modal/TransactionModals/Transa
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useCurrency } from 'hooks/Tokens'
 import { getSymbol } from 'utils/getSymbol'
-import { checkIs721 } from 'utils/checkIs1155'
+import { checkIs721, getTokenText } from 'utils/checkIs1155'
 import { Token721 } from 'constants/token/token721'
 import { generateErc20 } from 'utils/getHashAddress'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
@@ -207,6 +207,8 @@ export default function AddLiquidy() {
     return flipOrder ? [currencyA, currencyB] : [currencyB, currencyA]
   }, [flipOrder, currencyA, currencyB])
 
+  const assetsTexts = getTokenText(assets[0], assets[1])
+
   const priceA = pair?.token0Price.equalTo('0')
     ? '0'
     : pair?.token0Price?.toFixed(6, undefined, 2).trimTrailingZero() ?? '-'
@@ -272,8 +274,8 @@ export default function AddLiquidy() {
             <>
               <PriceAndPoolShare
                 data={{
-                  [`${assets[1]?.name} per ${assets[0]?.name}`]: priceA ?? '-',
-                  [`${assets[0]?.name} per ${assets[1]?.name}`]: priceB ?? '-',
+                  [`${assetsTexts.token2Text} per ${assetsTexts.token1Text}`]: priceA ?? '-',
+                  [`${assetsTexts.token1Text} per ${assetsTexts.token2Text}`]: priceB ?? '-',
                   ['Share of pool']: `${shareOfPool}
                       %`
                 }}
