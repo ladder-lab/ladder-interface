@@ -311,7 +311,7 @@ function CollectionListing({
           height: 168,
           display: 'block',
           width: '100%',
-          objectFit: 'contain'
+          objectFit: 'cover'
         }}
         src={imgPath}
         alt={'Token logo'}

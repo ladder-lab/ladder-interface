@@ -55,9 +55,6 @@ export default function Tokens() {
           >
             Statistics
           </Typography>
-          <Typography fontWeight={500} color={theme.palette.text.primary}>
-            Tokens
-          </Typography>
           <Box display={'flex'} alignItems="center">
             <Typography fontWeight={500} color={theme.palette.text.primary}>
               {tokenDetailData?.symbol || '--'}

@@ -108,7 +108,6 @@ export default function Collection() {
 function MainCard({ token }: { token: StatTokenInfo | undefined }) {
   const theme = useTheme()
   const isDownMd = useBreakpoint('md')
-  const navigate = useNavigate()
 
   const data = useMemo(() => {
     return {
@@ -129,10 +128,10 @@ function MainCard({ token }: { token: StatTokenInfo | undefined }) {
         <Image
           alt="collection-image"
           src={data.coverImage}
-          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
         <Box
-          onClick={() => navigate(routes.explorer, { replace: true })}
+          onClick={() => window.history.go(-1)}
           sx={{
             position: 'absolute',
             width: 127,
@@ -378,8 +377,18 @@ function PairCard({ item }: { item: StatTopPoolsProp & { no: number; curPoolPair
             navigate(
               routes.addLiquidity +
                 `/${item.token0.address}/${item.token1.address}/${
-                  item.token0.type === Mode.ERC20 ? '' : item.token0.type
-                }&${item.token1.type}`
+                  item.token0.type === Mode.ERC20
+                    ? ''
+                    : item.token0.type === Mode.ERC721
+                    ? Mode.ERC721
+                    : item.token0.tokenId
+                }&${
+                  item.token1.type === Mode.ERC20
+                    ? ''
+                    : item.token1.type === Mode.ERC721
+                    ? Mode.ERC721
+                    : item.token1.tokenId
+                }`
             )
           }
           sx={{ fontSize: 16, height: 48, borderColor: theme.palette.info.main, color: theme.palette.info.main }}

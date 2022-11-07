@@ -40,7 +40,9 @@ export default function Carousel({
         index={activeStep}
         onChangeIndex={(step: number) => setActiveStep(step)}
         enableMouseEvents
-        style={{ padding: `0 calc((100% - ${itemWidth}px - 20px) / 2)` }}
+        style={{
+          padding: `0 calc((100% - ${itemWidth}px - 20px) / 2) 0`
+        }}
         slideStyle={{ padding: isDownMd ? '0 5px' : '0 10px' }}
       >
         {items}

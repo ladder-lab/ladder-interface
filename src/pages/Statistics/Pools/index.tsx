@@ -34,9 +34,6 @@ export default function Pools() {
           >
             Statistics
           </Typography>
-          <Typography fontWeight={500} color={theme.palette.text.primary}>
-            Pools
-          </Typography>
           {poolDetailData && (
             <ShowTopPoolsCurrencyBox
               token0Info={poolDetailData.token0}
