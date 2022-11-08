@@ -8,7 +8,7 @@ import { ReactComponent as WebsiteLight } from 'assets/svg/socials/website_light
 import { ExternalLink } from 'theme/components'
 import { ExternalLinks } from 'constants/external_links'
 import Card from 'components/Card'
-import Carousel from 'components/Carousel'
+// import Carousel from 'components/Carousel'
 import { useIsDarkMode } from 'state/user/hooks'
 import BgLight from 'assets/images/bg_light.png'
 import BgDark from 'assets/images/bg_dark.png'
@@ -22,6 +22,7 @@ import { useTopPoolsList, useTopTokensList } from 'hooks/useStatBacked'
 import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
 import { formatMillion } from 'utils'
 import { PoolPairType, ShowTopPoolsCurrencyBox } from 'pages/Statistics'
+import Swiper from 'components/Swiper'
 
 const defaultPageSize = 9
 
@@ -105,6 +106,7 @@ export default function Explore() {
       list1155Pool.map(item => ({
         title: (
           <ShowTopPoolsCurrencyBox
+            color={theme.palette.text.primary}
             chainId={chainId || NETWORK_CHAIN_ID}
             pair={item.pair}
             token0Info={item.token0}
@@ -117,7 +119,7 @@ export default function Explore() {
         route: routes.statisticsPools + `/${chainId}/${item.pair}`,
         percentage: ''
       })),
-    [chainId, list1155Pool]
+    [chainId, list1155Pool, theme.palette.text.primary]
   )
 
   return (
@@ -266,7 +268,9 @@ function CollectionHighLight({ collections }: { collections: CollectionsProp[] }
       >
         Popular Collection
       </Box>
-      <Carousel itemWidth={isDownMd ? 180 : 380} items={items} maxWidth={700} />
+      <Box maxWidth={700}>
+        <Swiper darkMode pagePosition="center" itemWidth={isDownMd ? 180 : 380} items={items} centeredSlides />
+      </Box>
     </Box>
   )
 }
@@ -368,7 +372,9 @@ function CollectionListing({
         </Box>
       )}
 
-      <Carousel itemWidth={218} items={items} stepperPosition="right" stepperDark={!dark} />
+      {/* <Carousel itemWidth={218} items={items} stepperPosition="right" stepperDark={!dark} /> */}
+
+      <Swiper itemWidth={218} items={items} darkMode={dark} />
     </Box>
   )
 }
