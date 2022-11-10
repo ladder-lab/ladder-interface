@@ -22,6 +22,7 @@ import Collection from './Collection'
 import Statistics from './Statistics'
 import StatisticsTokens from './Statistics/Tokens'
 import StatisticsPools from './Statistics/Pools'
+import Feedback from './Feedback'
 
 const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
   ({ theme, isDarkMode }) => ({
@@ -100,6 +101,7 @@ export default function App() {
                   <Route path={routes.removeLiquidity}>
                     <Route path={routes.removeLiquidity + routes.removeLiquidityParams} element={<RemoveLiquidity />} />
                   </Route>
+                  <Route path={routes.feedback} element={<Feedback />} />
                   <Route path="*" element={<Navigate to={routes.swap} replace />} />
                 </Routes>
               </Web3ReactManager>

@@ -15,7 +15,8 @@ export const routes = {
   statisticsTokens: '/statistics/tokens',
   statisticsTokensParams: '/:type/:chainId/:address/:token1155Id',
   statisticsPools: '/statistics/pair_pools',
-  statisticsPoolsParams: '/:chainId/:pair'
+  statisticsPoolsParams: '/:chainId/:pair',
+  feedback: '/feedback'
 }
 
 export function liquidityParamBuilder(currencyA: Currency | undefined, currencyB: Currency | undefined) {

@@ -90,8 +90,6 @@
     "@ladder/sdk": "ladder-lab/sdk.git#master",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.7",
-    "@types/react-swipeable-views": "^0.13.1",
-    "@types/react-swipeable-views-utils": "^0.13.4",
     "@uniswap/default-token-list": "^2.0.0",
     "axios": "^0.27.2",
     "big.js": "^6.2.0",
@@ -102,6 +100,7 @@
     "lottie-web": "^5.9.6",
     "moment": "^2.29.4",
     "swiper": "^8.4.4",
-    "toformat": "^2.0.0"
+    "toformat": "^2.0.0",
+    "web3": "^1.8.0"
   }
 }

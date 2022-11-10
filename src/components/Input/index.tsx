@@ -22,6 +22,7 @@ export interface InputProps {
   subStr2?: string
   helperText?: string
   borderRadius?: string
+  requiredLabel?: boolean
 }
 
 export default function Input({
@@ -43,6 +44,7 @@ export default function Input({
   subStr2,
   helperText,
   borderRadius = '8px',
+  requiredLabel,
   ...rest
 }: InputProps & Omit<InputHTMLAttributes<HTMLInputElement>, 'color' | 'outline' | 'size'>) {
   const theme = useTheme()
@@ -50,7 +52,11 @@ export default function Input({
 
   return (
     <div style={{ width: '100%', maxWidth: maxWidth || 'unset' }}>
-      {label && <InputLabel helperText={helperText}>{label}</InputLabel>}
+      {label && (
+        <InputLabel required={requiredLabel} helperText={helperText}>
+          {label}
+        </InputLabel>
+      )}
       <InputBase
         sx={{
           height: height || 52,
@@ -127,7 +133,11 @@ export default function Input({
       />
       <Box display="flex" justifyContent="space-between">
         {subStr && (
-          <Typography fontSize={12} mt={12} sx={{ color: theme.palette.text.secondary }}>
+          <Typography
+            fontSize={12}
+            mt={12}
+            sx={{ color: error ? theme.palette.error.main : theme.palette.text.secondary }}
+          >
             {subStr}
           </Typography>
         )}

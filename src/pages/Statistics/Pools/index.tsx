@@ -21,7 +21,7 @@ export default function Pools() {
         padding: { sm: 30, xs: '20px 15px' },
         width: '100%',
         maxWidth: '1300px',
-        margin: 'auto'
+        margin: '0 auto'
       }}
     >
       <Stack spacing={30}>

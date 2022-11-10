@@ -10,10 +10,19 @@ interface Props {
   width?: string
   header?: string
   action?: () => void
+  closeAction?: () => void
   actionText?: string
 }
 
-export default function MessageBox({ type, children, width = '480px', header, action, actionText }: Props) {
+export default function MessageBox({
+  type,
+  children,
+  width = '480px',
+  header,
+  action,
+  actionText,
+  closeAction
+}: Props) {
   const { hideModal } = useModal()
   const isDarkMode = useIsDarkMode()
 
@@ -107,7 +116,14 @@ export default function MessageBox({ type, children, width = '480px', header, ac
         </Box>
 
         <Box display="flex" justifyContent="space-around" width="100%" marginTop="10px">
-          <Button onClick={hideModal}>Close</Button>
+          <Button
+            onClick={() => {
+              closeAction && closeAction()
+              hideModal()
+            }}
+          >
+            Close
+          </Button>
           {type === 'failure' && actionText && <Button onClick={action}>{actionText}</Button>}
         </Box>
       </Box>
