@@ -89,7 +89,7 @@ export function useTestnetClaim(account: string | undefined) {
       showModal(<MessageBox type="error">Claim dev assets Failed</MessageBox>)
       console.error(e)
     }
-  }, [addTransaction, contract, hideModal, showModal])
+  }, [account, addTransaction, contract, hideModal, showModal])
 
   return { testnetClaim, claimState, devTestnetClaim }
 }
