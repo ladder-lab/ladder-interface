@@ -54,7 +54,7 @@ export const DEFAULT_1155_LIST: { [chainId in ChainId]?: Token1155[] } = {
   ],
   [ChainId.GÖRLI]: TEST_1155_LIST,
   [ChainId.SEPOLIA]: test1155Sepolia.map((address, idx) => {
-    return new Token1155(ChainId.GÖRLI, address, '1', {
+    return new Token1155(ChainId.SEPOLIA, address, '1', {
       name: `LADDER-TEST-1155-${idx + 1}`,
       symbol: `T-1155-${idx + 1}`
     })

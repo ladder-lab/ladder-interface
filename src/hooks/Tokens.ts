@@ -115,7 +115,7 @@ const testTokens = {
   [11155111]: {
     '0x5c7281493Ee8E92232bEfc17B43D3875AC067e43': new WrappedTokenInfo(
       {
-        chainId: 5,
+        chainId: 11155111,
         address: '0x5c7281493Ee8E92232bEfc17B43D3875AC067e43',
         decimals: 18,
         symbol: 'tUSDC',

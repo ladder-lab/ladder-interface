@@ -164,7 +164,7 @@ export const SUPPORTED_NETWORKS: {
     blockExplorerUrls: ['https://goerli.etherscan.io/']
   },
   [ChainId.SEPOLIA]: {
-    chainId: '0x5',
+    chainId: '0xaa36a7',
     chainName: 'Sepolia Testnet',
     nativeCurrency: {
       name: 'Sepolia',
