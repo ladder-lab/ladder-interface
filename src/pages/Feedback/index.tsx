@@ -56,6 +56,7 @@ export default function Feedback() {
       <Box
         sx={{
           maxWidth: 1200,
+          padding: { xs: 20 },
           margin: '40px auto'
         }}
       >
@@ -70,6 +71,19 @@ export default function Feedback() {
           <ArrowBack sx={{ mr: 8 }} />
           Go back
         </Box>
+
+        <Box mt={20} mb={40}>
+          <Typography textAlign={'center'} fontSize={36} fontWeight="600">
+            Ladder Testnet Feedback
+          </Typography>
+          <Typography mt={20} textAlign={'center'} fontSize={16} fontWeight={600}>
+            Thanks for participating in Ladder Testnet.
+            <br />
+            <br />
+            You may report any problems or recommendations using this form. We are delighted to hear your feedback!
+          </Typography>
+        </Box>
+
         {data && <Form commitData={data} commit={commit} />}
       </Box>
       <Backdrop sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }} open={!data}>

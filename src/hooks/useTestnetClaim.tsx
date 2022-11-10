@@ -73,5 +73,23 @@ export function useTestnetClaim(account: string | undefined) {
     }
   }, [account, addTransaction, claimState, contract, data, hideModal, showModal])
 
-  return { testnetClaim, claimState }
+  const devTestnetClaim = useCallback(async () => {
+    if (!contract) return
+
+    try {
+      showModal(<TransacitonPendingModal />)
+      const res = await contract.claim1()
+      addTransaction(res, {
+        summary: 'Claim dev assets'
+      })
+      hideModal()
+      showModal(<TransactionSubmittedModal />)
+    } catch (e) {
+      hideModal()
+      showModal(<MessageBox type="error">Claim dev assets Failed</MessageBox>)
+      console.error(e)
+    }
+  }, [addTransaction, contract, hideModal, showModal])
+
+  return { testnetClaim, claimState, devTestnetClaim }
 }
