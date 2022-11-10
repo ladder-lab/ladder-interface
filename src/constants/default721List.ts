@@ -15,6 +15,19 @@ const test721List = [
   { address: '0xBA1a650Abd084AbF42742AB7df5f7E65D458481B', name: 'Azuki', symbol: 'AZUKI' }
 ]
 
+const test721ListSepolia = [
+  { name: 'LADDER-TEST-721-1', symbol: 'T-721-1', address: '0x6746e7bd4250263F7F6CedEEDa3d055749c82A9e' },
+  { name: 'LADDER-TEST-721-2', symbol: 'T-721-2', address: '0x96013A85E4B2ad0B579A8713a56225F8ed7530E9' },
+  { name: 'LADDER-TEST-721-3', symbol: 'T-721-3', address: '0x5070F6ac4B161aa3f9B48E14d4A6182752939Cfe' },
+  { name: 'LADDER-TEST-721-4', symbol: 'T-721-4', address: '0x31F2e3D0Ee3a97c0B3186eBAf5CAa92677046654' },
+  { name: 'LADDER-TEST-721-5', symbol: 'T-721-5', address: '0x3186385C1c1C20B5230723dc67C18AA63D010C7d' },
+  { name: 'LADDER-TEST-721-6', symbol: 'T-721-6', address: '0x5D0F0780c6f7d95780D50de1413919E8CdD5579d' },
+  { name: 'LADDER-TEST-721-7', symbol: 'T-721-7', address: '0xd4C70114d12b05eACE5749dF0878891570BB0BEE' },
+  { name: 'LADDER-TEST-721-8', symbol: 'T-721-8', address: '0xdB16d60B19F0de9F1702d7f5E400A38c0A35aa25' },
+  { name: 'LADDER-TEST-721-9', symbol: 'T-721-9', address: '0x21243b3C267CeB2794dc4a1eaad223CDD2e27732' },
+  { name: 'LADDER-TEST-721-10', symbol: ' T-721-10', address: '0xDE9e6C49C1E009314973A1FF37385b443d418971' }
+]
+
 export const getTest721uri = (name: string) => {
   return `https://info.chainswap.com/${name.split(' ').join('')}/0.jpg`
 }
@@ -41,5 +54,11 @@ export const DEFAULT_721_LIST: { [chainId in ChainId]?: Token721[] } = {
       uri: SampleNftImg
     })
   ] as Token721[],
-  [ChainId.GÖRLI]: TEST_721_LIST
+  [ChainId.GÖRLI]: TEST_721_LIST,
+  [ChainId.SEPOLIA]: test721ListSepolia.map(({ address, name, symbol }) => {
+    return new Token721(ChainId.SEPOLIA, address, undefined, {
+      name,
+      symbol
+    })
+  })
 }

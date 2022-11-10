@@ -74,11 +74,11 @@ export function useTestnetClaim(account: string | undefined) {
   }, [account, addTransaction, claimState, contract, data, hideModal, showModal])
 
   const devTestnetClaim = useCallback(async () => {
-    if (!contract) return
+    if (!contract || !account) return
 
     try {
       showModal(<TransacitonPendingModal />)
-      const res = await contract.claim1()
+      const res = await contract.claim1(account)
       addTransaction(res, {
         summary: 'Claim dev assets'
       })

@@ -1,5 +1,5 @@
 import { parseBytes32String } from '@ethersproject/strings'
-import { Currency, ETHER, Token, ChainId, currencyEquals } from '@ladder/sdk'
+import { Currency, ETHER, Token, ChainId, currencyEquals, WETH } from '@ladder/sdk'
 import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
 import { useEffect, useMemo, useState } from 'react'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
@@ -90,32 +90,47 @@ function useTokensFromMap(tokenMap: TokenAddressMap, includeUserAdded: boolean):
   }, [chainId, userAddedTokens, tokenMap, includeUserAdded])
 }
 const testTokens = {
-  '0x0F85225ab45b77DA055c5B5f9e5F4F919A1D17EA ': new WrappedTokenInfo(
-    {
-      chainId: 5,
-      address: '0x0F85225ab45b77DA055c5B5f9e5F4F919A1D17EA',
-      decimals: 18,
-      symbol: 'tWETH',
-      name: 'testETH-LadderV2-ETH-Testnet'
-    },
-    []
-  ),
-  '0x314195C69d8F0236939a31f64cB367764672CA0f ': new WrappedTokenInfo(
-    {
-      chainId: 5,
-      address: '0x314195C69d8F0236939a31f64cB367764672CA0f',
-      decimals: 18,
-      symbol: 'tUSDC',
-      name: 'testUSDC-LadderV2-USDC-Testnet'
-    },
-    []
-  )
+  [5]: {
+    '0x0F85225ab45b77DA055c5B5f9e5F4F919A1D17EA ': new WrappedTokenInfo(
+      {
+        chainId: 5,
+        address: '0x0F85225ab45b77DA055c5B5f9e5F4F919A1D17EA',
+        decimals: 18,
+        symbol: 'tWETH',
+        name: 'testETH-LadderV2-ETH-Testnet'
+      },
+      []
+    ),
+    '0x314195C69d8F0236939a31f64cB367764672CA0f ': new WrappedTokenInfo(
+      {
+        chainId: 5,
+        address: '0x314195C69d8F0236939a31f64cB367764672CA0f',
+        decimals: 18,
+        symbol: 'tUSDC',
+        name: 'testUSDC-LadderV2-USDC-Testnet'
+      },
+      []
+    )
+  },
+  [11155111]: {
+    '0x5c7281493Ee8E92232bEfc17B43D3875AC067e43': new WrappedTokenInfo(
+      {
+        chainId: 11155111,
+        address: '0x5c7281493Ee8E92232bEfc17B43D3875AC067e43',
+        decimals: 18,
+        symbol: 'tUSDC',
+        name: 'ladder-test-usdc'
+      },
+      []
+    ),
+    [WETH[11155111].address]: WETH[11155111]
+  }
 }
 export function useAllTokens(): { [address: string]: Token } {
   const allTokens = useDefaultTokenList()
   //add user added tokens
   const tokens = useTokensFromMap(allTokens, true)
-  return useMemo(() => ({ ...tokens, ...(NETWORK_CHAIN_ID === 5 ? testTokens : {}) }), [tokens])
+  return useMemo(() => ({ ...tokens, ...(NETWORK_CHAIN_ID === 11155111 ? testTokens[11155111] : {}) }), [tokens])
 }
 
 // parse a name or symbol from a token response

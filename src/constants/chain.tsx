@@ -10,7 +10,8 @@ export enum ChainId {
   RINKEBY = 4,
   GÖRLI = 5,
   KOVAN = 42,
-  BSC = 56
+  BSC = 56,
+  SEPOLIA = 11155111
 }
 
 export const NETWORK_CHAIN_ID: ChainId = process.env.REACT_APP_CHAIN_ID
@@ -55,6 +56,14 @@ export const AllChainList = [
     name: 'GÖRLI Testnet',
     id: ChainId.GÖRLI,
     hex: '0x5'
+  },
+  {
+    icon: <ETH />,
+    logo: EthUrl,
+    symbol: 'Sepolia',
+    name: 'Sepolia',
+    id: ChainId.SEPOLIA,
+    hex: '0xaa36a7'
   },
   {
     icon: <BSC height={20} width={20} />,
@@ -153,5 +162,16 @@ export const SUPPORTED_NETWORKS: {
     },
     rpcUrls: ['https://goerli.infura.io/v3/bf5759dec68b48629379e1d53ababd45'],
     blockExplorerUrls: ['https://goerli.etherscan.io/']
+  },
+  [ChainId.SEPOLIA]: {
+    chainId: '0xaa36a7',
+    chainName: 'Sepolia Testnet',
+    nativeCurrency: {
+      name: 'Sepolia',
+      symbol: 'ETH',
+      decimals: 18
+    },
+    rpcUrls: ['https://sepolia.infura.io/v3/f338fa7411a945db8bed616683b2ade5'],
+    blockExplorerUrls: ['https://sepolia.etherscan.io/']
   }
 }

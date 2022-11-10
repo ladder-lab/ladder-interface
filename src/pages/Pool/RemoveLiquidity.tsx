@@ -243,7 +243,7 @@ export default function RemoveLiquidity() {
 
         <InputCard
           value={formattedAmounts[Field.LIQUIDITY]}
-          balance={balance?.toFixed(6, undefined, 2) ?? ''}
+          balance={balance?.toExact() ?? ''}
           currency0={currencyA}
           currency1={currencyB}
         />

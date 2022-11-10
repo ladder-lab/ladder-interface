@@ -603,7 +603,7 @@ function TestnetV2() {
   const { account } = useActiveWeb3React()
   const navigate = useNavigate()
   const toggleWalletModal = useWalletModalToggle()
-  const { testnetClaim, claimState } = useTestnetClaim(account || undefined)
+  const { testnetClaim, devTestnetClaim, claimState } = useTestnetClaim(account || undefined)
   const [queryAddress, setQueryAddress] = useState('')
   const { claimState: queryClaimState } = useTestnetClaim(isAddress(queryAddress) ? queryAddress : undefined)
 
@@ -783,7 +783,7 @@ function TestnetV2() {
                           />
                         </StyledButtonWrapper>
                         <StyledButtonWrapper>
-                          <ActionButton onAction={testnetClaim} actionText="Claim dev test assets" />
+                          <ActionButton onAction={devTestnetClaim} actionText="Claim dev test assets" />
                         </StyledButtonWrapper>
                       </>
                     ) : (
