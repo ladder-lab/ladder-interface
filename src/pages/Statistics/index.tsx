@@ -34,12 +34,13 @@ import {
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useIsDarkMode } from 'state/user/hooks'
-import { formatMillion, getEtherscanLink, isAddress, scrollToElement, shortenAddress, timeStampToFormat } from 'utils'
+import { formatMillion, getEtherscanLink, isAddress, scrollToElement, shortenAddress } from 'utils'
 import StatTable, { TableHeadCellsProp, TableRowCellsProp } from './StatTable'
 import Image from 'components/Image'
 import Select from 'components/Select/Select'
 import Input from 'components/Input'
 import { Loader } from 'components/AnimatedSvg/Loader'
+import { useActiveWeb3React } from 'hooks'
 
 const RowBetween = styled(Box)(({}) => ({
   display: 'flex',
@@ -82,7 +83,8 @@ export enum PoolPairType {
 }
 
 export default function Statistics() {
-  const curChainId = ChainId.GÖRLI
+  const { chainId } = useActiveWeb3React()
+  const curChainId = useMemo(() => chainId || ChainId.SEPOLIA, [chainId])
   const isDownSm = useBreakpoint('sm')
   const isDarkMode = useIsDarkMode()
 
@@ -229,18 +231,7 @@ export default function Statistics() {
 }
 
 export function OverviewData({ chainId }: { chainId: ChainId }) {
-  const { TVLTotal, result, volumeTotal } = useStatisticsOverviewData(chainId)
-  const tvlData = useMemo(() => {
-    return result
-      .filter((_, i) => i === 0)
-      .map(item => ({ time: timeStampToFormat(item.timestamp), value: Number(item.tvl) }))
-  }, [result])
-
-  const volumeData = useMemo(() => {
-    return result
-      .filter((_, i) => i === 0)
-      .map(item => ({ time: timeStampToFormat(item.timestamp), value: Number(item.volume) }))
-  }, [result])
+  const { result } = useStatisticsOverviewData(chainId)
 
   const theme = useTheme()
   return (
@@ -265,10 +256,10 @@ export function OverviewData({ chainId }: { chainId: ChainId }) {
           <Stack>
             <Typography fontSize={16}>TVL</Typography>
             <Typography fontSize={32} fontWeight={600}>
-              {formatMillion(TVLTotal, '$', 2)}
+              {result?.totalTvl ? formatMillion(result.totalTvl, '$', 2) : '-'}
             </Typography>
           </Stack>
-          <AreaChart id="transaction-tvl" unit="$" height={200} areaSeriesData={tvlData} />
+          <AreaChart id="transaction-tvl" unit="$" height={200} areaSeriesData={[]} />
         </Box>
         <Box
           padding="20px"
@@ -280,10 +271,10 @@ export function OverviewData({ chainId }: { chainId: ChainId }) {
           <Stack>
             <Typography fontSize={16}>Volume 24H</Typography>
             <Typography fontSize={32} fontWeight={600}>
-              {formatMillion(volumeTotal, '$', 2)}
+              {result?.totalVolume ? formatMillion(result?.totalVolume, '$', 2) : '-'}
             </Typography>
           </Stack>
-          <AreaChart id="transaction-volume" unit="$" height={200} areaSeriesData={volumeData} />
+          <AreaChart id="transaction-volume" unit="$" height={200} areaSeriesData={[]} />
         </Box>
       </Box>
     </Box>
@@ -447,18 +438,25 @@ export function TopPoolsList({
 }
 
 export function StatTransList({ chainId, token, pair }: { chainId: ChainId; token?: string; pair?: string }) {
-  const { result, page, order, loading } = useTransactionsList(chainId, token, pair)
+  const { result, page, order, loading, search } = useTransactionsList(chainId, token, pair)
   const theme = useTheme()
 
   const headers: TableHeadCellsProp[] = [
     {
       label: (
         <Stack spacing={16} direction={'row'}>
-          {Object.values(StatTransactionsType)
-            .filter(item => item === 'Swaps')
-            .map(item => (
-              <Typography key={item}>{item}</Typography>
-            ))}
+          {Object.values(StatTransactionsType).map(item => (
+            <Typography
+              sx={{
+                cursor: 'pointer',
+                opacity: item === search.type ? 1 : 0.6
+              }}
+              onClick={() => search.setType(item)}
+              key={item}
+            >
+              {item}
+            </Typography>
+          ))}
         </Stack>
       )
     },
@@ -699,13 +697,13 @@ function ShowTransactionsLiquidityName({ item }: { item: StatTransactionsProp })
   if (item.type === StatTransactionsType.ADDS) {
     return (
       <Link href={getEtherscanLink(item.chainId, item.hash, 'transaction')} target="_blank" underline="hover">
-        Add Liquidity
+        Add Liquidity {item.buyToken.symbol} / {item.sellToken.symbol}
       </Link>
     )
   }
   return (
     <Link href={getEtherscanLink(item.chainId, item.hash, 'transaction')} target="_blank" underline="hover">
-      Remove Liquidity
+      Remove Liquidity {item.buyToken.symbol} / {item.sellToken.symbol}
     </Link>
   )
 }

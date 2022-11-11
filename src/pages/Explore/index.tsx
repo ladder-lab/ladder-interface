@@ -18,11 +18,12 @@ import { useNavigate } from 'react-router-dom'
 import { routes } from 'constants/routes'
 import { useActiveWeb3React } from 'hooks'
 import { NETWORK_CHAIN_ID } from 'constants/chain'
-import { useTopPoolsList, useTopTokensList } from 'hooks/useStatBacked'
+import { useStatisticsOverviewData, useTopPoolsList, useTopTokensList } from 'hooks/useStatBacked'
 import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
 import { formatMillion } from 'utils'
 import { PoolPairType, ShowTopPoolsCurrencyBox } from 'pages/Statistics'
 import Swiper from 'components/Swiper'
+import { ChainId } from '@ladder/sdk'
 
 const defaultPageSize = 9
 
@@ -30,6 +31,7 @@ export default function Explore() {
   const theme = useTheme()
   const { chainId } = useActiveWeb3React()
   // const isDarkMode = useIsDarkMode()
+  const { result: statisticsGlobalTVL } = useStatisticsOverviewData(chainId || ChainId.SEPOLIA)
 
   const { result: list721, loading: list721Loading } = useTopTokensList(
     chainId || NETWORK_CHAIN_ID,
@@ -159,8 +161,14 @@ export default function Explore() {
             Incredible liquidity pool! Quickly find real-time value of NFTs.
           </Typography>
           <Box sx={{ display: 'flex', gap: 20, mt: 48, flexDirection: { xs: 'column', md: 'row' } }}>
-            <NumericCard title="Total Liquidity" value={'1,732,654,325'} />
-            <NumericCard title="Volume(24hrs)" value={'1,732,654,325'} />
+            <NumericCard
+              title="Total Liquidity"
+              value={statisticsGlobalTVL ? formatMillion(statisticsGlobalTVL.totalTvl, '', 2) : '--'}
+            />
+            <NumericCard
+              title="Total Volume"
+              value={statisticsGlobalTVL ? formatMillion(statisticsGlobalTVL.totalVolume, '', 2) : '--'}
+            />
           </Box>
         </Box>
         <CollectionHighLight collections={ERC721Collection.slice(0, 3)} />

@@ -2,7 +2,7 @@ import { ChainId } from '@ladder/sdk'
 import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
 import { PoolPairType } from 'pages/Statistics'
 import { Order } from 'pages/Statistics/StatTable'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Axios, StatBaseURL } from 'utils/axios'
 
 export interface StatTokenInfo {
@@ -368,7 +368,12 @@ const transactionsListDataHandler = (list: any) => {
           item.sellTokenType === 'ERC20' ? Mode.ERC20 : item.sellTokenType === 'ERC721' ? Mode.ERC721 : Mode.ERC1155,
         tokenId: item.tokenId
       },
-      type: StatTransactionsType.SWAPS
+      type:
+        item.type === 1
+          ? StatTransactionsType.SWAPS
+          : item.type === 2
+          ? StatTransactionsType.ADDS
+          : StatTransactionsType.REMOVES
     })
   )
 }
@@ -405,11 +410,11 @@ export function useTransactionsList(chainId: ChainId, token?: string, pair?: str
           chainId,
           type:
             type === StatTransactionsType.ADDS
-              ? 1
-              : type === StatTransactionsType.REMOVES
               ? 2
-              : type === StatTransactionsType.SWAPS
+              : type === StatTransactionsType.REMOVES
               ? 3
+              : type === StatTransactionsType.SWAPS
+              ? 1
               : '',
           pageSize,
           pageNum: currentPage,
@@ -501,16 +506,13 @@ export function useTransactionsList(chainId: ChainId, token?: string, pair?: str
 }
 
 export interface StatisticsTVLProp {
-  id: number
-  tvl: string
-  volume: string
-  chainId: ChainId
-  timestamp: number
+  totalTvl: number
+  totalVolume: number
 }
 
 export function useStatisticsOverviewData(chainId: ChainId) {
   const [loading, setLoading] = useState<boolean>(false)
-  const [result, setResult] = useState<StatisticsTVLProp[]>([])
+  const [result, setResult] = useState<StatisticsTVLProp>()
 
   useEffect(() => {
     ;(async () => {
@@ -522,39 +524,21 @@ export function useStatisticsOverviewData(chainId: ChainId) {
         setLoading(false)
         const data = res.data.data as any
         if (!data) {
-          setResult([])
+          setResult(undefined)
           return
         }
-        setResult(
-          data.map((item: any) =>
-            Object.assign(item, {
-              id: Number(item.id),
-              chainId: Number(item.chainId),
-              timestamp: Number(item.timestamp)
-            })
-          )
-        )
+        setResult({ totalVolume: Number(data.totalVolume), totalTvl: Number(data.totalTvl) })
       } catch (error) {
-        setResult([])
+        setResult(undefined)
         setLoading(false)
         console.error('useStatisticsTVL', error)
       }
     })()
   }, [chainId])
 
-  const total = useMemo(() => {
-    return {
-      TVLTotal: result.length ? result.map(item => Number(item.tvl) || 0).reduce((a, b) => Number(a) + Number(b)) : 0,
-      volumeTotal: result.length
-        ? result.map(item => Number(item.volume) || 0).reduce((a, b) => Number(a) + Number(b))
-        : 0
-    }
-  }, [result])
-
   return {
     loading: loading,
-    result,
-    ...total
+    result
   }
 }
 
