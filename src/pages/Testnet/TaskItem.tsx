@@ -1,11 +1,7 @@
 import { Box, Typography, useTheme } from '@mui/material'
 import { routes } from 'constants/routes'
-import { useActiveWeb3React } from 'hooks'
-import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Axios } from 'utils/axios'
-import { TestnetNFTSwapDataProp, useTestnetNFTSwapData } from 'hooks/useTestnetBacked'
-import Pencil from 'assets/images/pencil.png'
+import { TestnetStatusProp } from 'hooks/useTestnetBacked'
 
 function TaskItem({
   title,
@@ -91,77 +87,67 @@ function TaskItem({
   )
 }
 
-function PairCheck({ account }: { account: string | undefined }) {
-  const [isFin, setIsFin] = useState(false)
+// function PairCheck({ account }: { account: string | undefined }) {
+//   const [isFin, setIsFin] = useState(false)
+//   const navigate = useNavigate()
+//   useEffect(() => {
+//     if (!account) {
+//       setIsFin(false)
+//       return
+//     }
+//     Axios.get('/checkLpByAddress', { address: account })
+//       .then(res => {
+//         if (res.data?.data) {
+//           setIsFin(true)
+//         } else {
+//           setIsFin(false)
+//         }
+//       })
+//       .catch(() => setIsFin(false))
+//   }, [account])
+
+//   return <TaskItem title="Become Pool LP Test-NFT/Test Token pair" completed={isFin} to={() => navigate(routes.pool)} />
+// }
+
+// function NFTTransCheck({
+//   swapTokens,
+//   type
+// }: {
+//   swapTokens: TestnetNFTSwapDataProp[] | undefined
+//   type: 'ERC721' | 'ERC1155'
+// }) {
+//   const buyCompleted = useMemo(
+//     () => (swapTokens ? swapTokens.filter(item => item.buyToken === type).length > 0 : false),
+//     [swapTokens, type]
+//   )
+//   const sellCompleted = useMemo(
+//     () => (swapTokens ? swapTokens.filter(item => item.sellToken === type).length > 0 : false),
+//     [swapTokens, type]
+//   )
+
+//   return (
+//     <>
+//       <TaskItem title={`Finish at least 1 ${type} BUY`} completed={buyCompleted} />
+//       <TaskItem title={`Finish at least 1 ${type} SELL`} completed={sellCompleted} />
+//     </>
+//   )
+// }
+
+export default function TaskBox({ testnetStatus }: { testnetStatus: TestnetStatusProp }) {
   const navigate = useNavigate()
-  useEffect(() => {
-    if (!account) {
-      setIsFin(false)
-      return
-    }
-    Axios.get('/checkLpByAddress', { address: account })
-      .then(res => {
-        if (res.data?.data) {
-          setIsFin(true)
-        } else {
-          setIsFin(false)
-        }
-      })
-      .catch(() => setIsFin(false))
-  }, [account])
-
-  return <TaskItem title="Become Pool LP Test-NFT/Test Token pair" completed={isFin} to={() => navigate(routes.pool)} />
-}
-
-function NFTTransCheck({
-  swapTokens,
-  type
-}: {
-  swapTokens: TestnetNFTSwapDataProp[] | undefined
-  type: 'ERC721' | 'ERC1155'
-}) {
-  const buyCompleted = useMemo(
-    () => (swapTokens ? swapTokens.filter(item => item.buyToken === type).length > 0 : false),
-    [swapTokens, type]
-  )
-  const sellCompleted = useMemo(
-    () => (swapTokens ? swapTokens.filter(item => item.sellToken === type).length > 0 : false),
-    [swapTokens, type]
-  )
-
   return (
     <>
-      <TaskItem title={`Finish at least 1 ${type} BUY`} completed={buyCompleted} />
-      <TaskItem title={`Finish at least 1 ${type} SELL`} completed={sellCompleted} />
-    </>
-  )
-}
-
-export default function TaskBox() {
-  const { account } = useActiveWeb3React()
-  const theme = useTheme()
-  const NFT721SwapData = useTestnetNFTSwapData(account || undefined, 2)
-  const NFT1155SwapData = useTestnetNFTSwapData(account || undefined, 1)
-
-  return (
-    <>
-      <PairCheck account={account || undefined} />
-      <NFTTransCheck swapTokens={NFT721SwapData} type="ERC721" />
-      <NFTTransCheck swapTokens={NFT1155SwapData} type="ERC1155" />
       <TaskItem
-        style={{ border: `1px solid ${theme.palette.info.main}`, backgroundColor: 'transparent' }}
-        title={
-          <Box display={'flex'}>
-            <Typography mr={10} color={theme.palette.info.main} fontWeight={600} fontSize={16}>
-              Submit feedback
-            </Typography>
-            <img src={Pencil} width={20} />
-          </Box>
-        }
-        rightText="Submit"
-        completed={false}
-        to={() => window.open('https://forms.gle/47YEmvHWjSjLvkiE9')}
+        title="Become Pool LP Test-NFT/Test Token pair"
+        completed={testnetStatus.pairIsFin}
+        to={() => navigate(routes.pool)}
       />
+      <TaskItem title={`Finish at least 1 ERC721 BUY`} completed={testnetStatus.buy721Completed} />
+      <TaskItem title={`Finish at least 1 ERC721 SELL`} completed={testnetStatus.sell721Completed} />
+      <TaskItem title={`Finish at least 1 ERC1155 BUY`} completed={testnetStatus.buy1155Completed} />
+      <TaskItem title={`Finish at least 1 ERC1155 SELL`} completed={testnetStatus.sell1155Completed} />
+      {/* <NFTTransCheck swapTokens={NFT721SwapData} type="ERC721" />
+      <NFTTransCheck swapTokens={NFT1155SwapData} type="ERC1155" /> */}
     </>
   )
 }

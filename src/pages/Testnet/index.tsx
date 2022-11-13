@@ -1,15 +1,15 @@
 import { Box, Typography, useTheme, Button, styled, Stack, Link } from '@mui/material'
-import { ExternalLink } from 'theme/components'
-import { useIsDarkMode } from 'state/user/hooks'
-import BgLight from 'assets/images/bg_light.png'
-import BgDark from 'assets/images/bg_dark.png'
+// import { ExternalLink } from 'theme/components'
+// import { useIsDarkMode } from 'state/user/hooks'
+// import BgLight from 'assets/images/bg_light.png'
+// import BgDark from 'assets/images/bg_dark.png'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { useActiveWeb3React } from 'hooks'
 import { ClaimState, useTestnetClaim } from 'hooks/useTestnetClaim'
 import ActionButton from 'components/Button/ActionButton'
-import { Socials } from 'constants/socialLinks'
-import Image from 'components/Image'
+// import { Socials } from 'constants/socialLinks'
+// import Image from 'components/Image'
 import { isAddress } from 'utils'
 import Collapse from 'components/Collapse'
 import Input from 'components/Input'
@@ -23,6 +23,11 @@ import { ReactComponent as Explore } from 'assets/svg/explore.svg'
 import Pencil from 'assets/images/pencil.png'
 import { useNavigate } from 'react-router-dom'
 import { routes } from 'constants/routes'
+import V2Rewards from './V2Rewards'
+import round1Bg from 'assets/svg/bg/round1_bg.svg'
+import round1DarkBg from 'assets/svg/bg/round1_dark_bg.svg'
+import { useIsDarkMode } from 'state/user/hooks'
+import { useTestnetV2Status } from 'hooks/useTestnetBacked'
 
 const StyledButtonWrapper = styled(Box)(({ theme }) => ({
   maxWidth: 400,
@@ -107,8 +112,9 @@ const v2ActiveTimeStamp = [1668484801000, 1669089600000]
 
 export default function Testnet() {
   const theme = useTheme()
-  const isDarkMode = useIsDarkMode()
-  const isDownSm = useBreakpoint('sm')
+  // const isDarkMode = useIsDarkMode()
+  // const isDownSm = useBreakpoint('sm')
+  const isDownMD = useBreakpoint('md')
   const [roundIndex, setRoundIndex] = useState(1)
 
   return (
@@ -120,7 +126,7 @@ export default function Testnet() {
         position: 'relative'
       }}
     >
-      <Box
+      {/* <Box
         sx={{
           // width: '100%',
           display: 'flex',
@@ -192,13 +198,14 @@ export default function Testnet() {
             })}
           </Stack>
         </Box>
-      </Box>
+      </Box> */}
 
       <Box
         sx={{
           width: '100%',
           height: '100%',
           background: theme.palette.background.paper,
+          minHeight: `calc(100vh - ${isDownMD ? theme.height.mobileHeader : theme.height.header})`,
           padding: {
             xs: '20px 16px 114px',
             md: '20px 45px 40px'
@@ -215,12 +222,18 @@ export default function Testnet() {
           <Stack margin="20px 0" direction={'row'} spacing={20}>
             {[0, 1].map(item => (
               <Button
-                sx={{ width: 186, height: 52 }}
+                sx={{
+                  width: 186,
+                  height: 52,
+                  borderColor: '#1F9898',
+                  color: '#1F9898',
+                  background: roundIndex === item ? 'rgba(31, 152, 152, 0.1) !important' : 'inherit'
+                }}
                 key={item}
                 onClick={() => setRoundIndex(item)}
                 variant={roundIndex === item ? 'contained' : 'outlined'}
               >
-                Round {item + 1}
+                ROUND {item + 1}
               </Button>
             ))}
           </Stack>
@@ -233,7 +246,7 @@ export default function Testnet() {
   )
 }
 
-function TestnetV1() {
+export function TestnetV1Old() {
   const theme = useTheme()
   const isDownSm = useBreakpoint('sm')
   const { account } = useActiveWeb3React()
@@ -597,6 +610,40 @@ function TestnetV1() {
   )
 }
 
+export function TestnetV1() {
+  const isDark = useIsDarkMode()
+  const theme = useTheme()
+  return (
+    <Box
+      sx={{
+        backgroundColor: isDark ? '#343739' : '#FAFAFA',
+        minHeight: 360,
+        backgroundImage: `url(${isDark ? round1DarkBg : round1Bg})`,
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'bottom',
+        backgroundSize: 'contain',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '40px 15px',
+        borderRadius: '16px'
+      }}
+    >
+      <Typography textAlign={'center'} fontSize={32} fontWeight={700} color={theme.palette.text.primary}>
+        Ladder Testnet Round 1
+      </Typography>
+      <Typography
+        mt={20}
+        textAlign={'center'}
+        fontSize={16}
+        fontWeight={500}
+        color={theme.palette.text.secondary}
+      >{`The first round of Testnet has ended, don't worry, the round 2 of testing is coming soon!`}</Typography>
+    </Box>
+  )
+}
+
 function TestnetV2() {
   const theme = useTheme()
   const isDownSm = useBreakpoint('sm')
@@ -606,6 +653,7 @@ function TestnetV2() {
   const { testnetClaim, devTestnetClaim, claimState } = useTestnetClaim(account || undefined)
   const [queryAddress, setQueryAddress] = useState('')
   const { claimState: queryClaimState } = useTestnetClaim(isAddress(queryAddress) ? queryAddress : undefined)
+  const testnetV2Status = useTestnetV2Status(account || undefined)
 
   const queryNotice = useMemo(() => {
     return (
@@ -811,29 +859,63 @@ function TestnetV2() {
             <Box>
               <StepTitle step={3} title="Complete testnet tasks" />
               <Stack spacing={12} mt={28}>
-                {/* <TaskBox /> */}
+                <TaskBox testnetStatus={testnetV2Status} />
 
-                <Box display={'flex'} alignItems="center">
-                  <Typography mr={20} color={theme.palette.text.secondary}>
-                    Optional
-                  </Typography>
-                  <Button
-                    variant="outlined"
-                    onClick={() => navigate(routes.feedback)}
-                    sx={{
-                      width: 198,
-                      height: 52
-                    }}
-                  >
-                    <Typography mr={10} color={theme.palette.info.main} fontWeight={600} fontSize={16}>
-                      Submit feedback
+                <RowBetween flexWrap={'wrap'}>
+                  <Box display={'flex'} alignItems="center" mt={5}>
+                    <Typography mr={20} color={theme.palette.text.secondary}>
+                      Optional
                     </Typography>
-                    <img src={Pencil} width={20} />
-                  </Button>
-                </Box>
+                    <Button
+                      variant="outlined"
+                      onClick={() => {
+                        if (!account) {
+                          toggleWalletModal()
+                        } else {
+                          navigate(routes.feedback)
+                        }
+                      }}
+                      sx={{
+                        width: 198,
+                        height: 52
+                      }}
+                    >
+                      <Typography mr={10} color={theme.palette.info.main} fontWeight={600} fontSize={16}>
+                        Submit feedback
+                      </Typography>
+                      <img src={Pencil} width={20} />
+                    </Button>
+                  </Box>
+                  {testnetV2Status.pairIsFin &&
+                    testnetV2Status.buy721Completed &&
+                    testnetV2Status.sell721Completed &&
+                    testnetV2Status.buy1155Completed &&
+                    testnetV2Status.sell1155Completed && (
+                      <Typography fontWeight={600} mt={5} color={theme.palette.text.secondary}>
+                        Thanks for completing all tasks, you will go directly to the whitelist for the follow-up event
+                      </Typography>
+                    )}
+                </RowBetween>
               </Stack>
             </Box>
           </Stack>
+        </Collapse>
+      </StyledCardWrapper>
+
+      <StyledCardWrapper>
+        <Collapse
+          defaultOpen
+          title={
+            <RowBetween>
+              <Box display={'flex'}>
+                <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                  Rewards
+                </Typography>
+              </Box>
+            </RowBetween>
+          }
+        >
+          <V2Rewards />
         </Collapse>
       </StyledCardWrapper>
 
