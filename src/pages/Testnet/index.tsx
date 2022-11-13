@@ -108,7 +108,7 @@ const v2FaucetTokens = [
 ]
 
 const v1ActiveTimeStamp = [1666238460000, 1666843140000]
-const v2ActiveTimeStamp = [1668484801000, 1669089600000]
+const v2ActiveTimeStamp = [1669089660000, 1669694400000]
 
 export default function Testnet() {
   const theme = useTheme()
@@ -215,7 +215,7 @@ export default function Testnet() {
         <Box
           sx={{
             width: '100%',
-            maxWidth: '1144px',
+            maxWidth: '1350px',
             margin: '0 auto'
           }}
         >
@@ -499,7 +499,7 @@ export function TestnetV1Old() {
             <Box>
               <StepTitle step={3} title="Complete testnet tasks" />
               <Stack spacing={12} mt={28}>
-                <TaskBox />
+                {/* <TaskBox /> */}
               </Stack>
             </Box>
           </Stack>

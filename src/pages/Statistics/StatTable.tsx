@@ -37,6 +37,7 @@ export default function StatTable({
   setOrderBy,
   count,
   loading,
+  minWidth,
   pageSize
 }: {
   headers: TableHeadCellsProp[]
@@ -50,6 +51,7 @@ export default function StatTable({
   count: number
   pageSize: number
   loading?: boolean
+  minWidth?: number
 }) {
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: string | number) => {
     if (!order || !setOrder || !setOrderBy) return
@@ -96,7 +98,7 @@ export default function StatTable({
         <TableContainer>
           <Table
             sx={{
-              minWidth: 600,
+              minWidth: minWidth || 600,
               '& *': {
                 fontWeight: 500
               }
