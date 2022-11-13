@@ -108,7 +108,7 @@ const v2FaucetTokens = [
 ]
 
 const v1ActiveTimeStamp = [1666238460000, 1666843140000]
-const v2ActiveTimeStamp = [1669089660000, 1669694400000]
+export const v2ActiveTimeStamp = [1669089660000, 1669694400000]
 
 export default function Testnet() {
   const theme = useTheme()

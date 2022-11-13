@@ -11,6 +11,7 @@ import StatTable, { TableHeadCellsProp, TableRowCellsProp } from 'pages/Statisti
 import { useMemo } from 'react'
 import { useIsDarkMode } from 'state/user/hooks'
 import { formatMillion, getEtherscanLink, shortenAddress } from 'utils'
+import { v2ActiveTimeStamp } from '.'
 
 const RowBetween = styled(Box)(({}) => ({
   display: 'flex',
@@ -29,8 +30,6 @@ const BorderLinearProgress = styled(LinearProgress)(({ dark }: { dark: boolean }
     backgroundColor: '#1F9898'
   }
 }))
-
-const v2RewardTime = 1669867200000
 
 export default function V2Rewards() {
   const curChainId = ChainId.SEPOLIA
@@ -318,6 +317,13 @@ function RankingItem({
   lte50?: boolean
 }) {
   const isDark = useIsDarkMode()
+  const progress = useMemo(() => {
+    const curTime = new Date().getTime()
+    const total = v2ActiveTimeStamp[1] - v2ActiveTimeStamp[0]
+    const pass = curTime - v2ActiveTimeStamp[0]
+    if (pass <= 0) return 0
+    return (pass / total) * 100
+  }, [])
   return (
     <Box
       sx={{
@@ -352,9 +358,9 @@ function RankingItem({
         </Link>
       </RowBetween>
       <Box height={54} mt={20} display="grid" alignItems={'center'}>
-        <BorderLinearProgress dark={isDark} variant="determinate" value={60} />
+        <BorderLinearProgress dark={isDark} variant="determinate" value={progress} />
         <Typography textAlign={'center'} color={'#1F9898'} fontWeight={600}>
-          Distance to end: <Timer timer={v2RewardTime} />
+          Distance to end: <Timer timer={v2ActiveTimeStamp[1]} />
         </Typography>
       </Box>
     </Box>
