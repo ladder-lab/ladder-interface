@@ -55,10 +55,11 @@ export const DEFAULT_721_LIST: { [chainId in ChainId]?: Token721[] } = {
     })
   ] as Token721[],
   [ChainId.GÖRLI]: TEST_721_LIST,
-  [ChainId.SEPOLIA]: test721ListSepolia.map(({ address, name, symbol }) => {
+  [ChainId.SEPOLIA]: test721ListSepolia.map(({ address, name, symbol }, index) => {
     return new Token721(ChainId.SEPOLIA, address, undefined, {
       name,
-      symbol
+      symbol,
+      uri: getTest721uri(test721List[index].name)
     })
   })
 }

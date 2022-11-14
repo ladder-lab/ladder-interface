@@ -56,7 +56,8 @@ export const DEFAULT_1155_LIST: { [chainId in ChainId]?: Token1155[] } = {
   [ChainId.SEPOLIA]: test1155Sepolia.map((address, idx) => {
     return new Token1155(ChainId.SEPOLIA, address, '1', {
       name: `LADDER-TEST-1155-${idx + 1}`,
-      symbol: `T-1155-${idx + 1}`
+      symbol: `T-1155-${idx + 1}`,
+      uri: ` https://info.chainswap.com/file/tnt-${idx + 1}.jpg`
     })
   })
 }
