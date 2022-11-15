@@ -1,4 +1,4 @@
-// import { MaxUint256 } from '@ethersproject/constants'
+import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useCallback, useMemo } from 'react'
 import { useTokenAllowance } from '../data/Allowances'
@@ -86,7 +86,7 @@ export function useApproveCallback(
     //   return tokenContract.estimateGas.approve(spender, amountToApprove.raw.toString())
     // })
 
-    const estimatedGas = await tokenContract.estimateGas.approve(spender, amountToApprove.raw.toString())
+    const estimatedGas = await tokenContract.estimateGas.approve(spender, MaxUint256)
     showModal(<TransacitonPendingModal />)
     return tokenContract
       .approve(spender, amountToApprove.raw.toString(), {

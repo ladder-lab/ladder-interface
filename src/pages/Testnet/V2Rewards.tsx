@@ -49,7 +49,7 @@ export default function V2Rewards() {
         value: accountTestInfo ? formatMillion(accountTestInfo.assets, '$ ', 2) : '-'
       },
       {
-        name: 'Transitions',
+        name: 'Transactions',
         helperText: 'Data is updated hourly',
         value: accountTestInfo ? accountTestInfo.transfers : '-'
       }
@@ -198,21 +198,21 @@ export default function V2Rewards() {
       >
         <RankingItem
           index="01"
-          lte50={rankingTVLList.result.lte50}
+          isTop={rankingTVLList.result.isTop}
           toggleOpenModal={rankingTVLList.modal.toggleOpenModal}
-          title="TVL daily avg top 50% will get LP Provider Winner-Ladder Testnet R2-NFT "
+          title="TVL daily avg top 20% will get LP Provider Winner-Ladder Testnet R2-NFT "
         />
         <RankingItem
           index="02"
-          lte50={rankingAssetsList.result.lte50}
+          isTop={rankingAssetsList.result.isTop}
           toggleOpenModal={rankingAssetsList.modal.toggleOpenModal}
-          title="Top 30% Asset Number will get Trade Winner-NFT "
+          title="Top 20% Asset Number will get Trade Winner-NFT "
         />
         <RankingItem
           index="03"
-          lte50={rankingTransferList.result.lte50}
+          isTop={rankingTransferList.result.isTop}
           toggleOpenModal={rankingTransferList.modal.toggleOpenModal}
-          title="Top 50% Total interaction will get Trade Click Winner-Ladder Testnet R2-NFT"
+          title="Top 20% Total interaction will get Trade Click Winner-Ladder Testnet R2-NFT"
         />
 
         <RankingModal
@@ -308,13 +308,13 @@ function RankingModal({
 function RankingItem({
   index,
   title,
-  lte50,
+  isTop,
   toggleOpenModal
 }: {
   toggleOpenModal?: () => void
   index: string
   title: string
-  lte50?: boolean
+  isTop?: boolean
 }) {
   const isDark = useIsDarkMode()
   const progress = useMemo(() => {
@@ -341,10 +341,10 @@ function RankingItem({
       <RowBetween mt={10}>
         <RowBetween>
           <Box
-            sx={{ width: 8, height: 8, mr: 5, borderRadius: '50%', backgroundColor: lte50 ? '#31B047' : '#FF526F' }}
+            sx={{ width: 8, height: 8, mr: 5, borderRadius: '50%', backgroundColor: isTop ? '#31B047' : '#FF526F' }}
           />
           <Typography color={'#9AA7A7'} fontWeight={600}>
-            {lte50 ? 'My ranking ≤50%' : 'My ranking >50%'}
+            {isTop ? 'My ranking ≤20%' : 'My ranking >20%'}
           </Typography>
         </RowBetween>
         <Link

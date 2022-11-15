@@ -210,7 +210,7 @@ export function useRankingTVLList(chainId: ChainId, account: string | undefined)
     result: {
       list,
       ranking,
-      lte50: ranking && count && count / ranking >= 2 ? true : false
+      isTop: ranking && count && count / ranking >= 5 ? true : false
     },
     modal: {
       openModal,
@@ -269,7 +269,7 @@ export function useRankingAssetsList(chainId: ChainId, account: string | undefin
     result: {
       list,
       ranking,
-      lte50: ranking && count && count / ranking >= 2 ? true : false
+      isTop: ranking && count && count / ranking >= 5 ? true : false
     },
     modal: {
       openModal,
@@ -328,7 +328,7 @@ export function useRankingTransferList(chainId: ChainId, account: string | undef
     result: {
       list,
       ranking,
-      lte50: ranking && count && count / ranking >= 2 ? true : false
+      isTop: ranking && count && count / ranking >= 5 ? true : false
     },
     modal: {
       openModal,
