@@ -373,16 +373,25 @@ export function TopPoolsList({
     {
       label: '#'
     },
-    { label: 'Name', sortValue: 'Name', align: 'left' },
+    { label: 'Name', align: 'left' },
+    { label: 'Price' },
     { label: 'TVL', sortValue: 'TVL', sort: true },
-    { label: 'Volume 24H', sortValue: 'Volume' },
-    { label: 'Volume 7D', sortValue: 'Volume 7D' }
+    { label: 'Volume 24H' },
+    { label: 'Volume 7D' }
   ]
   const rows: TableRowCellsProp[][] = result.map((item, index) => [
     { label: page.pageSize * (page.currentPage - 1) + 1 + index },
     {
       label: (
         <ShowTopPoolsCurrencyBox chainId={chainId} pair={item.pair} token0Info={item.token0} token1Info={item.token1} />
+      )
+    },
+    {
+      label: (
+        <Typography>
+          {item.token0?.price ? formatMillion(Number(item.token0.price), '$', 4) : '-'}/
+          {item.token1?.price ? formatMillion(Number(item.token1.price), '$', 4) : '-'}
+        </Typography>
       )
     },
     { label: `${formatMillion(Number(item.tvl), '$ ', 2)}` },

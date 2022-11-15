@@ -1,12 +1,12 @@
 import { ChainId } from '@ladder/sdk'
-import { Box, Breadcrumbs, Stack, Typography, useTheme } from '@mui/material'
+import { Box, Breadcrumbs, Link, Stack, Typography, useTheme } from '@mui/material'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
 import { routes } from 'constants/routes'
 import { useTokenDetailData } from 'hooks/useStatBacked'
 import { useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { shortenAddress } from 'utils'
+import { formatMillion, getEtherscanLink, shortenAddress } from 'utils'
 import { PoolPairType, StatTransList, TopPoolsList } from '..'
 
 export default function Tokens() {
@@ -59,9 +59,15 @@ export default function Tokens() {
             <Typography fontWeight={500} color={theme.palette.text.primary}>
               {tokenDetailData?.symbol || '--'}
             </Typography>
-            <Typography fontWeight={500} color={theme.palette.text.secondary}>
-              ({tokenDetailData ? shortenAddress(tokenDetailData.address) : ''})
-            </Typography>
+            <Link
+              target={'_blank'}
+              underline="hover"
+              href={getEtherscanLink(curChainId, tokenDetailData?.address || '', 'token')}
+            >
+              <Typography fontWeight={500} color={theme.palette.text.secondary}>
+                ({tokenDetailData ? shortenAddress(tokenDetailData.address) : ''})
+              </Typography>
+            </Link>
           </Box>
         </Breadcrumbs>
 
@@ -71,6 +77,9 @@ export default function Tokens() {
             <Typography ml={8} fontWeight={500} fontSize={32} color={theme.palette.text.primary}>
               {tokenDetailData?.name || '-'}({tokenDetailData?.symbol}){' '}
               {token1155Id && type === Mode.ERC1155 ? `#${token1155Id}` : ''}
+            </Typography>
+            <Typography ml={8} alignSelf="end" fontWeight={500} fontSize={16} color={theme.palette.text.primary}>
+              {tokenDetailData?.price ? formatMillion(Number(tokenDetailData.price), '$', 4) : '-'}
             </Typography>
           </Box>
         </Box>
