@@ -38,6 +38,7 @@ export default function StatTable({
   count,
   loading,
   minWidth,
+  size,
   pageSize
 }: {
   headers: TableHeadCellsProp[]
@@ -51,6 +52,7 @@ export default function StatTable({
   count: number
   pageSize: number
   loading?: boolean
+  size?: 'small'
   minWidth?: number
 }) {
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: string | number) => {
@@ -110,6 +112,7 @@ export default function StatTable({
               <TableRow>
                 {headers.map((headCell, index) => (
                   <TableCell
+                    sx={{ padding: size === 'small' ? 10 : 16 }}
                     align={headCell.align || index === 0 ? 'left' : index === headers.length - 1 ? 'right' : 'center'}
                     key={index}
                     sortDirection={headCell.sort && orderBy === headCell.sortValue ? order : false}
@@ -135,6 +138,7 @@ export default function StatTable({
                   {item1.map((item2, idx2) => (
                     <TableCell
                       key={idx2}
+                      sx={{ padding: size === 'small' ? 10 : 16 }}
                       align={item2.align || idx2 === 0 ? 'left' : idx2 === item1.length - 1 ? 'right' : 'center'}
                     >
                       {item2.label}
@@ -145,10 +149,10 @@ export default function StatTable({
               {emptyRows > 0 && (
                 <TableRow
                   style={{
-                    height: 53 * emptyRows
+                    height: (size === 'small' ? 41 : 53) * emptyRows
                   }}
                 >
-                  <TableCell colSpan={6}>
+                  <TableCell colSpan={6} sx={{ padding: size === 'small' ? 10 : 16 }}>
                     {emptyRows === pageSize && !loading && <Box style={{ textAlign: 'center' }}>No Data</Box>}
                   </TableCell>
                 </TableRow>

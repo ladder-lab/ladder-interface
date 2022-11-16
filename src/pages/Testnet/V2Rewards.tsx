@@ -92,7 +92,7 @@ export default function V2Rewards() {
       {
         label: (
           <Box display={'flex'} alignItems="center" key={1}>
-            <Link target={'_blank'} href={getEtherscanLink(curChainId, item.account, 'address')}>
+            <Link target={'_blank'} mr={4} href={getEtherscanLink(curChainId, item.account, 'address')}>
               {shortenAddress(item.account)}
             </Link>
             <Copy toCopy={item.account} />
@@ -113,7 +113,7 @@ export default function V2Rewards() {
       {
         label: (
           <Box display={'flex'} alignItems="center" key={1}>
-            <Link target={'_blank'} href={getEtherscanLink(curChainId, item.account, 'address')}>
+            <Link target={'_blank'} mr={4} href={getEtherscanLink(curChainId, item.account, 'address')}>
               {shortenAddress(item.account)}
             </Link>
             <Copy toCopy={item.account} />
@@ -134,7 +134,7 @@ export default function V2Rewards() {
       {
         label: (
           <Box display={'flex'} alignItems="center" key={1}>
-            <Link target={'_blank'} href={getEtherscanLink(curChainId, item.account, 'address')}>
+            <Link target={'_blank'} mr={4} href={getEtherscanLink(curChainId, item.account, 'address')}>
               {shortenAddress(item.account)}
             </Link>
             <Copy toCopy={item.account} />
@@ -294,6 +294,7 @@ function RankingModal({
             minWidth={400}
             loading={loading}
             rows={rows}
+            size="small"
             page={page.currentPage}
             setPage={page.setCurrentPage}
             count={page.count}
