@@ -348,6 +348,22 @@ function PairCard({ item }: { item: StatTopPoolsProp & { no: number; curPoolPair
             {formatMillion(Number(item.Volume7) || 0, '$ ', 2)}
           </Typography>
         </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Typography sx={{ fontSize: 16, fontWeight: 500, color: theme.palette.text.secondary }}>
+            {item.token0.symbol} Balance
+          </Typography>
+          <Typography sx={{ fontSize: 16, fontWeight: 700 }}>
+            {formatMillion(Number(item.token0.balance) || 0, '', 2)}
+          </Typography>
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Typography sx={{ fontSize: 16, fontWeight: 500, color: theme.palette.text.secondary }}>
+            {item.token1.symbol} Balance
+          </Typography>
+          <Typography sx={{ fontSize: 16, fontWeight: 700 }}>
+            {formatMillion(Number(item.token1.balance) || 0, '', 2)}
+          </Typography>
+        </Box>
         {/* <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography sx={{ fontSize: 16, fontWeight: 500, color: theme.palette.text.secondary }}>
             Fees (24hrs)

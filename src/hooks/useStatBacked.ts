@@ -13,6 +13,7 @@ export interface StatTokenInfo {
   type: Mode
   price?: string
   tokenId?: number
+  balance?: string
 }
 
 export interface StatTopTokensProp {
@@ -187,12 +188,14 @@ const topPoolsListDataHandler = (list: any) => {
       token0: {
         ...item[item.token0],
         type: item.token0Type === 1 ? Mode.ERC20 : item.token0Type === 2 ? Mode.ERC721 : Mode.ERC1155,
-        address: item.token0
+        address: item.token0,
+        balance: item.token0Balance
       },
       token1: {
         ...item[item.token1],
         address: item.token1,
-        type: item.token1Type === 1 ? Mode.ERC20 : item.token1Type === 2 ? Mode.ERC721 : Mode.ERC1155
+        type: item.token1Type === 1 ? Mode.ERC20 : item.token1Type === 2 ? Mode.ERC721 : Mode.ERC1155,
+        balance: item.token1Balance
       }
     })
   )
