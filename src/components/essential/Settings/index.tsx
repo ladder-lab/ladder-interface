@@ -3,7 +3,7 @@ import { useTheme, Box, Typography } from '@mui/material'
 import { styled, Button } from '@mui/material'
 import { ApplicationModal } from '../../../state/application/actions'
 import { useModalOpen, useSettingsModalToggle } from '../../../state/application/hooks'
-import { useIsDarkMode } from 'state/user/hooks'
+import { useERC20ApproveModeManager, useIsDarkMode } from 'state/user/hooks'
 
 import {
   useExpertModeManager,
@@ -44,6 +44,7 @@ export default function Settings({ onlySlippage }: { onlySlippage?: boolean }) {
   const [ttl, setTtl] = useUserTransactionTTL()
 
   const [expertMode, toggleExpertMode] = useExpertModeManager()
+  const [isERC20ApproveAllMode, toggleUserERC20ApproveMode] = useERC20ApproveModeManager()
 
   const [singleHopOnly, setSingleHopOnly] = useUserSingleHopOnly()
 
@@ -174,6 +175,15 @@ export default function Settings({ onlySlippage }: { onlySlippage?: boolean }) {
                     checked={singleHopOnly}
                     onChange={() => (singleHopOnly ? setSingleHopOnly(false) : setSingleHopOnly(true))}
                   />
+                </Box>
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                  <Box display="flex" alignItems="center" marginBottom="11px">
+                    <Typography fontWeight={400} fontSize={14} color={theme.palette.text.secondary}>
+                      ERC20 Approve All
+                    </Typography>
+                    <QuestionHelper text="Approve all at once." style={{ marginLeft: 5 }} />
+                  </Box>
+                  <SwitchToggle checked={isERC20ApproveAllMode} onChange={toggleUserERC20ApproveMode} />
                 </Box>
               </Box>
             </>

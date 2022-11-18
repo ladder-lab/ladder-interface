@@ -24,7 +24,8 @@ import {
   SerializedToken,
   addSerializedToken1155,
   removeSerializedToken1155,
-  addSerializedToken721
+  addSerializedToken721,
+  updateUserERC20ApproveMode
 } from './actions'
 import { NFT } from 'models/allTokens'
 import { DEFAULT_721_LIST } from 'constants/default721List'
@@ -121,6 +122,21 @@ export function useExpertModeManager(): [boolean, () => void] {
   }, [expertMode, dispatch])
 
   return [expertMode, toggleSetExpertMode]
+}
+
+export function useIsERC20ApproveAllMode(): boolean {
+  return useSelector<AppState, AppState['user']['userERC20ApproveAllMode']>(state => state.user.userERC20ApproveAllMode)
+}
+
+export function useERC20ApproveModeManager(): [boolean, () => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const isERC20ApproveAllMode = useIsERC20ApproveAllMode()
+
+  const toggleUserERC20ApproveMode = useCallback(() => {
+    dispatch(updateUserERC20ApproveMode({ userERC20ApproveAllMode: !isERC20ApproveAllMode }))
+  }, [dispatch, isERC20ApproveAllMode])
+
+  return [isERC20ApproveAllMode, toggleUserERC20ApproveMode]
 }
 
 export function useUserSingleHopOnly(): [boolean, (newSingleHopOnly: boolean) => void] {

@@ -16,7 +16,8 @@ import {
   addSerializedToken1155,
   removeSerializedToken1155,
   addSerializedToken721,
-  removeSerializedToken721
+  removeSerializedToken721,
+  updateUserERC20ApproveMode
 } from './actions'
 import { Token1155 } from 'constants/token/token1155'
 import { filter1155, filter721 } from 'utils/checkIs1155'
@@ -31,6 +32,7 @@ export interface UserState {
 
   userExpertMode: boolean
   userDarkMode: boolean
+  userERC20ApproveAllMode: boolean
 
   userSingleHopOnly: boolean // only allow swaps on direct pairs
 
@@ -87,6 +89,7 @@ export function pairKeyToken(token0: Token | Token1155 | Token721, token1: Token
 export const initialState: UserState = {
   userDarkMode: false,
   userExpertMode: false,
+  userERC20ApproveAllMode: false,
   userSingleHopOnly: false,
   userSlippageTolerance: INITIAL_ALLOWED_SLIPPAGE,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
@@ -117,6 +120,10 @@ export default createReducer(initialState, builder =>
     })
     .addCase(updateUserExpertMode, (state, action) => {
       state.userExpertMode = action.payload.userExpertMode
+      state.timestamp = currentTimestamp()
+    })
+    .addCase(updateUserERC20ApproveMode, (state, action) => {
+      state.userERC20ApproveAllMode = action.payload.userERC20ApproveAllMode
       state.timestamp = currentTimestamp()
     })
     .addCase(updateUserSlippageTolerance, (state, action) => {

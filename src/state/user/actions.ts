@@ -16,6 +16,9 @@ export interface SerializedPair {
 }
 export const updateUserDarkMode = createAction('user/updateUserDarkMode')
 export const updateUserExpertMode = createAction<{ userExpertMode: boolean }>('user/updateUserExpertMode')
+export const updateUserERC20ApproveMode = createAction<{ userERC20ApproveAllMode: boolean }>(
+  'user/updateUserERC20ApproveMode'
+)
 export const updateUserSingleHopOnly = createAction<{ userSingleHopOnly: boolean }>('user/updateUserSingleHopOnly')
 export const updateUserSlippageTolerance = createAction<{ userSlippageTolerance: number }>(
   'user/updateUserSlippageTolerance'

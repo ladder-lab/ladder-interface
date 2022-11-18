@@ -18,6 +18,7 @@ import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import { useApproveERC721Callback } from './useApproveERC721Callback'
+import { useERC20ApproveModeManager } from 'state/user/hooks'
 
 export enum ApprovalState {
   UNKNOWN,
@@ -53,6 +54,7 @@ export function useApproveCallback(
 
   const tokenContract = useTokenContract(token?.address)
   const addTransaction = useTransactionAdder()
+  const [isERC20ApproveAllMode] = useERC20ApproveModeManager()
 
   const approve = useCallback(async (): Promise<void> => {
     if (approvalState !== ApprovalState.NOT_APPROVED) {
@@ -86,10 +88,14 @@ export function useApproveCallback(
     //   return tokenContract.estimateGas.approve(spender, amountToApprove.raw.toString())
     // })
 
-    const estimatedGas = await tokenContract.estimateGas.approve(spender, MaxUint256)
+    const estimatedGas = await tokenContract.estimateGas.approve(
+      spender,
+      isERC20ApproveAllMode ? MaxUint256 : amountToApprove.raw.toString()
+    )
+
     showModal(<TransacitonPendingModal />)
     return tokenContract
-      .approve(spender, amountToApprove.raw.toString(), {
+      .approve(spender, isERC20ApproveAllMode ? MaxUint256 : amountToApprove.raw.toString(), {
         // .approve(spender, useExact ? amountToApprove.raw.toString() : MaxUint256, {
         gasLimit: calculateGasMargin(estimatedGas)
       })
@@ -107,7 +113,17 @@ export function useApproveCallback(
         console.debug('Failed to approve token', error)
         throw error
       })
-  }, [approvalState, token, tokenContract, amountToApprove, spender, hideModal, showModal, addTransaction])
+  }, [
+    approvalState,
+    token,
+    tokenContract,
+    amountToApprove,
+    spender,
+    isERC20ApproveAllMode,
+    showModal,
+    hideModal,
+    addTransaction
+  ])
 
   return [approvalState, approve]
 }
