@@ -58,7 +58,7 @@ export default function RemoveLiquidity() {
 
   // burn state
   const { independentField, typedValue } = useBurnState()
-  const { pair, parsedAmounts, error, lpBalance, poolShare } = useDerivedBurnInfo(
+  const { pair, parsedAmounts, error, lpBalance, poolShare, warning } = useDerivedBurnInfo(
     currencyA ?? undefined,
     currencyB ?? undefined
   )
@@ -207,7 +207,27 @@ export default function RemoveLiquidity() {
           sliderValue={innterLiquidityPercentage}
           onSliderChange={setInnerLiquidityPercentage}
         />
-
+        {warning && (
+          <Box
+            display={{ xs: 'grid', md: 'flex' }}
+            alignItems={'center'}
+            gap={10}
+            padding="10px 0"
+            justifyContent={'flex-end'}
+            justifyItems="flex-end"
+          >
+            <Typography color="error">{warning ? warning[0] ?? null : null}</Typography>
+            {warning[1] && (
+              <Button
+                variant="outlined"
+                onClick={warning[1]}
+                sx={{ width: 'max-content', height: '30px', fontSize: 12, borderRadius: 50, minWidth: 'unset' }}
+              >
+                Round up NFT
+              </Button>
+            )}
+          </Box>
+        )}
         {chainId && (oneCurrencyIsWETH || oneCurrencyIsETH) ? (
           <Box style={{ justifyContent: 'flex-end' }} margin={'30px 0'}>
             {oneCurrencyIsETH ? (

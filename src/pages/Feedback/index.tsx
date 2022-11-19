@@ -237,7 +237,6 @@ function Form({
                 style={{ width: 0, height: 0 }}
                 type="file"
                 onChange={e => {
-                  console.log(e)
                   setFileList(e.target.files)
                 }}
                 name="files"
