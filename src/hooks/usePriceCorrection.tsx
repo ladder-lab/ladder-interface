@@ -1,49 +1,55 @@
-import { Currency, Trade, TradeType } from '@ladder/sdk'
+import { Currency, CurrencyAmount } from '@ladder/sdk'
 import { Box, Button, styled, Typography } from '@mui/material'
 import { useMemo } from 'react'
-import { Field } from 'state/swap/actions'
+import { Field as SwapField } from 'state/swap/actions'
 import { checkIs1155, checkIs721 } from 'utils/checkIs1155'
+import { Field as MintField } from 'state/mint/actions'
 
 export default function usePriceCorrection(
-  trade?: Trade,
+  inputAmount?: CurrencyAmount,
+  outputAmount?: CurrencyAmount,
+  independentField?: SwapField | MintField,
   currencies?: {
-    [key in Field]?: Currency | undefined
+    [key in SwapField | MintField]?: Currency | undefined
   },
   changeInput?: (e?: any) => void,
   changeOutput?: (e?: any) => void
-) {
+): { [key in SwapField | MintField]?: () => void } {
+  const Field = Object.values(SwapField).includes(independentField as any) ? SwapField : MintField
+  const [inputField, outputField] = Object.values(Field)
+
   const priceCorrectFn = useMemo(() => {
-    if (!trade || !currencies || !changeInput || !changeOutput) return undefined
+    if (!independentField || !currencies || !changeInput || !changeOutput || !inputAmount || !outputAmount)
+      return undefined
 
-    const independentField = trade.tradeType === TradeType.EXACT_INPUT ? Field.INPUT : Field.OUTPUT
-
-    const isExactIn = independentField === Field.INPUT
+    const isExactIn = independentField === inputField
     const freeField = currencies[independentField]
     const is1155 = checkIs1155(freeField)
     const is721 = checkIs721(freeField)
     if (!is1155 && !is721) {
-      const dependentField = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
-      const dependentCur = currencies[dependentField]
+      const dependentField = independentField === inputField ? outputField : inputField
+      const dependentCur = currencies[dependentField as keyof typeof currencies]
+      if (!dependentCur) return undefined
       if (checkIs1155(dependentCur) || checkIs721(dependentCur)) {
-        const amount = isExactIn ? trade.outputAmount.raw.toString() : trade.inputAmount.raw.toString()
+        const nftAmountAvailable = isExactIn ? outputAmount.greaterThan('0') : inputAmount.greaterThan('0')
+        if (!nftAmountAvailable) return
+        const amount = isExactIn ? outputAmount.raw.toString() : inputAmount.raw.toString()
         const e = { target: { value: amount } } as any
-        const handler = independentField === Field.INPUT ? () => changeOutput(e) : () => changeInput(e)
-        return { [Field.INPUT]: isExactIn ? handler : undefined, [Field.OUTPUT]: isExactIn ? undefined : handler }
+        const handler = independentField === inputField ? () => changeOutput(e) : () => changeInput(e)
+        return { [inputField]: isExactIn ? handler : undefined, [outputField]: isExactIn ? undefined : handler }
       }
     }
     return undefined
-  }, [changeInput, changeOutput, currencies, trade])
+  }, [changeInput, changeOutput, currencies, independentField, inputAmount, inputField, outputAmount, outputField])
 
   return useMemo(() => {
     return {
-      [Field.INPUT]: priceCorrectFn?.[Field.INPUT] ? (
-        <PriceCorrection onClick={priceCorrectFn[Field.INPUT]} />
-      ) : undefined,
-      [Field.OUTPUT]: priceCorrectFn?.[Field.OUTPUT] ? (
-        <PriceCorrection onClick={priceCorrectFn[Field.OUTPUT]} />
+      [inputField]: priceCorrectFn?.[inputField] ? <PriceCorrection onClick={priceCorrectFn[inputField]} /> : undefined,
+      [outputField]: priceCorrectFn?.[outputField] ? (
+        <PriceCorrection onClick={priceCorrectFn[outputField]} />
       ) : undefined
     }
-  }, [priceCorrectFn])
+  }, [inputField, outputField, priceCorrectFn])
 }
 
 const PriceCorrectButton = styled(Button)({

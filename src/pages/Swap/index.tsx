@@ -241,7 +241,9 @@ export default function Swap() {
 
   //price correct function
   const { [Field.INPUT]: PriceCorrectInput, [Field.OUTPUT]: PriceCorrectOutput } = usePriceCorrection(
-    v2Trade,
+    v2Trade?.inputAmount,
+    v2Trade?.outputAmount,
+    independentField,
     currencies,
     handleFromVal,
     handleToVal
@@ -333,16 +335,18 @@ export default function Swap() {
 
           <Settings />
           <Box mb={fromAsset ? 16 : 0}>
-            <CurrencyInputPanel
-              value={formattedAmounts[Field.INPUT]}
-              onChange={handleFromVal}
-              onSelectCurrency={handleFromAsset}
-              currency={fromAsset}
-              onMax={handleMaxInput}
-              disabled={!account}
-              onSelectSubTokens={handleFromSubAssets}
-            />
-            {PriceCorrectInput}
+            <>
+              <CurrencyInputPanel
+                value={formattedAmounts[Field.INPUT]}
+                onChange={handleFromVal}
+                onSelectCurrency={handleFromAsset}
+                currency={fromAsset}
+                onMax={handleMaxInput}
+                disabled={!account}
+                onSelectSubTokens={handleFromSubAssets}
+              />
+              {PriceCorrectInput}
+            </>
           </Box>
           <Box
             sx={{
@@ -362,17 +366,19 @@ export default function Swap() {
             <SwitchCircle onClick={onSwitch} style={{ cursor: account ? 'pointer' : 'auto' }} />
           </Box>
           <Box mb={toAsset ? 16 : 0}>
-            <CurrencyInputPanel
-              value={formattedAmounts[Field.OUTPUT]}
-              onChange={handleToVal}
-              onSelectCurrency={handleToAsset}
-              currency={toAsset}
-              disabled={!account}
-              onSelectSubTokens={handleToSubAssets}
-              enableAuto={true}
-              pairAddress={pair721Address}
-            />
-            {PriceCorrectOutput}
+            <>
+              <CurrencyInputPanel
+                value={formattedAmounts[Field.OUTPUT]}
+                onChange={handleToVal}
+                onSelectCurrency={handleToAsset}
+                currency={toAsset}
+                disabled={!account}
+                onSelectSubTokens={handleToSubAssets}
+                enableAuto={true}
+                pairAddress={pair721Address}
+              />
+              {PriceCorrectOutput}
+            </>
           </Box>
           {/* {toAsset && <AssetAccordion token={toAsset} />} */}
           {isValid && !swapCallbackError && (

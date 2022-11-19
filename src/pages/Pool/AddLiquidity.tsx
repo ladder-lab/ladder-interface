@@ -32,6 +32,7 @@ import { checkIs721, getTokenText } from 'utils/checkIs1155'
 import { Token721 } from 'constants/token/token721'
 import { generateErc20 } from 'utils/getHashAddress'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
+import usePriceCorrection from 'hooks/usePriceCorrection'
 
 export default function AddLiquidy() {
   const [currencyA, setCurrencyA] = useState<undefined | AllTokens>(undefined)
@@ -216,6 +217,16 @@ export default function AddLiquidy() {
     ? '0'
     : pair?.token1Price?.toFixed(6, undefined, 2).trimTrailingZero() ?? '-'
 
+  //price correct function
+  const { [Field.CURRENCY_A]: PriceCorrectA, [Field.CURRENCY_B]: PriceCorrectB } = usePriceCorrection(
+    parsedAmounts[Field.CURRENCY_A],
+    parsedAmounts[Field.CURRENCY_B],
+    independentField,
+    currencies,
+    handleAssetAVal,
+    handleAssetBVal
+  )
+
   return (
     <>
       <ConfirmSupplyModal
@@ -243,14 +254,17 @@ export default function AddLiquidy() {
         <Box mt={35}>
           <Tips />
           <Box mb={currencyA ? 16 : 0}>
-            <CurrencyInputPanel
-              value={formattedAmounts[Field.CURRENCY_A]}
-              onChange={handleAssetAVal}
-              onSelectCurrency={handleAssetA}
-              currency={currencyA}
-              onMax={handleMaxInputA}
-              onSelectSubTokens={handleTokenIds}
-            />
+            <>
+              <CurrencyInputPanel
+                value={formattedAmounts[Field.CURRENCY_A]}
+                onChange={handleAssetAVal}
+                onSelectCurrency={handleAssetA}
+                currency={currencyA}
+                onMax={handleMaxInputA}
+                onSelectSubTokens={handleTokenIds}
+              />
+              {PriceCorrectA}
+            </>
           </Box>
           {currencyA && <AssetAccordion token={currencyA} />}
           <Box sx={{ height: 76, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -258,15 +272,18 @@ export default function AddLiquidy() {
           </Box>
 
           <Box mb={currencyB ? 16 : 0} mt={16}>
-            <CurrencyInputPanel
-              // selectedTokenType={currencyA ? (checkIs1155(currencyA) ? 'erc1155' : 'erc20') : undefined}
-              value={formattedAmounts[Field.CURRENCY_B]}
-              onChange={handleAssetBVal}
-              onSelectCurrency={handleAssetB}
-              currency={currencyB}
-              onMax={handleMaxInputB}
-              onSelectSubTokens={handleTokenIds}
-            />
+            <>
+              <CurrencyInputPanel
+                // selectedTokenType={currencyA ? (checkIs1155(currencyA) ? 'erc1155' : 'erc20') : undefined}
+                value={formattedAmounts[Field.CURRENCY_B]}
+                onChange={handleAssetBVal}
+                onSelectCurrency={handleAssetB}
+                currency={currencyB}
+                onMax={handleMaxInputB}
+                onSelectSubTokens={handleTokenIds}
+              />
+              {PriceCorrectB}
+            </>
           </Box>
           {currencyB && <AssetAccordion token={currencyB} />}
 
