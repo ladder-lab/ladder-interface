@@ -140,18 +140,6 @@ export default function Pool() {
                     ? [tokens[0], tokens[1]]
                     : [tokens[1], tokens[0]]
 
-                const [amount0, amount1] = [
-                  new TokenAmount(token0, pair.reserve0.raw),
-                  new TokenAmount(token1, pair.reserve1.raw)
-                ]
-
-                const [amountA, amountB] =
-                  checkIs1155(token0) || checkIs721(token0) || token0.symbol === 'WETH' || token0.symbol === 'ETH'
-                    ? [amount1, amount0]
-                    : [amount0, amount1]
-
-                const { token1Text, token2Text } = getTokenText(amountA.token, amountB.token)
-
                 const balance = v2PairsBalances?.[liquidityTokensWithBalances[idx].liquidityToken.address]
                 const totalSupply = totalSupplies?.[liquidityTokensWithBalances[idx].liquidityToken.address]
                 pair.reserveOf
@@ -159,6 +147,22 @@ export default function Pool() {
                   totalSupply && balance
                     ? new Percent(balance.raw, totalSupply.raw).toFixed(2, undefined, 2).trimTrailingZero() + '%'
                     : '-'
+
+                const reserveA =
+                  totalSupply && balance
+                    ? new TokenAmount(token0, pair.getLiquidityValue(token0, totalSupply, balance, false).raw)
+                    : new TokenAmount(token0, '0')
+
+                const reserveB =
+                  totalSupply && balance
+                    ? new TokenAmount(token1, pair.getLiquidityValue(token1, totalSupply, balance, false).raw)
+                    : new TokenAmount(token0, '0')
+
+                const [amountA, amountB] =
+                  checkIs1155(token0) || checkIs721(token0) || token0.symbol === 'WETH' || token0.symbol === 'ETH'
+                    ? [reserveB, reserveA]
+                    : [reserveA, reserveB]
+                const { token1Text, token2Text } = getTokenText(amountA.token, amountB.token)
 
                 return (
                   <Grid item xs={12} md={6} lg={4} key={pair.liquidityToken.address}>
