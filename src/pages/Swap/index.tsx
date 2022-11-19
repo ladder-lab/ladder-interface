@@ -1,5 +1,5 @@
 import { useCallback, useState, ChangeEvent, useMemo, useEffect } from 'react'
-import { Typography, Box, Button, styled } from '@mui/material'
+import { Typography, Box, Button } from '@mui/material'
 import { CurrencyAmount, JSBI, Pair, Trade } from '@ladder/sdk'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
@@ -25,20 +25,11 @@ import useModal from 'hooks/useModal'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import { Currency } from 'constants/token'
-import { checkIs1155, checkIs721 } from 'utils/checkIs1155'
+import { checkIs721 } from 'utils/checkIs1155'
 import { Token721 } from 'constants/token/token721'
 import { useSwap721State } from 'state/swap/useSwap721State'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
-
-const PriceCorrectButton = styled(Button)({
-  height: 22,
-  padding: '0px 10px',
-  borderRadius: '10px',
-  width: 'max-content',
-  minWidth: 'unset',
-  fontSize: 12,
-  whiteSpace: 'nowrap'
-})
+import usePriceCorrection from 'hooks/usePriceCorrection'
 
 export default function Swap() {
   // const theme = useTheme()
@@ -249,24 +240,12 @@ export default function Swap() {
   }, [chainId, fromAsset, toAsset])
 
   //price correct function
-  const priceCorrectFn = useMemo(() => {
-    if (!v2Trade) return undefined
-    const isExactIn = independentField === Field.INPUT
-    const freeField = currencies[independentField]
-    const is1155 = checkIs1155(freeField)
-    const is721 = checkIs721(freeField)
-    if (!is1155 && !is721) {
-      const dependentField = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
-      const dependentCur = currencies[dependentField]
-      if (checkIs1155(dependentCur) || checkIs721(dependentCur)) {
-        const amount = isExactIn ? v2Trade.outputAmount.raw.toString() : v2Trade.inputAmount.raw.toString()
-        const e = { target: { value: amount } } as any
-        const handler = independentField === Field.INPUT ? () => handleToVal(e) : () => handleFromVal(e)
-        return { [Field.INPUT]: isExactIn ? handler : undefined, [Field.OUTPUT]: isExactIn ? undefined : handler }
-      }
-    }
-    return undefined
-  }, [currencies, handleFromVal, handleToVal, independentField, v2Trade])
+  const { [Field.INPUT]: PriceCorrectInput, [Field.OUTPUT]: PriceCorrectOutput } = usePriceCorrection(
+    v2Trade,
+    currencies,
+    handleFromVal,
+    handleToVal
+  )
 
   const error = useMemo(() => {
     if (!fromAsset || !toAsset) {
@@ -363,22 +342,7 @@ export default function Swap() {
               disabled={!account}
               onSelectSubTokens={handleFromSubAssets}
             />
-            {priceCorrectFn && priceCorrectFn[Field.INPUT] && (
-              <Box
-                display="flex"
-                gap={10}
-                alignItems="center"
-                justifyContent={{ xs: 'flex-end', sm: 'flex-start' }}
-                marginTop={{ xs: 0, sm: -21 }}
-              >
-                <Typography color="error" fontSize={12} textAlign="right">
-                  You are using too many / little assets
-                </Typography>
-                <PriceCorrectButton onClick={priceCorrectFn[Field.INPUT]} variant="outlined">
-                  price correction
-                </PriceCorrectButton>
-              </Box>
-            )}
+            {PriceCorrectInput}
           </Box>
           <Box
             sx={{
@@ -408,20 +372,7 @@ export default function Swap() {
               enableAuto={true}
               pairAddress={pair721Address}
             />
-            {priceCorrectFn && priceCorrectFn[Field.OUTPUT] && (
-              <Box
-                display="flex"
-                gap={10}
-                alignItems="center"
-                justifyContent={{ xs: 'flex-end', sm: 'flex-start' }}
-                marginTop={{ xs: 0, sm: -21 }}
-              >
-                <Typography color="error" fontSize={12} textAlign="right">
-                  You are receiving too many / little assets
-                </Typography>
-                <PriceCorrectButton onClick={priceCorrectFn[Field.OUTPUT]}>price correction</PriceCorrectButton>
-              </Box>
-            )}
+            {PriceCorrectOutput}
           </Box>
           {/* {toAsset && <AssetAccordion token={toAsset} />} */}
           {isValid && !swapCallbackError && (
