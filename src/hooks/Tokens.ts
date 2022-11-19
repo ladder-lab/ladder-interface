@@ -299,8 +299,9 @@ export function useCurrency(
   const { library } = useActiveWeb3React()
   const isETH = currencyId?.toUpperCase() === 'ETH'
   const [tokenType, setTokenType] = useState<undefined | string>(undefined)
-
+  const noId = currencyId === 'undefined'
   useEffect(() => {
+    if (noId) return
     if (!isETH && tokenStandard) {
       setTokenType(tokenStandard)
       return
@@ -318,12 +319,12 @@ export function useCurrency(
     checkTokenType(currencyId, library).then(r => {
       setTokenType(r)
     })
-  }, [currencyId, isETH, library, tokenId, tokenStandard])
+  }, [currencyId, isETH, library, noId, tokenId, tokenStandard])
 
   const token1155 = useToken1155(!isETH && tokenType === 'erc1155' ? currencyId : undefined, tokenId)
   const token = useToken(!isETH && tokenType === 'erc20' ? currencyId : undefined)
   const token721 = useToken721(!isETH && tokenType === 'erc721' ? currencyId : undefined)
-
+  if (noId) return undefined
   return !!token721 ? token721 : !!token1155 ? token1155 : isETH ? ETHER : token
 }
 

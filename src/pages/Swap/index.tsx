@@ -1,6 +1,6 @@
 import { useCallback, useState, ChangeEvent, useMemo, useEffect } from 'react'
 import { Typography, Box, Button } from '@mui/material'
-import { CurrencyAmount, JSBI, Pair, Trade } from '@ladder/sdk'
+import { CurrencyAmount, ETHER, JSBI, Pair, Trade } from '@ladder/sdk'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
 import { ReactComponent as SwitchCircle } from 'assets/svg/switch_circle.svg'
@@ -30,10 +30,15 @@ import { Token721 } from 'constants/token/token721'
 import { useSwap721State } from 'state/swap/useSwap721State'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
 import usePriceCorrection from 'hooks/usePriceCorrection'
+import { useNavigate, useParams } from 'react-router-dom'
+import { liquidityParamBuilder, liquidityParamSplitter, routes } from 'constants/routes'
+import { useCurrency } from 'hooks/Tokens'
 
 export default function Swap() {
   // const theme = useTheme()
+
   const { account, chainId } = useActiveWeb3React()
+  const navigate = useNavigate()
 
   const [summaryExpanded, setSummaryExpanded] = useState(false)
 
@@ -49,6 +54,13 @@ export default function Swap() {
     attemptingTxn: false,
     txHash: undefined
   })
+
+  const { currencyIdA, currencyIdB, tokenIds } = useParams()
+  const [tokenIdA, tokenIdB] = tokenIds?.split(liquidityParamSplitter) ?? ['', '']
+  const [currency0, currency1] = [
+    useCurrency(currencyIdA, tokenIdA) ?? undefined,
+    useCurrency(currencyIdB, tokenIdB) ?? undefined
+  ]
 
   const { showModal, hideModal } = useModal()
   const toggleWallet = useWalletModalToggle()
@@ -89,7 +101,7 @@ export default function Swap() {
       // showWrap
       // ? parsedAmounts[independentField]?.toExact() ?? ''
       //   :
-      parsedAmounts[dependentField]?.toFixed(6, undefined, 0) ?? ''
+      parsedAmounts[dependentField]?.toSignificant(6, undefined, 0) ?? ''
   }
 
   const slippageAdjustedAmounts = useMemo(
@@ -212,8 +224,9 @@ export default function Swap() {
       setApprovalSubmitted(false) // reset 2 step UI for approvals
       onCurrencySelection(Field.INPUT, currency)
       setFromErc721SubTokens(null)
+      navigate(routes.swap + liquidityParamBuilder(currency, toAsset ?? undefined), { replace: false })
     },
-    [onCurrencySelection, resetSubTokenSelection]
+    [navigate, onCurrencySelection, resetSubTokenSelection, toAsset]
   )
 
   const handleToAsset = useCallback(
@@ -221,8 +234,9 @@ export default function Swap() {
       resetSubTokenSelection(Field.OUTPUT)
       onCurrencySelection(Field.OUTPUT, currency)
       setToErc721SubTokens(null)
+      navigate(routes.swap + liquidityParamBuilder(fromAsset ?? undefined, currency), { replace: false })
     },
-    [onCurrencySelection, resetSubTokenSelection]
+    [fromAsset, navigate, onCurrencySelection, resetSubTokenSelection]
   )
 
   const handleFromSubAssets = useCallback((tokens: Token721[]) => {
@@ -293,6 +307,24 @@ export default function Swap() {
       resetSubTokenSelection(Field.OUTPUT)
     }
   }, [onSubTokenSelection, resetSubTokenSelection, toAsset, toErc721SubTokens])
+
+  useEffect(() => {
+    if (currency0) {
+      if (currency0.symbol === 'WETH' || currency0.symbol === 'WBNB') {
+        onCurrencySelection(Field.INPUT, ETHER)
+      } else {
+        onCurrencySelection(Field.INPUT, currency0)
+      }
+    }
+    if (currency1) {
+      if (currency1.symbol === 'WETH' || currency1.symbol === 'WBNB') {
+        onCurrencySelection(Field.OUTPUT, ETHER)
+      } else {
+        onCurrencySelection(Field.OUTPUT, currency1)
+      }
+    }
+    return
+  }, [currency0, currency1, onCurrencySelection])
 
   return (
     <>

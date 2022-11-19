@@ -134,7 +134,7 @@ export function useDerivedSwapInfo(): {
   const outputCurrencyRaw = useCurrency(outputCurrencyId, outputTokenId, outputTokenStandard)
 
   const inputCurrency =
-    inputTokenId && inputCurrencyId
+    inputTokenId && inputCurrencyId && !isNaN(+inputTokenId)
       ? new Token(
           chainId ?? NETWORK_CHAIN_ID,
           getHashAddress(inputCurrencyId, +inputTokenId),
@@ -145,7 +145,7 @@ export function useDerivedSwapInfo(): {
       : inputCurrencyRaw
 
   const outputCurrency =
-    outputTokenId && outputCurrencyId
+    outputTokenId && outputCurrencyId && !isNaN(+outputTokenId)
       ? new Token(
           chainId ?? NETWORK_CHAIN_ID,
           getHashAddress(outputCurrencyId, +outputTokenId),
