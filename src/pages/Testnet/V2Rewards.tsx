@@ -40,17 +40,17 @@ export default function V2Rewards() {
     () => [
       {
         name: 'TVL',
-        helperText: 'Data updated daily',
+        helperText: 'Total Value Locked',
         value: accountTestInfo ? formatMillion(accountTestInfo.tvl, '$ ', 2) : '-'
       },
       {
         name: 'Assets',
-        helperText: 'Data is updated hourly',
+        helperText: 'Equity Value of NFT and Token',
         value: accountTestInfo ? formatMillion(accountTestInfo.assets, '$ ', 2) : '-'
       },
       {
         name: 'Transactions',
-        helperText: 'Data is updated hourly',
+        helperText: 'Total Swap Count',
         value: accountTestInfo ? accountTestInfo.transfers : '-'
       }
     ],
@@ -200,19 +200,31 @@ export default function V2Rewards() {
           index="01"
           isTop={rankingTVLList.result.isTop}
           toggleOpenModal={rankingTVLList.modal.toggleOpenModal}
-          title="TVL daily avg top 20% will get LP Provider Winner-Ladder Testnet R2-NFT "
+          title={
+            <>
+              Top 20% in Daily Avg TVL will receive <b>Ladder T2 LP Winner SBT</b> reward
+            </>
+          }
         />
         <RankingItem
           index="02"
           isTop={rankingAssetsList.result.isTop}
           toggleOpenModal={rankingAssetsList.modal.toggleOpenModal}
-          title="Top 20% Asset Number will get Trade Winner-NFT "
+          title={
+            <>
+              Top 20% in final Asset Value will receive <b>Ladder T2 Trading Winner SBT</b> reward
+            </>
+          }
         />
         <RankingItem
           index="03"
           isTop={rankingTransferList.result.isTop}
           toggleOpenModal={rankingTransferList.modal.toggleOpenModal}
-          title="Top 20% Total interaction will get Trade Click Winner-Ladder Testnet R2-NFT"
+          title={
+            <>
+              Top 20% in Total Transaction will receive <b>Ladder T2 Swap Winner SBT</b> reward
+            </>
+          }
         />
 
         <RankingModal
@@ -279,7 +291,7 @@ function RankingModal({
             Total address:{page.count}
           </Typography>
           <Typography color={'#1F9898'} fontSize={16}>
-            My ranking:{myRanking || '--'}
+            My Rank:{myRanking || '--'}
           </Typography>
         </RowBetween>
         <Box
@@ -314,7 +326,7 @@ function RankingItem({
 }: {
   toggleOpenModal?: () => void
   index: string
-  title: string
+  title: JSX.Element | string
   isTop?: boolean
 }) {
   const isDark = useIsDarkMode()
@@ -345,7 +357,7 @@ function RankingItem({
             sx={{ width: 8, height: 8, mr: 5, borderRadius: '50%', backgroundColor: isTop ? '#31B047' : '#FF526F' }}
           />
           <Typography color={'#9AA7A7'} fontWeight={600}>
-            {isTop ? 'My ranking ≤20%' : 'My ranking >20%'}
+            {isTop ? 'My Rank ≤20%' : 'My Rank >20%'}
           </Typography>
         </RowBetween>
         <Link
@@ -355,13 +367,13 @@ function RankingItem({
           underline="always"
           sx={{ cursor: 'pointer' }}
         >
-          Ranking detail
+          Leaderboard
         </Link>
       </RowBetween>
       <Box height={54} mt={20} display="grid" alignItems={'center'}>
         <BorderLinearProgress dark={isDark} variant="determinate" value={progress} />
         <Typography textAlign={'center'} color={'#1F9898'} fontWeight={600}>
-          Distance to end: <Timer timer={v2ActiveTimeStamp[1]} />
+          End in: <Timer timer={v2ActiveTimeStamp[1]} />
         </Typography>
       </Box>
     </Box>

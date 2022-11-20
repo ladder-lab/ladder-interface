@@ -909,7 +909,7 @@ function TestnetV2() {
             <RowBetween>
               <Box display={'flex'}>
                 <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
-                  Rewards
+                  Ladder Testnet Round2 Contest
                 </Typography>
               </Box>
             </RowBetween>
