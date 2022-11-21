@@ -183,7 +183,9 @@ export function useDerivedBurnInfo(
     if (+typedValue < 100 && (nftAmount.remainder.greaterThan(new Fraction('5', '10')) || nftAmount.lessThan('1'))) {
       const roundedUp = nftAmount.toFixed(0, undefined, 2)
       const liquidityRaw = liquidityValues[nftField]
-
+      if (!liquidityRaw?.greaterThan('0')) {
+        return undefined
+      }
       const percent = liquidityRaw ? new Fraction(roundedUp).divide(liquidityRaw).toFixed(3) : undefined
       if (percent) {
         const percentString = Math.ceil(+percent * 100) + ''
