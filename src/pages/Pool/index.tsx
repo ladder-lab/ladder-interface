@@ -148,15 +148,18 @@ export default function Pool() {
                     ? new Percent(balance.raw, totalSupply.raw).toFixed(2, undefined, 2).trimTrailingZero() + '%'
                     : '-'
 
+                const hashedToken0 = generateErc20(token0)
+                const hashedToken1 = generateErc20(token1)
+
                 const reserveA =
-                  totalSupply && balance
-                    ? new TokenAmount(token0, pair.getLiquidityValue(token0, totalSupply, balance, false).raw)
+                  totalSupply && balance && hashedToken0
+                    ? new TokenAmount(token0, pair.getLiquidityValue(hashedToken0, totalSupply, balance, false).raw)
                     : new TokenAmount(token0, '0')
 
                 const reserveB =
-                  totalSupply && balance
-                    ? new TokenAmount(token1, pair.getLiquidityValue(token1, totalSupply, balance, false).raw)
-                    : new TokenAmount(token0, '0')
+                  totalSupply && balance && hashedToken1
+                    ? new TokenAmount(token1, pair.getLiquidityValue(hashedToken1, totalSupply, balance, false).raw)
+                    : new TokenAmount(token1, '0')
 
                 const [amountA, amountB] =
                   checkIs1155(token0) || checkIs721(token0) || token0.symbol === 'WETH' || token0.symbol === 'ETH'
@@ -328,7 +331,7 @@ function PoolAssetCard({ currency, value }: { currency: AllTokens; value: string
             {trimNumberString(value, 12)}
           </Typography>
         </Box>
-        <CurrencyLogo currency={currency} size={'36px'} />
+        <CurrencyLogo currency={currency} size={'36px'} style={{ flexShrink: 0 }} />
       </Box>
     </Card>
   )
