@@ -3,7 +3,7 @@ import RankingImg from 'assets/images/testv2_user_ranking.png'
 import Copy from 'components/essential/Copy'
 import QuestionHelper from 'components/essential/QuestionHelper'
 import Modal from 'components/Modal'
-import { Timer } from 'components/Timer'
+// import { Timer } from 'components/Timer'
 import { ChainId } from 'constants/chain'
 import { useActiveWeb3React } from 'hooks'
 import { useAccountTestInfo, useRankingAssetsList, useRankingTransferList, useRankingTVLList } from 'hooks/useTestnetV2'
@@ -372,11 +372,11 @@ function RankingItem({
           Leaderboard
         </Link>
       </RowBetween>
-      <Box height={54} mt={20} display="grid" alignItems={'center'}>
+      <Box height={34} mt={20} display="grid" alignItems={'center'}>
         <BorderLinearProgress dark={isDark} variant="determinate" value={progress} />
-        <Typography textAlign={'center'} color={'#1F9898'} fontWeight={600}>
+        {/* <Typography textAlign={'center'} color={'#1F9898'} fontWeight={600}>
           End in: <Timer timer={v2ActiveTimeStamp[1]} />
-        </Typography>
+        </Typography> */}
       </Box>
     </Box>
   )

@@ -102,8 +102,24 @@ const v1FaucetTokens = [
 
 const v2FaucetTokens = [
   {
-    token: new Token(ChainId.GÖRLI, '0x5c7281493Ee8E92232bEfc17B43D3875AC067e43', 18, 'tUsdc', 'ladder-test-usdc'),
-    amount: '100'
+    token: new Token(
+      ChainId.SEPOLIA,
+      '0x85eDB7A0cbAcf5BD641e0FF5D6270bEf9C72Bd6B',
+      18,
+      'tUSDC',
+      'testUSDC-LadderV2-USDC-Testnet'
+    ),
+    amount: '1000'
+  },
+  {
+    token: new Token(
+      ChainId.SEPOLIA,
+      '0x5069129410122A4C1F2448c77becDc5A8A784a5D',
+      18,
+      'tWETH',
+      'testETH-LadderV2-ETH-Testnet'
+    ),
+    amount: '1000'
   }
 ]
 
@@ -654,6 +670,7 @@ function TestnetV2() {
   const [queryAddress, setQueryAddress] = useState('')
   const { claimState: queryClaimState } = useTestnetClaim(isAddress(queryAddress) ? queryAddress : undefined)
   const testnetV2Status = useTestnetV2Status(account || undefined)
+  const [isOpenClaim, setIsOpenClaim] = useState(false)
 
   const queryNotice = useMemo(() => {
     return (
@@ -714,11 +731,11 @@ function TestnetV2() {
               <Typography fontSize={16} sx={{ mt: { xs: 6 } }} fontWeight={600}>
                 {activeTimeStatus === 'soon' ? (
                   <>
-                    Distance to start: <Timer timer={v2ActiveTimeStamp[0]} />
+                    Distance to start: <Timer onZero={() => setIsOpenClaim(true)} timer={v2ActiveTimeStamp[0]} />
                   </>
                 ) : activeTimeStatus === 'active' ? (
                   <>
-                    Distance to end: <Timer timer={v2ActiveTimeStamp[1]} />
+                    Distance to end: <Timer onZero={() => setIsOpenClaim(true)} timer={v2ActiveTimeStamp[1]} />
                   </>
                 ) : (
                   'End'
@@ -802,25 +819,25 @@ function TestnetV2() {
                     />
                   ))}
                   <ClaimableItem
-                    nftInfo={{ name: 'laddertest-v2-erc1155' }}
+                    nftInfo={{ name: 'laddertest-v2-erc721' }}
                     amount={'5'}
                     claimable={claimState === ClaimState.UNCLAIMED ? '5' : '0'}
                   />
                   <ClaimableItem
-                    nftInfo={{ name: 'laddertest-v2-erc721' }}
-                    amount={'20'}
-                    claimable={claimState === ClaimState.UNCLAIMED ? '20' : '0'}
+                    nftInfo={{ name: 'laddertest-v2-erc1155' }}
+                    amount={'10'}
+                    claimable={claimState === ClaimState.UNCLAIMED ? '10' : '0'}
                   />
                 </Box>
                 <Box display={'flex'} flexWrap="wrap" flexDirection="row-reverse" mt={16} alignItems="center">
                   <StyledButtonWrapper>
                     {account ? (
-                      <>
+                      <Box position={'relative'}>
                         <StyledButtonWrapper>
                           <ActionButton
                             pending={claimState === ClaimState.UNKNOWN}
                             onAction={testnetClaim}
-                            disableAction
+                            disableAction={!isOpenClaim}
                             actionText="Claim your test assets"
                             error={
                               claimState === ClaimState.UNCLAIMED
@@ -831,7 +848,20 @@ function TestnetV2() {
                             }
                           />
                         </StyledButtonWrapper>
-                      </>
+                        {activeTimeStatus === 'soon' && (
+                          <Box
+                            sx={{
+                              color: theme.palette.text.secondary,
+                              fontSize: 12,
+                              position: 'absolute',
+                              right: 0
+                            }}
+                          >
+                            Distance to start:
+                            <Timer onZero={() => setIsOpenClaim(true)} timer={v2ActiveTimeStamp[0]} />
+                          </Box>
+                        )}
+                      </Box>
                     ) : (
                       <StyledButtonWrapper>
                         <Button onClick={toggleWalletModal}>Connect the wallet to claim your test assets</Button>
