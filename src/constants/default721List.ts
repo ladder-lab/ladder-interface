@@ -3,7 +3,7 @@ import SampleNftImg from 'assets/images/sample-nft.png'
 import { ChainId } from '@ladder/sdk'
 
 const test721List = [
-  { address: '0x54C0ac6D96D7B79c2941FaA33e61188611F4d813', name: 'Mutant Ape Yacht Club', synbol: 'BAYC' },
+  { address: '0x54C0ac6D96D7B79c2941FaA33e61188611F4d813', name: 'Mutant Ape Yacht Club', symbol: 'BAYC' },
   { address: '0x9D88b325faA7b4C3E845c493fF282ed317414F6f', name: 'CryptoPunks', symbol: 'cp' },
   { address: '0x9cd61d732a7BFb6D3C1E7F1b26e5aafB3A5763cd', name: 'Chromie Squiggle ', symbol: 'CS' },
   { address: '0x0516eD436C66FC45E3353A784F64674F7DFD5940', name: 'Pudgy Penguins ', symbol: 'PPG' },
@@ -16,15 +16,15 @@ const test721List = [
 ]
 
 const test721ListSepolia = [
-  { address: '0x4186128305c4fF0a3FafB9126eEaf77169C2ec12', name: 'Mutant Ape Yacht Club', synbol: 'BAYC' },
-  { address: '0x7dc1BE8f47eE5805095c9bABa7123ED9AB2aB178', name: 'CryptoPunks', symbol: 'cp' },
-  { address: '0xb5dd2438a909C30d93184F1908733092aB618f31', name: 'Art Blocks', symbol: 'AB' },
+  { address: '0x4186128305c4fF0a3FafB9126eEaf77169C2ec12', name: 'Mutant Ape Yacht Club', symbol: 'MAYC' },
+  { address: '0x7dc1BE8f47eE5805095c9bABa7123ED9AB2aB178', name: 'CRYPTO PUNKS', symbol: 'CRYPTOPUNKS' },
+  { address: '0xb5dd2438a909C30d93184F1908733092aB618f31', name: 'Art Blocks', symbol: 'BLOCKS' },
   { address: '0xaA2Ff5d0A9E098eB9644e22208adce451bAb24a3', name: 'Cool Cats', symbol: 'COOL' },
   { address: '0x52CA73a56e50aA7973327b795959e4F2Afece1da', name: 'Doodles', symbol: 'DOODLE' },
-  { address: '0xF810E14fe787c4e41B37fb9484d769Cc3e5CF227', name: 'Exosama', symbol: 'ESO' },
+  { address: '0xF810E14fe787c4e41B37fb9484d769Cc3e5CF227', name: 'Exosama', symbol: 'EXO' },
   { address: '0x9F8b37d69f1209FB5cE45B50dF698a1C12A42831', name: 'Pudgy Penguins ', symbol: 'PPG' },
   { address: '0x92F6Ea44eF7DC9e3293a41cEc53610F3f0a6D127', name: 'World Of Women', symbol: 'WOW' },
-  { address: '0x9c111fEDD3aa778a46D0E7067D0e894D1eA0A029', name: 'RENGA', symbol: 'RNG' },
+  { address: '0x9c111fEDD3aa778a46D0E7067D0e894D1eA0A029', name: 'RENGA', symbol: 'RENGA' },
   { address: '0xf904B6C5aBa72dD44fBc840Be139c100F291d5FA', name: 'Azuki', symbol: 'AZUKI' }
 
   // { name: 'LADDER-TEST-721-1', symbol: 'T-721-1', address: '0x6746e7bd4250263F7F6CedEEDa3d055749c82A9e' },
