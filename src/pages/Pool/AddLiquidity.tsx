@@ -229,7 +229,8 @@ export default function AddLiquidy() {
     independentField,
     currencies,
     handleAssetAVal,
-    handleAssetBVal
+    handleAssetBVal,
+    !!pair
   )
 
   return (

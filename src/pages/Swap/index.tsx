@@ -261,7 +261,8 @@ export default function Swap() {
     independentField,
     currencies,
     handleFromVal,
-    handleToVal
+    handleToVal,
+    !!trade
   )
 
   const error = useMemo(() => {
