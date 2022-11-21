@@ -108,7 +108,7 @@ const v2FaucetTokens = [
 ]
 
 const v1ActiveTimeStamp = [1666238460000, 1666843140000]
-export const v2ActiveTimeStamp = [1669089660000, 1669694400000]
+export const v2ActiveTimeStamp = [1669093260000, 1669697940000]
 
 export default function Testnet() {
   const theme = useTheme()
@@ -650,7 +650,7 @@ function TestnetV2() {
   const { account } = useActiveWeb3React()
   const navigate = useNavigate()
   const toggleWalletModal = useWalletModalToggle()
-  const { testnetClaim, devTestnetClaim, claimState } = useTestnetClaim(account || undefined)
+  const { testnetClaim, claimState } = useTestnetClaim(account || undefined)
   const [queryAddress, setQueryAddress] = useState('')
   const { claimState: queryClaimState } = useTestnetClaim(isAddress(queryAddress) ? queryAddress : undefined)
   const testnetV2Status = useTestnetV2Status(account || undefined)
@@ -816,10 +816,11 @@ function TestnetV2() {
                   <StyledButtonWrapper>
                     {account ? (
                       <>
-                        <StyledButtonWrapper display={'none'}>
+                        <StyledButtonWrapper>
                           <ActionButton
                             pending={claimState === ClaimState.UNKNOWN}
                             onAction={testnetClaim}
+                            disableAction
                             actionText="Claim your test assets"
                             error={
                               claimState === ClaimState.UNCLAIMED
@@ -829,9 +830,6 @@ function TestnetV2() {
                                 : 'Address not registered'
                             }
                           />
-                        </StyledButtonWrapper>
-                        <StyledButtonWrapper>
-                          <ActionButton onAction={devTestnetClaim} actionText="Claim dev test assets" />
                         </StyledButtonWrapper>
                       </>
                     ) : (
