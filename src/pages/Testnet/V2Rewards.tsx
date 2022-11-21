@@ -19,17 +19,19 @@ const RowBetween = styled(Box)(({}) => ({
   alignItems: 'center'
 }))
 
-const BorderLinearProgress = styled(LinearProgress)(({ dark }: { dark: boolean }) => ({
-  height: 6,
-  borderRadius: 12,
-  [`&.${linearProgressClasses.colorPrimary}`]: {
-    backgroundColor: dark ? '#3F4B4B' : '#E6F2F2'
-  },
-  [`& .${linearProgressClasses.bar}`]: {
-    borderRadius: 5,
-    backgroundColor: '#1F9898'
-  }
-}))
+const BorderLinearProgress = styled(LinearProgress, { shouldForwardProp: prop => prop !== 'dark' })(
+  ({ dark }: { dark: boolean }) => ({
+    height: 6,
+    borderRadius: 12,
+    [`&.${linearProgressClasses.colorPrimary}`]: {
+      backgroundColor: dark ? '#3F4B4B' : '#E6F2F2'
+    },
+    [`& .${linearProgressClasses.bar}`]: {
+      borderRadius: 5,
+      backgroundColor: '#1F9898'
+    }
+  })
+)
 
 export default function V2Rewards() {
   const curChainId = ChainId.SEPOLIA
@@ -174,7 +176,7 @@ export default function V2Rewards() {
               }}
             >
               <RowBetween>
-                <Typography color={theme.palette.text.secondary} fontSize={16}>
+                <Typography color={theme.palette.text.secondary} fontSize={16} component="div">
                   <RowBetween>
                     {item.name} <QuestionHelper style={{ marginLeft: 5 }} text={item.helperText} />
                   </RowBetween>
