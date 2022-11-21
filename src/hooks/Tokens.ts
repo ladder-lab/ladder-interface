@@ -113,13 +113,23 @@ const testTokens = {
     )
   },
   [11155111]: {
-    '0x5c7281493Ee8E92232bEfc17B43D3875AC067e43': new WrappedTokenInfo(
+    '0x85eDB7A0cbAcf5BD641e0FF5D6270bEf9C72Bd6B': new WrappedTokenInfo(
       {
         chainId: 11155111,
-        address: '0x5c7281493Ee8E92232bEfc17B43D3875AC067e43',
+        address: '0x85eDB7A0cbAcf5BD641e0FF5D6270bEf9C72Bd6B',
         decimals: 18,
         symbol: 'tUSDC',
-        name: 'ladder-test-usdc'
+        name: 'testUSDC-LadderV2-USDC-Testnet'
+      },
+      []
+    ),
+    '0x5069129410122A4C1F2448c77becDc5A8A784a5D': new WrappedTokenInfo(
+      {
+        chainId: 11155111,
+        address: '0x5069129410122A4C1F2448c77becDc5A8A784a5D',
+        decimals: 18,
+        symbol: 'tWETH',
+        name: 'testETH-LadderV2-ETH-Testnet'
       },
       []
     ),
