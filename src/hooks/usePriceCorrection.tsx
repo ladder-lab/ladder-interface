@@ -13,13 +13,22 @@ export default function usePriceCorrection(
     [key in SwapField | MintField]?: Currency | undefined
   },
   changeInput?: (e?: any) => void,
-  changeOutput?: (e?: any) => void
+  changeOutput?: (e?: any) => void,
+  poolExist?: boolean
 ): { [key in SwapField | MintField]?: () => void } {
   const Field = Object.values(SwapField).includes(independentField as any) ? SwapField : MintField
   const [inputField, outputField] = Object.values(Field)
 
   const priceCorrectFn = useMemo(() => {
-    if (!independentField || !currencies || !changeInput || !changeOutput || !inputAmount || !outputAmount)
+    if (
+      !independentField ||
+      !currencies ||
+      !changeInput ||
+      !changeOutput ||
+      !inputAmount ||
+      !outputAmount ||
+      !poolExist
+    )
       return undefined
 
     const isExactIn = independentField === inputField
@@ -40,7 +49,17 @@ export default function usePriceCorrection(
       }
     }
     return undefined
-  }, [changeInput, changeOutput, currencies, independentField, inputAmount, inputField, outputAmount, outputField])
+  }, [
+    changeInput,
+    changeOutput,
+    currencies,
+    independentField,
+    inputAmount,
+    inputField,
+    outputAmount,
+    outputField,
+    poolExist
+  ])
 
   return useMemo(() => {
     return {
@@ -75,9 +94,7 @@ function PriceCorrection({ onClick }: { onClick?: () => void }) {
       <Typography color="error" fontSize={12} textAlign="right">
         You are using too many / little assets
       </Typography>
-      <PriceCorrectButton onClick={onClick} variant="outlined">
-        price correction
-      </PriceCorrectButton>
+      <PriceCorrectButton onClick={onClick}>price correction</PriceCorrectButton>
     </Box>
   )
 }
