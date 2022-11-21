@@ -68,15 +68,18 @@ const StyledSwitch = styled(Switch)(() => ({
 
 export default function SwitchToggle({
   checked,
+  disabled,
   onChange
 }: {
   checked: boolean
+  disabled?: boolean
   onChange: (e: ChangeEvent<HTMLInputElement>) => void
 }) {
   const isDarkMode = useIsDarkMode()
   return (
     <StyledSwitch
       checked={checked}
+      disabled={disabled}
       onChange={onChange}
       sx={{
         [`& .${switchClasses.track}`]: {

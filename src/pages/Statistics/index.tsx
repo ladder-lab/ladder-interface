@@ -78,8 +78,8 @@ const StyledTabButtonText = styled(Box)(({ theme }) => ({
 
 export enum PoolPairType {
   ERC20_ERC721 = 'ERC20 - ERC721',
-  ERC20_ERC20 = 'ERC20 - ERC20',
-  ERC20_ERC1155 = 'ERC20 - ERC1155'
+  ERC20_ERC1155 = 'ERC20 - ERC1155',
+  ERC20_ERC20 = 'ERC20 - ERC20'
 }
 
 export default function Statistics() {
@@ -312,7 +312,7 @@ function TopTokensList({ chainId }: { chainId: ChainId }) {
           <Typography fontWeight={500} fontSize={16} color={theme.palette.text.primary} mr={8}>
             Top Tokens
           </Typography>
-          {[Mode.ERC721, Mode.ERC20, Mode.ERC1155].map(item => (
+          {[Mode.ERC721, Mode.ERC1155, Mode.ERC20].map(item => (
             <StyledTabButtonText
               key={item}
               className={item === topTokensSearch.type ? 'active' : ''}
