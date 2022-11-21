@@ -33,6 +33,7 @@ import usePriceCorrection from 'hooks/usePriceCorrection'
 import { useNavigate, useParams } from 'react-router-dom'
 import { liquidityParamBuilder, liquidityParamSplitter, routes } from 'constants/routes'
 import { useCurrency } from 'hooks/Tokens'
+import { replaceErrorMessage } from 'utils'
 
 export default function Swap() {
   // const theme = useTheme()
@@ -169,7 +170,7 @@ export default function Swap() {
       })
       .catch(error => {
         hideModal()
-        showModal(<MessageBox type="error">{error.message}</MessageBox>)
+        showModal(<MessageBox type="error">{replaceErrorMessage(error.message)}</MessageBox>)
         setSwapState(prev => ({
           ...prev,
           attemptingTxn: false,

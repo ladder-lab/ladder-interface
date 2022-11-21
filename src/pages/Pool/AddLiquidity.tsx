@@ -33,6 +33,7 @@ import { Token721 } from 'constants/token/token721'
 import { generateErc20 } from 'utils/getHashAddress'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
 import usePriceCorrection from 'hooks/usePriceCorrection'
+import { replaceErrorMessage } from 'utils'
 
 export default function AddLiquidy() {
   const [currencyA, setCurrencyA] = useState<undefined | AllTokens>(undefined)
@@ -137,7 +138,11 @@ export default function AddLiquidy() {
         // error than the user rejected the tx
         if (error?.code !== 4001) {
           console.error(error)
-          showModal(<MessageBox type="error">Contract Error</MessageBox>)
+          showModal(
+            <MessageBox type="error">
+              {error?.message ? replaceErrorMessage(error.message) : 'Contract Error'}
+            </MessageBox>
+          )
         }
       })
   }, [addLiquidityCb, addTransaction, currencies, hideModal, onFieldAInput, onSetTokenIds, parsedAmounts, showModal])

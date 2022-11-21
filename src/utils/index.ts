@@ -190,3 +190,7 @@ export function timeStampToFormat(timeStamp: number | Date | undefined, format =
   timeStamp = timeStamp.toString().length <= 10 ? timeStamp * 1000 : timeStamp
   return moment(timeStamp).format(format)
 }
+
+export function replaceErrorMessage(str: string) {
+  return str.replace(/UniswapV2/g, 'Ladder')
+}

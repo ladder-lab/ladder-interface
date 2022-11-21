@@ -10,7 +10,7 @@ import { AllTokens } from 'models/allTokens'
 import Tag from 'components/Tag'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { Loader } from 'components/AnimatedSvg/Loader'
-import { ExternalLink } from 'theme/components'
+// import { ExternalLink } from 'theme/components'
 import { toV2LiquidityToken, useIsDarkMode, useTrackedTokenPairs } from 'state/user/hooks'
 import { useTokenBalancesWithLoadingIndicator, useTokenTotalSupplies } from 'state/wallet/hooks'
 import { usePairs } from 'data/Reserves'
@@ -291,9 +291,9 @@ function PoolCard({
           <Typography fontSize={16}>{shareAmount}</Typography>
         </Box>
       </Box>
-      <ExternalLink href="#" showIcon style={{ marginBottom: 28, display: 'block' }}>
+      {/* <ExternalLink href="#" showIcon style={{ marginBottom: 28, display: 'block' }}>
         View accrued fees and analytics
-      </ExternalLink>
+      </ExternalLink> */}
       <Box display="flex" gap={8} mt={'auto'}>
         <Button sx={{ borderRadius: '16px', height: 44 }} onClick={onAdd}>
           Add

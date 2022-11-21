@@ -32,6 +32,7 @@ import { generateErc20 } from 'utils/getHashAddress'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
 import { useIsDarkMode } from 'state/user/hooks'
 import { getSymbol } from 'utils/getSymbol'
+import { replaceErrorMessage } from 'utils'
 
 enum Mode {
   SIMPLE,
@@ -127,7 +128,7 @@ export default function RemoveLiquidity() {
       })
       .catch((error: Error) => {
         hideModal()
-        showModal(<MessageBox type="error">{error.message}</MessageBox>)
+        showModal(<MessageBox type="error">{replaceErrorMessage(error.message)}</MessageBox>)
         // we only care if the error is something _other_ than the user rejected the tx
         console.error(error)
       })
