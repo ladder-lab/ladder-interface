@@ -211,6 +211,7 @@ function SwapDetails({
   toAsset: AllTokens | undefined
 }) {
   const theme = useTheme()
+  const { token1Text } = getTokenText(toAsset)
 
   return (
     <Box
@@ -231,7 +232,7 @@ function SwapDetails({
 
         <Typography sx={{ wordBreak: 'break-all' }}>
           {ExpectedQty} {ExpectedQty.length > 22 && <br />}{' '}
-          <span style={{ color: theme.palette.text.secondary }}>NFTs</span>
+          <span style={{ color: theme.palette.text.secondary }}>{token1Text ?? '-'}</span>
         </Typography>
       </Box>
       <Box display={{ xs: 'grid', md: 'flex' }} justifyContent="space-between" alignItems="center" gap={3}>
@@ -254,7 +255,7 @@ function SwapDetails({
         <Typography>
           {MinReceiveQty}
           {MinReceiveQty.length > 22 && <br />}{' '}
-          <span style={{ color: theme.palette.text.secondary }}>{toAsset?.symbol ?? '-'}s</span>
+          <span style={{ color: theme.palette.text.secondary }}>{token1Text ?? '-'}</span>
         </Typography>
       </Box>
       <Box display={{ xs: 'grid', md: 'flex' }} justifyContent="space-between" alignItems="center" gap={3}>
