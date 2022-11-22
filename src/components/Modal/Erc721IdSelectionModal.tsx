@@ -159,7 +159,7 @@ export default function Erc721IdSelectionModal({
             <Typography>Select all</Typography>
             <SwitchToggle
               checked={selectAll}
-              disabled={!availableTokens || !availableTokens.length}
+              disabled={!filteredAvailableTokens || !filteredAvailableTokens.length}
               onChange={() => {
                 setSelectAll(state => !state)
               }}
