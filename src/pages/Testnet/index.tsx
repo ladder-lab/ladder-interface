@@ -731,11 +731,11 @@ function TestnetV2() {
               <Typography fontSize={16} sx={{ mt: { xs: 6 } }} fontWeight={600}>
                 {activeTimeStatus === 'soon' ? (
                   <>
-                    Distance to start: <Timer onZero={() => setIsOpenClaim(true)} timer={v2ActiveTimeStamp[0]} />
+                    Distance to start: <Timer timer={v2ActiveTimeStamp[0]} />
                   </>
                 ) : activeTimeStatus === 'active' ? (
                   <>
-                    Distance to end: <Timer onZero={() => setIsOpenClaim(true)} timer={v2ActiveTimeStamp[1]} />
+                    Distance to end: <Timer timer={v2ActiveTimeStamp[1]} />
                   </>
                 ) : (
                   'End'
@@ -837,7 +837,7 @@ function TestnetV2() {
                           <ActionButton
                             pending={claimState === ClaimState.UNKNOWN}
                             onAction={testnetClaim}
-                            disableAction={!isOpenClaim}
+                            disableAction={!isOpenClaim && activeTimeStatus !== 'active'}
                             actionText="Claim your test assets"
                             error={
                               claimState === ClaimState.UNCLAIMED
@@ -969,35 +969,90 @@ function TestnetV2() {
                   rows={qaTableData}
                 ></Table> */}
               <StyledQABody>
-                {`Ladder is a unique AMM (Automated Market Maker) that will provide instant liquidity for NFT's
-                    including ERC-20, ERC-721, ERC-1155. Unlike other NFT marketplaces which operate on an order book
-                    style of exchange, Ladder protocol takes a different approach by using Automated Market Makers and
-                    limit orders. By doing so, we aim to provide instant swaps for NFTs with low slippage and low fees!`}
+                {`Ladder is a unique AMM (Automated Market Maker) that will provide instant liquidity for NFT's including ERC-20, ERC-721, ERC-1155. `}
                 <br />
                 <br />
-                {`On Ladder, now you can see how much certainty your NFT is backed by, or you can buy any NFT in the
-                    Pool, achieve arbitrage between the NFT AMM Pool and the floor price in other markets, or earn a
-                    commission for providing liquidity to your NFT. Ladder builds an infinite door for NFT'S!`}
+                {`Unlike other NFT marketplaces which operate on an order book style of exchange, Ladder protocol takes a different approach by using Automated Market Makers and limit orders. By doing so, we aim to provide instant swaps for NFTs with low slippage and low fees!`}
+                <br />
+                <br />
+                {`On Ladder protocol, now you can see how much certainty your NFT is backed by, or swap for any NFT in the Pool, or earn a commission for providing liquidity with your NFT. `}
+                <br />
+                <br />
+                {`Ladder builds an infinite door for NFT!`}
               </StyledQABody>
             </Box>
             <Box>
               <StyledQATitle>2. Who can participate in the Round 2 Testnet?</StyledQATitle>
               <StyledQABody>
-                Participants for Ladder Testnet will include: Holders of the Ladder ETH Merge SBT Holders of the MUADAO
-                Ladder Testnet SBT NFT Bluechip + Hot Project Holders Holders of the Gleam Ladder Testnet Airdrops.
+                Participants for Ladder Testnet will include:
+                <br />
+                <br />
+                Ladder ETH Merge SOUve SBT Holders
+                <br />
+                Ladder Testnet SBT Holders
+                <br />
+                Participants from Round 1
+                <br />
+                ETHSF Hackathon AMA WL
+                <br />
+                Ladder X Apeiron X NFTTrack X GameSpace AMA WL
+                <br />
+                TrantorDAO WL
+                <br />
+                <br />
+                More WL keep coming.
+                <br />
+                <br />
+                Follow us on Twitter{' '}
+                <Link href="https://twitter.com/Laddertop_NFT" target={'_blank'}>
+                  @Laddertop_NFT
+                </Link>{' '}
+                or join our Discord channel to find out more incoming activities to earn your WL and get to participate
+                NOW!
               </StyledQABody>
             </Box>
             <Box>
-              <StyledQATitle>3. What happens after Round 2 Testnet?</StyledQATitle>
+              <StyledQATitle>3. How long will Testnet Round 2 run for?</StyledQATitle>
+              <StyledQABody>Testnet Round 2 is live from 11/22/22 - 12/15/22</StyledQABody>
+            </Box>
+            <Box>
+              <StyledQATitle>4. Which Network will Testnet Round 2 be on?</StyledQATitle>
               <StyledQABody>
-                After round 1 of Testnet is completed, participants who completed their testing of round 1 Ladder
-                Testnet results of participants will be taken into account. We will follow up with Testnet round 2 in
-                the near future. Pay attention to our Twitter account for opportunities to participate in round 2 of
-                ladder testnet.
+                This time Testnet Round 2 will be on the SEPOLIA TEST NETWORK, we recommend getting your Test ETH from a
+                faucet in advance from: (
+                <Link href="https://faucet-sepolia.rockx.com/">https://faucet-sepolia.rockx.com/</Link>). <br />
+                <br />
+                More detailed instructions on how to get test ETH will be pinned in our Telegram and Discord channel.
               </StyledQABody>
             </Box>
             <Box>
-              <StyledQATitle>4. Where can I see upcoming events?</StyledQATitle>
+              <StyledQATitle>5. What are the trading simulations for Testnet Round 2</StyledQATitle>
+              <StyledQABody>
+                The trading simulation will be available for all pools. Every user will begin the simulation with the
+                same claimable amount of test assets. Claim yours now!
+                <br />
+                <br />
+                Simulation will go through the entire round and there are three categories we will be looking at for the
+                competition.
+                <br />
+                <ul>
+                  <li>1.Addresses in the top 20% of Daily TVL Average</li>
+                  <li>2.Addresses in the top 20% of Total Digital Asset Value</li>
+                  <li>3.Addresses in the top 20% of Total Transactions</li>
+                </ul>
+                All three competition winners will be rewarded with special claimable SBT at Tractor in the end that
+                will provide great value in the future. (probably something, or probably nothing)
+              </StyledQABody>
+            </Box>
+            <Box>
+              <StyledQATitle>6. What happens after Testnet Round 2?</StyledQATitle>
+              <StyledQABody>
+                There will be more to expect as in community. Stay tuned with us and don’t miss out those incoming
+                opportunities to win future community rewards.
+              </StyledQABody>
+            </Box>
+            <Box>
+              <StyledQATitle>7. Where can I see upcoming events?</StyledQATitle>
               <StyledQABody>
                 <Box>
                   Twitter:{' '}
