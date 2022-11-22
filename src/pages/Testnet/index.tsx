@@ -728,7 +728,7 @@ function TestnetV2() {
                   Ladder ETH Main Testnet-Round 2
                 </Typography>
               </Box>
-              <Typography fontSize={16} sx={{ mt: { xs: 6 } }} fontWeight={600}>
+              {/* <Typography fontSize={16} sx={{ mt: { xs: 6 } }} fontWeight={600}>
                 {activeTimeStatus === 'soon' ? (
                   <>
                     Distance to start: <Timer timer={v2ActiveTimeStamp[0]} />
@@ -740,7 +740,7 @@ function TestnetV2() {
                 ) : (
                   'End'
                 )}
-              </Typography>
+              </Typography> */}
             </RowBetween>
           }
         >
