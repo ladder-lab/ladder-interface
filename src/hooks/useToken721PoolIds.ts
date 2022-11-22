@@ -1,5 +1,5 @@
 import { ChainId } from '@ladder/sdk'
-import { getTest721uri, isTest721 } from 'constants/default721List'
+import { getTest721uriWithIndex, isTest721 } from 'constants/default721List'
 import { Token721 } from 'constants/token/token721'
 import { useActiveWeb3React } from 'hooks'
 import { useMemo, useState } from 'react'
@@ -22,7 +22,7 @@ export function useToken721PoolIds(pairAddress: string | undefined, collection: 
   const ids = useSingleCallResult(args ? contract : null, 'erc721IDlist', args)
 
   const results = useMemo(() => {
-    const isTeset721 = collection?.address && chainId === ChainId.GÖRLI && isTest721(collection?.address)
+    const isTeset721 = collection?.address && chainId === ChainId.SEPOLIA && isTest721(collection?.address)
 
     return {
       loading: ids.loading,
@@ -33,7 +33,7 @@ export function useToken721PoolIds(pairAddress: string | undefined, collection: 
                 new Token721(collection?.chainId, collection?.address, +id.toString(), {
                   name: collection.name,
                   symbol: collection.symbol,
-                  uri: isTeset721 && collection.name ? getTest721uri(collection.name) : undefined
+                  uri: isTeset721 && collection.uri ? getTest721uriWithIndex(collection.uri, id) : undefined
                 })
             )
           : undefined,

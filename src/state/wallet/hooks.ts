@@ -9,10 +9,10 @@ import { Currency, ETHER, Token, JSBI, CurrencyAmount, TokenAmount, ChainId } fr
 import { useActiveWeb3React } from 'hooks'
 import { useAllTokens } from 'hooks/Tokens'
 import { Token1155 } from 'constants/token/token1155'
-import { checkIs1155, checkIs721 } from 'utils/checkIs1155'
+import { checkIs1155, checkIs721, filter721 } from 'utils/checkIs1155'
 import { useBlockNumber } from 'state/application/hooks'
 import { Token721 } from 'constants/token/token721'
-import { isTest721 } from 'constants/default721List'
+import { getTest721uriWithIndex, isTest721 } from 'constants/default721List'
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -298,15 +298,15 @@ export function useToken721BalanceTokens(tokenAmount?: TokenAmount): {
       setLoading(true)
       try {
         const indexes = await Promise.all(calls)
-
+        const token721 = filter721(tokenAmount.token)
         const tokens = indexes.map(
           id =>
             new Token721(chainId, tokenAmount.token.address, id.toString(), {
               name: tokenAmount.token.name,
               symbol: tokenAmount.token.symbol,
               uri:
-                chainId === ChainId.GÖRLI && isTest721(tokenAmount.token.address)
-                  ? `https://info.chainswap.com/${tokenAmount.token?.name?.split(' ').join('')}/${id}.jpg`
+                chainId === ChainId.SEPOLIA && isTest721(tokenAmount.token.address) && token721?.uri
+                  ? getTest721uriWithIndex(token721.uri, id)
                   : undefined
             })
         )

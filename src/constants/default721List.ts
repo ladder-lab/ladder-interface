@@ -16,9 +16,24 @@ const test721List = [
 ]
 
 const test721ListSepolia = [
-  { address: '0x4186128305c4fF0a3FafB9126eEaf77169C2ec12', name: 'Mutant Ape Yacht Club', symbol: 'MAYC' },
-  { address: '0x7dc1BE8f47eE5805095c9bABa7123ED9AB2aB178', name: 'CRYPTO PUNKS', symbol: 'CRYPTOPUNKS' },
-  { address: '0xb5dd2438a909C30d93184F1908733092aB618f31', name: 'Art Blocks', symbol: 'BLOCKS' },
+  {
+    address: '0x4186128305c4fF0a3FafB9126eEaf77169C2ec12',
+    name: 'Mutant Ape Yacht Club',
+    symbol: 'MAYC',
+    uriName: 'MutantApeYachtClub'
+  },
+  {
+    address: '0x7dc1BE8f47eE5805095c9bABa7123ED9AB2aB178',
+    name: 'CRYPTO PUNKS',
+    symbol: 'CRYPTOPUNKS',
+    uriName: 'CryptoPunks'
+  },
+  {
+    address: '0xb5dd2438a909C30d93184F1908733092aB618f31',
+    name: 'Art Blocks',
+    symbol: 'BLOCKS',
+    uriName: 'ChromieSquiggle'
+  },
   { address: '0xaA2Ff5d0A9E098eB9644e22208adce451bAb24a3', name: 'Cool Cats', symbol: 'COOL' },
   { address: '0x52CA73a56e50aA7973327b795959e4F2Afece1da', name: 'Doodles', symbol: 'DOODLE' },
   { address: '0xF810E14fe787c4e41B37fb9484d769Cc3e5CF227', name: 'Exosama', symbol: 'EXO' },
@@ -39,12 +54,16 @@ const test721ListSepolia = [
   // { name: 'LADDER-TEST-721-10', symbol: ' T-721-10', address: '0xDE9e6C49C1E009314973A1FF37385b443d418971' }
 ]
 
-export const getTest721uri = (name: string) => {
-  return `https://info.chainswap.com/${name.split(' ').join('')}/0.jpg`
+export const getTest721uri = (name: string, uriName?: string) => {
+  return `https://info.chainswap.com/${uriName ?? name.split(' ').join('')}/0.jpg`
+}
+
+export const getTest721uriWithIndex = (uri: string, idx: string | number) => {
+  return uri.replace(/\/[0~9]+\.jpg/, `/${idx}.jpg`)
 }
 
 export const isTest721 = (address: string) => {
-  const testAsset = test721List.find(item => item.address == address)
+  const testAsset = test721ListSepolia.find(item => item.address == address)
   return !!testAsset
 }
 
@@ -56,11 +75,11 @@ const TEST_721_LIST = test721List.map(({ address, name, symbol }) => {
   })
 })
 
-const TEST_721_LIST_SEPOLIA = test721ListSepolia.map(({ address, name, symbol }) => {
+const TEST_721_LIST_SEPOLIA = test721ListSepolia.map(({ address, name, symbol, uriName }) => {
   return new Token721(ChainId.SEPOLIA, address, undefined, {
     name,
     symbol,
-    uri: getTest721uri(name)
+    uri: getTest721uri(name, uriName)
   })
 })
 

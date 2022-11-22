@@ -103,7 +103,6 @@ export default function Erc721IdSelectionModal({
 
   return (
     <Modal
-      // customIsOpen={isOpen}
       customOnDismiss={onDismiss}
       width="100%"
       height={modalHeight}
