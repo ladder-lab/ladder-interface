@@ -22,6 +22,7 @@ import InputNumerical from 'components/Input/InputNumerical'
 import Close from '@mui/icons-material/Close'
 import SwitchToggle from 'components/SwitchToggle'
 import { useCurrencyModalListHeight } from 'hooks/useScreenSize'
+import Pagination from 'components/Pagination'
 
 export default function Erc721IdSelectionModal({
   // isOpen,
@@ -48,7 +49,7 @@ export default function Erc721IdSelectionModal({
 
   const balance = useToken721Balance(pairAddress ? undefined : collection)
   const { loading, availableTokens } = useToken721BalanceTokens(balance)
-  const { loading: poolLoading, poolTokens } = useToken721PoolIds(pairAddress, collection)
+  const { loading: poolLoading, poolTokens, page } = useToken721PoolIds(pairAddress, collection)
 
   const [filteredAvailableTokens, setFilteredAvailableTokens] = useState(pairAddress ? poolTokens : availableTokens)
 
@@ -224,6 +225,17 @@ export default function Erc721IdSelectionModal({
                     )
                   })}
               </Grid>
+            )}
+            {pairAddress && (
+              <Box pt={20} pb={10}>
+                <Pagination
+                  onChange={(_, curPage) => page.setCurrentPage(curPage)}
+                  total={page.count}
+                  count={page.totalPage}
+                  page={page.currentPage}
+                  perPage={page.pageSize}
+                />
+              </Box>
             )}
           </Box>
         </Box>

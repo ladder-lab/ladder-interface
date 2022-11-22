@@ -2,18 +2,22 @@ import { ChainId } from '@ladder/sdk'
 import { getTest721uri, isTest721 } from 'constants/default721List'
 import { Token721 } from 'constants/token/token721'
 import { useActiveWeb3React } from 'hooks'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useSingleCallResult } from 'state/multicall/hooks'
 import { use721PairContract } from './useContract'
 
 export function useToken721PoolIds(pairAddress: string | undefined, collection: Token721 | undefined) {
   const { chainId } = useActiveWeb3React()
+  const [currentPage, setCurrentPage] = useState(1)
+  const pageSize = 20
   const contract = use721PairContract(pairAddress)
   const length = useSingleCallResult(contract, 'erc721MapLength')
 
+  const maxLength = useMemo(() => (length.result ? Number(length.result.toString()) : undefined), [length.result])
+
   const args = useMemo(() => {
-    return length.result ? [0, length.result.toString()] : undefined
-  }, [length?.result])
+    return maxLength ? [(currentPage - 1) * pageSize, pageSize] : undefined
+  }, [currentPage, maxLength])
 
   const ids = useSingleCallResult(args ? contract : null, 'erc721IDlist', args)
 
@@ -32,8 +36,15 @@ export function useToken721PoolIds(pairAddress: string | undefined, collection: 
                   uri: isTeset721 && collection.name ? getTest721uri(collection.name) : undefined
                 })
             )
-          : undefined
+          : undefined,
+      page: {
+        setCurrentPage: (page: number) => setCurrentPage(page),
+        currentPage,
+        count: maxLength || 0,
+        totalPage: maxLength ? Math.ceil(maxLength / pageSize) : 0,
+        pageSize
+      }
     }
-  }, [chainId, collection, ids.loading, ids.result])
+  }, [chainId, collection, currentPage, ids.loading, ids.result, maxLength])
   return results
 }
