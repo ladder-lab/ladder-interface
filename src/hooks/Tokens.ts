@@ -16,6 +16,8 @@ import { DEFAULT_1155_LIST } from 'constants/default1155List'
 import { DEFAULT_721_LIST } from 'constants/default721List'
 import { Token721 } from 'constants/token/token721'
 import ERC721_ABI from 'constants/abis/erc721.json'
+import tUSDCImg from 'assets/images/tUSDC.jpg'
+import tWETHImg from 'assets/images/tWETH.jpg'
 
 // Check if currency is included in custom list from user storage
 export function useIsUserAddedToken(currency: Currency | undefined | null): boolean {
@@ -119,7 +121,8 @@ const testTokens = {
         address: '0x85eDB7A0cbAcf5BD641e0FF5D6270bEf9C72Bd6B',
         decimals: 18,
         symbol: 'tUSDC',
-        name: 'testUSDC-LadderV2-USDC-Testnet'
+        name: 'testUSDC-LadderV2-USDC-Testnet',
+        logoURI: tUSDCImg
       },
       []
     ),
@@ -129,7 +132,8 @@ const testTokens = {
         address: '0x5069129410122A4C1F2448c77becDc5A8A784a5D',
         decimals: 18,
         symbol: 'tWETH',
-        name: 'testETH-LadderV2-ETH-Testnet'
+        name: 'testETH-LadderV2-ETH-Testnet',
+        logoURI: tWETHImg
       },
       []
     ),

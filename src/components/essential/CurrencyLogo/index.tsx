@@ -2,7 +2,6 @@ import React, { useMemo } from 'react'
 import Logo from './LogoBase'
 import { Currency } from '../../../constants/token/currency'
 import { Token } from '../../../constants/token/token'
-import useHttpLocations from 'hooks/useHttpLocations'
 import { WrappedTokenInfo } from 'models/tokenList'
 import tokenLogoUriList from 'assets/tokenLogoUriList.json'
 import { Token1155 } from 'constants/token/token1155'
@@ -28,8 +27,8 @@ export default function CurrencyLogo({
 }) {
   const { chainId } = useActiveWeb3React()
 
-  const uriLocations = useHttpLocations(currency instanceof WrappedTokenInfo ? currency.logoURI : undefined)
   const srcs: string[] = useMemo(() => {
+    const uriLocations = currency instanceof WrappedTokenInfo ? currency.logoURI : undefined
     if (!currency && !currencySymbol) {
       return []
     }
@@ -63,11 +62,12 @@ export default function CurrencyLogo({
       if (currency?.symbol) {
         uri = (tokenLogoUriList as any)[currency.symbol]
       }
-      return [...uriLocations, getTokenLogoURL(currency.address), uri]
+
+      return [uriLocations, getTokenLogoURL(currency.address), uri]
     }
 
-    return []
-  }, [chainId, currency, currencySymbol, uriLocations])
+    return [uriLocations]
+  }, [chainId, currency, currencySymbol])
 
   return (
     <Logo
