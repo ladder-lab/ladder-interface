@@ -8,6 +8,8 @@ import { Token1155 } from 'constants/token/token1155'
 import { NETWORK_CHAIN_ID, SUPPORTED_NETWORKS } from 'constants/chain'
 import { useActiveWeb3React } from 'hooks'
 import { Token721 } from 'constants/token/token721'
+import tUSDCImg from 'assets/images/tUSDC.jpg'
+import tWETHImg from 'assets/images/tWETH.jpg'
 
 export const getTokenLogoURL = (address: string) =>
   `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`
@@ -38,6 +40,14 @@ export default function CurrencyLogo({
         SUPPORTED_NETWORKS[chainId ?? NETWORK_CHAIN_ID]?.nativeCurrency.symbol ?? 'ETH'
       ]
       if (uri) return [uri]
+    }
+
+    if (currency?.symbol === 'tUSDC' || currencySymbol === 'tUSDC') {
+      return [tUSDCImg]
+    }
+
+    if (currency?.symbol === 'tWETH' || currencySymbol === 'tWETH') {
+      return [tWETHImg]
     }
 
     if (currencySymbol) {
