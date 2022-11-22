@@ -16,6 +16,15 @@ import MulticallUpdater from './state/multicall/updater'
 import TransactionUpdater from './state/transactions/updater'
 import getLibrary from './utils/getLibrary'
 import { Buffer } from 'buffer'
+import ReactGA from 'react-ga4'
+
+const GOOGLE_ANALYTICS_ID: string | undefined = process.env.REACT_APP_GOOGLE_ANALYTICS_ID
+if (typeof GOOGLE_ANALYTICS_ID === 'string') {
+  ReactGA.initialize(GOOGLE_ANALYTICS_ID)
+} else {
+  ReactGA.initialize('test', { testMode: true })
+}
+
 declare global {
   interface String {
     trimTrailingZero(): string

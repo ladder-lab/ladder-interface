@@ -23,6 +23,7 @@ import Statistics from './Statistics'
 import StatisticsTokens from './Statistics/Tokens'
 import StatisticsPools from './Statistics/Pools'
 import Feedback from './Feedback'
+import GoogleAnalyticsReporter from 'components/analytics/GoogleAnalyticsReporter'
 
 const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
   ({ theme, isDarkMode }) => ({
@@ -77,6 +78,7 @@ export default function App() {
         <AppWrapper id="app" isDarkMode={isDarkMode}>
           <ContentWrapper>
             <Header />
+            <GoogleAnalyticsReporter />
             <BodyWrapper id="body">
               <Popups />
               <Polling />
