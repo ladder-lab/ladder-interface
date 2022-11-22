@@ -372,7 +372,7 @@ function RankingItem({
           Leaderboard
         </Link>
       </RowBetween>
-      <Box height={34} mt={20} display="grid" alignItems={'center'}>
+      <Box height={34} mt={20} display="none" alignItems={'center'}>
         <BorderLinearProgress dark={isDark} variant="determinate" value={progress} />
         {/* <Typography textAlign={'center'} color={'#1F9898'} fontWeight={600}>
           End in: <Timer timer={v2ActiveTimeStamp[1]} />

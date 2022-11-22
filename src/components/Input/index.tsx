@@ -17,6 +17,8 @@ export interface InputProps {
   maxWidth?: string | number
   height?: string | number
   error?: boolean
+  multiline?: boolean
+  rows?: string | number
   // smallPlaceholder?: boolean
   subStr?: string
   subStr2?: string
@@ -39,6 +41,8 @@ export default function Input({
   label,
   height,
   error,
+  multiline,
+  rows,
   // smallPlaceholder,
   subStr,
   subStr2,
@@ -59,7 +63,7 @@ export default function Input({
       )}
       <InputBase
         sx={{
-          height: height || 52,
+          height: multiline ? 'auto' : height || 52,
           borderRadius,
           padding: 0,
           zIndex: 1,
@@ -125,6 +129,8 @@ export default function Input({
         inputRef={input => input && focused && input.focus()}
         onChange={onChange}
         value={value}
+        multiline={multiline}
+        rows={rows}
         disabled={disabled}
         type={type}
         startAdornment={startAdornment && <span style={{ paddingRight: 17 }}>{startAdornment}</span>}

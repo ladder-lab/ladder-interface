@@ -175,7 +175,7 @@ function Form({
         error={showError && error.email}
         subStr={showError && error.email ? 'Email Required' : ''}
         label="Email"
-        onChange={e => setEmail(e.target.value)}
+        onChange={e => setEmail(e.target.value.length > 100 ? e.target.value.slice(0, 100) : e.target.value)}
         requiredLabel
       />
       <Box>
@@ -196,7 +196,7 @@ function Form({
         error={showError && error.summary}
         subStr={showError && error.summary ? 'Summary Required' : ''}
         readOnly={isCommitted}
-        onChange={e => setSummary(e.target.value)}
+        onChange={e => setSummary(e.target.value.length > 5000 ? e.target.value.slice(0, 5000) : e.target.value)}
         label="Summary"
         requiredLabel
       />
@@ -205,7 +205,9 @@ function Form({
         error={showError && error.description}
         subStr={showError && error.description ? 'Description Required' : ''}
         readOnly={isCommitted}
-        onChange={e => setDescription(e.target.value)}
+        multiline
+        rows={6}
+        onChange={e => setDescription(e.target.value.length > 5000 ? e.target.value.slice(0, 5000) : e.target.value)}
         label="Description"
         requiredLabel
       />
