@@ -632,7 +632,7 @@ function ShowTopTokensCurrencyBox({ chainId, tokenInfo }: { chainId: ChainId; to
       target="_blank"
       underline="hover"
     >
-      <CurrencyLogo logoUrl={tokenInfo.logo} />
+      <CurrencyLogo logoUrl={tokenInfo.logo} currencySymbol={tokenInfo.symbol} />
       <Box ml={8}>
         <Typography textAlign={'left'}>
           {tokenInfo.name || '-'} {tokenInfo.type === Mode.ERC1155 ? '#' + tokenInfo.tokenId : ''}
@@ -672,8 +672,17 @@ export function ShowTopPoolsCurrencyBox({
         navigate(`${routes.statisticsPools}/${chainId}/${pair}`)
       }}
     >
-      <CurrencyLogo size={fontSize ? fontSize + 'px' : '24px'} logoUrl={token0Info.logo} />
-      <CurrencyLogo size={fontSize ? fontSize + 'px' : '24px'} style={{ marginLeft: -8 }} logoUrl={token1Info.logo} />
+      <CurrencyLogo
+        size={fontSize ? fontSize + 'px' : '24px'}
+        logoUrl={token0Info.logo}
+        currencySymbol={token0Info.symbol}
+      />
+      <CurrencyLogo
+        size={fontSize ? fontSize + 'px' : '24px'}
+        style={{ marginLeft: -8 }}
+        logoUrl={token1Info.logo}
+        currencySymbol={token1Info.symbol}
+      />
       <Typography fontSize={fontSize} fontWeight={fontWeight} color={color || theme.palette.text.primary} ml={8}>
         {token0Info.symbol}
       </Typography>

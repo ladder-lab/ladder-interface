@@ -73,7 +73,11 @@ export default function Tokens() {
 
         <Box pt={22} pb={10}>
           <Box display={'flex'} alignItems="center">
-            <CurrencyLogo size="32px" logoUrl={tokenDetailData?.logo}></CurrencyLogo>
+            <CurrencyLogo
+              size="32px"
+              logoUrl={tokenDetailData?.logo}
+              currencySymbol={tokenDetailData?.symbol}
+            ></CurrencyLogo>
             <Typography ml={8} fontWeight={500} fontSize={32} color={theme.palette.text.primary}>
               {tokenDetailData?.name || '-'}({tokenDetailData?.symbol}){' '}
               {token1155Id && type === Mode.ERC1155 ? `#${token1155Id}` : ''}
