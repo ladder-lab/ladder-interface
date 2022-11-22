@@ -81,8 +81,8 @@ export default function ConfirmSwapModal({
           tokenIds={tokenIds}
         />
         <Typography fontSize={16} mt={16} mb={24}>
-          {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {token2Text ?? '-'} ={' '}
-          {trade?.inputAmount.toFixed(6)} {token1Text} ($1.0000)
+          {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {token1Text ?? '-'} ={' '}
+          {trade?.inputAmount.toFixed(6)} {token2Text}
         </Typography>
         {showAcceptChanges && <PriceUpdateNotification onDismiss={onAcceptChanges} />}
         <Typography sx={{ fontSize: 16, color: theme.palette.text.secondary, mt: 24, mb: 24 }}>
