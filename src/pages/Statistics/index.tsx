@@ -706,7 +706,7 @@ export function ShowTopPoolsCurrencyBox({
 function ShowTransactionsSwapName({ item }: { item: StatTransactionsProp }) {
   return (
     <Link href={getEtherscanLink(item.chainId, item.hash, 'transaction')} target="_blank" underline="hover">
-      Swap {item.buyToken.symbol} for {item.sellToken.symbol}
+      Swap {item.sellToken.symbol} for {item.buyToken.symbol}
     </Link>
   )
 }
