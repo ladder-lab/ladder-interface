@@ -458,11 +458,11 @@ export function useTransactionsList(chainId: ChainId, token?: string, pair?: str
           chainId,
           type:
             type === StatTransactionsType.ADDS
-              ? 1
-              : type === StatTransactionsType.REMOVES
               ? 2
-              : type === StatTransactionsType.SWAPS
+              : type === StatTransactionsType.REMOVES
               ? 3
+              : type === StatTransactionsType.SWAPS
+              ? 1
               : '',
           pageSize,
           ...filter,

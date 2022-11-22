@@ -183,7 +183,7 @@ export default function Statistics() {
                     <Input
                       value={searchText}
                       height="40px"
-                      placeholder="Address"
+                      placeholder="Contract Address"
                       onChange={e => setSearchText(e.target.value)}
                       aria-describedby={popperId}
                       onClick={handleClick}

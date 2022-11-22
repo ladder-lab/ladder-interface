@@ -1019,8 +1019,8 @@ function TestnetV2() {
               <StyledQATitle>4. Which Network will Testnet Round 2 be on?</StyledQATitle>
               <StyledQABody>
                 This time Testnet Round 2 will be on the SEPOLIA TEST NETWORK, we recommend getting your Test ETH from a
-                faucet in advance from: (
-                <Link href="https://faucet-sepolia.rockx.com/">https://faucet-sepolia.rockx.com/</Link>). <br />
+                faucet in advance from: (<Link href="https://sepoliafaucet.net/">https://sepoliafaucet.net/</Link>).{' '}
+                <br />
                 <br />
                 More detailed instructions on how to get test ETH will be pinned in our Telegram and Discord channel.
               </StyledQABody>
