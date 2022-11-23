@@ -136,7 +136,7 @@ function Form({
         if (res?.data?.msg === 'save success !') {
           showModal(
             <MessageBox type="success" closeAction={() => window.history.go(-1)}>
-              Commit success !
+              Submit success !
             </MessageBox>
           )
         } else {
@@ -144,6 +144,9 @@ function Form({
         }
       })
       .catch(err => {
+        if (err?.code === 4001) {
+          return
+        }
         showModal(<MessageBox type="error">{err?.data?.msg || 'Network error'}</MessageBox>)
       })
   }, [account, commit, description, email, fileList, showModal, summary, type])

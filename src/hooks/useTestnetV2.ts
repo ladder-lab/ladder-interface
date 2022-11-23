@@ -45,7 +45,7 @@ export function useFeedbackInfo(account: string | undefined) {
   const commit = useCallback(
     async (formData: FormData) => {
       if (!web3 || !account) return
-      const message = 'commit feedback'
+      const message = 'Submit feedback'
       const signature = await web3.eth.personal.sign(message, account, '')
       formData.append('message', message)
       formData.append('address', account)
