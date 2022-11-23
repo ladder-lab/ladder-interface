@@ -236,7 +236,7 @@ function Form({
           </ImageList>
         ) : (
           <StyledUploadLabel>
-            <UploadOutlined /> Upload files
+            <UploadOutlined /> Upload files (You can select more than one picture at a time)
             <form className="form">
               <input
                 style={{ width: 0, height: 0 }}
