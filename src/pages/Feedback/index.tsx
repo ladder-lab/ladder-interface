@@ -262,7 +262,7 @@ function Form({
           commitForm()
         }}
       >
-        {isCommitted ? 'Committed' : 'Commit'}
+        {isCommitted ? 'Submitted' : 'Submit'}
       </Button>
     </Stack>
   )
