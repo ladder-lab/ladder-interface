@@ -7,7 +7,7 @@ import { PortisConnector } from '@web3-react/portis-connector'
 
 import { FortmaticConnector } from './Fortmatic'
 import { NetworkConnector } from './NetworkConnector'
-import { SUPPORT_NETWORK_CHAIN_IDS, NETWORK_CHAIN_ID } from 'constants/chain'
+import { SUPPORT_NETWORK_CHAIN_IDS, NETWORK_CHAIN_ID, ChainId, SUPPORTED_NETWORKS } from 'constants/chain'
 
 const NETWORK_URL = process.env.REACT_APP_NETWORK_URL
 const FORMATIC_KEY = process.env.REACT_APP_FORTMATIC_KEY
@@ -33,9 +33,23 @@ export const injected = new InjectedConnector({
 // binance only
 export const binance = new BscConnector({ supportedChainIds: [56] })
 
+export function getRpcUrl(chainId: ChainId) {
+  switch (chainId) {
+    case ChainId.SEPOLIA:
+      return 'https://sepolia.infura.io/v3/f338fa7411a945db8bed616683b2ade5'
+    default:
+      return SUPPORTED_NETWORKS[chainId]?.rpcUrls[0] || ''
+  }
+}
+
+const walletConnectRpc: { [key in string]: string } = {}
+for (const id of SUPPORT_NETWORK_CHAIN_IDS) {
+  walletConnectRpc[id] = getRpcUrl(id)
+}
+
 // mainnet only
 export const walletconnect = new WalletConnectConnector({
-  rpc: { 56: NETWORK_URL },
+  rpc: walletConnectRpc,
   bridge: 'https://bridge.walletconnect.org',
   qrcode: true,
   supportedChainIds: SUPPORT_NETWORK_CHAIN_IDS
