@@ -411,13 +411,30 @@ function PairCard({ item }: { item: StatTopPoolsProp & { no: number; curPoolPair
         >
           Add
         </Button>
-        {/* <Button
+        <Button
           variant="outlined"
-          // onClick={() => navigate(routes.swap)}
+          onClick={() =>
+            navigate(
+              routes.swap +
+                `/${item.token0.address}/${item.token1.address}/${
+                  item.token0.type === Mode.ERC20
+                    ? ''
+                    : item.token0.type === Mode.ERC721
+                    ? Mode.ERC721
+                    : item.token0.tokenId
+                }&${
+                  item.token1.type === Mode.ERC20
+                    ? ''
+                    : item.token1.type === Mode.ERC721
+                    ? Mode.ERC721
+                    : item.token1.tokenId
+                }`
+            )
+          }
           sx={{ fontSize: 16, height: 48, borderColor: theme.palette.info.main, color: theme.palette.info.main }}
         >
           Swap
-        </Button> */}
+        </Button>
       </Box>
     </Card>
   )
