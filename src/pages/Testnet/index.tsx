@@ -670,7 +670,7 @@ function TestnetV2() {
   const [queryAddress, setQueryAddress] = useState('')
   const { claimState: queryClaimState } = useTestnetClaim(isAddress(queryAddress) ? queryAddress : undefined)
   const testnetV2Status = useTestnetV2Status(account || undefined)
-  const [isOpenClaim, setIsOpenClaim] = useState(false)
+  const [isOpenClaim, setIsOpenClaim] = useState(true)
 
   const queryNotice = useMemo(() => {
     return (
