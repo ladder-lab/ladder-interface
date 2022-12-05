@@ -12,6 +12,7 @@ import { ROUTER_ADDRESS_721 } from 'constants/index'
 import { Token721 } from 'constants/token/token721'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
+import { useGasPriceInfo } from './useGasPrice'
 
 function useGetApproved(contract: Contract | null, spender: string) {
   const { account } = useActiveWeb3React()
@@ -34,6 +35,8 @@ export function useApproveERC721Callback(token721: Token721 | undefined): [Appro
   const contract = use721Contract(contractAddress)
   const isApproved = useGetApproved(contract, spender ?? '')
   const pendingApproval = useHasPendingApproval(contract?.address, spender ?? '')
+  const getGasPrice = useGasPriceInfo()
+
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
     // if (!spender) return ApprovalState.UNKNOWN
@@ -70,10 +73,12 @@ export function useApproveERC721Callback(token721: Token721 | undefined): [Appro
       console.debug('Failed to approve nft', error)
       throw error
     })
+    const { gasPrice } = await getGasPrice()
 
     return contract
       .setApprovalForAll(spender, true, {
-        gasLimit: calculateGasMargin(estimatedGas)
+        gasLimit: calculateGasMargin(estimatedGas),
+        gasPrice
       })
       .then((response: TransactionResponse) => {
         hideModal()
@@ -88,7 +93,7 @@ export function useApproveERC721Callback(token721: Token721 | undefined): [Appro
         console.debug('Failed to approve nft', error)
         throw error
       })
-  }, [approvalState, contract, hideModal, addTransaction, showModal])
+  }, [approvalState, contract, showModal, getGasPrice, hideModal, addTransaction])
 
   return [approvalState, approve]
 }

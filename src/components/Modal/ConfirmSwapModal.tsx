@@ -139,7 +139,9 @@ function SwapPanelRow({
           {type !== 'ERC20' ? asset?.name : asset?.symbol}
           {type === 'ERC1155' ? `#${filter1155(asset)?.tokenId}` : ''}
         </Typography>
-        {tokenIds && type === 'ERC721' && <Typography>{tokenIds.map(id => `#${id} `)}</Typography>}
+        {tokenIds && type === 'ERC721' && (
+          <Typography textAlign={'right'}>{tokenIds.map(id => ` #${id}`).join(',')}</Typography>
+        )}
       </Box>
     </Box>
   )

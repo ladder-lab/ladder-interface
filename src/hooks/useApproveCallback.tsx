@@ -19,6 +19,7 @@ import TransactionSubmittedModal from 'components/Modal/TransactionModals/Transa
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import { useApproveERC721Callback } from './useApproveERC721Callback'
 import { useERC20ApproveModeManager } from 'state/user/hooks'
+import { useGasPriceInfo } from './useGasPrice'
 
 export enum ApprovalState {
   UNKNOWN,
@@ -37,6 +38,8 @@ export function useApproveCallback(
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
   const pendingApproval = useHasPendingApproval(token?.address, spender)
+  const getGasPrice = useGasPriceInfo()
+
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
     if (!amountToApprove || !spender) return ApprovalState.UNKNOWN
@@ -93,11 +96,14 @@ export function useApproveCallback(
       isERC20ApproveAllMode ? MaxUint256 : amountToApprove.raw.toString()
     )
 
+    const { gasPrice } = await getGasPrice()
+
     showModal(<TransacitonPendingModal />)
     return tokenContract
       .approve(spender, isERC20ApproveAllMode ? MaxUint256 : amountToApprove.raw.toString(), {
         // .approve(spender, useExact ? amountToApprove.raw.toString() : MaxUint256, {
-        gasLimit: calculateGasMargin(estimatedGas)
+        gasLimit: calculateGasMargin(estimatedGas),
+        gasPrice
       })
       .then((response: TransactionResponse) => {
         hideModal()
@@ -120,6 +126,7 @@ export function useApproveCallback(
     amountToApprove,
     spender,
     isERC20ApproveAllMode,
+    getGasPrice,
     showModal,
     hideModal,
     addTransaction

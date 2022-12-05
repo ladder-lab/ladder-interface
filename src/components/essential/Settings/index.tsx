@@ -3,7 +3,7 @@ import { useTheme, Box, Typography } from '@mui/material'
 import { styled, Button } from '@mui/material'
 import { ApplicationModal } from '../../../state/application/actions'
 import { useModalOpen, useSettingsModalToggle } from '../../../state/application/hooks'
-import { useERC20ApproveModeManager, useIsDarkMode } from 'state/user/hooks'
+import { useERC20ApproveModeManager, useIsDarkMode, useUserTransactionSpeed } from 'state/user/hooks'
 
 import {
   useExpertModeManager,
@@ -14,6 +14,7 @@ import {
 import Modal from 'components/Modal'
 import QuestionHelper from 'components/essential/QuestionHelper'
 import TransactionSettings from './TransactionSettings'
+import TransactionSpeed from './TransactionSpeed'
 import { ReactComponent as SettingsIcon } from 'assets/componentsIcon/setting.svg'
 import SwitchToggle from 'components/SwitchToggle'
 
@@ -40,6 +41,7 @@ export default function Settings({ onlySlippage }: { onlySlippage?: boolean }) {
 
   const theme = useTheme()
   const [userSlippage, useSlippageSetting] = useUserSlippageTolerance()
+  const [userTransactionSpeed, setUserTransactionSpeed] = useUserTransactionSpeed()
 
   const [ttl, setTtl] = useUserTransactionTTL()
 
@@ -133,9 +135,13 @@ export default function Settings({ onlySlippage }: { onlySlippage?: boolean }) {
             setDeadline={setTtl}
             onlySlippage={onlySlippage}
           />
+          <TransactionSpeed
+            userTransactionSpeed={userTransactionSpeed}
+            setUserTransactionSpeed={setUserTransactionSpeed}
+          />
           {!onlySlippage && (
             <>
-              <Typography fontWeight={400} fontSize={18} style={{ marginTop: '16px' }}>
+              <Typography fontWeight={400} fontSize={18} style={{ marginTop: '8px' }}>
                 Interface Settings
               </Typography>
               <Box display="grid" gap={16}>

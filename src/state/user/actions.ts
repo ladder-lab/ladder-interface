@@ -19,6 +19,9 @@ export const updateUserExpertMode = createAction<{ userExpertMode: boolean }>('u
 export const updateUserERC20ApproveMode = createAction<{ userERC20ApproveAllMode: boolean }>(
   'user/updateUserERC20ApproveMode'
 )
+export const updateUserTransactionSpeed = createAction<{ userTransactionSpeed: number }>(
+  'user/updateUserTransactionSpeed'
+)
 export const updateUserSingleHopOnly = createAction<{ userSingleHopOnly: boolean }>('user/updateUserSingleHopOnly')
 export const updateUserSlippageTolerance = createAction<{ userSlippageTolerance: number }>(
   'user/updateUserSlippageTolerance'

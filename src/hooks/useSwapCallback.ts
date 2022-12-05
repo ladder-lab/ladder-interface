@@ -10,6 +10,7 @@ import { useActiveWeb3React } from './index'
 import useTransactionDeadline from './useTransactionDeadline'
 import useENS from './useENS'
 import { getSymbol } from 'utils/getSymbol'
+import { useGasPriceInfo } from 'hooks/useGasPrice'
 
 export enum SwapCallbackState {
   INVALID,
@@ -100,6 +101,7 @@ export function useSwapCallback(
   tokenIds?: Array<string | number> // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
   const { account, chainId, library } = useActiveWeb3React()
+  const getGasPrice = useGasPriceInfo()
 
   const swapCalls = useSwapCallArguments(trade, allowedSlippage, recipientAddressOrName, tokenIds)
 
@@ -184,8 +186,11 @@ export function useSwapCallback(
           gasEstimate
         } = successfulEstimation
 
+        const { gasPrice } = await getGasPrice()
+
         return contract[methodName](...args, {
           gasLimit: calculateGasMargin(gasEstimate),
+          gasPrice,
           ...(value && !isZero(value) ? { value, from: account } : { from: account })
         })
           .then((response: any) => {
@@ -223,5 +228,5 @@ export function useSwapCallback(
       },
       error: null
     }
-  }, [trade, library, account, chainId, recipient, recipientAddressOrName, swapCalls, addTransaction])
+  }, [trade, library, account, chainId, recipient, recipientAddressOrName, swapCalls, getGasPrice, addTransaction])
 }

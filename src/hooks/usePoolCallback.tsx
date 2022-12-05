@@ -21,6 +21,7 @@ import useIsArgentWallet from 'hooks/useIsArgentWallet'
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import useModal from './useModal'
 import { generateErc20 } from 'utils/getHashAddress'
+import { useGasPriceInfo } from './useGasPrice'
 
 export function useMintCallback(currencyA: AllTokens | undefined, currencyB: AllTokens | undefined) {
   const { chainId, library, account } = useActiveWeb3React()
@@ -31,6 +32,7 @@ export function useMintCallback(currencyA: AllTokens | undefined, currencyB: All
   const addTokenPair = useTokenPairAdder()
   const is721Pair = checkIs721(currencyA) || checkIs721(currencyB)
   const tokenIds = useMintTokenIds()
+  const getGasPrice = useGasPriceInfo()
 
   const addLiquidityCb = useCallback(async () => {
     if (!chainId || !library || !account || !currencyA || !currencyB) return
@@ -123,10 +125,12 @@ export function useMintCallback(currencyA: AllTokens | undefined, currencyB: All
       value = null
     }
     const estimatedGasLimit = await estimate(...args, value ? { value } : {})
+    const { gasPrice } = await getGasPrice()
 
     return method(...args, {
       ...(value ? { value } : {}),
-      gasLimit: calculateGasMargin(estimatedGasLimit)
+      gasLimit: calculateGasMargin(estimatedGasLimit),
+      gasPrice
     })
   }, [
     account,
@@ -136,6 +140,7 @@ export function useMintCallback(currencyA: AllTokens | undefined, currencyB: All
     currencyA,
     currencyB,
     deadline,
+    getGasPrice,
     is721Pair,
     library,
     noLiquidity,

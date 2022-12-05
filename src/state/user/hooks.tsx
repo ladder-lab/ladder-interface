@@ -25,7 +25,8 @@ import {
   addSerializedToken1155,
   removeSerializedToken1155,
   addSerializedToken721,
-  updateUserERC20ApproveMode
+  updateUserERC20ApproveMode,
+  updateUserTransactionSpeed
 } from './actions'
 import { NFT } from 'models/allTokens'
 import { DEFAULT_721_LIST } from 'constants/default721List'
@@ -137,6 +138,22 @@ export function useERC20ApproveModeManager(): [boolean, () => void] {
   }, [dispatch, isERC20ApproveAllMode])
 
   return [isERC20ApproveAllMode, toggleUserERC20ApproveMode]
+}
+
+export function useUserTransactionSpeed(): [number, (userTransactionSpeed: number) => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const userTransactionSpeed = useSelector<AppState, AppState['user']['userTransactionSpeed']>(state => {
+    return state.user.userTransactionSpeed
+  })
+
+  const setUserTransactionSpeed = useCallback(
+    (userTransactionSpeed: number) => {
+      dispatch(updateUserTransactionSpeed({ userTransactionSpeed }))
+    },
+    [dispatch]
+  )
+
+  return [userTransactionSpeed, setUserTransactionSpeed]
 }
 
 export function useUserSingleHopOnly(): [boolean, (newSingleHopOnly: boolean) => void] {

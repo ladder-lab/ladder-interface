@@ -1,4 +1,4 @@
-import { INITIAL_ALLOWED_SLIPPAGE, DEFAULT_DEADLINE_FROM_NOW } from '../../constants'
+import { INITIAL_ALLOWED_SLIPPAGE, DEFAULT_DEADLINE_FROM_NOW, INITIAL_USER_TRANSACTION_SPEED } from '../../constants'
 import { createReducer } from '@reduxjs/toolkit'
 import { updateVersion } from '../global/actions'
 import {
@@ -17,7 +17,8 @@ import {
   removeSerializedToken1155,
   addSerializedToken721,
   removeSerializedToken721,
-  updateUserERC20ApproveMode
+  updateUserERC20ApproveMode,
+  updateUserTransactionSpeed
 } from './actions'
 import { Token1155 } from 'constants/token/token1155'
 import { filter1155, filter721 } from 'utils/checkIs1155'
@@ -38,6 +39,7 @@ export interface UserState {
 
   // user defined slippage tolerance in bips, used in all txns
   userSlippageTolerance: number
+  userTransactionSpeed: number
 
   // deadline set by user in minutes, used in all txns
   userDeadline: number
@@ -92,6 +94,7 @@ export const initialState: UserState = {
   userERC20ApproveAllMode: false,
   userSingleHopOnly: false,
   userSlippageTolerance: INITIAL_ALLOWED_SLIPPAGE,
+  userTransactionSpeed: INITIAL_USER_TRANSACTION_SPEED,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
   tokens: {},
   token1155s: {},
@@ -124,6 +127,10 @@ export default createReducer(initialState, builder =>
     })
     .addCase(updateUserERC20ApproveMode, (state, action) => {
       state.userERC20ApproveAllMode = action.payload.userERC20ApproveAllMode
+      state.timestamp = currentTimestamp()
+    })
+    .addCase(updateUserTransactionSpeed, (state, action) => {
+      state.userTransactionSpeed = action.payload.userTransactionSpeed
       state.timestamp = currentTimestamp()
     })
     .addCase(updateUserSlippageTolerance, (state, action) => {

@@ -489,6 +489,16 @@ export default function Swap() {
                         undefined
                   }
                 />
+                <Typography
+                  textAlign={'right'}
+                  fontSize={12}
+                  sx={{
+                    mt: -10,
+                    color: theme => theme.palette.text.secondary
+                  }}
+                >
+                  Click the button on the right top to modify transaction settings.
+                </Typography>
               </Box>
             )}
           </Box>
