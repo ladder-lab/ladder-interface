@@ -90,14 +90,6 @@ export default function Erc721IdSelectionModal({
     setFilteredAvailableTokens(pairAddress ? poolTokens : availableTokens)
   }, [availableTokens, pairAddress, poolTokens])
 
-  useEffect(() => {
-    if (selectAll) {
-      setTokens(filteredAvailableTokens)
-    } else {
-      setTokens([])
-    }
-  }, [filteredAvailableTokens, selectAll, setTokens])
-
   const listHeight = useCurrencyModalListHeight(isDownMd ? '400px' : '375px')
   const modalHeight = useCurrencyModalListHeight('0px')
 
@@ -160,7 +152,14 @@ export default function Erc721IdSelectionModal({
               checked={selectAll}
               disabled={!filteredAvailableTokens || !filteredAvailableTokens.length}
               onChange={() => {
-                setSelectAll(state => !state)
+                setSelectAll(state => {
+                  if (!state) {
+                    setTokens(filteredAvailableTokens)
+                  } else {
+                    setTokens([])
+                  }
+                  return !state
+                })
               }}
             />
           </Box>
