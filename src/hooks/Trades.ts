@@ -128,7 +128,11 @@ export function useTradeExactIn(currencyAmountIn?: CurrencyAmount, currencyOut?:
 /**
  * Returns the best trade for the token in to the exact amount of token out
  */
-export function useTradeExactOut(currencyIn?: Currency, currencyAmountOut?: CurrencyAmount): Trade | null {
+export function useTradeExactOut(
+  currencyIn?: Currency,
+  currencyAmountOut?: CurrencyAmount,
+  customId?: boolean
+): Trade | null {
   const allowedPairs = useAllCommonPairs(currencyIn, currencyAmountOut?.currency)
 
   const [singleHopOnly] = useUserSingleHopOnly()
@@ -138,16 +142,21 @@ export function useTradeExactOut(currencyIn?: Currency, currencyAmountOut?: Curr
     if (currencyIn && currencyAmountOut && allowedPairs.length > 0) {
       if (singleHopOnly || is721Pair) {
         return (
-          Trade.bestTradeExactOut(allowedPairs, currencyIn, currencyAmountOut, { maxHops: 1, maxNumResults: 1 })[0] ??
-          null
+          Trade.bestTradeExactOut(allowedPairs, currencyIn, currencyAmountOut, {
+            maxHops: 1,
+            maxNumResults: 1,
+            customId
+          })[0] ?? null
         )
       }
       // search through trades with varying hops, find best trade out of them
       let bestTradeSoFar: Trade | null = null
       for (let i = 1; i <= MAX_HOPS; i++) {
         const currentTrade =
-          Trade.bestTradeExactOut(allowedPairs, currencyIn, currencyAmountOut, { maxHops: i, maxNumResults: 1 })[0] ??
-          null
+          Trade.bestTradeExactOut(allowedPairs, currencyIn, currencyAmountOut, {
+            maxHops: i,
+            maxNumResults: 1
+          })[0] ?? null
         if (isTradeBetter(bestTradeSoFar, currentTrade, BETTER_TRADE_LESS_HOPS_THRESHOLD)) {
           bestTradeSoFar = currentTrade
         }
@@ -155,5 +164,5 @@ export function useTradeExactOut(currencyIn?: Currency, currencyAmountOut?: Curr
       return bestTradeSoFar
     }
     return null
-  }, [currencyIn, currencyAmountOut, allowedPairs, singleHopOnly])
+  }, [currencyAmountOut, currencyIn, allowedPairs, singleHopOnly, customId])
 }
