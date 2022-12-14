@@ -107,7 +107,7 @@ export default function V2Rewards() {
     ])
   }, [curChainId, rankingTVLList.result.list])
 
-  const rankingAssetsList = useRankingAssetsList(curChainId, '0x794e949aaa0ac04e7ffa1d66a59052486aee2a5f')
+  const rankingAssetsList = useRankingAssetsList(curChainId, account || undefined)
   const rankingAssetsListHeaders = useMemo(() => makeHeaders('Asset Number'), [])
   const rankingAssetsListRows: TableRowCellsProp[][] = useMemo(() => {
     return rankingAssetsList.result.list.map(item => [
