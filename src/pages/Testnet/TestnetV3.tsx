@@ -4,7 +4,7 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 import { useActiveWeb3React } from 'hooks'
 import { ClaimState, useTestnetClaim } from 'hooks/useTestnetClaim'
 import ActionButton from 'components/Button/ActionButton'
-import { isAddress, scrollToElement, shortenAddress } from 'utils'
+import { formatMillion, isAddress, scrollToElement, shortenAddress } from 'utils'
 import Collapse from 'components/Collapse'
 import Input from 'components/Input'
 import ClaimableItem from './ClaimableItem'
@@ -14,6 +14,7 @@ import { useMemo, useState } from 'react'
 import { Token } from 'constants/token'
 import { ChainId } from 'constants/chain'
 import { ReactComponent as Explore } from 'assets/svg/explore.svg'
+import v2_my_icon from 'assets/images/v2_my_icon.png'
 import Pencil from 'assets/images/pencil.png'
 import bannerImg from 'assets/images/v3_test_cover.jpg'
 import v3_logo from 'assets/images/v3_test_icon1.png'
@@ -25,6 +26,10 @@ import V3ActivityData from './V3ActivityData'
 import V3TestnetTable from 'components/Table/V3TestnetTable'
 import { useIsDarkMode } from 'state/user/hooks'
 import Image from 'components/Image'
+import { useV3AccountVolumeRank, useV3PoolTop10 } from 'hooks/useTestnetV3'
+import { ShowTopPoolsCurrencyBox } from 'pages/Statistics'
+import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
+import Copy from 'components/essential/Copy'
 
 const BannerText = styled(Typography)({
   fontSize: 48
@@ -295,7 +300,7 @@ export default function TestnetV3() {
                       display={'flex'}
                       alignItems="center"
                       fontWeight={600}
-                      href="https://sepoliafaucet.net/"
+                      href="https://web.getlaika.app/faucets"
                       target={'_blank'}
                     >
                       Sepolia Faucet
@@ -516,9 +521,60 @@ export default function TestnetV3() {
 
 function LeaderBoardBox() {
   const isDarkMode = useIsDarkMode()
+  const curChainId = ChainId.SEPOLIA
   const { account } = useActiveWeb3React()
+
+  const v3PoolTop10 = useV3PoolTop10(curChainId)
+  const topPairRows = useMemo(
+    () =>
+      v3PoolTop10?.map((item, index) => {
+        const nftInfo =
+          item.token0.type === Mode.ERC721 || item.token0.type === Mode.ERC1155
+            ? item.token0
+            : item.token1.type === Mode.ERC721 || item.token1.type === Mode.ERC1155
+            ? item.token1
+            : undefined
+        return [
+          index + 1,
+          <ShowTopPoolsCurrencyBox
+            key={index}
+            chainId={curChainId}
+            pair={item.pair}
+            token0Info={item.token0}
+            token1Info={item.token1}
+          />,
+          formatMillion(Number(item.tvl) || 0, '$ ', 2),
+          formatMillion(Number(item.Volume) || 0, '$ ', 2),
+          nftInfo ? formatMillion(Number(nftInfo.price) || 0, '$ ', 2) : '-',
+          nftInfo ? (
+            <Box display={'flex'} alignItems="center">
+              {shortenAddress(nftInfo.address)}
+              <Copy toCopy={nftInfo.address} />
+            </Box>
+          ) : (
+            '-'
+          )
+        ]
+      }) || [],
+    [curChainId, v3PoolTop10]
+  )
+
+  const { rankList: accountVolumeRank } = useV3AccountVolumeRank(curChainId)
+  const topVolumeTraded = useMemo(() => {
+    const ret: (JSX.Element | string | number)[][] =
+      accountVolumeRank?.map(item => [
+        item.rank,
+        shortenAddress(item.account),
+        formatMillion(Number(item.volumes) || 0, '$ ', 2)
+      ]) || []
+    if (account) {
+      ret.unshift([<MyRankItem num="66" key={1} />, shortenAddress(account), formatMillion(60, '$ ', 2)])
+    }
+    return ret
+  }, [account, accountVolumeRank])
+
   const rows = useMemo(() => {
-    return [1, 2, 3, 4, 5, 6, 7, 8].map(item => [
+    return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(item => [
       item,
       shortenAddress('0x18041866663b077bB6BF2bAFFAeA2451a2472ed7'),
       '$ 700.22m'
@@ -550,14 +606,14 @@ function LeaderBoardBox() {
       >
         <LeaderBoardRank rows={rows} bgcolors={bgcolors} title="Top Asset Value" />
         <LeaderBoardRank rows={rows} bgcolors={bgcolors} title="Top Liquidity Provided" />
-        <LeaderBoardRank rows={rows} bgcolors={bgcolors} title="Top Volume Traded" />
+        <LeaderBoardRank rows={topVolumeTraded} bgcolors={bgcolors} title="Top Volume Traded" />
       </Box>
 
       <Box mt={30}>
         <LeaderBoardRank
-          rows={rows}
+          rows={topPairRows}
           title="Top Pair"
-          headers={['#', 'Name', 'TVL', 'Volume 24H', 'Floor price', 'NFT contract']}
+          headers={['#', 'Name', 'TVL↓', 'Volume 24H', 'Floor price', 'NFT contract']}
         />
       </Box>
     </Box>
@@ -674,6 +730,24 @@ function Banner() {
           {/* <Button variant="outlined">View Rewards</Button> */}
         </RowBetween>
       </Box>
+    </Box>
+  )
+}
+
+function MyRankItem({ num }: { num: string }) {
+  return (
+    <Box key={1} sx={{ marginLeft: -13, position: 'relative' }}>
+      <Image width={40} src={v2_my_icon} />
+      <Typography
+        textAlign={'center'}
+        sx={{
+          position: 'absolute',
+          width: 40,
+          top: 10
+        }}
+      >
+        {num}
+      </Typography>
     </Box>
   )
 }

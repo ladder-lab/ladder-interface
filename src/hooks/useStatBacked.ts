@@ -182,7 +182,7 @@ export interface StatTopPoolsProp {
   pair: string
 }
 
-const topPoolsListDataHandler = (list: any) => {
+export const topPoolsListDataHandler = (list: any) => {
   return list.map((item: any) =>
     Object.assign(item, {
       token0: {

@@ -19,7 +19,7 @@ const StyledTableContainer = styled(TableContainer)({
   '& .MuiTableCell-root': {
     borderBottom: 'none',
     fontWeight: 400,
-    padding: '10px 10px'
+    padding: '10px 20px'
     // '&:first-of-type': {
     //   paddingLeft: 20
     // },
@@ -58,7 +58,7 @@ const StyledTableRow = styled(TableRow, { shouldForwardProp: () => true })<{
   fontSize?: string
   bgcolor?: string
 }>(({ fontSize, bgcolor }) => ({
-  height: 52,
+  height: 60,
   borderRadius: '16px',
   overflow: 'hidden',
   position: 'relative',
@@ -72,12 +72,12 @@ const StyledTableRow = styled(TableRow, { shouldForwardProp: () => true })<{
       fontSize: (fontSize ?? '16px') + '!important'
     },
     '&:first-of-type': {
-      paddingLeft: '10px',
+      paddingLeft: '20px',
       borderTopLeftRadius: 12,
       borderBottomLeftRadius: 12
     },
     '&:last-child': {
-      paddingRight: '10px',
+      paddingRight: '20px',
       borderTopRightRadius: 12,
       borderBottomRightRadius: 12
     }
