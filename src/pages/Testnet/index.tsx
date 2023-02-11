@@ -28,6 +28,7 @@ import round1Bg from 'assets/svg/bg/round1_bg.svg'
 import round1DarkBg from 'assets/svg/bg/round1_dark_bg.svg'
 import { useIsDarkMode } from 'state/user/hooks'
 import { useTestnetV2Status } from 'hooks/useTestnetBacked'
+import TestnetV3 from './TestnetV3'
 
 const StyledButtonWrapper = styled(Box)(({ theme }) => ({
   maxWidth: 400,
@@ -131,7 +132,7 @@ export default function Testnet() {
   // const isDarkMode = useIsDarkMode()
   // const isDownSm = useBreakpoint('sm')
   const isDownMD = useBreakpoint('md')
-  const [roundIndex, setRoundIndex] = useState(1)
+  const [roundIndex, setRoundIndex] = useState(2)
 
   return (
     <Box
@@ -236,7 +237,7 @@ export default function Testnet() {
           }}
         >
           <Stack margin="20px 0" direction={'row'} spacing={20}>
-            {[0, 1].map(item => (
+            {[0, 1, 2].map(item => (
               <Button
                 sx={{
                   width: 186,
@@ -256,6 +257,7 @@ export default function Testnet() {
 
           {roundIndex === 0 && <TestnetV1 />}
           {roundIndex === 1 && <TestnetV2 />}
+          {roundIndex === 2 && <TestnetV3 />}
         </Box>
       </Box>
     </Box>
@@ -1081,7 +1083,7 @@ function TestnetV2() {
   )
 }
 
-function StepTitle({ title, step }: { step: number | string; title: string }) {
+export function StepTitle({ title, step }: { step: number | string; title: string }) {
   const theme = useTheme()
   return (
     <Box display={'flex'}>
