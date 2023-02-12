@@ -26,7 +26,12 @@ import V3ActivityData from './V3ActivityData'
 import V3TestnetTable from 'components/Table/V3TestnetTable'
 import { useIsDarkMode } from 'state/user/hooks'
 import Image from 'components/Image'
-import { useV3AccountVolumeRank, useV3PoolTop10 } from 'hooks/useTestnetV3'
+import {
+  useV3AccountAssetsRankTop,
+  useV3AccountLiquidityRankTop,
+  useV3AccountVolumeRankTop,
+  useV3PoolTop10
+} from 'hooks/useTestnetV3'
 import { ShowTopPoolsCurrencyBox } from 'pages/Statistics'
 import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
 import Copy from 'components/essential/Copy'
@@ -559,27 +564,62 @@ function LeaderBoardBox() {
     [curChainId, v3PoolTop10]
   )
 
-  const { rankList: accountVolumeRank } = useV3AccountVolumeRank(curChainId)
+  const { rankList: accountVolumeRankList, accountRank: accountVolumeRank } = useV3AccountVolumeRankTop(curChainId)
+  const { rankList: accountAssetsRankList, accountRank: accountAssetsRank } = useV3AccountAssetsRankTop(curChainId)
+
+  const { rankList: accountLiquidityRankList, accountRank: accountLiquidityRank } =
+    useV3AccountLiquidityRankTop(curChainId)
+
   const topVolumeTraded = useMemo(() => {
     const ret: (JSX.Element | string | number)[][] =
-      accountVolumeRank?.map(item => [
+      accountVolumeRankList?.map(item => [
         item.rank,
         shortenAddress(item.account),
-        formatMillion(Number(item.volumes) || 0, '$ ', 2)
+        formatMillion(Number(item.value) || 0, '$ ', 2)
       ]) || []
     if (account) {
-      ret.unshift([<MyRankItem num="66" key={1} />, shortenAddress(account), formatMillion(60, '$ ', 2)])
+      ret.unshift([
+        <MyRankItem num={accountVolumeRank?.rank || '-'} key={1} />,
+        shortenAddress(account),
+        accountVolumeRank ? formatMillion(Number(accountVolumeRank.value), '$ ', 2) : '-'
+      ])
     }
     return ret
-  }, [account, accountVolumeRank])
+  }, [account, accountVolumeRank, accountVolumeRankList])
 
-  const rows = useMemo(() => {
-    return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(item => [
-      item,
-      shortenAddress('0x18041866663b077bB6BF2bAFFAeA2451a2472ed7'),
-      '$ 700.22m'
-    ])
-  }, [])
+  const topAssetsValue = useMemo(() => {
+    const ret: (JSX.Element | string | number)[][] =
+      accountAssetsRankList?.map(item => [
+        item.rank,
+        shortenAddress(item.account),
+        formatMillion(Number(item.value) || 0, '$ ', 2)
+      ]) || []
+    if (account) {
+      ret.unshift([
+        <MyRankItem num={accountAssetsRank?.rank || '-'} key={1} />,
+        shortenAddress(account),
+        accountAssetsRank ? formatMillion(Number(accountAssetsRank.value), '$ ', 2) : '-'
+      ])
+    }
+    return ret
+  }, [account, accountAssetsRank, accountAssetsRankList])
+
+  const topLiquidityValue = useMemo(() => {
+    const ret: (JSX.Element | string | number)[][] =
+      accountLiquidityRankList?.map(item => [
+        item.rank,
+        shortenAddress(item.account),
+        formatMillion(Number(item.value) || 0, '$ ', 2)
+      ]) || []
+    if (account) {
+      ret.unshift([
+        <MyRankItem num={accountLiquidityRank?.rank || '-'} key={1} />,
+        shortenAddress(account),
+        accountLiquidityRank ? formatMillion(Number(accountLiquidityRank.value), '$ ', 2) : '-'
+      ])
+    }
+    return ret
+  }, [account, accountLiquidityRank, accountLiquidityRankList])
 
   const bgcolors = useMemo(() => {
     const _bgcolors = [
@@ -604,8 +644,8 @@ function LeaderBoardBox() {
           }
         }}
       >
-        <LeaderBoardRank rows={rows} bgcolors={bgcolors} title="Top Asset Value" />
-        <LeaderBoardRank rows={rows} bgcolors={bgcolors} title="Top Liquidity Provided" />
+        <LeaderBoardRank rows={topAssetsValue} bgcolors={bgcolors} title="Top Asset Value" />
+        <LeaderBoardRank rows={topLiquidityValue} bgcolors={bgcolors} title="Top Liquidity Provided" />
         <LeaderBoardRank rows={topVolumeTraded} bgcolors={bgcolors} title="Top Volume Traded" />
       </Box>
 
@@ -734,7 +774,7 @@ function Banner() {
   )
 }
 
-function MyRankItem({ num }: { num: string }) {
+function MyRankItem({ num }: { num: string | number }) {
   return (
     <Box key={1} sx={{ marginLeft: -13, position: 'relative' }}>
       <Image width={40} src={v2_my_icon} />
