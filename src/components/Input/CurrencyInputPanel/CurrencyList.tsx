@@ -73,7 +73,6 @@ export default function CurrencyList({
         ))}
       </Box>
       <Divider />
-
       <Box height={listHeight} overflow="auto" paddingTop={'24px'} position="relative">
         {searchToken && !searchTokenIsAdded ? (
           <ListItem onClick={onClick}>

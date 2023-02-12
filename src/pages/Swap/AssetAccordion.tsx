@@ -13,6 +13,7 @@ import { ExternalLink } from 'theme/components'
 import { shortenAddress } from 'utils'
 import { getName } from 'utils/getSymbol'
 import { Token721 } from 'constants/token/token721'
+import TestnetV3Mark from 'components/TestnetV3Mark'
 
 export function AssetAccordion({
   token,
@@ -58,7 +59,9 @@ export function AssetAccordion({
       >
         <CurrencyLogo currency={token} style={{ width: 36 }} />
         <Box display="flex" flexDirection="column" gap={8} width="100%">
-          <Typography color={theme.palette.text.secondary}>Name: {getTokenText(token).token1Text ?? '-'}</Typography>
+          <Typography color={theme.palette.text.secondary} display="flex" alignItems="center">
+            Name: {getTokenText(token).token1Text ?? '-'} <TestnetV3Mark addresss={[token?.address]} />
+          </Typography>
           <Typography
             color={theme.palette.text.secondary}
             component="div"

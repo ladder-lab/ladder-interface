@@ -10,6 +10,7 @@ import Spinner from 'components/Spinner'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { getName, getSymbol } from 'utils/getSymbol'
 import { Token721 } from 'constants/token/token721'
+import TestnetV3Mark from 'components/TestnetV3Mark'
 
 export function CurrencyListComponent({
   onSelect,
@@ -127,13 +128,17 @@ const ListItem = styled('div')({
 function CurrencyRow({ currency, onClick, style }: { currency: Currency; onClick: () => void; style?: any }) {
   const { account } = useActiveWeb3React()
   const balance = useCurrencyBalance(account ?? undefined, currency)
+  const _token: any = currency
 
   return (
     <ListItem onClick={onClick} style={style}>
       <Box display="flex">
         <CurrencyLogo currency={currency} style={{ width: '30px', height: '30px' }} />
         <Box display="flex" flexDirection="column" marginLeft="16px">
-          <Typography variant="inherit">{getSymbol(currency)}</Typography>
+          <Typography variant="inherit" display="flex" alignItems="center">
+            {getSymbol(currency)}
+            <TestnetV3Mark addresss={[_token.address]} />
+          </Typography>
           <Typography variant="caption">{getName(currency)}</Typography>
         </Box>
       </Box>

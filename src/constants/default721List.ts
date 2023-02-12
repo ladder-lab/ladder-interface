@@ -54,6 +54,15 @@ const test721ListSepolia = [
   // { name: 'LADDER-TEST-721-10', symbol: ' T-721-10', address: '0xDE9e6C49C1E009314973A1FF37385b443d418971' }
 ]
 
+const test721TestnetV3ListSepolia = [
+  {
+    address: '0x4186128305c4fF0a3FafB9126eEaf77169C2ec12',
+    name: 'TEST',
+    symbol: 'TEST',
+    url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSy2onyo5A7EoxdhDxADNniv9TjJy5wXUr1fg&usqp=CAU'
+  }
+]
+
 export const getTest721uri = (name: string, uriName?: string) => {
   return `https://info.chainswap.com/${uriName ?? name.split(' ').join('')}/0.jpg`
 }
@@ -83,6 +92,14 @@ const TEST_721_LIST_SEPOLIA = test721ListSepolia.map(({ address, name, symbol, u
   })
 })
 
+const TEST_721_TESTNET_V3_LIST_SEPOLIA = test721TestnetV3ListSepolia.map(({ address, name, symbol, url }) => {
+  return new Token721(ChainId.SEPOLIA, address, undefined, {
+    name,
+    symbol,
+    uri: url
+  })
+})
+
 export const DEFAULT_721_LIST: { [chainId in ChainId]?: Token721[] } = {
   [ChainId.MAINNET]: [] as Token721[],
   [ChainId.RINKEBY]: [
@@ -93,5 +110,13 @@ export const DEFAULT_721_LIST: { [chainId in ChainId]?: Token721[] } = {
     })
   ] as Token721[],
   [ChainId.GÖRLI]: TEST_721_LIST,
-  [ChainId.SEPOLIA]: TEST_721_LIST_SEPOLIA
+  [ChainId.SEPOLIA]: [...TEST_721_TESTNET_V3_LIST_SEPOLIA, ...TEST_721_LIST_SEPOLIA]
+}
+
+export function isTestnetV3Address(addresss: (string | undefined)[]) {
+  for (const addr of addresss) {
+    const len = test721TestnetV3ListSepolia.filter(item => addr && addr.toLowerCase() === item.address.toLowerCase())
+    if (len.length) return true
+  }
+  return false
 }

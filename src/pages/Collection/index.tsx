@@ -29,6 +29,7 @@ import { PoolPairType } from 'pages/Statistics'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { routes } from 'constants/routes'
 import { ArrowBack } from '@mui/icons-material'
+import TestnetV3Mark from 'components/TestnetV3Mark'
 
 export default function Collection() {
   const isDownMd = useBreakpoint('md')
@@ -193,10 +194,11 @@ function StatCard({ info, chainId }: { info: StatTopTokensProp | undefined; chai
       style={{ height: isDownMd ? 'auto' : 698, borderRadius: isDownMd ? '0' : '12px' }}
     >
       <Box sx={{ height: isDownMd ? 'auto' : 698 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Typography sx={{ color: theme.palette.info.main, fontSize: 14, fontWeight: 500 }}>
             {data.collectionType}
           </Typography>
+          <TestnetV3Mark addresss={info?.token.address ? [info?.token.address] : []} />
           {/* <ButtonBase onClick={() => {}}>
             Share <ShareIcon style={{ marginLeft: 8 }} />
           </ButtonBase> */}
@@ -297,7 +299,10 @@ function PairCard({ item }: { item: StatTopPoolsProp & { no: number; curPoolPair
   return (
     <Card padding="20px 17px" color={theme.palette.background.paper}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 12 }}>
-        <Typography sx={{ fontSize: 16, fontWeight: 500 }}> #{item.no}</Typography>
+        <Box display={'flex'} alignItems="center">
+          <Typography sx={{ fontSize: 16, fontWeight: 500 }}> #{item.no}</Typography>
+          <TestnetV3Mark addresss={[item?.token0.address, item.token1.address]} />
+        </Box>
         <Typography sx={{ fontSize: 16, fontWeight: 500, color: theme.palette.info.main }}>
           {item.curPoolPairType}
         </Typography>

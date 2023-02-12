@@ -24,6 +24,7 @@ import { formatMillion } from 'utils'
 import { PoolPairType, ShowTopPoolsCurrencyBox } from 'pages/Statistics'
 import Swiper from 'components/Swiper'
 import { ChainId } from '@ladder/sdk'
+import TestnetV3Mark from 'components/TestnetV3Mark'
 
 const defaultPageSize = 9
 
@@ -98,7 +99,8 @@ export default function Explore() {
         imgPath: item.token0.type !== Mode.ERC20 ? item.token0.logo : item.token1.logo,
         amount: `${formatMillion(Number(item.tvl), '$ ', 2)}`,
         route: routes.statisticsPools + `/${chainId}/${item.pair}`,
-        percentage: ''
+        percentage: '',
+        addresss: [item.token0.address, item.token1.address]
       })),
     [chainId, list721Pool]
   )
@@ -289,6 +291,7 @@ interface CollectionsProp {
   imgPath: string
   amount: string
   percentage: string
+  addresss?: string[]
 }
 
 function CollectionListing({
@@ -303,10 +306,11 @@ function CollectionListing({
   const isDownMd = useBreakpoint('md')
   const navigate = useNavigate()
 
-  const items = collections.map(({ title, imgPath, amount, percentage, route }, index: number) => (
+  const items = collections.map(({ title, imgPath, amount, percentage, route, addresss }, index: number) => (
     <Box
       key={index}
       sx={{
+        position: 'relative',
         height: 280,
         maxWidth: 218,
         width: 218,
@@ -317,6 +321,15 @@ function CollectionListing({
       }}
       onClick={() => navigate(route)}
     >
+      <Box
+        sx={{
+          position: 'absolute',
+          right: 10,
+          top: 10
+        }}
+      >
+        <TestnetV3Mark addresss={addresss || []} />
+      </Box>
       <Box
         component="img"
         sx={{
