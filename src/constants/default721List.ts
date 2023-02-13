@@ -59,7 +59,7 @@ const test721TestnetV3ListSepolia = [
     address: '0x4186128305c4fF0a3FafB9126eEaf77169C2ec12',
     name: 'TEST',
     symbol: 'TEST',
-    url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSy2onyo5A7EoxdhDxADNniv9TjJy5wXUr1fg&usqp=CAU'
+    metaDataUri: 'https://ipfs.io/ipfs/QmU61BwmB9fm3kN4EWS14YxrB1FFJcMWj9GRrf4hsEvaYE/'
   }
 ]
 
@@ -92,11 +92,11 @@ const TEST_721_LIST_SEPOLIA = test721ListSepolia.map(({ address, name, symbol, u
   })
 })
 
-const TEST_721_TESTNET_V3_LIST_SEPOLIA = test721TestnetV3ListSepolia.map(({ address, name, symbol, url }) => {
+const TEST_721_TESTNET_V3_LIST_SEPOLIA = test721TestnetV3ListSepolia.map(({ address, name, symbol, metaDataUri }) => {
   return new Token721(ChainId.SEPOLIA, address, undefined, {
     name,
     symbol,
-    uri: url
+    tokenUri: metaDataUri
   })
 })
 

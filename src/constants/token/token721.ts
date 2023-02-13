@@ -11,6 +11,7 @@ export class Token721 extends Token {
   public name?: string
   public uri?: string
   public symbol?: string
+  public tokenUri?: string
 
   public constructor(
     chainId: ChainId,
@@ -20,6 +21,7 @@ export class Token721 extends Token {
       name?: string
       symbol?: string
       uri?: string
+      tokenUri?: string
     }
   ) {
     super(chainId, address, 0, metadata?.symbol, metadata?.name)
@@ -28,6 +30,7 @@ export class Token721 extends Token {
     this.uri = metadata?.uri
     this.name = metadata?.name ?? 'ERC721'
     this.symbol = metadata?.symbol ?? 'NFT'
+    this.tokenUri = metadata?.tokenUri ?? ''
 
     if ((!metadata || !metadata.uri) && !IS_TEST_NET) {
       if (tokenId) {
@@ -41,6 +44,17 @@ export class Token721 extends Token {
             console.error(e)
           })
       }
+    } else if (metadata && metadata.tokenUri) {
+      const _tokenUri = metadata.tokenUri + (tokenId || '1')
+      Axios.get(_tokenUri)
+        .then(r => {
+          const metadata: any = r.data
+          this.uri = metadata.image
+          this.name = metadata.name
+        })
+        .catch(e => {
+          console.error(e)
+        })
     }
   }
 

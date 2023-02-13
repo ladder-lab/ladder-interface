@@ -304,6 +304,7 @@ export function useToken721BalanceTokens(tokenAmount?: TokenAmount): {
             new Token721(chainId, tokenAmount.token.address, id.toString(), {
               name: tokenAmount.token.name,
               symbol: tokenAmount.token.symbol,
+              tokenUri: token721?.tokenUri,
               uri:
                 chainId === ChainId.SEPOLIA && isTest721(tokenAmount.token.address) && token721?.uri
                   ? getTest721uriWithIndex(token721.uri, id)
