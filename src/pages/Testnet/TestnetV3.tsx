@@ -9,7 +9,7 @@ import Collapse from 'components/Collapse'
 import Input from 'components/Input'
 import ClaimableItem from './ClaimableItem'
 import V3TaskItem from './V3TaskItem'
-// import { Timer } from 'components/Timer'
+import { Timer } from 'components/Timer'
 import { useMemo, useState } from 'react'
 import { Token } from 'constants/token'
 import { ChainId } from 'constants/chain'
@@ -111,7 +111,7 @@ const v3FaucetTokens = [
   }
 ]
 
-// export const v3ActiveTimeStamp = [1669093260000, 1669697940000]
+const v3ActiveTimeStamp = [1669093260000, 1677211200000]
 
 export default function TestnetV3() {
   const theme = useTheme()
@@ -713,6 +713,16 @@ function LeaderBoardRank({
 
 function Banner() {
   const isDarkMode = useIsDarkMode()
+
+  const activeTimeStatus = useMemo(() => {
+    const curTime = new Date().getTime()
+    if (curTime < v3ActiveTimeStamp[0]) {
+      return 'soon'
+    } else if (curTime >= v3ActiveTimeStamp[0] && curTime < v3ActiveTimeStamp[1]) {
+      return 'active'
+    }
+    return 'end'
+  }, [])
   return (
     <Box
       sx={{
@@ -739,21 +749,22 @@ function Banner() {
       >
         <Image src={v3_logo} alt="" width={'100%'} />
         <Box mt={10}>
-          <BannerText>Monopoly end in</BannerText>
-          <Stack direction="row" spacing={10}>
-            <Box>
-              <BannerText>2</BannerText>
-              <Typography>Day</Typography>
-            </Box>
-            <Box>
-              <BannerText>24</BannerText>
-              <Typography>Hours</Typography>
-            </Box>
-            <Box>
-              <BannerText>12</BannerText>
-              <Typography>Minutes</Typography>
-            </Box>
-          </Stack>
+          <BannerText>Monopoly {activeTimeStatus === 'soon' ? 'start' : 'end'} in</BannerText>
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: 'auto auto auto',
+              gap: '0 10px',
+              '& span': {
+                fontSize: 48
+              }
+            }}
+          >
+            <Timer timer={v3ActiveTimeStamp[1]} getNumber />
+            <Typography fontWeight={500}>Day</Typography>
+            <Typography fontWeight={500}>Hours</Typography>
+            <Typography fontWeight={500}>Minutes</Typography>
+          </Box>
         </Box>
         <RowBetween mt={40}>
           <Button

@@ -255,8 +255,8 @@ export default function Testnet() {
             ))}
           </Stack>
 
-          {roundIndex === 0 && <TestnetV1 />}
-          {roundIndex === 1 && <TestnetV2 />}
+          {roundIndex === 0 && <TestnetV1 round={1} />}
+          {roundIndex === 1 && <TestnetV1 round={2} />}
           {roundIndex === 2 && <TestnetV3 />}
         </Box>
       </Box>
@@ -628,7 +628,7 @@ export function TestnetV1Old() {
   )
 }
 
-export function TestnetV1() {
+export function TestnetV1({ round }: { round: number }) {
   const isDark = useIsDarkMode()
   const theme = useTheme()
   return (
@@ -649,7 +649,7 @@ export function TestnetV1() {
       }}
     >
       <Typography textAlign={'center'} fontSize={32} fontWeight={700} color={theme.palette.text.primary}>
-        Ladder Testnet Round 1
+        Ladder Testnet Round {round}
       </Typography>
       <Typography
         mt={20}
@@ -657,12 +657,14 @@ export function TestnetV1() {
         fontSize={16}
         fontWeight={500}
         color={theme.palette.text.secondary}
-      >{`The first round of Testnet has ended, don't worry, the round 2 of testing is coming soon!`}</Typography>
+      >{`The first round of Testnet has ended, don't worry, the round ${
+        round + 1
+      } of testing is coming soon!`}</Typography>
     </Box>
   )
 }
 
-function TestnetV2() {
+export function TestnetV2() {
   const theme = useTheme()
   const isDownSm = useBreakpoint('sm')
   const { account } = useActiveWeb3React()

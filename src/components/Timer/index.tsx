@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 
-const formatTime = (d: number, h: number, m: number, s: number) => {
+const formatTime = (d: number, h: number, m: number, s: number, getNumber?: boolean) => {
+  if (getNumber) {
+    return [d, h, m, s]
+  }
   if (d) {
     return `${d}d ${h}h ${m}m ${s}s`
   } else {
@@ -15,15 +18,15 @@ export const getDeltaTime = (time: number, to = Date.now()) => {
   return delta > 0 ? delta : 0
 }
 
-export const toDeltaTimer = (delta: number) => {
+export const toDeltaTimer = (delta: number, getNumber?: boolean) => {
   const d = Math.floor(delta / (60 * 60 * 24))
   const h = Math.floor((delta / (60 * 60)) % 24)
   const m = Math.floor((delta / 60) % 60)
   const s = Math.floor(delta % 60)
-  return formatTime(d, h, m, s)
+  return formatTime(d, h, m, s, getNumber)
 }
 
-export const Timer = ({ timer, onZero }: { timer: number; onZero?: () => void }) => {
+export const Timer = ({ timer, onZero, getNumber }: { timer: number; onZero?: () => void; getNumber?: boolean }) => {
   const [time, setTime] = useState(getDeltaTime(timer))
 
   useEffect(() => {
@@ -37,5 +40,22 @@ export const Timer = ({ timer, onZero }: { timer: number; onZero?: () => void })
     }
   }, [time, onZero])
 
+  if (getNumber) {
+    const days = toDeltaTimer(time, getNumber)
+    return (
+      <>
+        <span>{pad0(days[0])}</span>
+        <span>{pad0(days[1])}</span>
+        <span>{pad0(days[2])}</span>
+      </>
+    )
+  }
   return <>{toDeltaTimer(time)}</>
+}
+
+function pad0(num: number | string) {
+  if (+num < 10) {
+    return '0' + num
+  }
+  return num
 }

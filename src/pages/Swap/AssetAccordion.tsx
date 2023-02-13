@@ -24,6 +24,7 @@ export function AssetAccordion({
   // disabled?: boolean
   subTokens?: Token721[] | null
 }) {
+  const _token: any = useMemo(() => token, [token])
   const [expanded, setExpanded] = useState(false)
   const theme = useTheme()
 
@@ -60,7 +61,7 @@ export function AssetAccordion({
         <CurrencyLogo currency={token} style={{ width: 36 }} />
         <Box display="flex" flexDirection="column" gap={8} width="100%">
           <Typography color={theme.palette.text.secondary} display="flex" alignItems="center">
-            Name: {getTokenText(token).token1Text ?? '-'} <TestnetV3Mark addresss={[token?.address]} />
+            Name: {getTokenText(token).token1Text ?? '-'} <TestnetV3Mark addresss={[_token?.address]} />
           </Typography>
           <Typography
             color={theme.palette.text.secondary}
@@ -87,7 +88,7 @@ export function AssetAccordion({
         <Tag sx={{ position: 'absolute', right: 0, top: 0 }}>{is1155 ? 'ERC1155' : is721 ? 'ERC721' : 'ERC20'}</Tag>
       </Box>
     )
-  }, [token, theme.palette.text.secondary, is1155, is721])
+  }, [token, theme.palette.text.secondary, _token?.address, is1155, is721])
 
   const details = useMemo(() => {
     return (
