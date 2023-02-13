@@ -45,12 +45,12 @@ export class Token721 extends Token {
           })
       }
     } else if (metadata && metadata.tokenUri) {
-      const _tokenUri = metadata.tokenUri + (tokenId || '1')
+      const _tokenUri = metadata.tokenUri + (tokenId !== undefined && tokenId !== '' ? tokenId : '1')
       Axios.get(_tokenUri)
         .then(r => {
           const metadata: any = r.data
           this.uri = metadata.image
-          this.name = metadata.name
+          if (tokenId !== undefined && tokenId !== '') this.name = metadata.name
         })
         .catch(e => {
           console.error(e)
