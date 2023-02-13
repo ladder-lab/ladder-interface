@@ -139,7 +139,7 @@ function CurrencyRow({ currency, onClick, style }: { currency: Currency; onClick
             {getSymbol(currency)}
             <TestnetV3Mark addresss={[_token.address]} />
           </Typography>
-          <Typography variant="caption">{getName(currency)}</Typography>
+          <Typography variant="caption">{getName(currency)?.replace(/#[0-9].*/, '')}</Typography>
         </Box>
       </Box>
       <span style={{ fontWeight: 500 }}>

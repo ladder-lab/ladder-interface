@@ -56,9 +56,15 @@ const test721ListSepolia = [
 
 const test721TestnetV3ListSepolia = [
   {
-    address: '0x4186128305c4fF0a3FafB9126eEaf77169C2ec12',
-    name: 'TEST',
-    symbol: 'TEST',
+    address: '0xE94CDF31d0c08AC16D7B78c80CAE9B7BCF85b9B0',
+    name: 'MetaBoom',
+    symbol: 'MMU',
+    metaDataUri: 'https://api.fansi.me/NFT/biopunk/'
+  },
+  {
+    address: '0x9D457cCD1264E02689646F3E76a756D8336A4E3f',
+    name: 'Weirdo Ghost Gang',
+    symbol: 'GHOST',
     metaDataUri: 'https://ipfs.io/ipfs/QmU61BwmB9fm3kN4EWS14YxrB1FFJcMWj9GRrf4hsEvaYE/'
   }
 ]
