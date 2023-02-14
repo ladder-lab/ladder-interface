@@ -246,7 +246,7 @@ export default function TestnetV3() {
                 <Box
                   mt={28}
                   sx={{
-                    display: 'grid',
+                    display: 'none',
                     gridTemplateColumns: { xs: '1fr', sm: '5fr 5fr 1.6fr' },
                     alignItems: 'center',
                     gap: { xs: '10px', sm: '24px 10px' },
@@ -358,64 +358,40 @@ export default function TestnetV3() {
                   rows={qaTableData}
                 ></Table> */}
               <StyledQABody>
-                {`Ladder is a unique AMM (Automated Market Maker) that will provide instant liquidity for NFT's including ERC-20, ERC-721, ERC-1155. `}
+                {`Ladder is a unique AMM (Automated Market Maker) that will provide instant liquidity for NFT's including ERC-20, ERC-721, ERC-1155.Unlike other NFT marketplaces which operate on an order book style of exchange, Ladder protocol takes a different approach by using Automated Market Makers and limit orders. By doing so, we aim to provide instant swaps for NFTs with low slippage and low fees!`}
                 <br />
                 <br />
-                {`Unlike other NFT marketplaces which operate on an order book style of exchange, Ladder protocol takes a different approach by using Automated Market Makers and limit orders. By doing so, we aim to provide instant swaps for NFTs with low slippage and low fees!`}
-                <br />
-                <br />
-                {`On Ladder protocol, now you can see how much certainty your NFT is backed by, or swap for any NFT in the Pool, or earn a commission for providing liquidity with your NFT. `}
+                {`On Ladder protocol, now you can see how much certainty your NFT is backed by, or swap for any NFT in the Pool, or earn a commission for providing liquidity with your NFT.`}
                 <br />
                 <br />
                 {`Ladder builds an infinite door for NFT!`}
               </StyledQABody>
             </Box>
             <Box>
-              <StyledQATitle>2. Who can participate in the Round 2 Testnet?</StyledQATitle>
+              <StyledQATitle>2. Who can participate in Monopoly?</StyledQATitle>
               <StyledQABody>
-                Participants for Ladder Testnet will include:
-                <br />
-                <br />
-                Ladder ETH Merge SOUve SBT Holders
-                <br />
-                Ladder Testnet SBT Holders
-                <br />
-                Participants from Round 1
-                <br />
-                ETHSF Hackathon AMA WL
-                <br />
-                Ladder X Apeiron X NFTTrack X GameSpace AMA WL
-                <br />
-                TrantorDAO WL
-                <br />
-                <br />
-                More WL keep coming.
-                <br />
-                <br />
-                Follow us on Twitter{' '}
-                <Link href="https://twitter.com/Laddertop_NFT" target={'_blank'}>
-                  @Laddertop_NFT
-                </Link>{' '}
-                or join our Discord channel to find out more incoming activities to earn your WL and get to participate
-                NOW!
+                Participants for Ladder Monopoly will include:
+                <ul>
+                  <li>TranctorDAO SBT Holders</li>
+                  <li>AMA WL Registrants</li>
+                  <li>Partner Projects Activities</li>
+                </ul>
               </StyledQABody>
             </Box>
             <Box>
-              <StyledQATitle>3. How long will Testnet Round 2 run for?</StyledQATitle>
-              <StyledQABody>Testnet Round 2 is live from 11/22/22 - 12/15/22</StyledQABody>
+              <StyledQATitle>3. How long will Monopoly run for?</StyledQATitle>
+              <StyledQABody>February XX - XX</StyledQABody>
             </Box>
             <Box>
-              <StyledQATitle>4. Which Network will Testnet Round 2 be on?</StyledQATitle>
+              <StyledQATitle>4. Which Network will Monopoly be on?</StyledQATitle>
               <StyledQABody>
-                This time Testnet Round 2 will be on the SEPOLIA TEST NETWORK, we recommend getting your Test ETH from a
-                faucet in advance from: (<Link href="https://sepoliafaucet.net/">https://sepoliafaucet.net/</Link>).{' '}
-                <br />
-                <br />
+                Monopoly will be on the Goerli TEST NETWORK, we recommend getting your Test ETH from a faucet in advance
+                from: (<Link href="https://sepoliafaucet.net/">https://sepoliafaucet.net/</Link>). <br />
                 More detailed instructions on how to get test ETH will be pinned in our Telegram and Discord channel.
               </StyledQABody>
             </Box>
             <Box>
-              <StyledQATitle>5. What are the trading simulations for Testnet Round 2</StyledQATitle>
+              <StyledQATitle>5. What are the trading competitions for Monopoly</StyledQATitle>
               <StyledQABody>
                 The trading simulation will be available for all pools. Every user will begin the simulation with the
                 same claimable amount of test assets. Claim yours now!
@@ -424,20 +400,35 @@ export default function TestnetV3() {
                 Simulation will go through the entire round and there are three categories we will be looking at for the
                 competition.
                 <br />
+                <br />
+                The three categories we will be looking at for the competition include:
+                <br />
                 <ul>
-                  <li>1.Addresses in the top 20% of Daily TVL Average</li>
-                  <li>2.Addresses in the top 20% of Total Digital Asset Value</li>
-                  <li>3.Addresses in the top 20% of Total Transactions</li>
+                  <li>Total asset value</li>
+                  <li>
+                    {`Definition of asset value: test the asset value in the user's wallet after the event. USD value of
+                    NFT + USD value of Token. The top 20% wallet addresses by the end of the contest`}
+                  </li>
+                  <li>Liquidity Provided</li>
+                  <li>
+                    Calculate the Daily AVG TVL by dividing the sum of Daily AVG TVL’s divided by the number of days
+                    within Ladder Monopoly Competition. The top 20% wallet addresses by the end of the contest
+                  </li>
                 </ul>
-                All three competition winners will be rewarded with special claimable SBT at Tractor in the end that
-                will provide great value in the future. (probably something, or probably nothing)
+                Top Volume Traded
+                <br /> Total amount of Volume a user has from Start date to end date of Monopoly (Easy for users who
+                don’t trade often)
+                <br />
+                <br />
+                Top Community Floor Price <br />
+                Highest floor price for an NFT collection at the end of Monopoly
               </StyledQABody>
             </Box>
             <Box>
-              <StyledQATitle>6. What happens after Testnet Round 2?</StyledQATitle>
+              <StyledQATitle>6. What happens after Monopoly??</StyledQATitle>
               <StyledQABody>
-                There will be more to expect as in community. Stay tuned with us and don’t miss out those incoming
-                opportunities to win future community rewards.
+                We can expect to have more community activities following Monopoly leading up to our Mainnet Launch!
+                Stay tuned with us and don’t miss out on those incoming opportunities to win future community rewards.
               </StyledQABody>
             </Box>
             <Box>
