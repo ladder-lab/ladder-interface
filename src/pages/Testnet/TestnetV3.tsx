@@ -35,6 +35,7 @@ import {
 import { ShowTopPoolsCurrencyBox } from 'pages/Statistics'
 import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
 import Copy from 'components/essential/Copy'
+import V3Rewards from './V3Rewards'
 
 const BannerText = styled(Typography)({
   fontSize: 48
@@ -333,6 +334,23 @@ export default function TestnetV3() {
           }
         >
           <LeaderBoardBox />
+        </Collapse>
+      </StyledCardWrapper>
+
+      <StyledCardWrapper>
+        <Collapse
+          defaultOpen
+          title={
+            <RowBetween>
+              <Box display={'flex'}>
+                <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                  Rewards
+                </Typography>
+              </Box>
+            </RowBetween>
+          }
+        >
+          <V3Rewards />
         </Collapse>
       </StyledCardWrapper>
 
