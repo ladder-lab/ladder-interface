@@ -639,7 +639,8 @@ function LeaderBoardBox() {
           gap: 20,
           display: 'grid',
           gridTemplateColumns: {
-            md: '1fr 1fr 1fr',
+            lg: '1fr 1fr 1fr',
+            md: '1fr 1fr',
             xs: '1fr'
           }
         }}
