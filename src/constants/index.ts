@@ -20,7 +20,7 @@ export const ROUTER_ADDRESS_721: string =
       [4]: '0xC61d146BB1965ba0e387aA2Ad94c500a17dfe65F',
       [56]: '',
       [1]: '',
-      [11155111]: '0x855AA5FAC685841C96F6d5cE103BF4a7122B016C'
+      [11155111]: '0x146ADA3E3A615CAdEBC06C1b02cBE3D040DcC3A0'
     } as any
   )[NETWORK_CHAIN_ID] ?? ''
 
@@ -31,7 +31,7 @@ export const FACTORY_ADDRESS_721: string =
       [4]: '0x50A180230A11734FFD1A9A55e80c442387d42931',
       [56]: '',
       [1]: '',
-      [11155111]: '0x09B78CACaCC648d821924656b87D5FD2eb05E20d'
+      [11155111]: '0x6413e73875EF1B4D315D5247bdc6d3BF311de4e5'
     } as any
   )[NETWORK_CHAIN_ID] ?? ''
 
