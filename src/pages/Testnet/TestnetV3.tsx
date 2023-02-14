@@ -380,13 +380,14 @@ export default function TestnetV3() {
             </Box>
             <Box>
               <StyledQATitle>3. How long will Monopoly run for?</StyledQATitle>
-              <StyledQABody>February XX - XX</StyledQABody>
+              <StyledQABody>February 20th- March 6th</StyledQABody>
             </Box>
             <Box>
               <StyledQATitle>4. Which Network will Monopoly be on?</StyledQATitle>
               <StyledQABody>
-                Monopoly will be on the Goerli TEST NETWORK, we recommend getting your Test ETH from a faucet in advance
-                from: (<Link href="https://sepoliafaucet.net/">https://sepoliafaucet.net/</Link>). <br />
+                Monopoly will be on the <b>SEPOLIA TEST NETWORK</b>, we recommend getting your Test ETH from a faucet in
+                advance from: (<Link href="https://faucet-sepolia.rockx.com">https://faucet-sepolia.rockx.com</Link>).{' '}
+                <br />
                 More detailed instructions on how to get test ETH will be pinned in our Telegram and Discord channel.
               </StyledQABody>
             </Box>
@@ -404,28 +405,30 @@ export default function TestnetV3() {
                 The three categories we will be looking at for the competition include:
                 <br />
                 <ul>
-                  <li>Total asset value</li>
                   <li>
+                    Total asset value
+                    <br />
                     {`Definition of asset value: test the asset value in the user's wallet after the event. USD value of
-                    NFT + USD value of Token. The top 20% wallet addresses by the end of the contest`}
+                    NFT + USD value of Token. The top 20% wallet addresses by the end of the contest.`}
                   </li>
-                  <li>Liquidity Provided</li>
                   <li>
+                    Liquidity Provided
+                    <br />
                     Calculate the Daily AVG TVL by dividing the sum of Daily AVG TVL’s divided by the number of days
-                    within Ladder Monopoly Competition. The top 20% wallet addresses by the end of the contest
+                    within Ladder Monopoly Competition. The top 20% wallet addresses by the end of the contest.
+                  </li>
+                  <li>
+                    Top Volume Traded
+                    <br />
+                    Total amount of Volume a user has from Start date to end date of Monopoly (Easy for users who don’t
+                    trade often)
                   </li>
                 </ul>
-                Top Volume Traded
-                <br /> Total amount of Volume a user has from Start date to end date of Monopoly (Easy for users who
-                don’t trade often)
-                <br />
-                <br />
-                Top Community Floor Price <br />
-                Highest floor price for an NFT collection at the end of Monopoly
+                Top Community Floor Price: Highest floor price for an NFT collection at the end of Monopoly.
               </StyledQABody>
             </Box>
             <Box>
-              <StyledQATitle>6. What happens after Monopoly??</StyledQATitle>
+              <StyledQATitle>6. What happens after Monopoly?</StyledQATitle>
               <StyledQABody>
                 We can expect to have more community activities following Monopoly leading up to our Mainnet Launch!
                 Stay tuned with us and don’t miss out on those incoming opportunities to win future community rewards.
