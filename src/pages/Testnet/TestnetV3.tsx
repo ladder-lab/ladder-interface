@@ -111,7 +111,7 @@ const v3FaucetTokens = [
   }
 ]
 
-const v3ActiveTimeStamp = [1669093260000, 1677211200000]
+const v3ActiveTimeStamp = [1676865600000, 1678075200000]
 
 export default function TestnetV3() {
   const theme = useTheme()
@@ -755,7 +755,7 @@ function Banner() {
               }
             }}
           >
-            <Timer timer={v3ActiveTimeStamp[1]} getNumber />
+            <Timer timer={activeTimeStatus === 'soon' ? v3ActiveTimeStamp[0] : v3ActiveTimeStamp[1]} getNumber />
             <Typography fontWeight={500}>Day</Typography>
             <Typography fontWeight={500}>Hours</Typography>
             <Typography fontWeight={500}>Minutes</Typography>
