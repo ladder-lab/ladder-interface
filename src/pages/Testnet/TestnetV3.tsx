@@ -92,10 +92,10 @@ const v3FaucetTokens = [
   {
     token: new Token(
       ChainId.SEPOLIA,
-      '0x85eDB7A0cbAcf5BD641e0FF5D6270bEf9C72Bd6B',
+      '0x55979784068d1BEf37B49F41cAC8040A4b79C4a7',
       18,
       'tUSDC',
-      'testUSDC-LadderV2-USDC-Testnet'
+      'testUSDC-LadderV3-USDC-Testnet'
     ),
     amount: '1000'
   },
@@ -105,7 +105,7 @@ const v3FaucetTokens = [
       '0x5069129410122A4C1F2448c77becDc5A8A784a5D',
       18,
       'tWETH',
-      'testETH-LadderV2-ETH-Testnet'
+      'testETH-LadderV3-ETH-Testnet'
     ),
     amount: '1000'
   }
@@ -264,15 +264,15 @@ export default function TestnetV3() {
                     />
                   ))}
                   <ClaimableItem
-                    nftInfo={{ name: 'laddertest-v2-erc721' }}
-                    amount={'5'}
-                    claimable={claimState === ClaimState.UNCLAIMED ? '5' : '0'}
-                  />
-                  <ClaimableItem
-                    nftInfo={{ name: 'laddertest-v2-erc1155' }}
+                    nftInfo={{ name: 'laddertest-v3-erc721' }}
                     amount={'10'}
                     claimable={claimState === ClaimState.UNCLAIMED ? '10' : '0'}
                   />
+                  {/* <ClaimableItem
+                    nftInfo={{ name: 'laddertest-v2-erc1155' }}
+                    amount={'10'}
+                    claimable={claimState === ClaimState.UNCLAIMED ? '10' : '0'}
+                  /> */}
                 </Box>
                 <Box display={'flex'} flexWrap="wrap" flexDirection="row-reverse" mt={16} alignItems="center">
                   <StyledButtonWrapper>
