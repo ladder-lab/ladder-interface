@@ -7,48 +7,69 @@ import IsekaiMetaverse from 'assets/images/Isekai Metaverse.png'
 import Gritti from 'assets/images/Gritti.png'
 import NextType from 'assets/images/NextType.png'
 import StarryNift from 'assets/images/StarryNift.png'
+import genso from 'assets/images/genso.png'
 
 export default function V3Rewards() {
   const theme = useTheme()
   const list = [
     {
+      name: 'Genso',
+      link: 'https://genso.game/en/',
+      img: genso
+    },
+    {
       name: 'MetaBoom',
-      link: '',
+      link: 'https://www.fansi.me/',
       img: MetaBoom
     },
     {
       name: 'WeirdoGhostGang',
-      link: '',
+      link: 'https://www.weirdoghost.com/',
       img: WeirdoGhostGang
     },
     {
       name: 'Furion',
-      link: '',
+      link: 'https://furion.io/',
       img: Furion
     },
     {
       name: 'Isekai Metaverse',
-      link: '',
+      link: 'https://www.isekaiprotocol.com/',
       img: IsekaiMetaverse
     },
     {
       name: 'Gritti',
-      link: '',
+      link: 'https://twitter.com/Grittiapp',
       img: Gritti
     },
     {
       name: 'NextType',
-      link: '',
+      link: 'https://twitter.com/NEXTYPE1',
       img: NextType
     },
     {
       name: 'StarryNift',
-      link: '',
+      link: 'https://starrynift.art/',
       img: StarryNift
     },
     {
       name: 'Aperion',
-      link: '',
+      link: undefined,
+      img: ''
+    },
+    {
+      name: 'CheersUp',
+      link: 'https://twitter.com/CheersUP_NFT',
+      img: ''
+    },
+    {
+      name: 'FPX Metaverse',
+      link: 'https://twitter.com/FPX_META',
+      img: ''
+    },
+    {
+      name: 'WonderPal',
+      link: 'https://twitter.com/WonderPals',
       img: ''
     }
   ]
@@ -66,7 +87,7 @@ export default function V3Rewards() {
         <Box
           key={i}
           sx={{
-            height: 254,
+            height: 214,
             background: `url(${bg})`,
             backgroundSize: '100% 100%',
             padding: '25px 32px',
@@ -75,7 +96,7 @@ export default function V3Rewards() {
             justifyContent: 'space-between'
           }}
         >
-          <Link underline="hover" display={'flex'} alignItems="center">
+          <Link target={'_blank'} underline="hover" href={item.link} display={'flex'} alignItems="center">
             <Typography mr={5} noWrap maxWidth={'84%'} color={theme.palette.info.main}>
               {item.name}
             </Typography>
@@ -93,13 +114,8 @@ export default function V3Rewards() {
               </defs>
             </svg>
           </Link>
-          <Box height={109} display="flex" justifyContent={'center'} alignItems="center">
+          <Box height={180} display="flex" justifyContent={'center'} alignItems="center">
             {item.img && <img style={{ width: '60%' }} src={item.img} />}
-          </Box>
-          <Box height={44}>
-            <Typography mt={10} textAlign={'center'}>
-              No draw
-            </Typography>
           </Box>
         </Box>
       ))}

@@ -250,7 +250,7 @@ export default function Testnet() {
                 onClick={() => setRoundIndex(item)}
                 variant={roundIndex === item ? 'contained' : 'outlined'}
               >
-                ROUND {item + 1}
+                {item === 2 ? 'Monopoly' : `ROUND ${item + 1}`}
               </Button>
             ))}
           </Stack>

@@ -184,7 +184,7 @@ export default function TestnetV3() {
             <RowBetween flexWrap={'wrap'}>
               <Box display={'flex'} flexWrap={'wrap'}>
                 <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
-                  Ladder SEPOLIA Testnet-Round 3 Participate in preparation
+                  Ladder SEPOLIA Monopoly Participate in preparation
                 </Typography>
               </Box>
             </RowBetween>
@@ -275,7 +275,7 @@ export default function TestnetV3() {
                     claimable={claimState === ClaimState.UNCLAIMED ? '10' : '0'}
                   /> */}
                 </Box>
-                <Box display={'flex'} flexWrap="wrap" flexDirection="row-reverse" mt={16} alignItems="center">
+                <Box display={'flex'} flexWrap="wrap" mt={16} alignItems="center">
                   <StyledButtonWrapper>
                     {account ? (
                       <Box position={'relative'}>
@@ -337,7 +337,7 @@ export default function TestnetV3() {
         </Collapse>
       </StyledCardWrapper>
 
-      <StyledCardWrapper>
+      <StyledCardWrapper id="reward">
         <Collapse
           defaultOpen
           title={
@@ -784,14 +784,15 @@ function Banner() {
             sx={{
               background: theme => theme.palette.primary.main,
               color: isDarkMode ? '#000' : '#fff',
-              width: '50%',
               mr: 10
             }}
             onClick={() => scrollToElement('qa')}
           >
             View rules
           </Button>
-          {/* <Button variant="outlined">View Rewards</Button> */}
+          <Button onClick={() => scrollToElement('reward')} variant="outlined">
+            View Rewards
+          </Button>
         </RowBetween>
       </Box>
     </Box>
