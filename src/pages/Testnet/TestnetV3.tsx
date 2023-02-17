@@ -665,6 +665,7 @@ function LeaderBoardBox() {
       <Box mt={30}>
         <LeaderBoardRank
           rows={topPairRows}
+          minHeight={400}
           title="Top Pair"
           headers={['#', 'Name', 'TVL↓', 'Volume 24H', 'Floor price', 'NFT contract']}
         />
@@ -677,14 +678,17 @@ function LeaderBoardRank({
   headers,
   rows,
   bgcolors,
-  title
+  title,
+  minHeight
 }: {
   headers?: string[]
   title: string
   rows: (string | number | JSX.Element)[][]
   bgcolors?: string[]
+  minHeight?: number
 }) {
   const theme = useTheme()
+  const { account } = useActiveWeb3React()
   return (
     <Box>
       <Box>
@@ -714,7 +718,10 @@ function LeaderBoardRank({
             backgroundColor: theme.palette.background.paper,
             borderRadius: '12px',
             padding: '10px',
-            minHeight: 400
+            minHeight: minHeight || {
+              md: account ? 850 : 776,
+              xs: 'unset'
+            }
           }}
         >
           <V3TestnetTable bgcolors={bgcolors} rows={rows} header={headers || ['#', 'User', 'Value']}></V3TestnetTable>
