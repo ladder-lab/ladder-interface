@@ -61,23 +61,23 @@ export default function V3Rewards() {
     },
     {
       name: 'Aperion',
-      link: undefined,
-      img: ''
+      link: 'https://twitter.com/ApeironNFT',
+      img: 'https://pbs.twimg.com/profile_images/1463778839914430465/Hfm1z5nH_400x400.jpg'
     },
     {
       name: 'CheersUp',
       link: 'https://twitter.com/CheersUP_NFT',
-      img: ''
+      img: 'https://pbs.twimg.com/profile_images/1562695422719787008/t1--VzCM_400x400.jpg'
     },
     {
       name: 'FPX Metaverse',
       link: 'https://twitter.com/FPX_META',
-      img: ''
+      img: 'https://pbs.twimg.com/profile_images/1613403380608827392/2fuNDTtA_400x400.jpg'
     },
     {
       name: 'WonderPal',
       link: 'https://twitter.com/WonderPals',
-      img: ''
+      img: 'https://pbs.twimg.com/profile_images/1624864585336627206/BgCZAH4d_400x400.jpg'
     }
   ]
   return (

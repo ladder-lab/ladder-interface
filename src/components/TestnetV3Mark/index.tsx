@@ -28,7 +28,7 @@ export default function TestnetV3Mark({ addresss }: { addresss: (string | undefi
         ml: 5
       }}
     >
-      <LightTooltip placement="top" title="A token that can participate in testnet round3">
+      <LightTooltip placement="top" title="A token that can participate in Monopoly">
         <Mark />
       </LightTooltip>
     </Box>
