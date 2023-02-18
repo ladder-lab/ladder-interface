@@ -8,7 +8,7 @@ export const routes = {
   addLiquidity: '/add-liquidity',
   removeLiquidity: '/remove-liquidity',
   removeLiquidityParams: '/:currencyIdA/:currencyIdB/:tokenIds',
-  testnet: '/testnet',
+  testnet: '/monopoly',
   explorer: '/explorer',
   collectionParams: '/:type/:chainId/:address/:token1155Id',
   statistics: '/statistics',

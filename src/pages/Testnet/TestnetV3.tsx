@@ -121,6 +121,7 @@ export default function TestnetV3() {
   const navigate = useNavigate()
   const toggleWalletModal = useWalletModalToggle()
   const { testnetClaim, claimState } = useTestnetClaim(account || undefined)
+
   const [queryAddress, setQueryAddress] = useState('')
   const { claimState: queryClaimState } = useTestnetClaim(isAddress(queryAddress) ? queryAddress : undefined)
   const testnetV2Status = useTestnetV2Status(account || undefined)
@@ -283,10 +284,13 @@ export default function TestnetV3() {
                           <ActionButton
                             pending={claimState === ClaimState.UNKNOWN}
                             onAction={testnetClaim}
+                            disableAction={new Date() < new Date(v3ActiveTimeStamp[0])}
                             // disableAction={!isOpenClaim && activeTimeStatus !== 'active'}
                             actionText="Claim your test assets"
                             error={
-                              claimState === ClaimState.UNCLAIMED
+                              claimState === ClaimState.UNKNOWN
+                                ? 'Loading'
+                                : claimState === ClaimState.UNCLAIMED
                                 ? undefined
                                 : claimState === ClaimState.CLAIMED
                                 ? 'Test assets Claimed'
