@@ -1,5 +1,6 @@
 import { Box, Link, Typography, useTheme } from '@mui/material'
 import bg from 'assets/images/v3_reward_bg.png'
+import bg1 from 'assets/images/v3_reward_bg1.png'
 import MetaBoom from 'assets/images/MetaBoom.png'
 import WeirdoGhostGang from 'assets/images/WeirdoGhostGang.png'
 import Furion from 'assets/images/Furion.png'
@@ -8,10 +9,16 @@ import Gritti from 'assets/images/Gritti.png'
 import NextType from 'assets/images/NextType.png'
 import StarryNift from 'assets/images/StarryNift.png'
 import genso from 'assets/images/genso.png'
+import MainLogo from 'components/MainLogo'
 
 export default function V3Rewards() {
   const theme = useTheme()
   const list = [
+    {
+      name: 'Ladder',
+      link: 'https://www.ladder.top/',
+      img: ''
+    },
     {
       name: 'Genso',
       link: 'https://genso.game/en/',
@@ -87,8 +94,8 @@ export default function V3Rewards() {
         <Box
           key={i}
           sx={{
-            height: 214,
-            background: `url(${bg})`,
+            height: 234,
+            background: `url(${i === 0 ? bg1 : bg})`,
             backgroundSize: '100% 100%',
             padding: '25px 32px',
             display: 'flex',
@@ -114,8 +121,8 @@ export default function V3Rewards() {
               </defs>
             </svg>
           </Link>
-          <Box height={180} display="flex" justifyContent={'center'} alignItems="center">
-            {item.img && <img style={{ width: '60%' }} src={item.img} />}
+          <Box height={160} display="flex" justifyContent={'center'} alignItems="center">
+            {i === 0 ? <MainLogo /> : item.img ? <img style={{ width: '60%' }} src={item.img} /> : null}
           </Box>
         </Box>
       ))}

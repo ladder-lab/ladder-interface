@@ -106,7 +106,7 @@ export default function App() {
                     <Route path={routes.removeLiquidity + routes.removeLiquidityParams} element={<RemoveLiquidity />} />
                   </Route>
                   <Route path={routes.feedback} element={<Feedback />} />
-                  <Route path="*" element={<Navigate to={routes.swap} replace />} />
+                  <Route path="*" element={<Navigate to={routes.testnet} replace />} />
                 </Routes>
               </Web3ReactManager>
             </BodyWrapper>
