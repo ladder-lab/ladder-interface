@@ -143,8 +143,8 @@ const testTokens = {
         address: '0x55979784068d1BEf37B49F41cAC8040A4b79C4a7',
         decimals: 18,
         symbol: 'tUSDC',
-        name: 'testETH-LadderV3-USDC-Testnet',
-        logoURI: tWETHImg
+        name: 'ladder-test3-usdc',
+        logoURI: tUSDCImg
       },
       []
     ),
