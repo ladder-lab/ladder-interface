@@ -56,10 +56,10 @@ const test721ListSepolia = [
 
 const test721TestnetV3ListSepolia = [
   {
-    address: '0xEfA8A080b2f6AB539a141310a4Bd273F642723D7',
+    address: '0xAd1b8Fa357265D15a056B51c299a29843bE874DB',
     name: 'GensoKishiOnline.v2',
     symbol: 'Genso_NFT_v2',
-    metaDataUri: 'https://api01.genso.game/api/genso_v2_metadata/'
+    uriName: 'GensoKishiOnline.v2'
   },
   {
     address: '0x3ec2Bb9E04C8DB50fb77E170BF9116B330293209',
