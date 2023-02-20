@@ -126,7 +126,7 @@ export const getTest721uriWithIndex = (uri: string, idx: string | number) => {
 }
 
 export const isTest721 = (address: string) => {
-  const testAsset = test721ListSepolia.find(item => item.address == address)
+  const testAsset = [...test721ListSepolia, ...test721TestnetV3ListSepolia].find(item => item.address == address)
   return !!testAsset
 }
 
