@@ -125,6 +125,8 @@ export default function TestnetV3() {
   const [queryAddress, setQueryAddress] = useState('')
   const { claimState: queryClaimState } = useTestnetClaim(isAddress(queryAddress) ? queryAddress : undefined)
   const testnetV2Status = useTestnetV2Status(account || undefined)
+  const [open, setOpen] = useState(false)
+  console.log(open)
 
   const queryNotice = useMemo(() => {
     return (
@@ -169,11 +171,11 @@ export default function TestnetV3() {
 
   return (
     <Stack spacing={40}>
-      <Banner />
+      <Banner setOpenTrue={() => setOpen(true)} />
 
       <Box padding="10px">
         <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mb={-10}>
-          Activity real-time data
+          Activity data
         </Typography>
         <V3ActivityData />
       </Box>
@@ -401,20 +403,77 @@ export default function TestnetV3() {
               </StyledQABody>
             </Box>
             <Box>
-              <StyledQATitle>3. How long will Monopoly run for?</StyledQATitle>
+              <StyledQATitle>3. Partners:</StyledQATitle>
+              <StyledQABody>
+                <b>
+                  Our list of Partners for Monopoly include Starry Nift, Weirdo Ghost Gang, Gritti, Isekai Meta, Furion,
+                  Genso, Fansi, NEXTPE, Gamespace, and Wonderpals!
+                </b>
+                <br />
+                <b>
+                  Thank you to all of our partners who participated, and to those that contributed to our prize pool in
+                  order to make Monopoly as great as possible!
+                </b>
+              </StyledQABody>
+            </Box>
+            <Box>
+              <StyledQATitle>4. Prizes:</StyledQATitle>
+              <StyledQABody>
+                <b>Our prize pool contains;</b>
+                <br />
+                <b>
+                  5 Gritti NFT’s, 5 Genso WL, 5 Isekai Meta WL, 10 NextType WL,10 Furion WL, 10 Starry Nift WL, 10K $GP,
+                  3 Metaboom NFT, 500 Fansi WL.
+                </b>
+              </StyledQABody>
+            </Box>
+            <Box>
+              <StyledQATitle>5. Prize Split:</StyledQATitle>
+              <StyledQABody>
+                <b>Prizes will be split as such;</b>
+                <br />
+                <b>
+                  1st Place for each category- 1 Gritti NFT + 1 Genso NFT+ 1 Isekai WL + 1 NextType WL + 1 Furion WL + 1
+                  StarryNift WL + 2000 $GP + 1 Metaboom NFT + 20 FANSI WL
+                </b>
+                <br />
+                <b>
+                  2nd Place for each category- 1 NextType WL + 1 Furion WL + 1 StarryNift WL + 1000 $GP + 10 FANSI WL
+                </b>
+                <br />
+
+                <b>3rd Place for each category- 300$GP + 5 FANSI WL</b>
+                <br />
+
+                <b>
+                  The Top 20% of all wallet addresses for each category will be rewarded a Ladder Monopoly SBT to
+                  celebrate their success.
+                </b>
+                <br />
+                <b>
+                  The remaining prizes (2 Gritti NFT, 2 Genso NFT, 2 Isekai WL, 4 NextType WL, 4 Furion WL, 4 StarryNift
+                  WL) will be rewarded to the top traders from each project.
+                </b>
+                <ul>
+                  <li>Please keep in mind that you can only win prizes once*</li>
+                </ul>
+              </StyledQABody>
+            </Box>
+            <Box>
+              <StyledQATitle>6. How long will Monopoly run for?</StyledQATitle>
               <StyledQABody>February 20th- March 6th</StyledQABody>
             </Box>
             <Box>
-              <StyledQATitle>4. Which Network will Monopoly be on?</StyledQATitle>
+              <StyledQATitle>7. Which Network will Monopoly be on?</StyledQATitle>
               <StyledQABody>
-                Monopoly will be on the <b>SEPOLIA TEST NETWORK</b>, we recommend getting your Test ETH from a faucet in
+                Monopoly will be on the SEPOLIA TEST NETWORK, we recommend getting your Test ETH from a faucet in
                 advance from: (<Link href="https://faucet-sepolia.rockx.com">https://faucet-sepolia.rockx.com</Link>).{' '}
                 <br />
                 More detailed instructions on how to get test ETH will be pinned in our Telegram and Discord channel.
               </StyledQABody>
             </Box>
             <Box>
-              <StyledQATitle>5. What are the trading competitions for Monopoly</StyledQATitle>
+              <StyledQATitle>8. What are the trading competitions for Monopoly</StyledQATitle>
               <StyledQABody>
                 The trading simulation will be available for all pools. Every user will begin the simulation with the
                 same claimable amount of test assets. Claim yours now!
@@ -430,14 +489,13 @@ export default function TestnetV3() {
                   <li>
                     Total asset value
                     <br />
-                    {`Definition of asset value: test the asset value in the user's wallet after the event. USD value of
-                    NFT + USD value of Token. The top 20% wallet addresses by the end of the contest.`}
+                    {`Definition of asset value: test the asset value in the user's wallet after the event. USD value of NFT + USD value of Token. The top 20% wallet addresses by the end of the contest`}
                   </li>
                   <li>
                     Liquidity Provided
                     <br />
                     Calculate the Daily AVG TVL by dividing the sum of Daily AVG TVL’s divided by the number of days
-                    within Ladder Monopoly Competition. The top 20% wallet addresses by the end of the contest.
+                    within Ladder Monopoly Competition. The top 20% wallet addresses by the end of the contest
                   </li>
                   <li>
                     Top Volume Traded
@@ -446,7 +504,6 @@ export default function TestnetV3() {
                     trade often)
                   </li>
                 </ul>
-                Top Community Floor Price: Highest floor price for an NFT collection at the end of Monopoly.
               </StyledQABody>
             </Box>
             <Box>
@@ -735,7 +792,7 @@ function LeaderBoardRank({
   )
 }
 
-function Banner() {
+function Banner({ setOpenTrue }: { setOpenTrue: () => void }) {
   const isDarkMode = useIsDarkMode()
 
   const activeTimeStatus = useMemo(() => {
@@ -784,7 +841,11 @@ function Banner() {
               }
             }}
           >
-            <Timer timer={activeTimeStatus === 'soon' ? v3ActiveTimeStamp[0] : v3ActiveTimeStamp[1]} getNumber />
+            <Timer
+              onZero={() => setOpenTrue()}
+              timer={activeTimeStatus === 'soon' ? v3ActiveTimeStamp[0] : v3ActiveTimeStamp[1]}
+              getNumber
+            />
             <Typography fontWeight={500}>Day</Typography>
             <Typography fontWeight={500}>Hours</Typography>
             <Typography fontWeight={500}>Minutes</Typography>
