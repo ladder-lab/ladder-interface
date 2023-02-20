@@ -15,6 +15,7 @@ import { Token } from 'constants/token'
 import { ChainId } from 'constants/chain'
 import { ReactComponent as Explore } from 'assets/svg/explore.svg'
 import v2_my_icon from 'assets/images/v2_my_icon.png'
+import prizepool_icon from 'assets/images/prizepool.jpeg'
 import Pencil from 'assets/images/pencil.png'
 import bannerImg from 'assets/images/v3_test_cover.jpg'
 import v3_logo from 'assets/images/v3_test_icon1.png'
@@ -112,7 +113,7 @@ const v3FaucetTokens = [
   }
 ]
 
-const v3ActiveTimeStamp = [1676876400000, 1678075200000]
+const v3ActiveTimeStamp = [1676876400000, 1678086000000]
 
 export default function TestnetV3() {
   const theme = useTheme()
@@ -434,15 +435,15 @@ export default function TestnetV3() {
                 <br />
                 <b>
                   1st Place for each category- 1 Gritti NFT + 1 Genso NFT+ 1 Isekai WL + 1 NextType WL + 1 Furion WL + 1
-                  StarryNift WL + 2000 $GP + 1 Metaboom NFT + 20 FANSI WL
+                  StarryNift WL + 2000 $GP + 1 Metaboom NFT + 3 FANSI WL
                 </b>
                 <br />
                 <b>
-                  2nd Place for each category- 1 NextType WL + 1 Furion WL + 1 StarryNift WL + 1000 $GP + 10 FANSI WL
+                  2nd Place for each category- 1 NextType WL + 1 Furion WL + 1 StarryNift WL + 1000 $GP + 2 FANSI WL
                 </b>
                 <br />
 
-                <b>3rd Place for each category- 300$GP + 5 FANSI WL</b>
+                <b>3rd Place for each category- 300$GP + 1 FANSI WL</b>
                 <br />
 
                 <b>
@@ -452,10 +453,11 @@ export default function TestnetV3() {
                 <br />
                 <b>
                   The remaining prizes (2 Gritti NFT, 2 Genso NFT, 2 Isekai WL, 4 NextType WL, 4 Furion WL, 4 StarryNift
-                  WL) will be rewarded to the top traders from each project.
+                  WL, 487 FANSI WL) will be rewarded to the top traders from each project.
                 </b>
                 <ul>
                   <li>Please keep in mind that you can only win prizes once*</li>
+                  <Image src={prizepool_icon} />
                 </ul>
               </StyledQABody>
             </Box>
