@@ -358,17 +358,21 @@ function NftCard({
       }}
     >
       <Box sx={{ width: '100%', height: 120, overflow: 'hidden' }}>
-        <LogoBase
-          srcs={token?.uri ? [token.uri] : []}
-          alt={token.name ?? ''}
-          style={{
-            borderRadius: '8px',
-            overflow: 'hidden',
-            width: '100%',
-            height: '100%',
-            objectFit: 'contain'
-          }}
-        />
+        {token.tokenUri ? (
+          <MetaDataLogo token={token} />
+        ) : (
+          <LogoBase
+            srcs={token.uri ? [token.uri] : []}
+            alt={token.name ?? ''}
+            style={{
+              borderRadius: '8px',
+              overflow: 'hidden',
+              width: '100%',
+              height: '100%',
+              objectFit: 'contain'
+            }}
+          />
+        )}
       </Box>
       <Typography
         sx={{
@@ -396,5 +400,33 @@ function NftCard({
         <span style={{ color: theme.palette.text.secondary }}>balance: </span> 1
       </Typography>
     </Box>
+  )
+}
+
+function MetaDataLogo({ token }: { token: Token721 }) {
+  const [curUri, setCurUri] = useState(token.uri)
+  const [reload, setReload] = useState(0)
+
+  useEffect(() => {
+    if (token.uri || curUri) {
+      token.uri !== curUri && token.uri && setCurUri(token.uri)
+      return
+    } else {
+      setTimeout(() => setReload(Math.random()), 3000)
+    }
+  }, [reload, curUri, token.uri])
+
+  return (
+    <LogoBase
+      srcs={curUri ? [curUri] : []}
+      alt={token.name ?? ''}
+      style={{
+        borderRadius: '8px',
+        overflow: 'hidden',
+        width: '100%',
+        height: '100%',
+        objectFit: 'contain'
+      }}
+    />
   )
 }

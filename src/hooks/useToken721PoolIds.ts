@@ -32,7 +32,7 @@ export function useToken721PoolIds(pairAddress: string | undefined, collection: 
               const _t = new Token721(collection?.chainId, collection?.address, +id.toString(), {
                 name: collection.name,
                 symbol: collection.symbol,
-                tokenUri: collection.tokenUri + id.toString(),
+                tokenUri: collection.tokenUri,
                 uri: isTeset721 && !collection.tokenUri ? getTest721uriWithIndex(collection?.uri || '', id) : undefined
               })
               return _t
