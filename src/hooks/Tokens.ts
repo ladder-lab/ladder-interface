@@ -126,12 +126,23 @@ const testTokens = {
       },
       []
     ),
+    '0xaDefa85603c36FcE62919fd85Cf60F90cb8Dc642': new WrappedTokenInfo(
+      {
+        chainId: 11155111,
+        address: '0xaDefa85603c36FcE62919fd85Cf60F90cb8Dc642',
+        decimals: 18,
+        symbol: 'tWETH',
+        name: 'testETH-LadderV3-ETH-Testnet',
+        logoURI: tWETHImg
+      },
+      []
+    ),
     '0x5069129410122A4C1F2448c77becDc5A8A784a5D': new WrappedTokenInfo(
       {
         chainId: 11155111,
         address: '0x5069129410122A4C1F2448c77becDc5A8A784a5D',
         decimals: 18,
-        symbol: 'tWETH',
+        symbol: 'tWETH_V2',
         name: 'testETH-LadderV2-ETH-Testnet',
         logoURI: tWETHImg
       },

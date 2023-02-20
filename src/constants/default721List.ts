@@ -170,7 +170,7 @@ export const DEFAULT_721_LIST: { [chainId in ChainId]?: Token721[] } = {
   [ChainId.SEPOLIA]: [...TEST_721_TESTNET_V3_LIST_SEPOLIA, ...TEST_721_LIST_SEPOLIA]
 }
 
-const v3Erc20Tokens = ['0x55979784068d1BEf37B49F41cAC8040A4b79C4a7', '0x5069129410122A4C1F2448c77becDc5A8A784a5D']
+const v3Erc20Tokens = ['0x55979784068d1BEf37B49F41cAC8040A4b79C4a7', '0xaDefa85603c36FcE62919fd85Cf60F90cb8Dc642']
 export function isTestnetV3Address(addresss: (string | undefined)[]) {
   for (const addr of addresss) {
     const len = test721TestnetV3ListSepolia.filter(item => addr && addr.toLowerCase() === item.address.toLowerCase())
