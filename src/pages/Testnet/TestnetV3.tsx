@@ -112,7 +112,7 @@ const v3FaucetTokens = [
   }
 ]
 
-const v3ActiveTimeStamp = [1676865600000, 1678075200000]
+const v3ActiveTimeStamp = [1676876400000, 1678075200000]
 
 export default function TestnetV3() {
   const theme = useTheme()
