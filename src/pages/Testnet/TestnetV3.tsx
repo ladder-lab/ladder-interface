@@ -229,7 +229,7 @@ export default function TestnetV3() {
                 </Button>
                 <Link
                   target={'_blank'}
-                  href="https://medium.com/@ladder_top/ladder-amm-protocol-testnet-rules-11176931e576"
+                  href="https://medium.com/@ladder_top/ladder-monopoly-rules-and-objectives-bf616d7becf7"
                   sx={{
                     textAlign: 'center',
                     color: theme.palette.text.primary,

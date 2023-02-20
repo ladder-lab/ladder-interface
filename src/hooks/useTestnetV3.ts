@@ -5,6 +5,7 @@ import { StatTopPoolsProp, topPoolsListDataHandler } from './useStatBacked'
 import { useActiveWeb3React } from 'hooks'
 
 export function useV3ActivityData(chainId: ChainId) {
+  const { account } = useActiveWeb3React()
   const [result, setResult] = useState<{
     transfers: number
     tvl: number
@@ -19,7 +20,8 @@ export function useV3ActivityData(chainId: ChainId) {
       }
       try {
         const res = await Axios.get(StatBaseURL + 'getActivityData', {
-          chainId
+          chainId,
+          account: account || ''
         })
         const data = res.data.data as any
         if (!data) {
@@ -36,7 +38,7 @@ export function useV3ActivityData(chainId: ChainId) {
         console.error('useV3ActivityData', error)
       }
     })()
-  }, [chainId])
+  }, [account, chainId])
 
   return result
 }
