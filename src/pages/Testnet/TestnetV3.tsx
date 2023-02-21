@@ -37,6 +37,7 @@ import {
 // import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
 // import Copy from 'components/essential/Copy'
 import V3Rewards from './V3Rewards'
+import { LightTooltip } from 'components/TestnetV3Mark'
 
 const BannerText = styled(Typography)(({ theme }) => ({
   fontSize: 48,
@@ -312,16 +313,18 @@ export default function TestnetV3() {
                     )}
                   </StyledButtonWrapper>
                   <Box margin="0 15px">
-                    <Link
-                      display={'flex'}
-                      alignItems="center"
-                      fontWeight={600}
-                      href="https://web.getlaika.app/faucets"
-                      target={'_blank'}
-                    >
-                      Sepolia Faucet
-                      <Explore />
-                    </Link>
+                    <LightTooltip title={<FaucetsList />} arrow>
+                      <Link
+                        display={'flex'}
+                        alignItems="center"
+                        fontWeight={600}
+                        href="https://web.getlaika.app/faucets"
+                        target={'_blank'}
+                      >
+                        Sepolia Faucet
+                        <Explore />
+                      </Link>
+                    </LightTooltip>
                   </Box>
                 </Box>
               </Box>
@@ -357,7 +360,6 @@ export default function TestnetV3() {
                   Partners
                 </Typography>
               </Box>
-              <Typography>thanks to our partners to provide the additional prizes</Typography>
             </RowBetween>
           }
         >
@@ -900,6 +902,45 @@ function MyRankItem({ num }: { num: string | number }) {
       >
         {num}
       </Typography>
+    </Box>
+  )
+}
+
+function FaucetsList() {
+  const list = [
+    {
+      name: 'Faucet Link',
+      link: 'https://faucetlink.to/sepolia'
+    },
+    {
+      name: 'Ethereum Sepolia | Coinbase Faucet',
+      link: 'https://coinbase.com/faucets/ethereum-sepolia-faucet'
+    },
+    {
+      name: 'Sepolia Faucet',
+      link: 'https://sepoliafaucet.net/'
+    },
+    {
+      name: 'All That Node | Multi-chain API & Dev-tools, Web3 Infrastructure',
+      link: 'https://www.allthatnode.com/faucet/ethereum.dsrv'
+    },
+    {
+      name: 'Laika',
+      link: 'https://web.getlaika.app/faucets'
+    }
+  ]
+  return (
+    <Box>
+      <Typography>More:</Typography>
+      <ul>
+        {list.map(item => (
+          <li key={item.name}>
+            <Link href={item.link} target="_blank">
+              {item.name}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </Box>
   )
 }

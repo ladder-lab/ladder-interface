@@ -3,7 +3,7 @@ import { ReactComponent as Mark } from 'assets/svg/testnetv3Mark.svg'
 import { isTestnetV3Address } from 'constants/default721List'
 import { useMemo } from 'react'
 
-const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
+export const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
   [`& .${tooltipClasses.tooltip}`]: {
