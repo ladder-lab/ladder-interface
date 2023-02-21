@@ -30,17 +30,20 @@ import Image from 'components/Image'
 import {
   useV3AccountAssetsRankTop,
   useV3AccountLiquidityRankTop,
-  useV3AccountVolumeRankTop,
-  useV3PoolTop10
+  useV3AccountVolumeRankTop
+  // useV3PoolTop10
 } from 'hooks/useTestnetV3'
-import { ShowTopPoolsCurrencyBox } from 'pages/Statistics'
-import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
-import Copy from 'components/essential/Copy'
+// import { ShowTopPoolsCurrencyBox } from 'pages/Statistics'
+// import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
+// import Copy from 'components/essential/Copy'
 import V3Rewards from './V3Rewards'
 
-const BannerText = styled(Typography)({
-  fontSize: 48
-})
+const BannerText = styled(Typography)(({ theme }) => ({
+  fontSize: 48,
+  [theme.breakpoints.down('sm')]: {
+    fontSize: 30
+  }
+}))
 
 const StyledButtonWrapper = styled(Box)(({ theme }) => ({
   maxWidth: 400,
@@ -348,16 +351,71 @@ export default function TestnetV3() {
         <Collapse
           defaultOpen
           title={
+            <RowBetween flexWrap="wrap">
+              <Box>
+                <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                  Partners
+                </Typography>
+              </Box>
+              <Typography>thanks to our partners to provide the additional prizes</Typography>
+            </RowBetween>
+          }
+        >
+          <V3Rewards />
+        </Collapse>
+      </StyledCardWrapper>
+
+      <StyledCardWrapper>
+        <Collapse
+          defaultOpen
+          title={
             <RowBetween>
               <Box display={'flex'}>
                 <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
-                  Rewards
+                  Experience more novel features of ladder!
                 </Typography>
               </Box>
             </RowBetween>
           }
         >
-          <V3Rewards />
+          <Box>
+            <Stack spacing={12} mt={28}>
+              <V3TaskItem testnetStatus={testnetV2Status} />
+
+              <RowBetween flexWrap={'wrap'}>
+                <Box display={'flex'} width="100%" justifyContent="flex-end" alignItems="center" mt={5}>
+                  {testnetV2Status.pairIsFin &&
+                    testnetV2Status.buy721Completed &&
+                    testnetV2Status.sell721Completed &&
+                    testnetV2Status.buy1155Completed &&
+                    testnetV2Status.sell1155Completed && (
+                      <Typography fontWeight={600} mr={5} color={theme.palette.text.secondary}>
+                        Thanks for completing all tasks, you will go directly to the whitelist for the follow-up event
+                      </Typography>
+                    )}
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      if (!account) {
+                        toggleWalletModal()
+                      } else {
+                        navigate(routes.feedback)
+                      }
+                    }}
+                    sx={{
+                      width: 198,
+                      height: 52
+                    }}
+                  >
+                    <Typography mr={10} color={theme.palette.info.main} fontWeight={600} fontSize={16}>
+                      Submit feedback
+                    </Typography>
+                    <img src={Pencil} width={20} />
+                  </Button>
+                </Box>
+              </RowBetween>
+            </Stack>
+          </Box>
         </Collapse>
       </StyledCardWrapper>
 
@@ -423,8 +481,8 @@ export default function TestnetV3() {
                 <b>Our prize pool contains;</b>
                 <br />
                 <b>
-                  5 Gritti NFT’s, 5 Genso WL, 5 Isekai Meta WL, 10 NextType WL,10 Furion WL, 10 Starry Nift WL, 10K $GP,
-                  3 Metaboom NFT, 500 Fansi WL.
+                  5 Gritti NFT’s, 5 Genso NFT, 5 Isekai Meta WL, 10 NextType WL,10 Furion WL, 10 Starry Nift WL, 10K
+                  $GP, 3 Metaboom NFT, 500 Fansi WL.
                 </b>
               </StyledQABody>
             </Box>
@@ -457,7 +515,7 @@ export default function TestnetV3() {
                 </b>
                 <ul>
                   <li>Please keep in mind that you can only win prizes once*</li>
-                  <Image src={prizepool_icon} />
+                  <Image style={{ maxWidth: '100%' }} src={prizepool_icon} />
                 </ul>
               </StyledQABody>
             </Box>
@@ -541,60 +599,6 @@ export default function TestnetV3() {
           </Stack>
         </Collapse>
       </StyledCardWrapper>
-
-      <StyledCardWrapper>
-        <Collapse
-          defaultOpen
-          title={
-            <RowBetween>
-              <Box display={'flex'}>
-                <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
-                  Experience more novel features of ladder!
-                </Typography>
-              </Box>
-            </RowBetween>
-          }
-        >
-          <Box>
-            <Stack spacing={12} mt={28}>
-              <V3TaskItem testnetStatus={testnetV2Status} />
-
-              <RowBetween flexWrap={'wrap'}>
-                <Box display={'flex'} width="100%" justifyContent="flex-end" alignItems="center" mt={5}>
-                  {testnetV2Status.pairIsFin &&
-                    testnetV2Status.buy721Completed &&
-                    testnetV2Status.sell721Completed &&
-                    testnetV2Status.buy1155Completed &&
-                    testnetV2Status.sell1155Completed && (
-                      <Typography fontWeight={600} mr={5} color={theme.palette.text.secondary}>
-                        Thanks for completing all tasks, you will go directly to the whitelist for the follow-up event
-                      </Typography>
-                    )}
-                  <Button
-                    variant="outlined"
-                    onClick={() => {
-                      if (!account) {
-                        toggleWalletModal()
-                      } else {
-                        navigate(routes.feedback)
-                      }
-                    }}
-                    sx={{
-                      width: 198,
-                      height: 52
-                    }}
-                  >
-                    <Typography mr={10} color={theme.palette.info.main} fontWeight={600} fontSize={16}>
-                      Submit feedback
-                    </Typography>
-                    <img src={Pencil} width={20} />
-                  </Button>
-                </Box>
-              </RowBetween>
-            </Stack>
-          </Box>
-        </Collapse>
-      </StyledCardWrapper>
     </Stack>
   )
 }
@@ -604,40 +608,40 @@ function LeaderBoardBox() {
   const curChainId = ChainId.SEPOLIA
   const { account } = useActiveWeb3React()
 
-  const v3PoolTop10 = useV3PoolTop10(curChainId)
-  const topPairRows = useMemo(
-    () =>
-      v3PoolTop10?.map((item, index) => {
-        const nftInfo =
-          item.token0.type === Mode.ERC721 || item.token0.type === Mode.ERC1155
-            ? item.token0
-            : item.token1.type === Mode.ERC721 || item.token1.type === Mode.ERC1155
-            ? item.token1
-            : undefined
-        return [
-          index + 1,
-          <ShowTopPoolsCurrencyBox
-            key={index}
-            chainId={curChainId}
-            pair={item.pair}
-            token0Info={item.token0}
-            token1Info={item.token1}
-          />,
-          formatMillion(Number(item.tvl) || 0, '$ ', 2),
-          formatMillion(Number(item.Volume) || 0, '$ ', 2),
-          nftInfo ? formatMillion(Number(nftInfo.price) || 0, '$ ', 2) : '-',
-          nftInfo ? (
-            <Box display={'flex'} alignItems="center">
-              {shortenAddress(nftInfo.address)}
-              <Copy toCopy={nftInfo.address} />
-            </Box>
-          ) : (
-            '-'
-          )
-        ]
-      }) || [],
-    [curChainId, v3PoolTop10]
-  )
+  // const v3PoolTop10 = useV3PoolTop10(curChainId)
+  // const topPairRows = useMemo(
+  //   () =>
+  //     v3PoolTop10?.map((item, index) => {
+  //       const nftInfo =
+  //         item.token0.type === Mode.ERC721 || item.token0.type === Mode.ERC1155
+  //           ? item.token0
+  //           : item.token1.type === Mode.ERC721 || item.token1.type === Mode.ERC1155
+  //           ? item.token1
+  //           : undefined
+  //       return [
+  //         index + 1,
+  //         <ShowTopPoolsCurrencyBox
+  //           key={index}
+  //           chainId={curChainId}
+  //           pair={item.pair}
+  //           token0Info={item.token0}
+  //           token1Info={item.token1}
+  //         />,
+  //         formatMillion(Number(item.tvl) || 0, '$ ', 2),
+  //         formatMillion(Number(item.Volume) || 0, '$ ', 2),
+  //         nftInfo ? formatMillion(Number(nftInfo.price) || 0, '$ ', 2) : '-',
+  //         nftInfo ? (
+  //           <Box display={'flex'} alignItems="center">
+  //             {shortenAddress(nftInfo.address)}
+  //             <Copy toCopy={nftInfo.address} />
+  //           </Box>
+  //         ) : (
+  //           '-'
+  //         )
+  //       ]
+  //     }) || [],
+  //   [curChainId, v3PoolTop10]
+  // )
 
   const { rankList: accountVolumeRankList, accountRank: accountVolumeRank } = useV3AccountVolumeRankTop(curChainId)
   const { rankList: accountAssetsRankList, accountRank: accountAssetsRank } = useV3AccountAssetsRankTop(curChainId)
@@ -725,14 +729,14 @@ function LeaderBoardBox() {
         <LeaderBoardRank rows={topVolumeTraded} bgcolors={bgcolors} title="Top Volume Traded" />
       </Box>
 
-      <Box mt={30}>
+      {/* <Box mt={30}>
         <LeaderBoardRank
           rows={topPairRows}
           minHeight={400}
           title="Top Pair"
           headers={['#', 'Name', 'TVL↓', 'Volume 24H', 'Floor price', 'NFT contract']}
         />
-      </Box>
+      </Box> */}
     </Box>
   )
 }
@@ -751,6 +755,7 @@ function LeaderBoardRank({
   minHeight?: number
 }) {
   const theme = useTheme()
+  const isSmDown = useBreakpoint('sm')
   const { account } = useActiveWeb3React()
   return (
     <Box>
@@ -784,10 +789,17 @@ function LeaderBoardRank({
             minHeight: minHeight || {
               md: account ? 850 : 776,
               xs: 'unset'
-            }
+            },
+            maxWidth: '100%',
+            overflowX: 'auto'
           }}
         >
-          <V3TestnetTable bgcolors={bgcolors} rows={rows} header={headers || ['#', 'User', 'Value']}></V3TestnetTable>
+          <V3TestnetTable
+            fontSize={isSmDown ? '12px' : '16px'}
+            bgcolors={bgcolors}
+            rows={rows}
+            header={headers || ['#', 'User', 'Value']}
+          ></V3TestnetTable>
         </Box>
       </Box>
     </Box>
@@ -838,8 +850,9 @@ function Banner({ setOpenTrue }: { setOpenTrue: () => void }) {
               display: 'grid',
               gridTemplateColumns: 'auto auto auto',
               gap: '0 10px',
+              maxWidth: { xs: '60%', sm: 'unset' },
               '& span': {
-                fontSize: 48
+                fontSize: { sm: 48, xs: 30 }
               }
             }}
           >

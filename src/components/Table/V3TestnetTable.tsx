@@ -14,25 +14,28 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 // import { visuallyHidden } from '@mui/utils'
 
-const StyledTableContainer = styled(TableContainer)({
+const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
   display: 'table',
   '& .MuiTableCell-root': {
     borderBottom: 'none',
     fontWeight: 400,
-    padding: '10px 20px'
+    padding: '10px 20px',
     // '&:first-of-type': {
     //   paddingLeft: 20
     // },
     // '&:last-child': {
     //   paddingRight: 20
     // }
+    [theme.breakpoints.down('sm')]: {
+      padding: '4px 10px'
+    }
   },
   '& table': {
     width: '100%',
     borderCollapse: 'separate',
     borderSpacing: '0 10px'
   }
-})
+}))
 
 const StyledTableHead = styled(TableHead)(({}) => ({
   borderRadius: 8,
@@ -57,7 +60,8 @@ const StyledTableRow = styled(TableRow, { shouldForwardProp: () => true })<{
   variant: 'outlined' | 'grey'
   fontSize?: string
   bgcolor?: string
-}>(({ fontSize, bgcolor }) => ({
+  theme?: any
+}>(({ fontSize, bgcolor, theme }) => ({
   height: 60,
   borderRadius: '16px',
   overflow: 'hidden',
@@ -80,6 +84,14 @@ const StyledTableRow = styled(TableRow, { shouldForwardProp: () => true })<{
       paddingRight: '20px',
       borderTopRightRadius: 12,
       borderBottomRightRadius: 12
+    },
+    [theme.breakpoints.down('sm')]: {
+      '&:first-of-type': {
+        paddingLeft: '10px'
+      },
+      '&:last-child': {
+        paddingRight: '10px'
+      }
     }
   }
 }))

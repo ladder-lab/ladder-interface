@@ -242,6 +242,7 @@ export default function Testnet() {
                 sx={{
                   width: 186,
                   height: 52,
+                  fontSize: { xs: 12, sm: 14 },
                   borderColor: '#1F9898',
                   color: '#1F9898',
                   background: roundIndex === item ? 'rgba(31, 152, 152, 0.1) !important' : 'inherit'

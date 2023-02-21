@@ -85,7 +85,7 @@ export default function V3Rewards() {
       sx={{
         mt: 20,
         display: 'grid',
-        justifyContent: 'space-between',
+        justifyContent: { sm: 'space-between', xs: 'center' },
         gridTemplateColumns: 'repeat(auto-fill, 240px)',
         gap: 20
       }}
