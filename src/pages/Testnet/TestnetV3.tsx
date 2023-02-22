@@ -38,6 +38,7 @@ import {
 // import Copy from 'components/essential/Copy'
 import V3Rewards from './V3Rewards'
 import { LightTooltip } from 'components/TestnetV3Mark'
+import QuestionHelper from 'components/essential/QuestionHelper'
 
 const BannerText = styled(Typography)(({ theme }) => ({
   fontSize: 48,
@@ -726,8 +727,18 @@ function LeaderBoardBox() {
           }
         }}
       >
-        <LeaderBoardRank rows={topAssetsValue} bgcolors={bgcolors} title="Top Asset Value" />
-        <LeaderBoardRank rows={topLiquidityValue} bgcolors={bgcolors} title="Top Liquidity Provided" />
+        <LeaderBoardRank
+          rows={topAssetsValue}
+          bgcolors={bgcolors}
+          title="Top Asset Value"
+          helper="Update once an hour"
+        />
+        <LeaderBoardRank
+          rows={topLiquidityValue}
+          bgcolors={bgcolors}
+          title="Top Liquidity Provided"
+          helper="Update once an hour"
+        />
         <LeaderBoardRank rows={topVolumeTraded} bgcolors={bgcolors} title="Top Volume Traded" />
       </Box>
 
@@ -748,6 +759,7 @@ function LeaderBoardRank({
   rows,
   bgcolors,
   title,
+  helper,
   minHeight
 }: {
   headers?: string[]
@@ -755,6 +767,7 @@ function LeaderBoardRank({
   rows: (string | number | JSX.Element)[][]
   bgcolors?: string[]
   minHeight?: number
+  helper?: string
 }) {
   const theme = useTheme()
   const isSmDown = useBreakpoint('sm')
@@ -772,7 +785,10 @@ function LeaderBoardRank({
             display: 'inline-block'
           }}
         >
-          {title}
+          <Typography display={'flex'} alignItems="center">
+            {title}
+            {helper && <QuestionHelper style={{ marginLeft: 5 }} text={helper} />}
+          </Typography>
         </Box>
       </Box>
       <Box

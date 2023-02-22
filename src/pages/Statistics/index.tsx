@@ -389,8 +389,11 @@ export function TopPoolsList({
     {
       label: (
         <Typography>
-          {item.token0?.price ? formatMillion(Number(item.token0.price), '$', 4) : '-'}/
-          {item.token1?.price ? formatMillion(Number(item.token1.price), '$', 4) : '-'}
+          {/* {item.token0?.price ? formatMillion(Number(item.token0.price), '$', 4) : '-'}/
+          {item.token1?.price ? formatMillion(Number(item.token1.price), '$', 4) : '-'} */}
+          {[Mode.ERC1155, Mode.ERC721].includes(item.token0.type)
+            ? formatMillion(Number(item.token0?.price || 0), '$', 4)
+            : formatMillion(Number(item.token1?.price || 0), '$', 4)}
         </Typography>
       )
     },
