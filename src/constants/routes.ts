@@ -16,6 +16,7 @@ export const routes = {
   statisticsTokensParams: '/:type/:chainId/:address/:token1155Id',
   statisticsPools: '/statistics/pair_pools',
   statisticsPoolsParams: '/:chainId/:pair',
+  sbt: '/earn/sbt',
   feedback: '/feedback'
 }
 
