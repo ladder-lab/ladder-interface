@@ -17,7 +17,7 @@ const RelativeBox = styled(Box)`
   background-color: white;
   background-image: url(${Head});
 `
-const BlackText = styled(Typography)`
+export const BlackText = styled(Typography)`
   color: #333333;
 `
 const BlackCard = styled(Box)`
