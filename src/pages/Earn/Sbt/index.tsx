@@ -8,6 +8,7 @@ import SbtDeco from 'assets/images/sbt_deco.png'
 
 const ContentWrapper = styled(Box)`
   width: 100%;
+  background-color: white;
   height: 100%;
 `
 const RelativeBox = styled(Box)`
@@ -26,7 +27,7 @@ const BlackCard = styled(Box)`
   display: flex;
   align-items: center;
   flex-direction: column;
-  margin: -60px 0 160px 0;
+  margin: -60px 45px 160px 45px;
   padding: 52px 40px 62px 40px;
 `
 const WhiteText = styled(Typography)`
@@ -51,6 +52,7 @@ const FlexWrap = styled(Box)`
 `
 
 const CenterBox = styled(Box)`
+  padding: 90px 0 78px 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -70,21 +72,18 @@ function SBTCube({ icon, amount }: { icon: string; amount: string }) {
 
 const SpaceBtwBox = styled(Box)`
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-between;
+  padding: 0 45px 0 45px;
   width: 100%;
 `
 
 const DescCardBg = styled(Box)`
   background-color: #f6f6f6;
   padding: 24px;
+  width: 100%;
   border-radius: 20px;
   display: flex;
   justify-content: center;
-`
-const WhiteBg = styled(Box)`
-  background-color: white;
-  width: 100%;
 `
 
 function DescCard({ icon, title, desc }: { icon: string; title: string; desc: string }) {
@@ -175,61 +174,65 @@ export default function Sbt() {
           Build NFT liquidity with Ladder
         </BlackText>
       </RelativeBox>
-      <WhiteBg>
-        <BlackCard>
-          <WhiteText fontSize={32}>Mint your SBT</WhiteText>
-          <WhiteText fontSize={20} mt={16}>
-            Mint your first SBT from the Ladder Partner
-          </WhiteText>
-          <FlexWrap>
-            {fakeData.map((item, index) => {
-              return <SBTCube icon={item.icon} amount={item.amount} key={index} />
-            })}
-          </FlexWrap>
-        </BlackCard>
-        <SpaceBtwBox>
-          <Box>
-            <BlackText fontSize={32}>What is Ladder Owner SBT</BlackText>
-            <BlackText fontSize={20}>
-              Ladder Owner SBT is a soul-bound token issued by Ladder & Our Partners. SBT holders will continue to share
-              the benefits of Ladder Protocol.
-            </BlackText>
-          </Box>
-          <Stack gap={13}>
-            {fakeDesc.map((item, index) => {
-              return <DescCard icon={item.icon} title={item.title} desc={item.desc} key={index} />
-            })}
-          </Stack>
-        </SpaceBtwBox>
-        <CenterBox sx={{ backgroundColor: '#F0F9F9' }}>
-          <Typography color={'#1F9898'} fontSize={32}>
-            How to Become a Ladder Partner
-          </Typography>
-          <Box sx={{ display: 'flex' }}>
-            <Button>Apply Now</Button>
-            <Button variant={'outlined'}>More Detail</Button>
-          </Box>
-        </CenterBox>
-        <SpaceBtwBox>
-          <img src={SbtDeco} />
-          <Box>
-            <BlackText fontSize={32}>Check your SBT and invite earnings!</BlackText>
-            <Button variant={'outlined'}>My Account</Button>
-          </Box>
-        </SpaceBtwBox>
-        <BlackText>
-          What are the main benefits <br /> of the Ladder Owner SBT Program
-        </BlackText>
-        <Grid container gap={16}>
-          {fakeBenefits.map((item, index) => {
-            return (
-              <Grid item md={5} key={index}>
-                <BenefitsCard title={item.title} desc={item.desc} />
-              </Grid>
-            )
+      <BlackCard>
+        <WhiteText fontSize={32}>Mint your SBT</WhiteText>
+        <WhiteText fontSize={20} mt={16}>
+          Mint your first SBT from the Ladder Partner
+        </WhiteText>
+        <FlexWrap>
+          {fakeData.map((item, index) => {
+            return <SBTCube icon={item.icon} amount={item.amount} key={index} />
           })}
-        </Grid>
-      </WhiteBg>
+        </FlexWrap>
+      </BlackCard>
+      <SpaceBtwBox>
+        <Box width={'49%'}>
+          <BlackText fontSize={32} fontWeight={700}>
+            What is Ladder Owner SBT
+          </BlackText>
+          <BlackText fontSize={20} mt={32}>
+            Ladder Owner SBT is a soul-bound token issued by Ladder & Our Partners. SBT holders will continue to share
+            the benefits of Ladder Protocol.
+          </BlackText>
+        </Box>
+        <Stack gap={13} width={'49%'}>
+          {fakeDesc.map((item, index) => {
+            return <DescCard icon={item.icon} title={item.title} desc={item.desc} key={index} />
+          })}
+        </Stack>
+      </SpaceBtwBox>
+      <CenterBox sx={{ backgroundColor: '#F0F9F9', marginTop: '90px' }}>
+        <Typography color={'#1F9898'} fontSize={32} fontWeight={700}>
+          How to Become a Ladder Partner
+        </Typography>
+        <Box sx={{ display: 'flex', marginTop: '32px' }}>
+          <Button>Apply Now</Button>
+          <Button variant={'outlined'}>More Detail</Button>
+        </Box>
+      </CenterBox>
+      <SpaceBtwBox alignItems={'center'}>
+        <img src={SbtDeco} />
+        <Box>
+          <BlackText fontSize={32} fontWeight={700}>
+            Check your SBT and invite earnings!
+          </BlackText>
+          <Button variant={'outlined'} style={{ marginTop: '32px' }}>
+            My Account
+          </Button>
+        </Box>
+      </SpaceBtwBox>
+      <BlackText fontSize={32} fontWeight={700} textAlign={'center'}>
+        What are the main benefits <br /> of the Ladder Owner SBT Program
+      </BlackText>
+      <Grid container spacing={16} mt={52} mb={60}>
+        {fakeBenefits.map((item, index) => {
+          return (
+            <Grid item md={6} key={index}>
+              <BenefitsCard title={item.title} desc={item.desc} />
+            </Grid>
+          )
+        })}
+      </Grid>
     </ContentWrapper>
   )
 }
