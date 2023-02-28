@@ -62,7 +62,7 @@ export default function V3Rewards() {
       img: StarryNift
     },
     {
-      name: 'Aperion',
+      name: 'Apeiron',
       link: 'https://twitter.com/ApeironNFT',
       img: 'https://pbs.twimg.com/profile_images/1463778839914430465/Hfm1z5nH_400x400.jpg'
     },
