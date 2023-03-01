@@ -467,55 +467,38 @@ export default function TestnetV3() {
             <Box>
               <StyledQATitle>3. Partners:</StyledQATitle>
               <StyledQABody>
-                <b>
-                  Our list of Partners for Monopoly include Starry Nift, Weirdo Ghost Gang, Gritti, Isekai Meta, Furion,
-                  Genso, Fansi, NEXTPE, Gamespace, and Wonderpals!
-                </b>
+                Our list of Partners for Monopoly include Starry Nift, Weirdo Ghost Gang, Gritti, Isekai Meta, Furion,
+                Genso, Fansi, NEXTPE, Gamespace, and Wonderpals!
                 <br />
-                <b>
-                  Thank you to all of our partners who participated, and to those that contributed to our prize pool in
-                  order to make Monopoly as great as possible!
-                </b>
+                Thank you to all of our partners who participated, and to those that contributed to our prize pool in
+                order to make Monopoly as great as possible!
               </StyledQABody>
             </Box>
             <Box>
               <StyledQATitle>4. Prizes:</StyledQATitle>
               <StyledQABody>
-                <b>Our prize pool contains;</b>
-                <br />
-                <b>
-                  5 Gritti NFT’s, 5 Genso NFT, 5 Isekai Meta WL, 10 NextType WL,10 Furion WL, 10 Starry Nift WL, 10K
-                  $GP, 3 Metaboom NFT, 500 Fansi WL.
-                </b>
+                Our prize pool contains;
+                <br />5 Gritti NFT’s, 5 Genso NFT, 5 Isekai Meta WL, 10 NextType WL,10 Furion WL, 10 Starry Nift WL, 10K
+                $GP, 3 Metaboom NFT, 500 Fansi WL.
               </StyledQABody>
             </Box>
             <Box>
               <StyledQATitle>5. Prize Split:</StyledQATitle>
               <StyledQABody>
-                <b>Prizes will be split as such;</b>
+                Prizes will be split as such;
                 <br />
-                <b>
-                  1st Place for each category- 1 Gritti NFT + 1 Genso NFT+ 1 Isekai WL + 1 NextType WL + 1 Furion WL + 1
-                  StarryNift WL + 2000 $GP + 1 Metaboom NFT + 3 FANSI WL
-                </b>
+                1st Place for each category- 1 Gritti NFT + 1 Genso NFT+ 1 Isekai WL + 1 NextType WL + 1 Furion WL + 1
+                StarryNift WL + 2000 $GP + 1 Metaboom NFT + 3 FANSI WL
                 <br />
-                <b>
-                  2nd Place for each category- 1 NextType WL + 1 Furion WL + 1 StarryNift WL + 1000 $GP + 2 FANSI WL
-                </b>
+                2nd Place for each category- 1 NextType WL + 1 Furion WL + 1 StarryNift WL + 1000 $GP + 2 FANSI WL
                 <br />
-
-                <b>3rd Place for each category- 300$GP + 1 FANSI WL</b>
+                3rd Place for each category- 300$GP + 1 FANSI WL
                 <br />
-
-                <b>
-                  The Top 20% of all wallet addresses for each category will be rewarded a Ladder Monopoly SBT to
-                  celebrate their success.
-                </b>
+                The Top 20% of all wallet addresses for each category will be rewarded a Ladder Monopoly SBT to
+                celebrate their success.
                 <br />
-                <b>
-                  The remaining prizes (2 Gritti NFT, 2 Genso NFT, 2 Isekai WL, 4 NextType WL, 4 Furion WL, 4 StarryNift
-                  WL, 487 FANSI WL) will be rewarded to the top traders from each project.
-                </b>
+                The remaining prizes (2 Gritti NFT, 2 Genso NFT, 2 Isekai WL, 4 NextType WL, 4 Furion WL, 4 StarryNift
+                WL, 487 FANSI WL) will be rewarded to the top traders from each project.
                 <ul>
                   <li>Please keep in mind that you can only win prizes once*</li>
                   <Image style={{ maxWidth: '100%' }} src={prizepool_icon} />
