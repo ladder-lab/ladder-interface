@@ -61,7 +61,7 @@ function TaskItem({
 
           {completed ? (
             <Box alignSelf={'end'} display={'flex'} alignItems="center" sx={{ mt: { xs: 10, sm: 0 } }}>
-              <Typography mr={10} fontWeight={600} color={theme.palette.info.main}>
+              <Typography mr={10} fontWeight={600} color={theme.palette.secondary.light}>
                 Completed
               </Typography>
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
