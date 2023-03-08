@@ -25,6 +25,7 @@ import StatisticsPools from './Statistics/Pools'
 import Feedback from './Feedback'
 import GoogleAnalyticsReporter from 'components/analytics/GoogleAnalyticsReporter'
 import Sbt from './Earn/Sbt'
+import ListOfWinners from './Testnet/ListOfWinners'
 
 const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
   ({ theme, isDarkMode }) => ({
@@ -87,6 +88,7 @@ export default function App() {
               <Web3ReactManager>
                 <Routes>
                   <Route path={routes.testnet} element={<Testnet />} />
+                  <Route path={routes.winners} element={<ListOfWinners />} />
                   <Route path={routes.explorer} element={<Explorer />} />
                   <Route path={routes.explorer + routes.collectionParams} element={<Collection />} />
                   <Route path={routes.swap} element={<Swap />}>

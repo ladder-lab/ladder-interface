@@ -64,7 +64,7 @@ const StyledButtonWrapper = styled(Box)(({ theme }) => ({
   }
 }))
 
-const StyledCardWrapper = styled(Box)(({ theme }) => ({
+export const StyledCardWrapper = styled(Box)(({ theme }) => ({
   border: `1px solid ${theme.color.color1}`,
   borderRadius: '16px',
   padding: '30px 28px',
@@ -435,7 +435,13 @@ export default function TestnetV3() {
               marginTop: '35px'
             }}
           >
-            <Button variant={'contained'} sx={{ width: '45%' }}>
+            <Button
+              variant={'contained'}
+              sx={{ width: '45%' }}
+              onClick={() => {
+                navigate(routes.winners)
+              }}
+            >
               Find Prize Winners here!
             </Button>
             <Typography fontSize={16} color={theme.palette.info.main} mt={16}>
