@@ -102,7 +102,7 @@ export default function ListOfWinners() {
     }
   }
 
-  function ClaimBtn({ type }: { type: SBTType }) {
+  function ClaimBtn({ type }: { type?: SBTType }) {
     let url = ''
     switch (type) {
       case SBTType.ASSET:
@@ -116,17 +116,22 @@ export default function ListOfWinners() {
         break
     }
     return (
-      <Button
-        onClick={() => {
-          window.open(url, '_blank', 'noreferrer')
-        }}
-        sx={{
-          background: theme => theme.palette.primary.main,
-          color: isDarkMode ? '#000' : '#fff'
-        }}
-      >
-        Claim
-      </Button>
+      <Box width={'100%'} display={'flex'} justifyContent={'end'}>
+        <Button
+          onClick={() => {
+            if (url) {
+              window.open(url, '_blank', 'noreferrer')
+            }
+          }}
+          sx={{
+            background: theme => theme.palette.primary.main,
+            width: '90px',
+            color: isDarkMode ? '#000' : '#fff'
+          }}
+        >
+          Claim
+        </Button>
+      </Box>
     )
   }
 
@@ -173,7 +178,7 @@ export default function ListOfWinners() {
       temp[2] = formatMillion(Number(value[2]), '$', 4)
       temp[3] = formatMillion(Number(value[3]), '$', 4)
       temp[4] = formatMillion(Number(value[4]), '$', 4)
-      list.push([...temp, <ClaimBtn type={SBTType.VOLUME} key={index} />])
+      list.push([...temp, <ClaimBtn key={index} />])
     })
     return list
   }
