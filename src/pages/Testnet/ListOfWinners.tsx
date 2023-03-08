@@ -7,6 +7,7 @@ import V3TestnetTable from '../../components/Table/V3TestnetTable'
 import { useIsDarkMode } from '../../state/user/hooks'
 import { useActiveWeb3React } from '../../hooks'
 import { SBTAssetWinners, SBTLiquidity, SBTVolume } from '../../constants/WinnerData'
+import { formatMillion } from '../../utils'
 
 enum TabType {
   Monopoly,
@@ -132,13 +133,25 @@ export default function ListOfWinners() {
     const list: (string | number | JSX.Element)[][] = []
     switch (type) {
       case SBTType.ASSET:
-        SBTAssetWinners.forEach((value, index) => list.push([...value, <ClaimBtn type={type} key={index} />]))
+        SBTAssetWinners.forEach((value, index) => {
+          const temp = [...value]
+          temp[1] = formatMillion(Number(value[1]), '$', 4)
+          list.push([...temp, <ClaimBtn type={type} key={index} />])
+        })
         break
       case SBTType.LIQUIDITY:
-        SBTLiquidity.forEach((value, index) => list.push([...value, <ClaimBtn type={type} key={index} />]))
+        SBTLiquidity.forEach((value, index) => {
+          const temp = [...value]
+          temp[1] = formatMillion(Number(value[1]), '$', 4)
+          list.push([...temp, <ClaimBtn type={type} key={index} />])
+        })
         break
       case SBTType.VOLUME:
-        SBTVolume.forEach((value, index) => list.push([...value, <ClaimBtn type={type} key={index} />]))
+        SBTVolume.forEach((value, index) => {
+          const temp = [...value]
+          temp[1] = formatMillion(Number(value[1]), '$', 4)
+          list.push([...temp, <ClaimBtn type={type} key={index} />])
+        })
         break
     }
     return list
