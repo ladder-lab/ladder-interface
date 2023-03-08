@@ -126,6 +126,7 @@ export default function ListOfWinners() {
           sx={{
             background: theme => theme.palette.primary.main,
             width: '90px',
+            height: 44,
             color: isDarkMode ? '#000' : '#fff'
           }}
         >
@@ -168,7 +169,7 @@ export default function ListOfWinners() {
 
   function formatMonoList() {
     const list: (string | number | JSX.Element)[][] = []
-    MonopolyPrizeWinners.forEach((value, index) => {
+    MonopolyPrizeWinners.forEach(value => {
       const temp = [...value]
       temp[1] = (
         <Link target={'_blank'} mr={4} href={getEtherscanLink(ChainId.SEPOLIA, String(value[1]), 'address')}>
@@ -178,7 +179,8 @@ export default function ListOfWinners() {
       temp[2] = formatMillion(Number(value[2]), '$', 4)
       temp[3] = formatMillion(Number(value[3]), '$', 4)
       temp[4] = formatMillion(Number(value[4]), '$', 4)
-      list.push([...temp, <ClaimBtn key={index} />])
+      // list.push([...temp, <ClaimBtn key={index} />])
+      list.push([...temp])
     })
     return list
   }
@@ -298,6 +300,8 @@ export default function ListOfWinners() {
           {currentType == TabType.Monopoly && (
             <GradiantBg>
               <V3TestnetTable
+                cellPadding="5px 10px"
+                height="44px"
                 fontSize={isSmDown ? '12px' : '16px'}
                 rows={formatMonoList()}
                 header={['#', 'Winner', 'TVL daily avg', 'Asset Value', 'Total Transaction']}
@@ -308,7 +312,7 @@ export default function ListOfWinners() {
             <Box sx={{ width: '100%' }}>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                  <Tab label="Asset" {...a11yProps(0)} />
+                  <Tab label="Assets" {...a11yProps(0)} />
                   <Tab label="Liquidity" {...a11yProps(1)} />
                   <Tab label="Volume" {...a11yProps(2)} />
                 </Tabs>
@@ -316,6 +320,8 @@ export default function ListOfWinners() {
               <TabPanel value={value} index={0}>
                 <GradiantBg>
                   <V3TestnetTable
+                    cellPadding="5px 10px"
+                    height="44px"
                     fontSize={isSmDown ? '12px' : '16px'}
                     rows={addClaim(SBTType.ASSET)}
                     header={['Address', 'Asset Volume', '']}
@@ -325,6 +331,8 @@ export default function ListOfWinners() {
               <TabPanel value={value} index={1}>
                 <GradiantBg>
                   <V3TestnetTable
+                    cellPadding="5px 10px"
+                    height="44px"
                     fontSize={isSmDown ? '12px' : '16px'}
                     rows={addClaim(SBTType.LIQUIDITY)}
                     header={['Address', 'TVL Volume', '']}
@@ -334,6 +342,8 @@ export default function ListOfWinners() {
               <TabPanel value={value} index={2}>
                 <GradiantBg>
                   <V3TestnetTable
+                    cellPadding="5px 10px"
+                    height="44px"
                     fontSize={isSmDown ? '12px' : '16px'}
                     rows={addClaim(SBTType.VOLUME)}
                     header={['Address', 'volume', '']}
