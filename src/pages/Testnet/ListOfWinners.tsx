@@ -85,7 +85,7 @@ export default function ListOfWinners() {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
   }
-  const bgcolors = useMemo(() => {
+  useMemo(() => {
     const _bgcolors = [
       isDarkMode ? '#d8ff2029' : '#FDF1BE',
       isDarkMode ? '#ffffff4d' : '#F6F6F6',
@@ -299,7 +299,6 @@ export default function ListOfWinners() {
             <GradiantBg>
               <V3TestnetTable
                 fontSize={isSmDown ? '12px' : '16px'}
-                bgcolors={bgcolors}
                 rows={formatMonoList()}
                 header={['#', 'Winner', 'TVL daily avg', 'Asset Value', 'Total Transaction']}
               />
@@ -318,7 +317,6 @@ export default function ListOfWinners() {
                 <GradiantBg>
                   <V3TestnetTable
                     fontSize={isSmDown ? '12px' : '16px'}
-                    bgcolors={bgcolors}
                     rows={addClaim(SBTType.ASSET)}
                     header={['Address', 'Asset Volume', '']}
                   />
@@ -328,7 +326,6 @@ export default function ListOfWinners() {
                 <GradiantBg>
                   <V3TestnetTable
                     fontSize={isSmDown ? '12px' : '16px'}
-                    bgcolors={bgcolors}
                     rows={addClaim(SBTType.LIQUIDITY)}
                     header={['Address', 'TVL Volume', '']}
                   />
@@ -338,7 +335,6 @@ export default function ListOfWinners() {
                 <GradiantBg>
                   <V3TestnetTable
                     fontSize={isSmDown ? '12px' : '16px'}
-                    bgcolors={bgcolors}
                     rows={addClaim(SBTType.VOLUME)}
                     header={['Address', 'volume', '']}
                   />
