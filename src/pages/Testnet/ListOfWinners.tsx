@@ -176,6 +176,7 @@ export default function ListOfWinners() {
           <Box
             sx={{
               display: 'flex',
+              flexDirection: isSmDown ? 'column' : 'row',
               width: '100%',
               marginTop: '50px',
               marginBottom: '23px',
@@ -198,7 +199,7 @@ export default function ListOfWinners() {
                   setType(TabType.Monopoly)
                 }}
               >
-                Monopoly Prize Winners
+                <Typography fontSize={isSmDown ? '10px' : '16px'}>Monopoly Prize Winners</Typography>
               </Button>
               <Button
                 variant="outlined"
@@ -216,15 +217,25 @@ export default function ListOfWinners() {
                   setType(TabType.SBT)
                 }}
               >
-                SBT Prize Winners
+                <Typography fontSize={isSmDown ? '10px' : '16px'}>SBT Prize Winners</Typography>
               </Button>
             </Box>
             {currentType == TabType.SBT && (
-              <Box display={'flex'}>
-                <Typography fontSize={16} color={theme.palette.info.main}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: isSmDown ? 'column' : 'row',
+                  marginTop: isSmDown ? '10px' : '0'
+                }}
+              >
+                <Typography fontSize={isSmDown ? '9px' : '16px'} color={theme.palette.info.main}>
                   Available time
                 </Typography>
-                <Typography ml={10} fontSize={16} color={theme.palette.text.secondary}>
+                <Typography
+                  ml={isSmDown ? 0 : 10}
+                  fontSize={isSmDown ? '9px' : '16px'}
+                  color={theme.palette.text.secondary}
+                >
                   Mar 7th 19 PM SGT - Mar 13th 19PM SGT
                 </Typography>
               </Box>
