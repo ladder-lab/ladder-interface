@@ -426,6 +426,25 @@ export default function TestnetV3() {
           }
         >
           <V3Rewards />
+          <Box
+            sx={{
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              marginTop: '35px'
+            }}
+          >
+            <Button variant={'contained'} sx={{ width: '45%' }}>
+              Find Prize Winners here!
+            </Button>
+            <Typography fontSize={16} color={theme.palette.info.main} mt={16}>
+              Mar 7th 19 PM SGT - Mar 13th 19PM SGT
+            </Typography>
+            <Typography fontSize={16} color={theme.palette.text.secondary} mt={12}>
+              SBT Winners will be able to claim their prize over the next 7 days
+            </Typography>
+          </Box>
         </Collapse>
       </StyledCardWrapper>
 
