@@ -1,4 +1,4 @@
-import { Box, Button, Tab, Tabs, Typography, useTheme } from '@mui/material'
+import { Box, Button, Link, Tab, Tabs, Typography, useTheme } from '@mui/material'
 import Collapse from '../../components/Collapse'
 import { StyledCardWrapper } from './TestnetV3'
 import useBreakpoint from '../../hooks/useBreakpoint'
@@ -6,8 +6,9 @@ import React, { useMemo, useState } from 'react'
 import V3TestnetTable from '../../components/Table/V3TestnetTable'
 import { useIsDarkMode } from '../../state/user/hooks'
 import { useActiveWeb3React } from '../../hooks'
-import { SBTAssetWinners, SBTLiquidity, SBTVolume } from '../../constants/WinnerData'
-import { formatMillion } from '../../utils'
+import { MonopolyPrizeWinners, SBTAssetWinners, SBTLiquidity, SBTVolume } from '../../constants/WinnerData'
+import { formatMillion, getEtherscanLink, shortenAddress } from '../../utils'
+import { ChainId } from '../../constants/chain'
 
 enum TabType {
   Monopoly,
@@ -130,30 +131,50 @@ export default function ListOfWinners() {
   }
 
   function addClaim(type: SBTType) {
+    function format(value: (string | number | JSX.Element)[]) {
+      const temp = [...value]
+      temp[0] = (
+        <Link target={'_blank'} mr={4} href={getEtherscanLink(ChainId.SEPOLIA, String(value[0]), 'address')}>
+          {shortenAddress(String(value[0]))}
+        </Link>
+      )
+      temp[1] = formatMillion(Number(value[1]), '$', 4)
+      return temp
+    }
+
     const list: (string | number | JSX.Element)[][] = []
+    let source
     switch (type) {
       case SBTType.ASSET:
-        SBTAssetWinners.forEach((value, index) => {
-          const temp = [...value]
-          temp[1] = formatMillion(Number(value[1]), '$', 4)
-          list.push([...temp, <ClaimBtn type={type} key={index} />])
-        })
+        source = SBTAssetWinners
         break
       case SBTType.LIQUIDITY:
-        SBTLiquidity.forEach((value, index) => {
-          const temp = [...value]
-          temp[1] = formatMillion(Number(value[1]), '$', 4)
-          list.push([...temp, <ClaimBtn type={type} key={index} />])
-        })
+        source = SBTLiquidity
         break
       case SBTType.VOLUME:
-        SBTVolume.forEach((value, index) => {
-          const temp = [...value]
-          temp[1] = formatMillion(Number(value[1]), '$', 4)
-          list.push([...temp, <ClaimBtn type={type} key={index} />])
-        })
+        source = SBTVolume
         break
     }
+    source.forEach((value, index) => {
+      list.push([...format(value), <ClaimBtn type={type} key={index} />])
+    })
+    return list
+  }
+
+  function formatMonoList() {
+    const list: (string | number | JSX.Element)[][] = []
+    MonopolyPrizeWinners.forEach((value, index) => {
+      const temp = [...value]
+      temp[1] = (
+        <Link target={'_blank'} mr={4} href={getEtherscanLink(ChainId.SEPOLIA, String(value[1]), 'address')}>
+          {shortenAddress(String(value[1]))}
+        </Link>
+      )
+      temp[2] = formatMillion(Number(value[2]), '$', 4)
+      temp[3] = formatMillion(Number(value[3]), '$', 4)
+      temp[4] = formatMillion(Number(value[4]), '$', 4)
+      list.push([...temp, <ClaimBtn type={SBTType.VOLUME} key={index} />])
+    })
     return list
   }
 
@@ -202,17 +223,24 @@ export default function ListOfWinners() {
                 sx={
                   currentType == TabType.Monopoly
                     ? {
-                        background: theme => theme.palette.primary.main,
-                        color: isDarkMode ? '#000' : '#fff',
+                        background: 'rgba(31, 152, 152, 0.1)',
+                        width: 'inherit',
+                        border: '0px'
+                      }
+                    : {
                         width: 'inherit'
                       }
-                    : { width: 'inherit' }
                 }
                 onClick={() => {
                   setType(TabType.Monopoly)
                 }}
               >
-                <Typography fontSize={isSmDown ? '10px' : '16px'}>Monopoly Prize Winners</Typography>
+                <Typography
+                  fontSize={isSmDown ? '10px' : '16px'}
+                  color={isDarkMode ? '#000' : theme.palette.primary.main}
+                >
+                  Monopoly Prize Winners
+                </Typography>
               </Button>
               <Button
                 variant="outlined"
@@ -220,17 +248,25 @@ export default function ListOfWinners() {
                   currentType == TabType.SBT
                     ? {
                         marginLeft: '10px',
-                        background: theme => theme.palette.primary.main,
-                        color: isDarkMode ? '#000' : '#fff',
+                        background: 'rgba(31, 152, 152, 0.1)',
+                        border: '0px',
                         width: 'inherit'
                       }
-                    : { marginLeft: '10px', width: 'inherit' }
+                    : {
+                        marginLeft: '10px',
+                        width: 'inherit'
+                      }
                 }
                 onClick={() => {
                   setType(TabType.SBT)
                 }}
               >
-                <Typography fontSize={isSmDown ? '10px' : '16px'}>SBT Prize Winners</Typography>
+                <Typography
+                  fontSize={isSmDown ? '10px' : '16px'}
+                  color={isDarkMode ? '#000' : theme.palette.primary.main}
+                >
+                  SBT Prize Winners
+                </Typography>
               </Button>
             </Box>
             {currentType == TabType.SBT && (
@@ -259,7 +295,7 @@ export default function ListOfWinners() {
               <V3TestnetTable
                 fontSize={isSmDown ? '12px' : '16px'}
                 bgcolors={bgcolors}
-                rows={[]}
+                rows={formatMonoList()}
                 header={['#', 'Winner', 'TVL daily avg', 'Asset Value', 'Total Transaction']}
               />
             </GradiantBg>
