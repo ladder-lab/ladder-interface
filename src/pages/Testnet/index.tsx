@@ -16,7 +16,7 @@ import Input from 'components/Input'
 import ClaimableItem from './ClaimableItem'
 import TaskBox from './TaskItem'
 import { Timer } from 'components/Timer'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Token } from 'constants/token'
 import { ChainId } from 'constants/chain'
 import { ReactComponent as Explore } from 'assets/svg/explore.svg'
@@ -29,6 +29,8 @@ import round1DarkBg from 'assets/svg/bg/round1_dark_bg.svg'
 import { useIsDarkMode } from 'state/user/hooks'
 import { useTestnetV2Status } from 'hooks/useTestnetBacked'
 import TestnetV3 from './TestnetV3'
+import useModal from '../../hooks/useModal'
+import WinnerModal from './WinnerModal'
 
 const StyledButtonWrapper = styled(Box)(({ theme }) => ({
   maxWidth: 400,
@@ -133,7 +135,15 @@ export default function Testnet() {
   // const isDownSm = useBreakpoint('sm')
   const isDownMD = useBreakpoint('md')
   const [roundIndex, setRoundIndex] = useState(2)
+  const [open, isOpen] = useState(true)
+  const { hideModal, showModal } = useModal()
 
+  useEffect(() => {
+    if (open) {
+      showModal(<WinnerModal hide={hideModal} />)
+      isOpen(false)
+    }
+  }, [hideModal, open, showModal])
   return (
     <Box
       sx={{
