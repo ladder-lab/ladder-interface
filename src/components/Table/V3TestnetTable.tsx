@@ -122,7 +122,8 @@ export default function V3TestnetTable({
 }) {
   return (
     <>
-      <StyledTableContainer cellPadding={cellPadding}>
+      {/* <StyledTableContainer cellPadding={cellPadding}> */}
+      <StyledTableContainer>
         <table>
           <StyledTableHead>
             <TableRow>
