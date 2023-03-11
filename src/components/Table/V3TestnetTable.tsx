@@ -107,7 +107,7 @@ export default function V3TestnetTable({
   hiddenParts,
   fontSize,
   bgcolors,
-  cellPadding,
+  // cellPadding,
   height
 }: {
   header: string[]
