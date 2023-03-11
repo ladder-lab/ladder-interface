@@ -1,4 +1,4 @@
-import { Box, Button, Link, Tab, Tabs, Typography, useTheme } from '@mui/material'
+import { Box, Button, Link, Stack, styled, Tab, Tabs, Typography, useTheme } from '@mui/material'
 import Collapse from '../../components/Collapse'
 import { StyledCardWrapper } from './TestnetV3'
 import useBreakpoint from '../../hooks/useBreakpoint'
@@ -9,6 +9,9 @@ import { useActiveWeb3React } from '../../hooks'
 import { MonopolyPrizeWinners, SBTAssetWinners, SBTLiquidity, SBTVolume } from '../../constants/WinnerData'
 import { formatMillion, getEtherscanLink, shortenAddress } from '../../utils'
 import { ChainId } from '../../constants/chain'
+import FirstPrize from 'assets/images/first_prize.png'
+import SecondPrize from 'assets/images/secend_prize.png'
+import ThirdPrize from 'assets/images/third_prize.png'
 
 enum TabType {
   Monopoly,
@@ -71,6 +74,115 @@ enum SBTType {
   ASSET,
   LIQUIDITY,
   VOLUME
+}
+
+const MonCardBg = styled(Box)`
+  width: 100%;
+  border-radius: 16px;
+  padding: 25px;
+  border: 1px solid #bbbaba;
+`
+
+const MonPrizeBg = styled(Box)`
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  border: 1px solid #bbbaba;
+`
+
+const MonPrizeTitle = styled(Box)`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+`
+
+const Avatar = styled(Box)`
+  width: 48px;
+  aspect-ratio: 1/1;
+  border-radius: 24px;
+  margin-right: 16px;
+  background: linear-gradient(143.27deg, #cc00ff -15.62%, #00ff66 120.14%);
+`
+
+function MonoCard({ rank, addressList }: { rank: number; addressList: string[] }) {
+  let rankImg = FirstPrize
+  let rankTitle = 'First Prize'
+  let rankNum = ''
+  switch (rank) {
+    case 1:
+      rankImg = FirstPrize
+      rankTitle = 'First Prize'
+      rankNum = ' #1'
+      break
+    case 2:
+      rankImg = SecondPrize
+      rankTitle = 'Second Prize'
+      rankNum = ' #2'
+      break
+    case 3:
+      rankImg = ThirdPrize
+      rankTitle = 'Third Prize'
+      rankNum = ' #3'
+      break
+  }
+  return (
+    <MonCardBg>
+      <MonPrizeTitle>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <img src={rankImg} alt="" />
+          <Typography fontWeight={600}>{rankTitle}</Typography>
+        </Box>
+        <Button variant={'text'} style={{ width: 'fit-content' }}>
+          How to claim
+        </Button>
+      </MonPrizeTitle>
+      <Stack spacing={24}>
+        {addressList.map((addr, index) => {
+          let prizeHint = ''
+          if (index == 0) {
+            prizeHint = `Top asset value${rankNum}`
+          }
+          if (index == 1) {
+            prizeHint = `Top liquidity provided${rankNum}`
+          }
+          if (index == 2) {
+            prizeHint = `top volume traded${rankNum}`
+          }
+          return (
+            <MonPrizeBg key={index}>
+              <Avatar />
+              <Box>
+                <Typography color={'#27272E'} fontSize={14} fontWeight={600}>
+                  {shortenAddress(addr)}
+                </Typography>
+                <Typography color={'#425466'} fontSize={14} mt={5}>
+                  {prizeHint}
+                </Typography>
+              </Box>
+            </MonPrizeBg>
+          )
+        })}
+      </Stack>
+    </MonCardBg>
+  )
+}
+
+function MonoRank() {
+  const FirstList: string[] = []
+  MonopolyPrizeWinners.filter(data => data[0] == 1).forEach(data => FirstList.push(String(data[1])))
+  const SecondList: string[] = []
+  MonopolyPrizeWinners.filter(data => data[0] == 2).forEach(data => SecondList.push(String(data[1])))
+  const ThirdList: string[] = []
+  MonopolyPrizeWinners.filter(data => data[0] == 3).forEach(data => ThirdList.push(String(data[1])))
+
+  const prizeRank = [FirstList, SecondList, ThirdList]
+  return (
+    <Box display={'flex'} justifyContent={'space-between'} gap={24} margin={16}>
+      {prizeRank.map((addrList, index) => {
+        return <MonoCard rank={index + 1} key={index} addressList={addrList} />
+      })}
+    </Box>
+  )
 }
 
 export default function ListOfWinners() {
@@ -167,26 +279,6 @@ export default function ListOfWinners() {
     return list
   }
 
-  function formatMonoList() {
-    const list: (string | number | JSX.Element)[][] = []
-    MonopolyPrizeWinners.forEach(value => {
-      const temp = [...value]
-      temp[1] = (
-        <Link target={'_blank'} mr={4} href={getEtherscanLink(ChainId.SEPOLIA, String(value[1]), 'address')}>
-          {shortenAddress(String(value[1]))}
-        </Link>
-      )
-      temp[2] = formatMillion(Number(value[2]), '$', 4)
-      temp[3] = formatMillion(Number(value[3]), '$', 4)
-      temp[4] = formatMillion(Number(value[4]), '$', 4)
-      // list.push([...temp, <ClaimBtn key={index} />])
-      list.push([...temp])
-    })
-    return list
-  }
-
-  // console.log('AssetList', AssetList)
-  // console.log('AssetListSBTAssetWinners', SBTAssetWinners)
   return (
     <Box
       sx={{
@@ -299,13 +391,7 @@ export default function ListOfWinners() {
           </Box>
           {currentType == TabType.Monopoly && (
             <GradiantBg>
-              <V3TestnetTable
-                cellPadding="5px 10px"
-                height="44px"
-                fontSize={isSmDown ? '12px' : '16px'}
-                rows={formatMonoList()}
-                header={['#', 'Winner', 'TVL daily avg', 'Asset Value', 'Total Transaction']}
-              />
+              <MonoRank />
             </GradiantBg>
           )}
           {currentType == TabType.SBT && (
