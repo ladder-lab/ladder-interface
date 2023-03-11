@@ -12,6 +12,10 @@ import { ChainId } from '../../constants/chain'
 import FirstPrize from 'assets/images/first_prize.png'
 import SecondPrize from 'assets/images/secend_prize.png'
 import ThirdPrize from 'assets/images/third_prize.png'
+import useModal from '../../hooks/useModal'
+import FirstPrizeModal from './FirstPrizeModal'
+import SecondPrizeModal from './SecondPrizeModal'
+import ThirdPrizeModal from './ThirdPrizeModal'
 
 enum TabType {
   Monopoly,
@@ -98,7 +102,7 @@ const MonPrizeTitle = styled(Box)`
 
 const Avatar = styled(Box)`
   width: 48px;
-  aspect-ratio: 1/1;
+  height: 48px;
   border-radius: 24px;
   margin-right: 16px;
   background: linear-gradient(143.27deg, #cc00ff -15.62%, #00ff66 120.14%);
@@ -108,6 +112,8 @@ function MonoCard({ rank, addressList }: { rank: number; addressList: string[] }
   let rankImg = FirstPrize
   let rankTitle = 'First Prize'
   let rankNum = ''
+  const { hideModal, showModal } = useModal()
+
   switch (rank) {
     case 1:
       rankImg = FirstPrize
@@ -125,6 +131,21 @@ function MonoCard({ rank, addressList }: { rank: number; addressList: string[] }
       rankNum = ' #3'
       break
   }
+
+  function handleShowModal() {
+    switch (rank) {
+      case 1:
+        showModal(<FirstPrizeModal hide={hideModal} />)
+        break
+      case 2:
+        showModal(<SecondPrizeModal hide={hideModal} />)
+        break
+      case 3:
+        showModal(<ThirdPrizeModal hide={hideModal} />)
+        break
+    }
+  }
+
   return (
     <MonCardBg>
       <MonPrizeTitle>
@@ -132,7 +153,7 @@ function MonoCard({ rank, addressList }: { rank: number; addressList: string[] }
           <img src={rankImg} alt="" />
           <Typography fontWeight={600}>{rankTitle}</Typography>
         </Box>
-        <Button variant={'text'} style={{ width: 'fit-content' }}>
+        <Button variant={'text'} style={{ width: 'fit-content' }} onClick={handleShowModal}>
           How to claim
         </Button>
       </MonPrizeTitle>
@@ -174,14 +195,26 @@ function MonoRank() {
   MonopolyPrizeWinners.filter(data => data[0] == 2).forEach(data => SecondList.push(String(data[1])))
   const ThirdList: string[] = []
   MonopolyPrizeWinners.filter(data => data[0] == 3).forEach(data => ThirdList.push(String(data[1])))
+  const isSmDown = useBreakpoint('sm')
 
   const prizeRank = [FirstList, SecondList, ThirdList]
   return (
-    <Box display={'flex'} justifyContent={'space-between'} gap={24} margin={16}>
-      {prizeRank.map((addrList, index) => {
-        return <MonoCard rank={index + 1} key={index} addressList={addrList} />
-      })}
-    </Box>
+    <>
+      {isSmDown && (
+        <Stack spacing={10}>
+          {prizeRank.map((addrList, index) => {
+            return <MonoCard rank={index + 1} key={index} addressList={addrList} />
+          })}
+        </Stack>
+      )}
+      {!isSmDown && (
+        <Box display={'flex'} justifyContent={'space-between'} gap={24} margin={16}>
+          {prizeRank.map((addrList, index) => {
+            return <MonoCard rank={index + 1} key={index} addressList={addrList} />
+          })}
+        </Box>
+      )}
+    </>
   )
 }
 
