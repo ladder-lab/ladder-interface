@@ -4,22 +4,17 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 import { useActiveWeb3React } from 'hooks'
 import { ClaimState, useTestnetClaim } from 'hooks/useTestnetClaim'
 import ActionButton from 'components/Button/ActionButton'
-import { formatMillion, isAddress, scrollToElement, shortenAddress } from 'utils'
+import { formatMillion, shortenAddress } from 'utils'
 import Collapse from 'components/Collapse'
-import Input from 'components/Input'
 import ClaimableItem from './ClaimableItem'
 import V3TaskItem from './V3TaskItem'
-import { Timer } from 'components/Timer'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Token } from 'constants/token'
 import { ChainId } from 'constants/chain'
 import { ReactComponent as Explore } from 'assets/svg/explore.svg'
 import v2_my_icon from 'assets/images/v2_my_icon.png'
 import prizepool_icon from 'assets/images/prizepool.jpeg'
 import Pencil from 'assets/images/pencil.png'
-import bannerImg from 'assets/images/v3_test_cover.jpg'
-import v3_logo from 'assets/images/v3_test_icon1.png'
-import { useNavigate } from 'react-router-dom'
 import { routes } from 'constants/routes'
 import { useTestnetV2Status } from 'hooks/useTestnetBacked'
 import { StepTitle } from '.'
@@ -36,18 +31,10 @@ import {
 // import { ShowTopPoolsCurrencyBox } from 'pages/Statistics'
 // import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
 // import Copy from 'components/essential/Copy'
-import V3Rewards from './V3Rewards'
 import { LightTooltip } from 'components/TestnetV3Mark'
 import QuestionHelper from 'components/essential/QuestionHelper'
-import useModal from '../../hooks/useModal'
-import WinnerModal from './WinnerModal'
-
-const BannerText = styled(Typography)(({ theme }) => ({
-  fontSize: 48,
-  [theme.breakpoints.down('sm')]: {
-    fontSize: 30
-  }
-}))
+import { useNavigate } from 'react-router-dom'
+import { useUserHasSubmitted } from 'state/transactions/hooks'
 
 const StyledButtonWrapper = styled(Box)(({ theme }) => ({
   maxWidth: 400,
@@ -120,64 +107,19 @@ const v3FaucetTokens = [
   }
 ]
 
-const v3ActiveTimeStamp = [1676876400000, 1678086000000]
+// const v3ActiveTimeStamp = [1676876400000, 1678086000000]
 
-export default function TestnetV3() {
-  const [openWinner, isOpenWinner] = useState(true)
-  const { hideModal, showModal } = useModal()
-
-  useEffect(() => {
-    if (openWinner) {
-      showModal(<WinnerModal hide={hideModal} />)
-      isOpenWinner(false)
-    }
-  }, [hideModal, openWinner, showModal])
-
+export default function TestnetV4() {
   const theme = useTheme()
   const dark = useIsDarkMode()
-  const isDownSm = useBreakpoint('sm')
   const { account } = useActiveWeb3React()
   const navigate = useNavigate()
   const toggleWalletModal = useWalletModalToggle()
   const { testnetClaim, claimState } = useTestnetClaim(account || undefined)
+  const { submitted, complete } = useUserHasSubmitted(`${account}_claim4`)
+  console.log('🚀 ~ file: TestnetV4.tsx:118 ~ TestnetV4 ~ claimState:', submitted, complete)
 
-  const [queryAddress, setQueryAddress] = useState('')
-  const { claimState: queryClaimState } = useTestnetClaim(isAddress(queryAddress) ? queryAddress : undefined)
   const testnetV2Status = useTestnetV2Status(account || undefined)
-  const [open, setOpen] = useState(false)
-  console.log(open)
-
-  const queryNotice = useMemo(() => {
-    return (
-      <>
-        {queryAddress && ClaimState.UNKNOWN !== queryClaimState && (
-          <Box mt={10}>
-            {queryClaimState === ClaimState.NOT_REGISTERED ? (
-              <Typography textAlign={isDownSm ? 'center' : 'left'} color={theme.palette.error.main} fontWeight={500}>
-                Oops! Unfortunately, you are not eligible for this test, but you can stay tuned for our follow-up
-                activities.
-              </Typography>
-            ) : (
-              <Typography textAlign={isDownSm ? 'center' : 'left'} color={theme.palette.info.main} fontWeight={500}>
-                Congratulations! Because you are{' '}
-                <Link
-                  sx={{
-                    fontWeight: 700,
-                    color: theme.palette.info.main,
-                    textDecorationColor: theme.palette.info.main
-                  }}
-                >
-                  the holder of Platinum GENESIS SBT
-                </Link>
-                , you can continue to participate in this beta event!
-              </Typography>
-            )}
-          </Box>
-        )}
-      </>
-    )
-  }, [isDownSm, queryAddress, queryClaimState, theme.palette.error.main, theme.palette.info.main])
-
   // const activeTimeStatus = useMemo(() => {
   //   const curTime = new Date().getTime()
   //   if (curTime < v3ActiveTimeStamp[0]) {
@@ -190,8 +132,6 @@ export default function TestnetV3() {
 
   return (
     <Stack spacing={40}>
-      <Banner setOpenTrue={() => setOpen(true)} />
-
       <Box padding="10px">
         <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mb={-10}>
           Activity data
@@ -206,7 +146,7 @@ export default function TestnetV3() {
             <RowBetween flexWrap={'wrap'}>
               <Box display={'flex'} flexWrap={'wrap'}>
                 <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
-                  Ladder SEPOLIA Monopoly Participate in preparation
+                  Ladder SEPOLIA Participate in preparation
                 </Typography>
               </Box>
             </RowBetween>
@@ -214,56 +154,8 @@ export default function TestnetV3() {
         >
           <Stack mt="56px" spacing={56}>
             <Box>
-              <RowBetween flexWrap={'wrap'}>
-                <StepTitle step={1} title="Verify Eligibility" />
-              </RowBetween>
-              <Box
-                mt={28}
-                display="grid"
-                sx={{
-                  gridTemplateColumns: { xs: '1fr', sm: '1fr 182px 350px' },
-                  alignItems: 'center'
-                }}
-                gap="12px"
-              >
-                <Input
-                  value={queryAddress}
-                  onChange={e => setQueryAddress(e.target.value)}
-                  onBlur={() => {
-                    if (!isAddress(queryAddress)) setQueryAddress('')
-                  }}
-                  height="52px"
-                  placeholder="Please enter your address"
-                />
-                {isDownSm && queryNotice}
-                <Button
-                  variant="outlined"
-                  sx={{
-                    height: 52,
-                    borderColor: theme => theme.palette.info.main,
-                    color: theme => theme.palette.info.main
-                  }}
-                >
-                  Check eligibility
-                </Button>
-                <Link
-                  target={'_blank'}
-                  href="https://medium.com/@ladder_top/ladder-monopoly-rules-and-objectives-bf616d7becf7"
-                  sx={{
-                    textAlign: 'center',
-                    color: theme.palette.text.primary,
-                    textDecorationColor: theme.palette.text.primary
-                  }}
-                >
-                  View Testnet Participant Qualification
-                </Link>
-              </Box>
-              {!isDownSm && queryNotice}
-            </Box>
-
-            <Box>
               <RowBetween>
-                <StepTitle step={2} title="Claim Test Asset" />
+                <StepTitle step={1} title="Claim Test Asset" />
               </RowBetween>
               <Box>
                 <Box
@@ -305,18 +197,10 @@ export default function TestnetV3() {
                           <ActionButton
                             pending={claimState === ClaimState.UNKNOWN}
                             onAction={testnetClaim}
-                            disableAction={true || new Date() < new Date(v3ActiveTimeStamp[0])}
+                            // disableAction={new Date() < new Date(v3ActiveTimeStamp[0])}
                             // disableAction={!isOpenClaim && activeTimeStatus !== 'active'}
                             actionText="Claim your test assets"
-                            error={
-                              claimState === ClaimState.UNKNOWN
-                                ? 'Loading'
-                                : claimState === ClaimState.UNCLAIMED
-                                ? undefined
-                                : claimState === ClaimState.CLAIMED
-                                ? 'Test assets Claimed'
-                                : 'Address not registered'
-                            }
+                            error={submitted || complete ? 'Test assets Claimed' : undefined}
                           />
                         </StyledButtonWrapper>
                       </Box>
@@ -421,48 +305,6 @@ export default function TestnetV3() {
           }
         >
           <LeaderBoardBox />
-        </Collapse>
-      </StyledCardWrapper>
-
-      <StyledCardWrapper id="reward">
-        <Collapse
-          defaultOpen
-          title={
-            <RowBetween flexWrap="wrap">
-              <Box>
-                <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
-                  Partners
-                </Typography>
-              </Box>
-            </RowBetween>
-          }
-        >
-          <V3Rewards />
-          <Box
-            sx={{
-              width: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              marginTop: '35px'
-            }}
-          >
-            <Button
-              variant={'contained'}
-              sx={{ width: '45%' }}
-              onClick={() => {
-                navigate(routes.winners)
-              }}
-            >
-              Find Prize Winners here!
-            </Button>
-            <Typography fontSize={16} color={theme.palette.info.main} mt={16}>
-              Mar 7th 19 PM SGT - Mar 13th 19PM SGT
-            </Typography>
-            <Typography fontSize={16} color={theme.palette.text.secondary} mt={12}>
-              SBT Winners will be able to claim their prize over the next 7 days
-            </Typography>
-          </Box>
         </Collapse>
       </StyledCardWrapper>
 
@@ -846,86 +688,6 @@ function LeaderBoardRank({
             header={headers || ['#', 'User', 'Value']}
           ></V3TestnetTable>
         </Box>
-      </Box>
-    </Box>
-  )
-}
-
-function Banner({ setOpenTrue }: { setOpenTrue: () => void }) {
-  const isDarkMode = useIsDarkMode()
-
-  const activeTimeStatus = useMemo(() => {
-    const curTime = new Date().getTime()
-    if (curTime < v3ActiveTimeStamp[0]) {
-      return 'soon'
-    } else if (curTime >= v3ActiveTimeStamp[0] && curTime < v3ActiveTimeStamp[1]) {
-      return 'active'
-    }
-    return 'end'
-  }, [])
-  return (
-    <Box
-      sx={{
-        mt: 0,
-        backgroundImage: isDarkMode ? '' : `url(${bannerImg})`,
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'auto 100%',
-        backgroundPosition: {
-          lg: 'right',
-          xs: 'left'
-        },
-        minHeight: '200px'
-      }}
-    >
-      <Box
-        sx={{
-          width: 370,
-          maxWidth: '100%',
-          padding: {
-            md: '120px 10px 60px 60px',
-            xs: '20px 10px'
-          }
-        }}
-      >
-        <Image src={v3_logo} alt="" width={'100%'} />
-        <Box mt={10}>
-          <BannerText>Monopoly {activeTimeStatus === 'soon' ? 'start' : 'end'} in</BannerText>
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: 'auto auto auto',
-              gap: '0 10px',
-              maxWidth: { xs: '60%', sm: 'unset' },
-              '& span': {
-                fontSize: { sm: 48, xs: 30 }
-              }
-            }}
-          >
-            <Timer
-              onZero={() => setOpenTrue()}
-              timer={activeTimeStatus === 'soon' ? v3ActiveTimeStamp[0] : v3ActiveTimeStamp[1]}
-              getNumber
-            />
-            <Typography fontWeight={500}>Day</Typography>
-            <Typography fontWeight={500}>Hours</Typography>
-            <Typography fontWeight={500}>Minutes</Typography>
-          </Box>
-        </Box>
-        <RowBetween mt={40}>
-          <Button
-            sx={{
-              background: theme => theme.palette.primary.main,
-              color: isDarkMode ? '#000' : '#fff',
-              mr: 10
-            }}
-            onClick={() => scrollToElement('qa')}
-          >
-            View rules
-          </Button>
-          <Button onClick={() => scrollToElement('reward')} variant="outlined">
-            View Rewards
-          </Button>
-        </RowBetween>
       </Box>
     </Box>
   )
