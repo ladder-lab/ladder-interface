@@ -117,7 +117,6 @@ export default function TestnetV4() {
   const toggleWalletModal = useWalletModalToggle()
   const { testnetClaim, claimState } = useTestnetClaim(account || undefined)
   const { submitted, complete } = useUserHasSubmitted(`${account}_claim4`)
-  console.log('🚀 ~ file: TestnetV4.tsx:118 ~ TestnetV4 ~ claimState:', submitted, complete)
 
   const testnetV2Status = useTestnetV2Status(account || undefined)
   // const activeTimeStatus = useMemo(() => {
@@ -195,7 +194,7 @@ export default function TestnetV4() {
                       <Box position={'relative'}>
                         <StyledButtonWrapper>
                           <ActionButton
-                            pending={claimState === ClaimState.UNKNOWN}
+                            // pending={claimState === ClaimState.UNKNOWN}
                             onAction={testnetClaim}
                             // disableAction={new Date() < new Date(v3ActiveTimeStamp[0])}
                             // disableAction={!isOpenClaim && activeTimeStatus !== 'active'}
@@ -343,41 +342,11 @@ export default function TestnetV4() {
               </StyledQABody>
             </Box>
             <Box>
-              <StyledQATitle>2. Who can participate in the Round 3 Testnet?</StyledQATitle>
-              <StyledQABody>
-                Participants for Ladder Testnet will include:
-                <br />
-                <br />
-                Ladder ETH Merge SOUve SBT Holders
-                <br />
-                Ladder Testnet SBT Holders
-                <br />
-                Participants from Round 1
-                <br />
-                ETHSF Hackathon AMA WL
-                <br />
-                Ladder X Apeiron X NFTTrack X GameSpace AMA WL
-                <br />
-                TrantorDAO WL
-                <br />
-                <br />
-                More WL keep coming.
-                <br />
-                <br />
-                Follow us on Twitter{' '}
-                <Link href="https://twitter.com/Laddertop_NFT" target={'_blank'}>
-                  @Laddertop_NFT
-                </Link>{' '}
-                or join our Discord channel to find out more incoming activities to earn your WL and get to participate
-                NOW!
-              </StyledQABody>
-            </Box>
-            <Box>
-              <StyledQATitle>3. How long will Testnet Round 3 run for?</StyledQATitle>
+              <StyledQATitle>2. How long will Testnet Round 3 run for?</StyledQATitle>
               <StyledQABody>Testnet Round 3 is live from 3/14/23</StyledQABody>
             </Box>
             <Box>
-              <StyledQATitle>4. Which Network will Testnet Round 3 be on?</StyledQATitle>
+              <StyledQATitle>3. Which Network will Testnet Round 3 be on?</StyledQATitle>
               <StyledQABody>
                 This time Testnet Round 3 will be on the SEPOLIA TEST NETWORK, we recommend getting your Test ETH from a
                 faucet in advance from: (<Link href="https://sepoliafaucet.net/">https://sepoliafaucet.net/</Link>).{' '}
@@ -387,7 +356,7 @@ export default function TestnetV4() {
               </StyledQABody>
             </Box>
             <Box>
-              <StyledQATitle>5. What are the trading simulations for Testnet Round 3</StyledQATitle>
+              <StyledQATitle>4. What are the trading simulations for Testnet Round 3</StyledQATitle>
               <StyledQABody>
                 The trading simulation will be available for all pools. Every user will begin the simulation with the
                 same claimable amount of test assets. Claim yours now!
@@ -406,14 +375,14 @@ export default function TestnetV4() {
               </StyledQABody>
             </Box>
             <Box>
-              <StyledQATitle>6. What happens after Testnet Round 3?</StyledQATitle>
+              <StyledQATitle>5. What happens after Testnet Round 3?</StyledQATitle>
               <StyledQABody>
                 There will be more to expect as in community. Stay tuned with us and don’t miss out those incoming
                 opportunities to win future community rewards.
               </StyledQABody>
             </Box>
             <Box>
-              <StyledQATitle>7. Where can I see upcoming events?</StyledQATitle>
+              <StyledQATitle>6. Where can I see upcoming events?</StyledQATitle>
               <StyledQABody>
                 <Box>
                   Twitter:{' '}
