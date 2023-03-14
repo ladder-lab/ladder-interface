@@ -18,14 +18,14 @@ import Pencil from 'assets/images/pencil.png'
 import { routes } from 'constants/routes'
 import { useTestnetV2Status } from 'hooks/useTestnetBacked'
 import { StepTitle } from '.'
-import V3ActivityData from './V3ActivityData'
+import V4ActivityData from './V4ActivityData'
 import V3TestnetTable from 'components/Table/V3TestnetTable'
 import { useIsDarkMode } from 'state/user/hooks'
 import Image from 'components/Image'
 import {
-  useV3AccountAssetsRankTop,
-  useV3AccountLiquidityRankTop,
-  useV3AccountVolumeRankTop
+  useV4AccountAssetsRankTop,
+  useV4AccountLiquidityRankTop,
+  useV4AccountVolumeRankTop
   // useV3PoolTop10
 } from 'hooks/useTestnetV3'
 // import { ShowTopPoolsCurrencyBox } from 'pages/Statistics'
@@ -135,7 +135,7 @@ export default function TestnetV4() {
         <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mb={-10}>
           Activity data
         </Typography>
-        <V3ActivityData />
+        <V4ActivityData />
       </Box>
 
       <StyledCardWrapper>
@@ -451,11 +451,11 @@ function LeaderBoardBox() {
   //   [curChainId, v3PoolTop10]
   // )
 
-  const { rankList: accountVolumeRankList, accountRank: accountVolumeRank } = useV3AccountVolumeRankTop(curChainId)
-  const { rankList: accountAssetsRankList, accountRank: accountAssetsRank } = useV3AccountAssetsRankTop(curChainId)
+  const { rankList: accountVolumeRankList, accountRank: accountVolumeRank } = useV4AccountVolumeRankTop(curChainId)
+  const { rankList: accountAssetsRankList, accountRank: accountAssetsRank } = useV4AccountAssetsRankTop(curChainId)
 
   const { rankList: accountLiquidityRankList, accountRank: accountLiquidityRank } =
-    useV3AccountLiquidityRankTop(curChainId)
+    useV4AccountLiquidityRankTop(curChainId)
 
   const topVolumeTraded = useMemo(() => {
     const ret: (JSX.Element | string | number)[][] =

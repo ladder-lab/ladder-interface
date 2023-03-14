@@ -428,3 +428,157 @@ export function useV3AccountLiquidityRankTop(chainId: ChainId) {
     accountRank
   }
 }
+
+export function useV4AccountVolumeRankTop(chainId: ChainId) {
+  const { account } = useActiveWeb3React()
+  const [accountRank, setAccountRank] = useState<AccountRankValues>()
+  const [result, setResult] = useState<AccountRankValues[]>()
+
+  useEffect(() => {
+    ;(async () => {
+      if (!chainId) {
+        setResult(undefined)
+        setAccountRank(undefined)
+        return
+      }
+      try {
+        const res = await Axios.get(StatBaseURL + 'getAccountVolumeRank', {
+          chainId,
+          address: account || ''
+        })
+        const data = res.data.data as any
+        if (!data) {
+          setResult(undefined)
+          setAccountRank(undefined)
+          return
+        }
+        setResult(
+          data.ranks.list.map((item: any) => ({
+            value: item.volumes,
+            rank: item.rank,
+            account: item.account
+          }))
+        )
+        account &&
+          setAccountRank({
+            account: account || '',
+            rank: data.volumesRank === -1 ? '-' : data.volumesRank,
+            value: data.accountVolumes
+          })
+      } catch (error) {
+        setResult(undefined)
+        setAccountRank(undefined)
+        console.error('useV3AccountVolumeRank', error)
+      }
+    })()
+  }, [account, chainId])
+
+  return {
+    rankList: result,
+    accountRank
+  }
+}
+
+export function useV4AccountAssetsRankTop(chainId: ChainId) {
+  const { account } = useActiveWeb3React()
+  const [accountRank, setAccountRank] = useState<AccountRankValues>()
+  const [result, setResult] = useState<AccountRankValues[]>()
+
+  useEffect(() => {
+    ;(async () => {
+      if (!chainId) {
+        setResult(undefined)
+        setAccountRank(undefined)
+        return
+      }
+      try {
+        const res = await Axios.get(StatBaseURL + 'getAccountAssetRank', {
+          chainId,
+          address: account || '',
+          pageSize: 10,
+          pageNum: 1
+        })
+        const data = res.data.data as any
+        if (!data) {
+          setResult(undefined)
+          setAccountRank(undefined)
+          return
+        }
+        setResult(
+          data.ranks.list.map((item: any) => ({
+            value: item.asset,
+            rank: item.rank,
+            account: item.account
+          }))
+        )
+        account &&
+          setAccountRank({
+            account: account || '',
+            rank: data.accountRank === -1 ? '-' : data.accountRank,
+            value: data.accountAsset
+          })
+      } catch (error) {
+        setResult(undefined)
+        setAccountRank(undefined)
+        console.error('useV3AccountAssetsRankTop', error)
+      }
+    })()
+  }, [account, chainId])
+
+  return {
+    rankList: result,
+    accountRank
+  }
+}
+
+export function useV4AccountLiquidityRankTop(chainId: ChainId) {
+  const { account } = useActiveWeb3React()
+  const [accountRank, setAccountRank] = useState<AccountRankValues>()
+  const [result, setResult] = useState<AccountRankValues[]>()
+
+  useEffect(() => {
+    ;(async () => {
+      if (!chainId) {
+        setResult(undefined)
+        setAccountRank(undefined)
+        return
+      }
+      try {
+        const res = await Axios.get(StatBaseURL + 'getAccountTvlRank', {
+          chainId,
+          address: account || '',
+          pageSize: 10,
+          pageNum: 1
+        })
+        const data = res.data.data as any
+        if (!data) {
+          setResult(undefined)
+          setAccountRank(undefined)
+          return
+        }
+        setResult(
+          data.ranks.list.map((item: any) => ({
+            value: item.tvl,
+            rank: item.rank,
+            account: item.account
+          }))
+        )
+        account &&
+          setAccountRank({
+            account: account || '',
+            rank: data.accountRank === -1 ? '-' : data.accountRank,
+            value: data.accountTvl
+          })
+      } catch (error) {
+        setResult(undefined)
+        setAccountRank(undefined)
+        console.error('useV3AccountLiquidityRankTop', error)
+      }
+    })()
+  }, [account, chainId])
+
+  return {
+    rankList: result,
+    accountRank
+  }
+}
