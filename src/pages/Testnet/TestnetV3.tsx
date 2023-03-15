@@ -122,7 +122,6 @@ const v3ActiveTimeStamp = [1676876400000, 1678086000000]
 
 export default function TestnetV3() {
   const theme = useTheme()
-  const dark = useIsDarkMode()
   const isDownSm = useBreakpoint('sm')
   const { account } = useActiveWeb3React()
   const navigate = useNavigate()
@@ -349,12 +348,6 @@ export default function TestnetV3() {
           }
         >
           <Box>
-            <Typography mt={10} fontSize={20} color={dark ? '#FFFFFF' : '#333333'}>
-              The more task you finished, the more opportunity to get prizes! (Remember, all of the listed tasks MUST be
-              completed in order to qualify for rewards. Partial completion of the tasks will result in disqualification
-              for testing rewards. Only the last task (feedback) is optional, but highly recommended for long-term
-              rewards)
-            </Typography>
             <Stack spacing={12} mt={28}>
               <V3TaskItem testnetStatus={testnetV2Status} />
 
