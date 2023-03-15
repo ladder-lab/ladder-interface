@@ -1,8 +1,8 @@
 import { Box, useTheme, styled, Typography } from '@mui/material'
 import RankingImg from 'assets/images/testv2_user_ranking.png'
 import QuestionHelper from 'components/essential/QuestionHelper'
-// import { ChainId } from 'constants/chain'
-// import { useV3ActivityData } from 'hooks/useTestnetV3'
+import { ChainId } from 'constants/chain'
+import { useV3ActivityData } from 'hooks/useTestnetV3'
 import { useMemo } from 'react'
 import { formatMillion } from 'utils'
 
@@ -13,32 +13,29 @@ const RowBetween = styled(Box)(({}) => ({
 }))
 
 export default function V3ActivityData() {
-  // const curChainId = ChainId.SEPOLIA
+  const curChainId = ChainId.SEPOLIA
   const theme = useTheme()
-  // const v3ActivityData = useV3ActivityData(curChainId)
+  const v3ActivityData = useV3ActivityData(curChainId)
 
   const data = useMemo(
     () => [
       {
         name: 'TVL',
         helperText: 'Total Value Locked',
-        value: formatMillion(502756.545, '$ ', 2)
-        // value: v3ActivityData ? formatMillion(v3ActivityData.tvl, '$ ', 2) : '-'
+        value: v3ActivityData ? formatMillion(v3ActivityData.tvl, '$ ', 2) : '-'
       },
       {
         name: 'Assets',
         helperText: 'Equity Value of NFT and Token',
-        value: formatMillion(1169628.4614, '$ ', 2)
-        // value: v3ActivityData ? formatMillion(v3ActivityData, '$ ', 2) : '-'
+        value: v3ActivityData ? formatMillion(v3ActivityData.assets, '$ ', 2) : '-'
       },
       {
         name: 'Transactions',
         helperText: 'Total Swap Count',
-        value: 5761
-        // value: v3ActivityData ? v3ActivityData.transfers : '-'
+        value: v3ActivityData ? v3ActivityData.transfers : '-'
       }
     ],
-    []
+    [v3ActivityData]
   )
 
   return (

@@ -16,6 +16,7 @@ export enum ClaimState {
 
 export function useTestnetClaim(account: string | undefined) {
   const [data, setData] = useState<null | { proof: string[]; index: string }>(null)
+  console.log('11', data)
   const [claimState, setClaimState] = useState<ClaimState>(ClaimState.UNKNOWN)
   const { showModal, hideModal } = useModal()
   const contract = useMerkleContract()
@@ -50,19 +51,20 @@ export function useTestnetClaim(account: string | undefined) {
   }, [account, contract, showModal])
 
   const testnetClaim = useCallback(async () => {
-    if (claimState === ClaimState.NOT_REGISTERED) {
-      return showModal(<MessageBox type="warning">Your address is not registered yet </MessageBox>)
-    }
+    // if (claimState === ClaimState.NOT_REGISTERED) {
+    //   return showModal(<MessageBox type="warning">Your address is not registered yet </MessageBox>)
+    // }
 
-    if (claimState !== ClaimState.UNCLAIMED) return
+    if (claimState === ClaimState.CLAIMED) return
 
-    if (!contract || !data || !account) return
+    if (!contract || !account) return
 
     try {
       showModal(<TransacitonPendingModal />)
-      const res = await contract.claim(data.index, account, data.proof)
+      const res = await contract.claim1(account)
       addTransaction(res, {
-        summary: 'Claim test assets'
+        summary: 'Claim test assets',
+        claim: { recipient: `${account}_claim4` }
       })
       hideModal()
       showModal(<TransactionSubmittedModal />)
@@ -71,7 +73,7 @@ export function useTestnetClaim(account: string | undefined) {
       showModal(<MessageBox type="error">Claim Test assets Failed</MessageBox>)
       console.error(e)
     }
-  }, [account, addTransaction, claimState, contract, data, hideModal, showModal])
+  }, [account, addTransaction, claimState, contract, hideModal, showModal])
 
   return { testnetClaim, claimState }
 }

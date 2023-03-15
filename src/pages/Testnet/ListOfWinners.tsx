@@ -135,10 +135,10 @@ function MonoCard({ rank, addressList }: { rank: number; addressList: string[] }
   function handleShowModal() {
     switch (rank) {
       case 1:
-        showModal(<FirstPrizeModal hide={hideModal} />)
+        showModal(<SecondPrizeModal hide={hideModal} />)
         break
       case 2:
-        showModal(<SecondPrizeModal hide={hideModal} />)
+        showModal(<FirstPrizeModal hide={hideModal} />)
         break
       case 3:
         showModal(<ThirdPrizeModal hide={hideModal} />)

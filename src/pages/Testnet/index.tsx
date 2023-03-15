@@ -16,7 +16,7 @@ import Input from 'components/Input'
 import ClaimableItem from './ClaimableItem'
 import TaskBox from './TaskItem'
 import { Timer } from 'components/Timer'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Token } from 'constants/token'
 import { ChainId } from 'constants/chain'
 import { ReactComponent as Explore } from 'assets/svg/explore.svg'
@@ -29,8 +29,7 @@ import round1DarkBg from 'assets/svg/bg/round1_dark_bg.svg'
 import { useIsDarkMode } from 'state/user/hooks'
 import { useTestnetV2Status } from 'hooks/useTestnetBacked'
 import TestnetV3 from './TestnetV3'
-import useModal from '../../hooks/useModal'
-import WinnerModal from './WinnerModal'
+import TestnetV4 from './TestnetV4'
 
 const StyledButtonWrapper = styled(Box)(({ theme }) => ({
   maxWidth: 400,
@@ -134,16 +133,8 @@ export default function Testnet() {
   // const isDarkMode = useIsDarkMode()
   // const isDownSm = useBreakpoint('sm')
   const isDownMD = useBreakpoint('md')
-  const [roundIndex, setRoundIndex] = useState(2)
-  const [open, isOpen] = useState(true)
-  const { hideModal, showModal } = useModal()
+  const [roundIndex, setRoundIndex] = useState(3)
 
-  useEffect(() => {
-    if (open) {
-      showModal(<WinnerModal hide={hideModal} />)
-      isOpen(false)
-    }
-  }, [hideModal, open, showModal])
   return (
     <Box
       sx={{
@@ -247,10 +238,10 @@ export default function Testnet() {
           }}
         >
           <Stack margin="20px 0" direction={'row'} spacing={20}>
-            {[0, 1, 2].map(item => (
+            {[0, 1, 2, 3].map(item => (
               <Button
                 sx={{
-                  width: 186,
+                  width: 166,
                   height: 52,
                   fontSize: { xs: 12, sm: 14 },
                   borderColor: '#1F9898',
@@ -261,7 +252,19 @@ export default function Testnet() {
                 onClick={() => setRoundIndex(item)}
                 variant={roundIndex === item ? 'contained' : 'outlined'}
               >
-                {item === 2 ? 'Monopoly' : `ROUND ${item + 1}`}
+                {item === 2 ? 'Monopoly' : item === 3 ? `ROUND ${item}` : `ROUND ${item + 1}`}
+                <Box
+                  sx={{
+                    backgroundColor: item === 3 ? '#1f9898' : '#F44E1F',
+                    color: '#fff',
+                    padding: '0 5px',
+                    borderRadius: '4px',
+                    fontSize: 12,
+                    ml: 5
+                  }}
+                >
+                  {item === 3 ? 'LIVE' : 'CLOSE'}
+                </Box>
               </Button>
             ))}
           </Stack>
@@ -269,6 +272,7 @@ export default function Testnet() {
           {roundIndex === 0 && <TestnetV1 round={1} />}
           {roundIndex === 1 && <TestnetV1 round={2} />}
           {roundIndex === 2 && <TestnetV3 />}
+          {roundIndex === 3 && <TestnetV4 />}
         </Box>
       </Box>
     </Box>

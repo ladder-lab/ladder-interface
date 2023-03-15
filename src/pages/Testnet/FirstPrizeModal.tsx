@@ -25,7 +25,7 @@ export default function FirstPrizeModal({ hide }: { hide: () => void }) {
       >
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
           <Typography fontWeight={900} fontSize={20}>
-            How to claim #First Prize
+            How to claim #Second Prize
           </Typography>
           <Button
             sx={{
