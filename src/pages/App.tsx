@@ -25,8 +25,8 @@ import StatisticsPools from './Statistics/Pools'
 import Feedback from './Feedback'
 import GoogleAnalyticsReporter from 'components/analytics/GoogleAnalyticsReporter'
 import Sbt from './Earn/Sbt'
-import BecomePartner from './Earn/Sbt/BecomePartner'
 import ListOfWinners from './Testnet/ListOfWinners'
+import BecomePartnerNew from './Earn/Sbt/BecomePartnerNew'
 
 const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
   ({ theme, isDarkMode }) => ({
@@ -111,7 +111,7 @@ export default function App() {
                   </Route>
                   <Route path={routes.feedback} element={<Feedback />} />
                   <Route path={routes.sbt} element={<Sbt />} />
-                  <Route path={routes.becomePartner} element={<BecomePartner />} />
+                  <Route path={routes.becomePartner} element={<BecomePartnerNew />} />
                   <Route path="*" element={<Navigate to={routes.testnet} replace />} />
                 </Routes>
               </Web3ReactManager>
