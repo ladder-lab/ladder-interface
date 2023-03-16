@@ -7,35 +7,38 @@ import {
   Box,
   styled,
   IconButton,
-  Collapse
+  Collapse,
+  Theme
 } from '@mui/material'
 import { useState } from 'react'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 // import { visuallyHidden } from '@mui/utils'
 
-const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
-  display: 'table',
-  '& .MuiTableCell-root': {
-    borderBottom: 'none',
-    fontWeight: 400,
-    padding: '10px 20px',
-    // '&:first-of-type': {
-    //   paddingLeft: 20
-    // },
-    // '&:last-child': {
-    //   paddingRight: 20
-    // }
-    [theme.breakpoints.down('sm')]: {
-      padding: '4px 10px'
+const StyledTableContainer = styled(TableContainer)(
+  ({ theme, cellPadding }: { theme: Theme; cellPadding?: string }) => ({
+    display: 'table',
+    '& .MuiTableCell-root': {
+      borderBottom: 'none',
+      fontWeight: 400,
+      padding: cellPadding || '10px 20px',
+      // '&:first-of-type': {
+      //   paddingLeft: 20
+      // },
+      // '&:last-child': {
+      //   paddingRight: 20
+      // }
+      [theme.breakpoints.down('sm')]: {
+        padding: '4px 10px'
+      }
+    },
+    '& table': {
+      width: '100%',
+      borderCollapse: 'separate',
+      borderSpacing: '0 10px'
     }
-  },
-  '& table': {
-    width: '100%',
-    borderCollapse: 'separate',
-    borderSpacing: '0 10px'
-  }
-}))
+  })
+)
 
 const StyledTableHead = styled(TableHead)(({}) => ({
   borderRadius: 8,
@@ -103,7 +106,9 @@ export default function V3TestnetTable({
   collapsible,
   hiddenParts,
   fontSize,
-  bgcolors
+  bgcolors,
+  // cellPadding,
+  height
 }: {
   header: string[]
   rows: (string | number | JSX.Element)[][]
@@ -112,9 +117,12 @@ export default function V3TestnetTable({
   hiddenParts?: JSX.Element[]
   fontSize?: string
   bgcolors?: string[]
+  cellPadding?: string
+  height?: string
 }) {
   return (
     <>
+      {/* <StyledTableContainer cellPadding={cellPadding}> */}
       <StyledTableContainer>
         <table>
           <StyledTableHead>
@@ -129,6 +137,7 @@ export default function V3TestnetTable({
               <Row
                 bgcolor={bgcolors?.[idx]}
                 fontSize={fontSize}
+                height={height}
                 row={row}
                 collapsible={collapsible}
                 key={row[0].toString() + idx}
@@ -149,7 +158,8 @@ function Row({
   collapsible,
   hiddenPart,
   fontSize,
-  bgcolor
+  bgcolor,
+  height
 }: {
   row: (string | number | JSX.Element)[]
   variant: 'outlined' | 'grey'
@@ -157,6 +167,7 @@ function Row({
   hiddenPart?: JSX.Element
   fontSize?: string
   bgcolor?: string
+  height?: string
 }) {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -164,6 +175,7 @@ function Row({
     <>
       <StyledTableRow
         fontSize={fontSize}
+        style={{ height: height || '' }}
         variant={variant}
         bgcolor={bgcolor}
         sx={

@@ -1,6 +1,5 @@
 import { Box, Button, Grid, styled } from '@mui/material'
 import Head from 'assets/svg/bg/sbt_head.png'
-import { BlackText } from './index'
 import { ReactComponent as Person } from 'assets/svg/sbt_person.svg'
 import { ReactComponent as House } from 'assets/svg/sbt_house.svg'
 import { ReactComponent as Twitter } from 'assets/svg/socials/twitter_square.svg'
@@ -8,6 +7,7 @@ import { ReactComponent as Upload } from 'assets/svg/upload.svg'
 import { useState } from 'react'
 import Input from '../../../components/Input'
 import { LineButton, PrimaryButton } from '../../../components/Button/CustomButton'
+import { BlackText } from './oldVersion'
 
 const ContentWrapper = styled(Box)`
   background-color: white;

@@ -103,3 +103,35 @@ export function useUserHasSubmittedClaim(account?: string): {
 
   return { claimSubmitted: Boolean(claimTxn), claimTxn }
 }
+
+export function useUserHasSubmitted(account?: string): {
+  submitted: boolean
+  txn: TransactionDetails | undefined
+  complete: boolean
+} {
+  const allTransactions = useAllTransactions()
+
+  // get the txn if it has been submitted
+  const txn = useMemo(() => {
+    const txnIndex = Object.keys(allTransactions).find(hash => {
+      const tx = allTransactions[hash]
+      return (
+        tx.claim &&
+        tx.claim.recipient.toLowerCase() === account?.toLowerCase() &&
+        !tx.receipt &&
+        isTransactionRecent(tx)
+      )
+    })
+    return txnIndex && allTransactions[txnIndex] ? allTransactions[txnIndex] : undefined
+  }, [account, allTransactions])
+
+  const complete = useMemo(() => {
+    const txnIndex = Object.keys(allTransactions).find(hash => {
+      const tx = allTransactions[hash]
+      return tx.claim && tx.claim.recipient.toLowerCase() === account?.toLowerCase() && tx.receipt
+    })
+    return txnIndex && allTransactions[txnIndex] ? allTransactions[txnIndex] : undefined
+  }, [account, allTransactions])
+
+  return { submitted: Boolean(txn), complete: Boolean(complete), txn }
+}
