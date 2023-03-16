@@ -243,6 +243,7 @@ function DescCard({ range, title, desc, pic }: { range: string; title: string; d
 }
 
 function HowTo() {
+  const navigate = useNavigate()
   const Bg = styled(Box)`
     background-color: #110e12;
     background-image: url('${HowToPic}');
@@ -266,7 +267,14 @@ function HowTo() {
         become a ladder Partner?
       </Typography>
       <Stack spacing={55} direction={'row'}>
-        <Button style={btnStyle}>Apply Now</Button>
+        <Button
+          style={btnStyle}
+          onClick={() => {
+            navigate(routes.becomePartner)
+          }}
+        >
+          Apply Now
+        </Button>
         <Button style={btnStyle} variant={'outlined'}>
           More detail
         </Button>

@@ -19,6 +19,7 @@ export const routes = {
   statisticsPoolsParams: '/:chainId/:pair',
   sbt: '/earn/sbt',
   becomePartner: '/earn/sbt/become-partner',
+  myAccount: '/myAccount',
   feedback: '/feedback'
 }
 
