@@ -20,6 +20,7 @@ export const routes = {
   sbt: '/earn/sbt',
   becomePartner: '/earn/sbt/become-partner',
   myAccount: '/myAccount',
+  origAccount: '/origAccount',
   feedback: '/feedback'
 }
 
