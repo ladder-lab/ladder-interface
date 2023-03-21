@@ -4,9 +4,15 @@ import qs from 'qs'
 export const StatBaseURL = 'https://dualinvest-testapi.antimatter.finance/web/'
 export const baseURL = 'https://test-nftapi.antimatter.finance:8443/web/'
 // export const baseURL = 'https://dualinvest-testapi.antimatter.finance/web/'
+export const testURL = 'https://testapi.settle3.com/web/'
 
-const axiosInstance = axios.create({
+export const axiosInstance = axios.create({
   baseURL,
+  timeout: 10000,
+  headers: { 'content-type': 'application/json', accept: 'application/json' }
+})
+export const axiosTestInstance = axios.create({
+  baseURL: testURL,
   timeout: 10000,
   headers: { 'content-type': 'application/json', accept: 'application/json' }
 })
@@ -16,7 +22,6 @@ const axiosToken1155Instance = axios.create({
   timeout: 10000,
   headers: { 'content-type': 'application/json', accept: 'application/json' }
 })
-
 export const Axios = {
   get<T = any>(url: string, params: { [key: string]: any } = {}): AxiosPromise<ResponseType<T>> {
     return axiosInstance.get(url, { params })

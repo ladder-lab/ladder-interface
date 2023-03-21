@@ -7,6 +7,7 @@ import { useState } from 'react'
 import tempImg from 'assets/images/illustration.png'
 import Share from 'assets/svg/share-2.svg'
 import Divider from '../../components/Divider'
+import { useMySbt } from '../../hooks/useMySbt'
 
 const HeadBox = styled(Box)`
   display: flex;
@@ -62,7 +63,7 @@ export default function MyAccount() {
           </Typography>
           <img src={Illustration} alt={''} style={{ margin: '23px' }} />
           <Stack direction={'row'} spacing={45}>
-            <Button>Copy Your Referral link</Button>
+            {/*<Button>Copy Your Referral link</Button>*/}
             <Button variant={'outlined'}>View Invitation Reward Rules</Button>
           </Stack>
         </HeadBox>
@@ -94,6 +95,8 @@ export default function MyAccount() {
 function MyOwnedSbt({ route }: { route: string }) {
   const theme = useTheme()
   const navigate = useNavigate()
+  const { result } = useMySbt()
+  console.log('MyAccount-result', result)
   return (
     <Box
       sx={{

@@ -1,9 +1,14 @@
 import { Box, Button, Stack, styled, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import Individual from 'assets/svg/individual.svg'
 import Organization from 'assets/svg/organization.svg'
 import Input from '../../../components/Input'
-import { ReactComponent as Upload } from 'assets/svg/upload.svg'
+import Upload from 'assets/svg/upload.svg'
+import Web3Status from '../../../components/Header/Web3Status'
+import { isNullOrEmpty, validateEmail } from '../../../utils/InputUtil'
+import { Axios, testURL } from '../../../utils/axios'
+import { useActiveWeb3React } from '../../../hooks'
+import { useSignLogin } from '../../../hooks/useSignIn'
 
 const Bg = styled(Box)`
   padding: 47px 32px 80px;
@@ -34,7 +39,7 @@ function Require({
   return (
     <Box mt={mt} sx={{ width: width }}>
       <Typography mb={12}>
-        <span color={'#C53434'}>*</span>
+        <span style={{ color: '#C53434' }}>*</span>
         {title}
       </Typography>
       {children}
@@ -79,11 +84,68 @@ function Type({
 function UserForm() {
   const [userEmail, setUserEmail] = useState('')
   const [userName, setUserName] = useState('')
+  const [twitterUrl, setTwitterUrl] = useState()
+  const { token, sign } = useSignLogin()
+  const { account } = useActiveWeb3React()
+
+  const userEmailErr = useMemo(() => {
+    if (userEmail.length == 0) {
+      return 'Please Enter Email'
+    }
+    if (!validateEmail(userEmail)) {
+      return 'Please Enter the right email'
+    }
+    return ''
+  }, [userEmail])
+  const userNameErr = useMemo(() => {
+    if (userName.length == 0) {
+      return 'Please Enter Name'
+    }
+    return ''
+  }, [userName])
+  const submitDisable = useMemo<boolean>(
+    () => !(isNullOrEmpty(userNameErr) && isNullOrEmpty(userEmailErr)),
+    [userEmailErr, userNameErr]
+  )
+
+  const handleTwitter = async () => {
+    if (twitterUrl) {
+      window.open(
+        twitterUrl,
+        'intent',
+        'scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=500,height=500,left=0,top=0'
+      )
+      return
+    }
+    if (!token) {
+      sign()
+      return
+    }
+
+    try {
+      if (!account) return
+      const res = await Axios.get(testURL + 'requestToken', {
+        address: account
+      })
+      const data = res.data.data as any
+      if (!data) {
+        setTwitterUrl(undefined)
+        return
+      }
+      setTwitterUrl(data.data)
+    } catch (error) {
+      setTwitterUrl(undefined)
+      console.error('useAccountTestInfo', error)
+    }
+  }
+
   return (
     <Box sx={{ width: '55%' }}>
       <Stack direction={'row'} spacing={30} mt={40}>
-        <Button>connect wallet</Button>
-        <Button variant={'outlined'}>Verify Twitter</Button>
+        <Web3Status />
+        <Button variant={'outlined'} onClick={handleTwitter}>
+          Verify Twitter
+        </Button>
       </Stack>
       <Require title={"Applicant's email address"}>
         <Input
@@ -95,8 +157,82 @@ function UserForm() {
       <Require title={'Your name'}>
         <Input value={userName} onChange={e => setUserName(e.target.value)} placeholder={'Please enter your name'} />
       </Require>
-      <Button style={{ marginTop: '40px' }}>Submit</Button>
+      <Button style={{ marginTop: '40px' }} disabled={submitDisable}>
+        Submit
+      </Button>
     </Box>
+  )
+}
+
+const UploadInput = styled(Box)`
+  position: relative;
+  '&:hover': {
+    cursor: pointer;
+  }
+`
+
+const UploadImg = styled('img')`
+  width: 8vw;
+  height: 8vw;
+  border-radius: 50%;
+`
+
+function UploadZone({
+  imageUploaded,
+  setImageUploaded
+}: {
+  imageUploaded: string | null
+  setImageUploaded: (url: string | null) => void
+}) {
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const { account } = useActiveWeb3React()
+
+  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    console.log('selectedImage', e.target.files?.[0])
+    const selectedImage = e.target.files?.[0]
+    if (selectedImage && account) {
+      const formData = new FormData()
+      formData.append('files', selectedImage)
+      formData.append('address', account)
+      Axios.post(testURL + 'uploadFile', formData)
+        .then(response => {
+          if (response.data.code !== 200) {
+            throw response.data
+          }
+          setImageUploaded(response.data.data.path)
+        })
+        .catch(error => {
+          console.log('upload-img', error)
+        })
+    }
+  }
+
+  function handleButtonClick() {
+    fileInputRef.current?.click()
+  }
+
+  return (
+    <Stack direction={'row'} spacing={14.5} sx={{ display: 'flex', alignItems: 'center' }}>
+      <UploadInput>
+        <label htmlFor="fileInput" onClick={handleButtonClick}>
+          <UploadImg src={imageUploaded ? imageUploaded : Upload} alt="Upload" />
+        </label>
+        <input
+          id="fileInput"
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          ref={fileInputRef}
+          style={{ display: 'none' }}
+        />
+      </UploadInput>
+      <Button style={{ width: 'fit-content' }} onClick={handleButtonClick}>
+        Upload a picture
+      </Button>
+      <Button style={{ width: 'fit-content' }} onClick={() => setImageUploaded(null)}>
+        Delete
+      </Button>
+    </Stack>
   )
 }
 
@@ -106,17 +242,57 @@ function OrganizationForm() {
   const [telegram, setTelegram] = useState('')
   const [email, setEmail] = useState('')
   const [intro, setIntro] = useState('')
+  const [imageUploaded, setImageUploaded] = useState<string | null>(null)
+
+  const nameErr = useMemo(() => {
+    if (name.length == 0) {
+      return 'Please Enter name'
+    }
+    return ''
+  }, [name])
+  const webErr = useMemo(() => {
+    if (web.length == 0) {
+      return 'Please Enter Website url'
+    }
+    return ''
+  }, [web])
+  const telegramErr = useMemo(() => {
+    if (telegram.length == 0) {
+      return 'Please Enter telegram'
+    }
+    return ''
+  }, [telegram])
+  const emailErr = useMemo(() => {
+    if (email.length == 0) {
+      return 'Please Enter email'
+    }
+    return ''
+  }, [email])
+  const introErr = useMemo(() => {
+    if (intro.length == 0) {
+      return 'Please Enter intro'
+    }
+    return ''
+  }, [intro])
+  const submitDisable = useMemo<boolean>(
+    () =>
+      !(
+        isNullOrEmpty(webErr) &&
+        isNullOrEmpty(nameErr) &&
+        isNullOrEmpty(telegramErr) &&
+        isNullOrEmpty(emailErr) &&
+        isNullOrEmpty(introErr)
+      ),
+    [emailErr, introErr, nameErr, telegramErr, webErr]
+  )
+
   return (
     <Box width={'55%'}>
       <Button variant={'outlined'} style={{ width: 'fit-content', marginTop: '40px' }}>
         Verify Twitter
       </Button>
       <Require title={'Upload your organization logo'}>
-        <Stack direction={'row'} spacing={14.5} sx={{ display: 'flex', alignItems: 'center' }}>
-          <Upload />
-          <Button style={{ width: 'fit-content' }}>Upload a picture</Button>
-          <Button style={{ width: 'fit-content' }}>Delete</Button>
-        </Stack>
+        <UploadZone imageUploaded={imageUploaded} setImageUploaded={setImageUploaded} />
       </Require>
       <Require title={'Name of your organization'}>
         <Input
@@ -165,7 +341,9 @@ function OrganizationForm() {
           }}
         />
       </Require>
-      <Button style={{ marginTop: '40px' }}>Submit</Button>
+      <Button style={{ marginTop: '40px' }} disabled={submitDisable}>
+        Submit
+      </Button>
     </Box>
   )
 }

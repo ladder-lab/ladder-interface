@@ -18,6 +18,7 @@ import { useTopPoolsList } from '../../../hooks/useStatBacked'
 import { NETWORK_CHAIN_ID } from '../../../constants/chain'
 import { useActiveWeb3React } from '../../../hooks'
 import { PoolPairType, ShowTopPoolsCurrencyBox } from '../../Statistics'
+import Web3Status from '../../../components/Header/Web3Status'
 
 const ContentWrapper = styled(Box)`
   background: white;
@@ -284,6 +285,8 @@ function HowTo() {
 }
 
 function CheckSbt() {
+  const navigate = useNavigate()
+  const { account } = useActiveWeb3React()
   const Bg = styled(Box)`
     background-image: url('${CheckBg}');
     background-size: cover;
@@ -308,7 +311,7 @@ function CheckSbt() {
             Check your SBT
             <br /> and invite earnings
           </Typography>
-          <Button>My Account</Button>
+          {account ? <Button onClick={() => navigate(routes.myAccount)}>My Account</Button> : <Web3Status />}
         </Box>
       </Stack>
     </Bg>
