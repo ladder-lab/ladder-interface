@@ -7,6 +7,13 @@ import Discord from 'assets/svg/socials/discord.svg'
 import Web from 'assets/svg/socials/website.svg'
 import OrigTemp from 'assets/images/orig-temp.png'
 import OrigTemp1 from 'assets/images/orig-temp1.png'
+import ColorBg from 'assets/images/grain-colorful-shape.png'
+import { ReactComponent as LadderLogo } from 'assets/svg/ladder-logo.svg'
+import { ReactComponent as StarryniftLogo } from 'assets/svg/starrynift-logo.svg'
+import Divider from '../../components/Divider'
+import { ArrowLeft, ArrowRight } from '@mui/icons-material'
+import useModal from '../../hooks/useModal'
+import MintOrganModal from './MintOrganModal'
 
 const Head = styled(Box)`
   background-image: url('${HeadBg}');
@@ -25,6 +32,7 @@ const SocialBg = styled(Box)`
 `
 
 const OrigCardBg = styled(Box)`
+  width: 50%;
   background-color: #f9f9f9;
   border-radius: 16px;
   text-align: left;
@@ -33,14 +41,108 @@ const OrigCardBg = styled(Box)`
 function OrigCard({ img, title, desc }: { img: string; title: string; desc: string }) {
   return (
     <OrigCardBg>
-      <img src={img} />
-      <Typography>{title}</Typography>
-      <Typography>{desc}</Typography>
+      <img src={img} style={{ width: '100%', height: 'auto', borderRadius: '16px 16px 0 0' }} />
+      <Typography mt={32} ml={46} variant={'h5'}>
+        {title}
+      </Typography>
+      <Typography mt={20} ml={46} mb={29} fontSize={16} fontWeight={500}>
+        {desc}
+      </Typography>
     </OrigCardBg>
   )
 }
 
+const ReferralBg = styled(Box)`
+  margin-bottom: 36px;
+  margin-top: 48px;
+  width: 100%;
+  background-color: black;
+  background-image: url('${ColorBg}');
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  padding: 100px 0;
+`
+const Row = styled(Box)`
+  display: flex;
+`
+const ColorText = styled(Typography)`
+  margin-left: 6px;
+  font-size: 20px;
+  text-decoration-line: underline;
+  background: linear-gradient(96.44deg, #d8ff20 5.94%, #99f7f4 97.57%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+`
+
+function Referral() {
+  return (
+    <ReferralBg>
+      <Row display={'flex'} gap={60}>
+        <StarryniftLogo />
+        <Typography fontSize={43} color={'white'}>
+          X
+        </Typography>
+        <LadderLogo />
+      </Row>
+      <Row alignItems={'flex-end'}>
+        <Typography fontSize={20} color={'white'}>
+          Referral link:
+        </Typography>
+        <ColorText>http://terrapass.com/individuals</ColorText>
+      </Row>
+    </ReferralBg>
+  )
+}
+
+const ActBg = styled(Box)`
+  width: 95%;
+  margin-bottom: 40px;
+  background: #f9f9f9;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  padding: 40px;
+`
+
+function ActRow(props: { time: string; address: string; type: string }) {
+  return (
+    <Box width={'100%'}>
+      <Divider />
+      <Row gap={'14vw'} color={'#878D92'} padding={'20px 0'}>
+        <Typography>{props.time}</Typography>
+        <Typography>{props.address}</Typography>
+        <Typography>{props.type}</Typography>
+      </Row>
+    </Box>
+  )
+}
+
+function Activity() {
+  return (
+    <ActBg>
+      <Typography variant={'h1'} mb={32}>
+        Activity
+      </Typography>
+      {Array(15)
+        .fill({ time: 'June 15, 2020 08:22', address: '0xb24...6f8b', type: 'Mint' })
+        .map((row, idx) => (
+          <ActRow key={idx} time={row.time} address={row.address} type={row.type} />
+        ))}
+      <Divider />
+      <Row mt={20}>
+        <ArrowLeft />
+        <Typography>Page 1 of 5</Typography>
+        <ArrowRight />
+      </Row>
+    </ActBg>
+  )
+}
+
 export default function OrigAccount() {
+  const { showModal, hideModal } = useModal()
   const SocialList = [
     {
       type: 'twitter',
@@ -94,28 +196,30 @@ export default function OrigAccount() {
             <Typography variant={'h1'}>98214912</Typography>
           </Box>
           <Box gap={37} mt={45} display={'flex'}>
-            <Button>Mint</Button>
+            <Button onClick={() => showModal(<MintOrganModal hide={hideModal} />)}>Mint</Button>
             <Button variant={'outlined'}>View the collection</Button>
           </Box>
         </Box>
         <img src={Temp3} style={{ width: '28vw', height: '28vw' }} />
       </Head>
       <Box display={'flex'} alignItems={'center'} flexDirection={'column'} textAlign={'center'}>
-        <Typography variant={'h1'}>
+        <Typography variant={'h1'} mt={56}>
           Why StarryNift x Ladder
           <br />
           Owner SBT ?
         </Typography>
-        <Typography fontWeight={500} fontSize={16}>
+        <Typography fontWeight={500} fontSize={16} mt={20}>
           Ladder Owner SBT is a soul-bound token issued by Ladder & Our Partners.
           <br />
           SBT holders will continue to share the benefits of Ladder Protocol.
         </Typography>
-        <Box display={'flex'} justifyContent={'space-between'}>
+        <Box display={'flex'} justifyContent={'space-between'} gap={20} mt={48}>
           {fakeIntroList.map((orig, idx) => {
             return <OrigCard key={idx} img={orig.img} title={orig.title} desc={orig.desc} />
           })}
         </Box>
+        <Referral />
+        <Activity />
       </Box>
     </Box>
   )
