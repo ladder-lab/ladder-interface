@@ -28,7 +28,7 @@ export function useSignLogin() {
           const _token = r.data.data.token
           setCookie(API_TOKEN + account, _token)
           setToken(_token)
-          axiosInstance.defaults.headers.common['Authorization'] = _token
+          axiosInstance.defaults.headers.common['token'] = _token
         } else {
           throw Error('Sign in error')
         }
@@ -50,7 +50,7 @@ export function useAxiosInterceptors() {
 
   useEffect(() => {
     const _token = account ? getCookie(API_TOKEN + account) : ''
-    axiosInstance.defaults.headers.common['Authorization'] = _token
+    axiosInstance.defaults.headers.common['token'] = _token
     setToken(_token)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account])
@@ -60,7 +60,7 @@ export function useAxiosInterceptors() {
       if (response.data.code === 401) {
         setCookie(API_TOKEN + account, '')
         setToken('')
-        axiosInstance.defaults.headers.common['Authorization'] = ''
+        axiosInstance.defaults.headers.common['token'] = ''
       }
       return response
     })

@@ -6,9 +6,10 @@ import Input from '../../../components/Input'
 import Upload from 'assets/svg/upload.svg'
 import Web3Status from '../../../components/Header/Web3Status'
 import { isNullOrEmpty, validateEmail } from '../../../utils/InputUtil'
-import { Axios, testURL } from '../../../utils/axios'
+import { Axios, testAssetUrl, testURL } from '../../../utils/axios'
 import { useActiveWeb3React } from '../../../hooks'
 import { useSignLogin } from '../../../hooks/useSignIn'
+import { OrganProps, UserProps, useSaveAccount } from '../../../hooks/useSaveAccount'
 
 const Bg = styled(Box)`
   padding: 47px 32px 80px;
@@ -84,9 +85,15 @@ function Type({
 function UserForm() {
   const [userEmail, setUserEmail] = useState('')
   const [userName, setUserName] = useState('')
-  const [twitterUrl, setTwitterUrl] = useState()
   const { token, sign } = useSignLogin()
   const { account } = useActiveWeb3React()
+  const props: UserProps = {
+    email: userEmail,
+    username: userName,
+    twitter: 'aaa',
+    type: 1
+  }
+  const { save } = useSaveAccount(props)
 
   const userEmailErr = useMemo(() => {
     if (userEmail.length == 0) {
@@ -109,14 +116,6 @@ function UserForm() {
   )
 
   const handleTwitter = async () => {
-    if (twitterUrl) {
-      window.open(
-        twitterUrl,
-        'intent',
-        'scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=500,height=500,left=0,top=0'
-      )
-      return
-    }
     if (!token) {
       sign()
       return
@@ -127,14 +126,17 @@ function UserForm() {
       const res = await Axios.get(testURL + 'requestToken', {
         address: account
       })
-      const data = res.data.data as any
+      const data = res.data.msg as any
       if (!data) {
-        setTwitterUrl(undefined)
         return
       }
-      setTwitterUrl(data.data)
+      window.open(
+        data,
+        'intent',
+        'scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=500,height=500,left=0,top=0'
+      )
+      return
     } catch (error) {
-      setTwitterUrl(undefined)
       console.error('useAccountTestInfo', error)
     }
   }
@@ -157,7 +159,13 @@ function UserForm() {
       <Require title={'Your name'}>
         <Input value={userName} onChange={e => setUserName(e.target.value)} placeholder={'Please enter your name'} />
       </Require>
-      <Button style={{ marginTop: '40px' }} disabled={submitDisable}>
+      <Button
+        style={{ marginTop: '40px' }}
+        disabled={submitDisable}
+        onClick={() => {
+          save()
+        }}
+      >
         Submit
       </Button>
     </Box>
@@ -181,15 +189,16 @@ function UploadZone({
   imageUploaded,
   setImageUploaded
 }: {
-  imageUploaded: string | null
-  setImageUploaded: (url: string | null) => void
+  imageUploaded: string
+  setImageUploaded: (url: string) => void
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { account } = useActiveWeb3React()
 
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
-    console.log('selectedImage', e.target.files?.[0])
+    e.preventDefault()
     const selectedImage = e.target.files?.[0]
+    console.log('selectedImage', selectedImage)
     if (selectedImage && account) {
       const formData = new FormData()
       formData.append('files', selectedImage)
@@ -199,7 +208,7 @@ function UploadZone({
           if (response.data.code !== 200) {
             throw response.data
           }
-          setImageUploaded(response.data.data.path)
+          setImageUploaded(response.data.msg)
         })
         .catch(error => {
           console.log('upload-img', error)
@@ -215,7 +224,7 @@ function UploadZone({
     <Stack direction={'row'} spacing={14.5} sx={{ display: 'flex', alignItems: 'center' }}>
       <UploadInput>
         <label htmlFor="fileInput" onClick={handleButtonClick}>
-          <UploadImg src={imageUploaded ? imageUploaded : Upload} alt="Upload" />
+          <UploadImg src={imageUploaded ? testAssetUrl + imageUploaded : Upload} alt="Upload" />
         </label>
         <input
           id="fileInput"
@@ -229,7 +238,7 @@ function UploadZone({
       <Button style={{ width: 'fit-content' }} onClick={handleButtonClick}>
         Upload a picture
       </Button>
-      <Button style={{ width: 'fit-content' }} onClick={() => setImageUploaded(null)}>
+      <Button style={{ width: 'fit-content' }} onClick={() => setImageUploaded('')}>
         Delete
       </Button>
     </Stack>
@@ -242,7 +251,16 @@ function OrganizationForm() {
   const [telegram, setTelegram] = useState('')
   const [email, setEmail] = useState('')
   const [intro, setIntro] = useState('')
-  const [imageUploaded, setImageUploaded] = useState<string | null>(null)
+  const [imageUploaded, setImageUploaded] = useState<string>('')
+  const props: OrganProps = {
+    logo: imageUploaded,
+    username: name,
+    website: web,
+    telegram: telegram,
+    email: email,
+    type: 2
+  }
+  const { save } = useSaveAccount(props)
 
   const nameErr = useMemo(() => {
     if (name.length == 0) {
@@ -288,9 +306,6 @@ function OrganizationForm() {
 
   return (
     <Box width={'55%'}>
-      <Button variant={'outlined'} style={{ width: 'fit-content', marginTop: '40px' }}>
-        Verify Twitter
-      </Button>
       <Require title={'Upload your organization logo'}>
         <UploadZone imageUploaded={imageUploaded} setImageUploaded={setImageUploaded} />
       </Require>
@@ -341,7 +356,7 @@ function OrganizationForm() {
           }}
         />
       </Require>
-      <Button style={{ marginTop: '40px' }} disabled={submitDisable}>
+      <Button style={{ marginTop: '40px' }} disabled={submitDisable} onClick={() => save()}>
         Submit
       </Button>
     </Box>
