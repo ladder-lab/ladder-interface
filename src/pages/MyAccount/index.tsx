@@ -8,6 +8,7 @@ import tempImg from 'assets/images/illustration.png'
 import Share from 'assets/svg/share-2.svg'
 import Divider from '../../components/Divider'
 import { useMySbt } from '../../hooks/useMySbt'
+import useBreakpoint from '../../hooks/useBreakpoint'
 
 const HeadBox = styled(Box)`
   display: flex;
@@ -46,8 +47,9 @@ export default function MyAccount() {
   const navigate = useNavigate()
   const btnList = ['My Owned SBT', 'Invitation Reward', 'Invited']
   const [currentTab, setCurrentTab] = useState(btnList[0])
+  const isDownSm = useBreakpoint('sm')
   return (
-    <Box width={'77%'}>
+    <Box width={isDownSm ? '90%' : '77%'}>
       <AppBody
         width={'100%'}
         maxWidth={'1440px'}
@@ -74,6 +76,7 @@ export default function MyAccount() {
             return (
               <StyledTabButton
                 key={idx}
+                fontSize={isDownSm ? 12 : 16}
                 className={text === currentTab ? 'active' : ''}
                 onClick={() => {
                   setCurrentTab(text)
@@ -198,9 +201,10 @@ function InvitationReward() {
 }
 
 function Invited() {
+  const isDownSm = useBreakpoint('sm')
   return (
     <Box mt={32}>
-      <Box display={'flex'} gap={20} mb={24}>
+      <Box display={'flex'} gap={20} mb={24} flexDirection={isDownSm ? 'column' : 'row'}>
         <Summarize title={'Invited:'} count={'258'} />
         <Summarize title={'total invited:'} count={'1,288'} />
       </Box>

@@ -14,6 +14,7 @@ import Divider from '../../components/Divider'
 import { ArrowLeft, ArrowRight } from '@mui/icons-material'
 import useModal from '../../hooks/useModal'
 import MintOrganModal from './MintOrganModal'
+import useBreakpoint from '../../hooks/useBreakpoint'
 
 const Head = styled(Box)`
   background-image: url('${HeadBg}');
@@ -32,15 +33,15 @@ const SocialBg = styled(Box)`
 `
 
 const OrigCardBg = styled(Box)`
-  width: 50%;
   background-color: #f9f9f9;
   border-radius: 16px;
   text-align: left;
 `
 
 function OrigCard({ img, title, desc }: { img: string; title: string; desc: string }) {
+  const isDownSm = useBreakpoint('sm')
   return (
-    <OrigCardBg>
+    <OrigCardBg width={isDownSm ? '95%' : '50%'} alignSelf={isDownSm ? 'center' : 'auto'}>
       <img src={img} style={{ width: '100%', height: 'auto', borderRadius: '16px 16px 0 0' }} />
       <Typography mt={32} ml={46} variant={'h5'}>
         {title}
@@ -58,6 +59,7 @@ const ReferralBg = styled(Box)`
   width: 100%;
   background-color: black;
   background-image: url('${ColorBg}');
+  background-size: cover;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -77,16 +79,17 @@ const ColorText = styled(Typography)`
 `
 
 function Referral() {
+  const isDownSm = useBreakpoint('sm')
   return (
     <ReferralBg>
-      <Row display={'flex'} gap={60}>
+      <Row display={'flex'} gap={isDownSm ? 4 : 60} flexDirection={isDownSm ? 'column' : 'row'}>
         <StarryniftLogo />
         <Typography fontSize={43} color={'white'}>
           X
         </Typography>
         <LadderLogo />
       </Row>
-      <Row alignItems={'flex-end'}>
+      <Row alignItems={isDownSm ? 'center' : 'flex-end'} flexDirection={isDownSm ? 'column' : 'row'}>
         <Typography fontSize={20} color={'white'}>
           Referral link:
         </Typography>
@@ -143,6 +146,7 @@ function Activity() {
 
 export default function OrigAccount() {
   const { showModal, hideModal } = useModal()
+  const isDownSm = useBreakpoint('sm')
   const SocialList = [
     {
       type: 'twitter',
@@ -172,10 +176,18 @@ export default function OrigAccount() {
       desc: 'Refer more friends and when they mint their SBT with your referral code, your SBT credential and incentives increase based on their on-chain behaviors.'
     }
   ]
+  const organImg = <img src={Temp3} style={{ width: isDownSm ? '70vw' : '28vw', height: isDownSm ? '70vw' : '28vw' }} />
+
   return (
     <Box width={'100%'} sx={{ backgroundColor: 'white' }}>
       <Head>
-        <Box>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: isDownSm ? 'center' : 'start'
+          }}
+        >
           <Stack direction={'row'} spacing={20}>
             {SocialList.map((social, index) => {
               return (
@@ -191,7 +203,13 @@ export default function OrigAccount() {
           <Typography mt={19}>
             Mint a StarryNift X Ladder SBT! SBT holders will continue to share the benefits of Ladder Protocol.
           </Typography>
-          <Box display={'flex'} mt={57} alignItems={'baseline'}>
+          {isDownSm && organImg}
+          <Box
+            display={'flex'}
+            mt={57}
+            alignItems={isDownSm ? 'center' : 'baseline'}
+            flexDirection={isDownSm ? 'column' : 'row'}
+          >
             <Typography>Total Minted:</Typography>
             <Typography variant={'h1'}>98214912</Typography>
           </Box>
@@ -200,7 +218,7 @@ export default function OrigAccount() {
             <Button variant={'outlined'}>View the collection</Button>
           </Box>
         </Box>
-        <img src={Temp3} style={{ width: '28vw', height: '28vw' }} />
+        {!isDownSm && organImg}
       </Head>
       <Box display={'flex'} alignItems={'center'} flexDirection={'column'} textAlign={'center'}>
         <Typography variant={'h1'} mt={56}>
@@ -213,7 +231,13 @@ export default function OrigAccount() {
           <br />
           SBT holders will continue to share the benefits of Ladder Protocol.
         </Typography>
-        <Box display={'flex'} justifyContent={'space-between'} gap={20} mt={48}>
+        <Box
+          display={'flex'}
+          justifyContent={'space-between'}
+          gap={20}
+          mt={48}
+          flexDirection={isDownSm ? 'column' : 'row'}
+        >
           {fakeIntroList.map((orig, idx) => {
             return <OrigCard key={idx} img={orig.img} title={orig.title} desc={orig.desc} />
           })}

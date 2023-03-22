@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import { Button, Grid, Stack, styled, Typography } from '@mui/material'
 import HeadDeco from 'assets/images/head-deco-img.png'
-import HeadBg from 'assets/images/sbt-bg.jpg'
+import HeadBg from 'assets/images/sbt-bg.png'
 import DescPic from 'assets/images/sbt-desc-pic.png'
 import HowToPic from 'assets/images/sbt-how-to-bg.png'
 import CheckBg from 'assets/images/sbt-check-bg.jpg'
@@ -11,12 +11,8 @@ import { routes } from '../../../constants/routes'
 import { useActiveWeb3React } from '../../../hooks'
 import Web3Status from '../../../components/Header/Web3Status'
 import useBreakpoint from '../../../hooks/useBreakpoint'
+import { useIsDarkMode } from '../../../state/user/hooks'
 
-const ContentWrapper = styled(Box)`
-  background: white;
-  width: 100%;
-  height: 100vh;
-`
 const Head = styled(Box)`
   width: 100%;
   background-size: cover;
@@ -39,8 +35,14 @@ const UnderlineText = styled('span')`
   background-position: bottom;
   background-size: auto 20px;
 `
+const ContentText = styled(Typography)`
+  color: #878d92;
+`
 export default function Sbt() {
   const isDownSm = useBreakpoint('sm')
+  const { account } = useActiveWeb3React()
+  const isDarkMode = useIsDarkMode()
+
   // const { chainId } = useActiveWeb3React()
 
   // const { result: list721Pool } = useTopPoolsList(
@@ -79,7 +81,13 @@ export default function Sbt() {
   }
 
   return (
-    <ContentWrapper width={'100%'}>
+    <Box
+      sx={{
+        width: '100%',
+        height: '100vh',
+        backgroundColor: isDarkMode ? 'black' : 'white'
+      }}
+    >
       <Head>
         <Box sx={HeadBoxStyle}>
           <Box paddingLeft={45}>
@@ -91,7 +99,7 @@ export default function Sbt() {
             <Typography mt={24} mb={37}>
               Join Affiliate Program and build NFT liquidity together with Ladder
             </Typography>
-            <Button>Connect Wallet</Button>
+            {!account && <Web3Status />}
           </Box>
           <img src={HeadDeco} alt={'head-deco'} />
         </Box>
@@ -104,16 +112,16 @@ export default function Sbt() {
           What is ladder
           <br /> owner <UnderlineText>SBT</UnderlineText>?
         </Typography>
-        <Typography textAlign={'center'} width={'63%'} mt={26}>
+        <ContentText textAlign={'center'} width={'63%'} mt={26}>
           These SBT tokens are permanently linked to holder&apos;s wallet, making them non-transferable and serve as
           Decentralized Identity within Ladder ecosystems that records personal credentials and reputation. With Ladder
           Owner SBT, holders are entitled into Ladder ecosystem and membership system which automatically execute
           rewards and other incentivization mechanisms.
-        </Typography>
+        </ContentText>
       </AlignCenter>
-      <Box padding={'0 45px 51px 45px'} sx={{ backgroundColor: 'white' }}>
+      <Box padding={'0 45px 51px 45px'}>
         <Grid container spacing={20} direction={'row'}>
-          <Grid item xs={6}>
+          <Grid item md={6} sm={12}>
             <DescCard
               range={'01'}
               title={'Mint your SBT'}
@@ -122,7 +130,7 @@ export default function Sbt() {
               }
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item md={6} sm={12}>
             <DescCard
               range={'02'}
               title={'Refer your friend'}
@@ -131,7 +139,7 @@ export default function Sbt() {
               }
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item md={12} sm={12}>
             <DescCard
               range={'03'}
               title={'Get your rewards'}
@@ -142,11 +150,13 @@ export default function Sbt() {
             />
           </Grid>
         </Grid>
+      </Box>
+      <Box>
         <HowTo />
         <CheckSbt />
         <MainBenefits />
       </Box>
-    </ContentWrapper>
+    </Box>
   )
 }
 
@@ -221,6 +231,7 @@ export default function Sbt() {
 // }
 
 function DescCard({ range, title, desc, pic }: { range: string; title: string; desc: string; pic?: string }) {
+  const isDownSm = useBreakpoint('sm')
   const Bg = styled(Box)`
     display: flex;
     justify-content: space-between;
@@ -236,13 +247,13 @@ function DescCard({ range, title, desc, pic }: { range: string; title: string; d
     -webkit-text-fill-color: transparent;
   `
   return (
-    <Bg>
+    <Bg flexDirection={isDownSm ? 'column' : 'row'}>
       <Box>
         <RangeText variant={'h1'}>{range}</RangeText>
         <Typography variant={'h5'} mt={-46}>
           {title}
         </Typography>
-        <Typography mt={20}>{desc}</Typography>
+        <ContentText mt={20}>{desc}</ContentText>
       </Box>
       {pic && <img src={pic} alt={'pic'} />}
     </Bg>
@@ -250,6 +261,7 @@ function DescCard({ range, title, desc, pic }: { range: string; title: string; d
 }
 
 function HowTo() {
+  const isDownSm = useBreakpoint('sm')
   const navigate = useNavigate()
   const Bg = styled(Box)`
     background-color: #110e12;
@@ -258,17 +270,19 @@ function HowTo() {
     background-repeat: no-repeat;
     padding-bottom: 90px;
     display: flex;
-    margin-top: 58px;
-    border-radius: 24px 24px 0 0;
     flex-direction: column;
     align-items: center;
   `
   const btnStyle = {
     width: 'max-content',
-    minWidth: '220px'
+    minWidth: isDownSm ? '160px' : '220px'
   }
   return (
-    <Bg>
+    <Bg
+      sx={{
+        borderRadius: isDownSm ? 0 : '24px 24px 0 0'
+      }}
+    >
       <Typography variant={'h1'} color={'white'} m={'70px 0 31px'} textAlign={'center'}>
         How to <br />
         become a ladder Partner?
@@ -292,6 +306,7 @@ function HowTo() {
 
 function CheckSbt() {
   const navigate = useNavigate()
+  const isDownSm = useBreakpoint('sm')
   const { account } = useActiveWeb3React()
   const Bg = styled(Box)`
     background-image: url('${CheckBg}');
@@ -302,21 +317,25 @@ function CheckSbt() {
     padding: 100px;
     width: 100%;
   `
+  const pic = (
+    <img
+      src={CheckPic}
+      style={{
+        width: isDownSm ? '80vw' : '26vw',
+        height: 'auto'
+      }}
+    />
+  )
   return (
     <Bg>
       <Stack direction={'row'} spacing={100}>
-        <img
-          src={CheckPic}
-          style={{
-            width: '26vw',
-            height: 'auto'
-          }}
-        />
+        {!isDownSm && pic}
         <Box>
           <Typography variant={'h1'} mb={46}>
             <UnderlineText>Check</UnderlineText> your SBT
             <br /> and <UnderlineText>invite</UnderlineText> earnings
           </Typography>
+          {isDownSm && pic}
           {account ? <Button onClick={() => navigate(routes.myAccount)}>My Account</Button> : <Web3Status />}
         </Box>
       </Stack>
@@ -325,6 +344,7 @@ function CheckSbt() {
 }
 
 function MainBenefits() {
+  const isDownSm = useBreakpoint('sm')
   const benefitsList = [
     {
       title: 'Ladder Reputable Member',
@@ -344,8 +364,8 @@ function MainBenefits() {
     }
   ]
   return (
-    <Box mt={89}>
-      <Typography variant={'h1'}>
+    <Box mt={89} padding={isDownSm ? '20px' : '45px'}>
+      <Typography variant={'h1'} textAlign={isDownSm ? 'center' : 'left'}>
         What are the
         <br />
         <UnderlineText> main benefits</UnderlineText> of the Ladder
@@ -354,7 +374,7 @@ function MainBenefits() {
       <Grid container spacing={20} mt={50}>
         {benefitsList.map((val, index) => {
           return (
-            <Grid item xs={6} key={index}>
+            <Grid item md={6} sm={12} key={index}>
               <Box
                 sx={{
                   background: '#F9F9F9',

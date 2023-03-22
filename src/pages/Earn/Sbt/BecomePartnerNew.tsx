@@ -10,6 +10,7 @@ import { Axios, testAssetUrl, testURL } from '../../../utils/axios'
 import { useActiveWeb3React } from '../../../hooks'
 import { useSignLogin } from '../../../hooks/useSignIn'
 import { OrganProps, UserProps, useSaveAccount } from '../../../hooks/useSaveAccount'
+import useBreakpoint from '../../../hooks/useBreakpoint'
 
 const Bg = styled(Box)`
   padding: 47px 32px 80px;
@@ -83,6 +84,7 @@ function Type({
 }
 
 function UserForm() {
+  const isDownSm = useBreakpoint('sm')
   const [userEmail, setUserEmail] = useState('')
   const [userName, setUserName] = useState('')
   const { token, sign } = useSignLogin()
@@ -142,9 +144,9 @@ function UserForm() {
   }
 
   return (
-    <Box sx={{ width: '55%' }}>
+    <Box sx={{ width: isDownSm ? '100%' : '55%' }}>
       <Stack direction={'row'} spacing={30} mt={40}>
-        <Web3Status />
+        {!account && <Web3Status />}
         <Button variant={'outlined'} onClick={handleTwitter}>
           Verify Twitter
         </Button>
@@ -179,12 +181,6 @@ const UploadInput = styled(Box)`
   }
 `
 
-const UploadImg = styled('img')`
-  width: 8vw;
-  height: 8vw;
-  border-radius: 50%;
-`
-
 function UploadZone({
   imageUploaded,
   setImageUploaded
@@ -193,6 +189,7 @@ function UploadZone({
   setImageUploaded: (url: string) => void
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const isDownSm = useBreakpoint('sm')
   const { account } = useActiveWeb3React()
 
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -220,32 +217,48 @@ function UploadZone({
     fileInputRef.current?.click()
   }
 
-  return (
-    <Stack direction={'row'} spacing={14.5} sx={{ display: 'flex', alignItems: 'center' }}>
-      <UploadInput>
-        <label htmlFor="fileInput" onClick={handleButtonClick}>
-          <UploadImg src={imageUploaded ? testAssetUrl + imageUploaded : Upload} alt="Upload" />
-        </label>
-        <input
-          id="fileInput"
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          ref={fileInputRef}
-          style={{ display: 'none' }}
+  const UploadPic = (
+    <UploadInput>
+      <label htmlFor="fileInput" onClick={handleButtonClick}>
+        <img
+          src={imageUploaded ? testAssetUrl + imageUploaded : Upload}
+          alt="Upload"
+          style={{
+            width: isDownSm ? '32vw' : '8vw',
+            height: isDownSm ? '32vw' : '8vw',
+            borderRadius: '50%'
+          }}
         />
-      </UploadInput>
-      <Button style={{ width: 'fit-content' }} onClick={handleButtonClick}>
-        Upload a picture
-      </Button>
-      <Button style={{ width: 'fit-content' }} onClick={() => setImageUploaded('')}>
-        Delete
-      </Button>
-    </Stack>
+      </label>
+      <input
+        id="fileInput"
+        type="file"
+        accept="image/*"
+        onChange={handleImageChange}
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+      />
+    </UploadInput>
+  )
+
+  return (
+    <Box>
+      {isDownSm && UploadPic}
+      <Stack direction={'row'} spacing={14.5} sx={{ display: 'flex', alignItems: 'center' }}>
+        {!isDownSm && UploadPic}
+        <Button style={{ width: 'fit-content' }} onClick={handleButtonClick}>
+          Upload a picture
+        </Button>
+        <Button style={{ width: 'fit-content' }} onClick={() => setImageUploaded('')}>
+          Delete
+        </Button>
+      </Stack>
+    </Box>
   )
 }
 
 function OrganizationForm() {
+  const isDownSm = useBreakpoint('sm')
   const [name, setName] = useState('')
   const [web, setWeb] = useState('')
   const [telegram, setTelegram] = useState('')
@@ -305,7 +318,7 @@ function OrganizationForm() {
   )
 
   return (
-    <Box width={'55%'}>
+    <Box width={isDownSm ? '100%' : '55%'}>
       <Require title={'Upload your organization logo'}>
         <UploadZone imageUploaded={imageUploaded} setImageUploaded={setImageUploaded} />
       </Require>
@@ -365,6 +378,7 @@ function OrganizationForm() {
 
 export default function BecomePartnerNew() {
   const [currentSelected, setSelected] = useState('user')
+  const isDownSm = useBreakpoint('sm')
   return (
     <Bg>
       <AlignCenter>
@@ -376,7 +390,7 @@ export default function BecomePartnerNew() {
         </Typography>
       </AlignCenter>
       <Require title={'Identity type'} mt={40}>
-        <Stack direction={'row'} spacing={20}>
+        <Stack direction={isDownSm ? 'column' : 'row'} spacing={20}>
           <Type
             type={'user'}
             icon={Individual}
