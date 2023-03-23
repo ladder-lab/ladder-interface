@@ -2,12 +2,16 @@ import Box from '@mui/material/Box'
 import { Button, Stack, styled, Typography } from '@mui/material'
 import { ReactComponent as Close } from 'assets/svg/close-btn.svg'
 import Modal from '../../components/Modal'
+import useBreakpoint from '../../hooks/useBreakpoint'
 
 const StepText = styled(Typography)`
   font-size: 28px;
   font-weight: 500;
 `
 export default function MintOrganModal({ hide }: { hide: () => void }) {
+  const isDownSm = useBreakpoint('sm')
+  const verify = <Button>Verify</Button>
+
   return (
     <Modal>
       <Box
@@ -36,8 +40,9 @@ export default function MintOrganModal({ hide }: { hide: () => void }) {
         <Button style={{ marginTop: '20px' }}>Tweet</Button>
         <StepText mt={47}>Step2</StepText>
         <Typography mt={20}>Follow Ladder and StarryNift on twitter</Typography>
+        {isDownSm && verify}
         <Stack mt={20} direction={'row'} spacing={20}>
-          <Button>Verify</Button>
+          {!isDownSm && verify}
           <Button>Follow ladder</Button>
           <Button>Follow StarryNift</Button>
         </Stack>

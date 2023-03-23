@@ -1,14 +1,16 @@
 import AppBody from '../../components/AppBody'
 import { useNavigate } from 'react-router-dom'
-import { Button, Stack, styled, Typography, useTheme } from '@mui/material'
+import { Button, Grid, Stack, styled, Typography } from '@mui/material'
 import Box from '@mui/material/Box'
 import Illustration from 'assets/images/illustration.png'
 import { useState } from 'react'
-import tempImg from 'assets/images/illustration.png'
-import Share from 'assets/svg/share-2.svg'
+import LadderLogo from 'assets/svg/ladder_logo.svg'
+// import Share from 'assets/svg/share-2.svg'
 import Divider from '../../components/Divider'
-import { useMySbt } from '../../hooks/useMySbt'
+import { useGetInvite, useInviteReward, useMySbt } from '../../hooks/useMySbt'
 import useBreakpoint from '../../hooks/useBreakpoint'
+import { Row } from './OrigAccount'
+import { shortenAddress } from '../../utils'
 
 const HeadBox = styled(Box)`
   display: flex;
@@ -87,7 +89,7 @@ export default function MyAccount() {
             )
           })}
         </Stack>
-        {currentTab == btnList[0] && <MyOwnedSbt route={''} />}
+        {currentTab == btnList[0] && <MyOwnedSbt />}
         {currentTab == btnList[1] && <InvitationReward />}
         {currentTab == btnList[2] && <Invited />}
       </WhiteBg>
@@ -95,11 +97,9 @@ export default function MyAccount() {
   )
 }
 
-function MyOwnedSbt({ route }: { route: string }) {
-  const theme = useTheme()
+function SbtCard(props: { route: string; tokenPic: string; tokenLogo: string; name: string }) {
+  // const theme = useTheme()
   const navigate = useNavigate()
-  const { result } = useMySbt()
-  console.log('MyAccount-result', result)
   return (
     <Box
       sx={{
@@ -110,64 +110,100 @@ function MyOwnedSbt({ route }: { route: string }) {
         backgroundColor: 'white',
         boxShadow: '0px 3px 10px rgba(0, 0, 0, 0.15)',
         borderRadius: '12px',
+        display: 'flex',
+        flexDirection: 'column',
         overflow: 'hidden',
         cursor: 'pointer'
       }}
-      onClick={() => navigate(route)}
+      onClick={() => navigate(props.route)}
     >
-      <Box
-        component="img"
-        sx={{
-          height: 168,
+      <img
+        style={{
           display: 'block',
-          width: '100%',
-          padding: '12px',
-          objectFit: 'cover'
+          width: '88%',
+          marginTop: '12px',
+          alignSelf: 'center',
+          aspectRatio: '1/1',
+          borderRadius: '12px'
         }}
-        src={tempImg}
+        src={props.tokenPic}
         alt={'Token logo'}
       />
       <Box sx={{ padding: 16 }}>
         <Box display={'flex'} justifyContent={'space-between'}>
-          <img />
-          <Box display={'flex'}>
-            <Typography mr={8} color={theme.palette.text.secondary}>
-              Share
-            </Typography>
-            <img src={Share} />
-          </Box>
+          <Row gap={8}>
+            <img src={props.tokenLogo} style={{ width: '28px', aspectRatio: '1/1' }} />
+            <img src={LadderLogo} style={{ width: '28px', aspectRatio: '1/1' }} />
+          </Row>
+          {/*<Box display={'flex'}>*/}
+          {/*  <Typography mr={8} color={theme.palette.text.secondary}>*/}
+          {/*    Share*/}
+          {/*  </Typography>*/}
+          {/*  <img src={Share} />*/}
+          {/*</Box>*/}
         </Box>
-        <Typography sx={{ mt: 12, color: '#333333', fontWeight: '700' }}>StarryNift X Ladder</Typography>
+        <Typography sx={{ mt: 12, color: '#333333', fontWeight: '700' }}>{props.name} X Ladder</Typography>
       </Box>
     </Box>
   )
 }
 
-function InvitationItem() {
-  const Text1 = styled(Typography)`
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 20px;
-    color: #878d92;
-  `
-  const Text2 = styled(Typography)`
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 20px;
-    color: #333333;
-  `
+function MyOwnedSbt() {
+  const { result } = useMySbt()
+  return (
+    <Grid container mt={32}>
+      {result.map((item, idx) => {
+        return (
+          <Grid item key={idx} md={3} sm={6}>
+            <SbtCard route={''} tokenPic={item.logo} tokenLogo={item.logo} name={item.name} />
+          </Grid>
+        )
+      })}
+    </Grid>
+  )
+}
+
+const Text1 = styled(Typography)`
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  color: #878d92;
+`
+const Text2 = styled(Typography)`
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  color: #333333;
+`
+
+function RewardItem(props: { time: string; amount: string }) {
+  const isDownSm = useBreakpoint('sm')
   return (
     <Box>
       <Divider />
-      <Box display={'flex'}>
-        <Text1>June 15, 2020 08:22</Text1>
-        <Text2>256.25 LAD</Text2>
+      <Box display={'flex'} gap={isDownSm ? 32 : 175} mt={18}>
+        <Text1>{new Date(Number(props.time)).toLocaleString()}</Text1>
+        <Text2>{props.amount} LAD</Text2>
       </Box>
     </Box>
   )
 }
 
-function Summarize({ title, count }: { title: string; count: string }) {
+function InviteItem(props: { time: string; addr: string; type: string }) {
+  const isDownSm = useBreakpoint('sm')
+  return (
+    <Box>
+      <Divider />
+      <Box display={'flex'} gap={isDownSm ? 32 : 175} mt={18}>
+        <Text1>{new Date(Number(props.time)).toLocaleString()}</Text1>
+        <Text1>{shortenAddress(props.addr)}</Text1>
+        <Text1>{props.type}</Text1>
+      </Box>
+    </Box>
+  )
+}
+
+function Summarize({ title, count }: { title: string | undefined; count: string | undefined }) {
   const TotalRewardBg = styled(Box)`
     margin-bottom: 24px;
     display: flex;
@@ -192,23 +228,31 @@ function Summarize({ title, count }: { title: string; count: string }) {
 }
 
 function InvitationReward() {
+  const { result, totalReward } = useInviteReward()
   return (
     <Box mt={32}>
-      <Summarize title={'Invitation total reward:'} count={'67,619'} />
-      <InvitationItem />
+      <Summarize title={'Invitation total reward:'} count={totalReward} />
+      <Box>
+        {result.map((item, idx) => (
+          <RewardItem key={idx} time={item.timestamp} amount={item.volume} />
+        ))}
+      </Box>
     </Box>
   )
 }
 
 function Invited() {
   const isDownSm = useBreakpoint('sm')
+  const { result } = useGetInvite()
   return (
     <Box mt={32}>
       <Box display={'flex'} gap={20} mb={24} flexDirection={isDownSm ? 'column' : 'row'}>
-        <Summarize title={'Invited:'} count={'258'} />
-        <Summarize title={'total invited:'} count={'1,288'} />
+        <Summarize title={'Invited:'} count={result?.invited} />
+        <Summarize title={'total invited:'} count={result?.totalInvited} />
       </Box>
-      <InvitationItem />
+      {result?.list.map((item, idx) => (
+        <InviteItem time={item.timestamp} addr={item.secondLevelAddress} type={'invitee'} key={idx} />
+      ))}
     </Box>
   )
 }

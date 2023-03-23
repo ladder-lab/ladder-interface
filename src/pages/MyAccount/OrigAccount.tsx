@@ -8,7 +8,7 @@ import Web from 'assets/svg/socials/website.svg'
 import OrigTemp from 'assets/images/orig-temp.png'
 import OrigTemp1 from 'assets/images/orig-temp1.png'
 import ColorBg from 'assets/images/grain-colorful-shape.png'
-import { ReactComponent as LadderLogo } from 'assets/svg/ladder-logo.svg'
+import { ReactComponent as LadderLogo } from 'assets/svg/ladder-logo-white.svg'
 import { ReactComponent as StarryniftLogo } from 'assets/svg/starrynift-logo.svg'
 import Divider from '../../components/Divider'
 import { ArrowLeft, ArrowRight } from '@mui/icons-material'
@@ -66,7 +66,7 @@ const ReferralBg = styled(Box)`
   align-items: center;
   padding: 100px 0;
 `
-const Row = styled(Box)`
+export const Row = styled(Box)`
   display: flex;
 `
 const ColorText = styled(Typography)`
