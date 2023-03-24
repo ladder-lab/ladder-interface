@@ -81,21 +81,26 @@ export default function MintOrganModal({ hide, sbtInfo }: { hide: () => void; sb
   }, [verifyOauth])
 
   const handleMint = useCallback(async () => {
-    // if (errMsg) return
+    if (errMsg) return
     showModal(<TransacitonPendingModal pendingText="Signing" />)
     const sbt = sbtInfo.contract
     Axios.get(testURL + 'mintSign', {
       address: account,
       chainId: chainId,
       sbt: sbt
-    }).then(async res => {
-      console.log('mintSignthen', res)
-      const contractResult = await createTask(res.data.data.inviter, sbtInfo.contract)
-      addTransaction(contractResult, {
-        summary: 'Mint ' + sbtInfo.name
-      })
-      showModal(<MessageBox type="success">Mint {sbtInfo.name} Success!</MessageBox>)
     })
+      .then(async res => {
+        showModal(<TransacitonPendingModal pendingText="Waiting for Mint" />)
+        const resp = res.data.data
+        const contractResult = await createTask(resp.inviter, resp.signatory, resp.signV, resp.signR, resp.signS)
+        addTransaction(contractResult, {
+          summary: 'Mint ' + sbtInfo.name
+        })
+        showModal(<MessageBox type="success">Mint {sbtInfo.name} Success!</MessageBox>)
+      })
+      .catch(err => {
+        showModal(<MessageBox type="error">{err.message}</MessageBox>)
+      })
   }, [account, addTransaction, chainId, createTask, sbtInfo.contract, sbtInfo.name, showModal])
 
   function VerifyFollowBtn() {
@@ -196,6 +201,7 @@ export default function MintOrganModal({ hide, sbtInfo }: { hide: () => void; sb
         <Typography color="#C53434">{errMsg}</Typography>
         <Box display={'flex'} gap={20} mt={20}>
           <Button
+            disabled={errMsg != ''}
             onClick={() => {
               handleMint()
             }}

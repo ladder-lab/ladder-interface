@@ -36,14 +36,21 @@ export function useMintSbt() {
   const contract = useSbtContract()
   const { account } = useActiveWeb3React()
   const createTask = useCallback(
-    async (inviter: string, sbt: string) => {
-      console.log('useMintSbt')
-      if (!contract) {
+    async (inviter: string, signatory: string, v: string, r: string, s: string) => {
+      if (!contract || !account) {
         throw 'Params error'
       }
-
-      const args = [account, inviter, sbt]
-      return await contract['BindSBT'](...args)
+      const args = [
+        inviter,
+        {
+          signatory: signatory,
+          v: v,
+          r: r,
+          s: s
+        }
+      ]
+      console.log('args', args)
+      return await contract['bindSBT'](...args)
     },
     [account, contract]
   )
