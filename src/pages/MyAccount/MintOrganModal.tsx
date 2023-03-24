@@ -101,7 +101,7 @@ export default function MintOrganModal({ hide, sbtInfo }: { hide: () => void; sb
       .catch(err => {
         showModal(<MessageBox type="error">{err.message}</MessageBox>)
       })
-  }, [account, addTransaction, chainId, createTask, sbtInfo.contract, sbtInfo.name, showModal])
+  }, [account, addTransaction, chainId, createTask, errMsg, sbtInfo.contract, sbtInfo.name, showModal])
 
   function VerifyFollowBtn() {
     return (
