@@ -18,6 +18,7 @@ import { useGetActivityList } from '../../hooks/useGetActivityList'
 import { useLocation } from 'react-router-dom'
 import { SbtListResult } from '../../hooks/useGetSbtList'
 import { shortenAddress } from '../../utils'
+import { useSignLogin } from '../../hooks/useSignIn'
 
 const Head = styled(Box)`
   background-image: url('${HeadBg}');
@@ -156,6 +157,7 @@ export default function OrigAccount() {
   const { state } = useLocation()
   const sbtInfo = state as SbtListResult
   const isDownSm = useBreakpoint('sm')
+  const { token, sign } = useSignLogin()
   const SocialList = [
     {
       type: 'twitter',
@@ -226,7 +228,19 @@ export default function OrigAccount() {
             <Typography variant={'h1'}>{sbtInfo.amount}</Typography>
           </Box>
           <Box gap={37} mt={45} display={'flex'}>
-            <Button onClick={() => showModal(<MintOrganModal hide={hideModal} sbtInfo={sbtInfo} />)}>Mint</Button>
+            <Button
+              onClick={() => {
+                if (!token) {
+                  sign().then(() => {
+                    showModal(<MintOrganModal hide={hideModal} sbtInfo={sbtInfo} />)
+                  })
+                } else {
+                  showModal(<MintOrganModal hide={hideModal} sbtInfo={sbtInfo} />)
+                }
+              }}
+            >
+              Mint
+            </Button>
             <Button variant={'outlined'}>View the collection</Button>
           </Box>
         </Box>

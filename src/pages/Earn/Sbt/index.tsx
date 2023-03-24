@@ -17,6 +17,7 @@ import CarouselSwiper from '../../../components/Swiper'
 import HeadCardBg from 'assets/images/head-cards-bg.jpg'
 import Twitter from 'assets/svg/socials/twitter.svg'
 import { Row } from '../../MyAccount/OrigAccount'
+import { useSignLogin } from '../../../hooks/useSignIn'
 
 const Head = styled(Box)`
   width: 100%;
@@ -271,6 +272,7 @@ function CheckSbt() {
   const navigate = useNavigate()
   const isDownSm = useBreakpoint('sm')
   const { account } = useActiveWeb3React()
+  const { token, sign } = useSignLogin()
   const Bg = styled(Box)`
     background-image: url('${CheckBg}');
     background-size: cover;
@@ -299,7 +301,23 @@ function CheckSbt() {
             <br /> and <UnderlineText>invite</UnderlineText> earnings
           </Typography>
           {isDownSm && pic}
-          {account ? <Button onClick={() => navigate(routes.myAccount)}>My Account</Button> : <Web3Status />}
+          {account ? (
+            <Button
+              onClick={() => {
+                if (!token) {
+                  sign().then(() => {
+                    navigate(routes.myAccount)
+                  })
+                } else {
+                  navigate(routes.myAccount)
+                }
+              }}
+            >
+              My Account
+            </Button>
+          ) : (
+            <Web3Status />
+          )}
         </Box>
       </Stack>
     </Bg>

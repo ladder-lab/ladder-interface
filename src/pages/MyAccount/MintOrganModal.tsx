@@ -4,6 +4,20 @@ import { ReactComponent as Close } from 'assets/svg/close-btn.svg'
 import Modal from '../../components/Modal'
 import useBreakpoint from '../../hooks/useBreakpoint'
 import { SbtListResult } from '../../hooks/useGetSbtList'
+import {
+  useVerifyTwitter,
+  useVerifyTwitterFollow,
+  useVerifyTwitterOauth,
+  useVerifyTwitterRetweet
+} from '../../hooks/useVerifyTwitter'
+import { useMintSbt } from '../../hooks/useMintSbt'
+import { useCallback, useEffect, useMemo } from 'react'
+import TransacitonPendingModal from '../../components/Modal/TransactionModals/TransactionPendingModal'
+import useModal from '../../hooks/useModal'
+import MessageBox from '../../components/Modal/TransactionModals/MessageBox'
+import { Axios, testURL } from '../../utils/axios'
+import { useActiveWeb3React } from '../../hooks'
+import { useTransactionAdder } from '../../state/transactions/hooks'
 
 const StepText = styled(Typography)`
   font-size: 28px;
@@ -39,7 +53,62 @@ const GreenLineBtn = styled(Box)(() => ({
 
 export default function MintOrganModal({ hide, sbtInfo }: { hide: () => void; sbtInfo: SbtListResult }) {
   const isDownSm = useBreakpoint('sm')
-  const verify = <GreenLineBtn>Verify</GreenLineBtn>
+  const { account, chainId } = useActiveWeb3React()
+  const { verifyOauth, oauth } = useVerifyTwitterOauth(sbtInfo.contract)
+  const { verifyFollow, follow } = useVerifyTwitterFollow(sbtInfo.contract)
+  const { verifyRetweet, retweet } = useVerifyTwitterRetweet(sbtInfo.contract)
+  const addTransaction = useTransactionAdder()
+  const { showModal } = useModal()
+  const { openVerify } = useVerifyTwitter()
+  const { createTask } = useMintSbt()
+  const followUsers = sbtInfo.twitter.split('&')
+  const followUsersLink = sbtInfo.twitter_link.split('&')
+  const errMsg = useMemo(() => {
+    if (!oauth) {
+      return 'Twitter not verify'
+    }
+    if (!follow) {
+      return 'Need to follow all users'
+    }
+    if (!retweet) {
+      return 'Need to retweet'
+    }
+    return ''
+  }, [follow, oauth, retweet])
+
+  useEffect(() => {
+    verifyOauth()
+  }, [verifyOauth])
+
+  const handleMint = useCallback(async () => {
+    // if (errMsg) return
+    showModal(<TransacitonPendingModal pendingText="Signing" />)
+    const sbt = sbtInfo.contract
+    Axios.get(testURL + 'mintSign', {
+      address: account,
+      chainId: chainId,
+      sbt: sbt
+    }).then(async res => {
+      console.log('mintSignthen', res)
+      const contractResult = await createTask(res.data.data.inviter, sbtInfo.contract)
+      addTransaction(contractResult, {
+        summary: 'Mint ' + sbtInfo.name
+      })
+      showModal(<MessageBox type="success">Mint {sbtInfo.name} Success!</MessageBox>)
+    })
+  }, [account, addTransaction, chainId, createTask, sbtInfo.contract, sbtInfo.name, showModal])
+
+  function VerifyFollowBtn() {
+    return (
+      <GreenLineBtn
+        onClick={() => {
+          verifyFollow()
+        }}
+      >
+        {follow ? 'Verified' : 'Verify'}
+      </GreenLineBtn>
+    )
+  }
 
   return (
     <Modal>
@@ -66,28 +135,82 @@ export default function MintOrganModal({ hide, sbtInfo }: { hide: () => void; sb
           </Button>
         </Box>
         <Typography>Please click this button below and tweet a verification message on Twitter</Typography>
-        <GreenBtn style={{ marginTop: '20px' }}>Tweet</GreenBtn>
+        <GreenBtn
+          style={{ marginTop: '20px' }}
+          onClick={() => {
+            console.log('oauth', oauth)
+            if (oauth) {
+              console.log('oauth', true)
+              return
+            }
+            openVerify()
+          }}
+        >
+          {oauth ? 'Tweeted' : 'Tweet'}
+        </GreenBtn>
         <StepText mt={47}>Step2</StepText>
         <Typography mt={20}>Follow Ladder and StarryNift on twitter</Typography>
-        {isDownSm && verify}
+        {isDownSm && <VerifyFollowBtn />}
         <Stack mt={20} direction={'row'} spacing={20}>
-          {!isDownSm && verify}
-          <GreenBtn>
-            Follow <span style={{ fontWeight: 800 }}>Ladder</span>
-          </GreenBtn>
-          <GreenBtn>
-            Follow <span style={{ fontWeight: 800 }}>{sbtInfo.name}</span>
-          </GreenBtn>
+          {!isDownSm && <VerifyFollowBtn />}
+          {followUsers.map((user, idx) => {
+            return (
+              <GreenBtn
+                key={idx}
+                onClick={() => {
+                  window.open(
+                    followUsersLink[idx],
+                    'intent',
+                    'scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=500,height=500,left=0,top=0'
+                  )
+                }}
+              >
+                Follow <span style={{ fontWeight: 800 }}>{user}</span>
+              </GreenBtn>
+            )
+          })}
         </Stack>
         <StepText mt={47}>Step3</StepText>
         <Typography mt={20}>Retweet Ladder&apos;s tweet</Typography>
         <Stack direction={'row'} mt={20} spacing={20}>
-          <GreenLineBtn>Verify</GreenLineBtn>
-          <GreenBtn fontWeight={600}>Retweet Now</GreenBtn>
+          <GreenLineBtn
+            onClick={() => {
+              verifyRetweet()
+            }}
+          >
+            {retweet ? 'Verified' : 'Verify'}
+          </GreenLineBtn>
+          <GreenBtn
+            fontWeight={600}
+            onClick={() => {
+              window.open(
+                sbtInfo.twiter_retweet_link,
+                'intent',
+                'scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=500,height=500,left=0,top=0'
+              )
+            }}
+          >
+            Retweet Now
+          </GreenBtn>
         </Stack>
+        <Typography color="#C53434">{errMsg}</Typography>
         <Box display={'flex'} gap={20} mt={20}>
-          <Button>Mint</Button>
-          <Button onClick={hide}>Cancel</Button>
+          <Button
+            onClick={() => {
+              handleMint()
+            }}
+          >
+            Mint
+          </Button>
+          <Button
+            onClick={hide}
+            style={{
+              background: '#DADADA',
+              borderRadius: '12px'
+            }}
+          >
+            Cancel
+          </Button>
         </Box>
       </Box>
     </Modal>

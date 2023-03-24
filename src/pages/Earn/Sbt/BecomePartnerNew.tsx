@@ -8,9 +8,12 @@ import Web3Status from '../../../components/Header/Web3Status'
 import { isNullOrEmpty, validateEmail } from '../../../utils/InputUtil'
 import { Axios, testAssetUrl, testURL } from '../../../utils/axios'
 import { useActiveWeb3React } from '../../../hooks'
-import { useSignLogin } from '../../../hooks/useSignIn'
+// import { useSignLogin } from '../../../hooks/useSignIn'
 import { OrganProps, UserProps, useSaveAccount } from '../../../hooks/useSaveAccount'
 import useBreakpoint from '../../../hooks/useBreakpoint'
+import MessageBox from '../../../components/Modal/TransactionModals/MessageBox'
+import useModal from '../../../hooks/useModal'
+import { useVerifyTwitter } from '../../../hooks/useVerifyTwitter'
 
 const Bg = styled(Box)`
   padding: 47px 32px 80px;
@@ -87,8 +90,10 @@ function UserForm() {
   const isDownSm = useBreakpoint('sm')
   const [userEmail, setUserEmail] = useState('')
   const [userName, setUserName] = useState('')
-  const { token, sign } = useSignLogin()
+  // const { token, sign } = useSignLogin()
   const { account } = useActiveWeb3React()
+  const { showModal } = useModal()
+  const { openVerify } = useVerifyTwitter()
   const props: UserProps = {
     email: userEmail,
     username: userName,
@@ -117,37 +122,37 @@ function UserForm() {
     [userEmailErr, userNameErr]
   )
 
-  const handleTwitter = async () => {
-    if (!token) {
-      sign()
-      return
-    }
-
-    try {
-      if (!account) return
-      const res = await Axios.get(testURL + 'requestToken', {
-        address: account
-      })
-      const data = res.data.msg as any
-      if (!data) {
-        return
-      }
-      window.open(
-        data,
-        'intent',
-        'scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=500,height=500,left=0,top=0'
-      )
-      return
-    } catch (error) {
-      console.error('useAccountTestInfo', error)
-    }
-  }
+  // const handleTwitter = async () => {
+  //   if (!token) {
+  //     sign()
+  //     return
+  //   }
+  //
+  //   try {
+  //     if (!account) return
+  //     const res = await Axios.get(testURL + 'requestToken', {
+  //       address: account
+  //     })
+  //     const data = res.data.msg as any
+  //     if (!data) {
+  //       return
+  //     }
+  //     window.open(
+  //       data,
+  //       'intent',
+  //       'scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=500,height=500,left=0,top=0'
+  //     )
+  //     return
+  //   } catch (error) {
+  //     console.error('useAccountTestInfo', error)
+  //   }
+  // }
 
   return (
     <Box sx={{ width: isDownSm ? '100%' : '55%' }}>
       <Stack direction={'row'} spacing={30} mt={40}>
         {!account && <Web3Status />}
-        <Button variant={'outlined'} onClick={handleTwitter}>
+        <Button variant={'outlined'} onClick={openVerify}>
           Verify Twitter
         </Button>
       </Stack>
@@ -165,7 +170,13 @@ function UserForm() {
         style={{ marginTop: '40px' }}
         disabled={submitDisable}
         onClick={() => {
-          save()
+          save().then(() => {
+            showModal(
+              <MessageBox type="success" closeAction={() => window.history.go(-1)}>
+                Submit success !
+              </MessageBox>
+            )
+          })
         }}
       >
         Submit
@@ -265,6 +276,8 @@ function OrganizationForm() {
   const [email, setEmail] = useState('')
   const [intro, setIntro] = useState('')
   const [imageUploaded, setImageUploaded] = useState<string>('')
+  const { showModal } = useModal()
+
   const props: OrganProps = {
     logo: imageUploaded,
     username: name,
@@ -360,8 +373,6 @@ function OrganizationForm() {
       </Require>
       <Require title={"Organization's Introduction"}>
         <Input
-          multiline
-          height={180}
           value={intro}
           placeholder={'please enter the introduction'}
           onChange={e => {
@@ -369,7 +380,19 @@ function OrganizationForm() {
           }}
         />
       </Require>
-      <Button style={{ marginTop: '40px' }} disabled={submitDisable} onClick={() => save()}>
+      <Button
+        style={{ marginTop: '40px' }}
+        disabled={submitDisable}
+        onClick={() =>
+          save().then(() => {
+            showModal(
+              <MessageBox type="success" closeAction={() => window.history.go(-1)}>
+                Submit success !
+              </MessageBox>
+            )
+          })
+        }
+      >
         Submit
       </Button>
     </Box>
