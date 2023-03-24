@@ -1,5 +1,4 @@
 import HeadBg from 'assets/images/bg-home-head.png'
-import Temp3 from 'assets/images/temp-3.png'
 import { Button, Stack, styled, Typography } from '@mui/material'
 import Box from '@mui/material/Box'
 import Twitter from 'assets/svg/socials/twitter.svg'
@@ -15,6 +14,10 @@ import { ArrowLeft, ArrowRight } from '@mui/icons-material'
 import useModal from '../../hooks/useModal'
 import MintOrganModal from './MintOrganModal'
 import useBreakpoint from '../../hooks/useBreakpoint'
+import { useGetActivityList } from '../../hooks/useGetActivityList'
+import { useLocation } from 'react-router-dom'
+import { SbtListResult } from '../../hooks/useGetSbtList'
+import { shortenAddress } from '../../utils'
 
 const Head = styled(Box)`
   background-image: url('${HeadBg}');
@@ -27,9 +30,12 @@ const Head = styled(Box)`
 const SocialBg = styled(Box)`
   background: #f6f6f6;
   border-radius: 8px;
-  padding: 13px;
+  aspect-ratio: 1/1;
   width: 44px;
   height: 44px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
 const OrigCardBg = styled(Box)`
@@ -69,14 +75,14 @@ const ReferralBg = styled(Box)`
 export const Row = styled(Box)`
   display: flex;
 `
-const ColorText = styled(Typography)`
-  margin-left: 6px;
-  font-size: 20px;
-  text-decoration-line: underline;
-  background: linear-gradient(96.44deg, #d8ff20 5.94%, #99f7f4 97.57%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-`
+// const ColorText = styled(Typography)`
+//   margin-left: 6px;
+//   font-size: 20px;
+//   text-decoration-line: underline;
+//   background: linear-gradient(96.44deg, #d8ff20 5.94%, #99f7f4 97.57%);
+//   -webkit-background-clip: text;
+//   -webkit-text-fill-color: transparent;
+// `
 
 function Referral() {
   const isDownSm = useBreakpoint('sm')
@@ -89,12 +95,12 @@ function Referral() {
         </Typography>
         <LadderLogo />
       </Row>
-      <Row alignItems={isDownSm ? 'center' : 'flex-end'} flexDirection={isDownSm ? 'column' : 'row'}>
-        <Typography fontSize={20} color={'white'}>
-          Referral link:
-        </Typography>
-        <ColorText>http://terrapass.com/individuals</ColorText>
-      </Row>
+      {/*<Row alignItems={isDownSm ? 'center' : 'flex-end'} flexDirection={isDownSm ? 'column' : 'row'}>*/}
+      {/*  <Typography fontSize={20} color={'white'}>*/}
+      {/*    Referral link:*/}
+      {/*  </Typography>*/}
+      {/*  <ColorText>http://terrapass.com/individuals</ColorText>*/}
+      {/*</Row>*/}
     </ReferralBg>
   )
 }
@@ -115,37 +121,40 @@ function ActRow(props: { time: string; address: string; type: string }) {
     <Box width={'100%'}>
       <Divider />
       <Row gap={'14vw'} color={'#878D92'} padding={'20px 0'}>
-        <Typography>{props.time}</Typography>
-        <Typography>{props.address}</Typography>
+        <Typography>{new Date(Number(props.time)).toLocaleString()}</Typography>
+        <Typography>{shortenAddress(props.address)}</Typography>
         <Typography>{props.type}</Typography>
       </Row>
     </Box>
   )
 }
 
-function Activity() {
+function Activity({ addr }: { addr: string }) {
+  const { result } = useGetActivityList(addr)
   return (
     <ActBg>
       <Typography variant={'h1'} mb={32}>
         Activity
       </Typography>
-      {Array(15)
-        .fill({ time: 'June 15, 2020 08:22', address: '0xb24...6f8b', type: 'Mint' })
-        .map((row, idx) => (
-          <ActRow key={idx} time={row.time} address={row.address} type={row.type} />
-        ))}
+      {result.map((row, idx) => (
+        <ActRow key={idx} time={row.timestamp} address={row.contract} type={'Mint'} />
+      ))}
       <Divider />
-      <Row mt={20}>
-        <ArrowLeft />
-        <Typography>Page 1 of 5</Typography>
-        <ArrowRight />
-      </Row>
+      {false && (
+        <Row mt={20}>
+          <ArrowLeft />
+          <Typography>Page 1 of 5</Typography>
+          <ArrowRight />
+        </Row>
+      )}
     </ActBg>
   )
 }
 
 export default function OrigAccount() {
   const { showModal, hideModal } = useModal()
+  const { state } = useLocation()
+  const sbtInfo = state as SbtListResult
   const isDownSm = useBreakpoint('sm')
   const SocialList = [
     {
@@ -167,7 +176,7 @@ export default function OrigAccount() {
   const fakeIntroList = [
     {
       img: OrigTemp,
-      title: 'introduction to Starry',
+      title: `introduction to ${sbtInfo.name}`,
       desc: 'It is super easy to mint your Ladder Owner SBT! Generate your Decentralized Identity now and bind your SBT to your wallet address and enjoy what Ladder Protocol can offer you.'
     },
     {
@@ -176,7 +185,9 @@ export default function OrigAccount() {
       desc: 'Refer more friends and when they mint their SBT with your referral code, your SBT credential and incentives increase based on their on-chain behaviors.'
     }
   ]
-  const organImg = <img src={Temp3} style={{ width: isDownSm ? '70vw' : '28vw', height: isDownSm ? '70vw' : '28vw' }} />
+  const organImg = (
+    <img src={sbtInfo.logo} style={{ width: isDownSm ? '70vw' : '28vw', height: isDownSm ? '70vw' : '28vw' }} />
+  )
 
   return (
     <Box width={'100%'} sx={{ backgroundColor: 'white' }}>
@@ -185,6 +196,7 @@ export default function OrigAccount() {
           sx={{
             display: 'flex',
             flexDirection: 'column',
+            color: 'white',
             alignItems: isDownSm ? 'center' : 'start'
           }}
         >
@@ -198,10 +210,10 @@ export default function OrigAccount() {
             })}
           </Stack>
           <Typography variant={'h1'} mt={31}>
-            StarryNift x Ladder
+            {sbtInfo.name} x Ladder
           </Typography>
           <Typography mt={19}>
-            Mint a StarryNift X Ladder SBT! SBT holders will continue to share the benefits of Ladder Protocol.
+            Mint a {sbtInfo.name} X Ladder SBT! SBT holders will continue to share the benefits of Ladder Protocol.
           </Typography>
           {isDownSm && organImg}
           <Box
@@ -211,10 +223,10 @@ export default function OrigAccount() {
             flexDirection={isDownSm ? 'column' : 'row'}
           >
             <Typography>Total Minted:</Typography>
-            <Typography variant={'h1'}>98214912</Typography>
+            <Typography variant={'h1'}>{sbtInfo.amount}</Typography>
           </Box>
           <Box gap={37} mt={45} display={'flex'}>
-            <Button onClick={() => showModal(<MintOrganModal hide={hideModal} />)}>Mint</Button>
+            <Button onClick={() => showModal(<MintOrganModal hide={hideModal} sbtInfo={sbtInfo} />)}>Mint</Button>
             <Button variant={'outlined'}>View the collection</Button>
           </Box>
         </Box>
@@ -222,7 +234,7 @@ export default function OrigAccount() {
       </Head>
       <Box display={'flex'} alignItems={'center'} flexDirection={'column'} textAlign={'center'}>
         <Typography variant={'h1'} mt={56}>
-          Why StarryNift x Ladder
+          Why {sbtInfo.name} x Ladder
           <br />
           Owner SBT ?
         </Typography>
@@ -243,7 +255,7 @@ export default function OrigAccount() {
           })}
         </Box>
         <Referral />
-        <Activity />
+        <Activity addr={sbtInfo.contract} />
       </Box>
     </Box>
   )

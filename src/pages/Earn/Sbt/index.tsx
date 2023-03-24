@@ -12,17 +12,22 @@ import { useActiveWeb3React } from '../../../hooks'
 import Web3Status from '../../../components/Header/Web3Status'
 import useBreakpoint from '../../../hooks/useBreakpoint'
 import { useIsDarkMode } from '../../../state/user/hooks'
+import { SbtListResult, useGetSbtList } from '../../../hooks/useGetSbtList'
+import CarouselSwiper from '../../../components/Swiper'
+import HeadCardBg from 'assets/images/head-cards-bg.jpg'
+import Twitter from 'assets/svg/socials/twitter.svg'
+import { Row } from '../../MyAccount/OrigAccount'
 
 const Head = styled(Box)`
   width: 100%;
   background-size: cover;
   background-image: url('${HeadBg}');
 `
-// const HeadCard = styled(Box)`
-//   width: 100%;
-//   background-size: cover;
-//   background-image: url('${HeadCardsBg}');
-// `
+const HeadCard = styled(Box)`
+  width: 100%;
+  background-size: cover;
+  background-image: url('${HeadCardBg}');
+`
 const AlignCenter = styled(Box)`
   display: flex;
   flex-direction: column;
@@ -42,37 +47,7 @@ export default function Sbt() {
   const isDownSm = useBreakpoint('sm')
   const { account } = useActiveWeb3React()
   const isDarkMode = useIsDarkMode()
-
-  // const { chainId } = useActiveWeb3React()
-
-  // const { result: list721Pool } = useTopPoolsList(
-  //   chainId || NETWORK_CHAIN_ID,
-  //   undefined,
-  //   PoolPairType.ERC20_ERC721,
-  //   undefined,
-  //   10
-  // )
-  // const pool721Collection: CollectionsProp[] = useMemo(
-  //   () =>
-  //     list721Pool.map(item => ({
-  //       title: (
-  //         <ShowTopPoolsCurrencyBox
-  //           chainId={chainId || NETWORK_CHAIN_ID}
-  //           pair={item.pair}
-  //           token0Info={item.token0}
-  //           token1Info={item.token1}
-  //           color={'#FFFFFF'}
-  //           key={0}
-  //         />
-  //       ),
-  //       imgPath: item.token0.type !== Mode.ERC20 ? item.token0.logo : item.token1.logo,
-  //       amount: `${formatMillion(Number(item.tvl), '$ ', 2)}`,
-  //       route: routes.statisticsPools + `/${chainId}/${item.pair}`,
-  //       percentage: '',
-  //       addresss: [item.token0.address, item.token1.address]
-  //     })),
-  //   [chainId, list721Pool]
-  // )
+  const { result } = useGetSbtList()
 
   const HeadBoxStyle = {
     display: 'flex',
@@ -103,9 +78,9 @@ export default function Sbt() {
           </Box>
           <img src={HeadDeco} alt={'head-deco'} />
         </Box>
-        {/*<HeadCard>*/}
-        {/*  <CollectionListing collections={pool721Collection} />*/}
-        {/*</HeadCard>*/}
+        <HeadCard>
+          <CollectionListing collections={result} />
+        </HeadCard>
       </Head>
       <AlignCenter padding={48}>
         <Typography variant="h1" textAlign={'center'}>
@@ -160,75 +135,63 @@ export default function Sbt() {
   )
 }
 
-// interface CollectionsProp {
-//   title: string | JSX.Element
-//   route: string
-//   imgPath: string
-//   amount: string
-//   percentage: string
-//   address?: string[]
-// }
-//
-// function CollectionListing({ collections }: { collections: CollectionsProp[] }) {
-//   const navigate = useNavigate()
-//
-//   const items = collections.map(({ title, imgPath, amount, percentage, route, address }, index: number) => (
-//     <Box
-//       key={index}
-//       sx={{
-//         position: 'relative',
-//         height: 280,
-//         maxWidth: 218,
-//         width: 218,
-//         backgroundColor: 'white',
-//         borderRadius: '12px',
-//         overflow: 'hidden',
-//         cursor: 'pointer'
-//       }}
-//       onClick={() => navigate(route)}
-//     >
-//       <Box
-//         sx={{
-//           position: 'absolute',
-//           right: 10,
-//           top: 10
-//         }}
-//       >
-//         <TestnetV3Mark addresss={address || []} />
-//       </Box>
-//       <Box
-//         component="img"
-//         sx={{
-//           height: 168,
-//           display: 'block',
-//           width: '100%',
-//           objectFit: 'cover'
-//         }}
-//         src={imgPath}
-//         alt={'Token logo'}
-//       />
-//       <Box sx={{ padding: 16 }}>
-//         <Typography sx={{ mb: 21, color: '#333333' }}>{title}</Typography>
-//         <Typography sx={{ color: 'rgba(51, 51, 51, 0.5)' }}>Total Liquidity</Typography>
-//         <Box sx={{ display: 'flex', gap: 4, alignItems: 'flex-end' }}>
-//           <Typography sx={{ fontSize: 20, fontWeight: 700, color: '#333333' }}>{amount}</Typography>
-//           <Typography sx={{ fontSize: 14, color: 'rgba(51, 51, 51, 0.5)' }}>{percentage}</Typography>
-//         </Box>
-//       </Box>
-//     </Box>
-//   ))
-//
-//   return (
-//     <Box
-//       sx={{
-//         padding: '33px 45px',
-//         position: 'relative'
-//       }}
-//     >
-//       <Swiper itemWidth={218} items={items} darkMode />
-//     </Box>
-//   )
-// }
+function CollectionListing({ collections }: { collections: SbtListResult[] }) {
+  const navigate = useNavigate()
+  console.log(navigate)
+
+  const items = collections.map(({ logo, name, follows, amount }, index: number) => (
+    <Box
+      key={index}
+      sx={{
+        position: 'relative',
+        height: 280,
+        maxWidth: 218,
+        width: 218,
+        backgroundColor: 'white',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        cursor: 'pointer'
+      }}
+      onClick={() => navigate(routes.origAccount, { state: collections[index] })}
+    >
+      <Box
+        component="img"
+        sx={{
+          height: 168,
+          display: 'block',
+          width: '100%',
+          objectFit: 'cover'
+        }}
+        src={logo}
+        alt={'Token logo'}
+      />
+      <Box sx={{ padding: 16 }}>
+        <Typography sx={{ mb: 9, color: '#333333', fontWeight: '700' }}>{name}</Typography>
+        <Row mb={12}>
+          <img src={Twitter} style={{ width: '16px', height: '16px' }} />
+          <Typography sx={{ color: 'rgba(51, 51, 51, 0.5)', textDecoration: 'underline', marginLeft: '12px' }}>
+            {follows}followers
+          </Typography>
+        </Row>
+        <Box sx={{ display: 'flex', gap: 4, alignItems: 'flex-end' }}>
+          <Typography sx={{ fontSize: 20, fontWeight: 500, color: '#878D92' }}>SBT</Typography>
+          <Typography sx={{ fontSize: 20, fontWeight: 700, color: '#333333' }}>{amount}</Typography>
+        </Box>
+      </Box>
+    </Box>
+  ))
+
+  return (
+    <Box
+      sx={{
+        padding: '33px 45px',
+        position: 'relative'
+      }}
+    >
+      <CarouselSwiper itemWidth={218} items={items} darkMode />
+    </Box>
+  )
+}
 
 function DescCard({ range, title, desc, pic }: { range: string; title: string; desc: string; pic?: string }) {
   const isDownSm = useBreakpoint('sm')
