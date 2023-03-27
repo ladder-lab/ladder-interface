@@ -3,6 +3,64 @@ import { Axios, testURL } from '../utils/axios'
 import { useActiveWeb3React } from './index'
 import { useSignLogin } from './useSignIn'
 
+export function useVerifyTwitterAll(sbt: string) {
+  const { account, chainId } = useActiveWeb3React()
+  const [allPass, isAllPass] = useState('')
+
+  const verifyAll = useCallback(async () => {
+    Axios.get(testURL + 'checkTwiterTaskStatus', {
+      address: account,
+      sbt,
+      chainId
+    })
+      .then(r => {
+        if (r?.data.code === 200) {
+          const statusResult = r.data.data
+          let verify = false
+          let retweet = false
+          let followAll = true
+          Object.keys(statusResult).forEach(key => {
+            if (key.includes('oauthStatus')) {
+              verify = statusResult[key] == 2
+            }
+            if (key.includes('retweetStatus')) {
+              retweet = statusResult[key] == 2
+            }
+            if (key.includes('followStatus')) {
+              followAll = followAll && statusResult[key] == 2
+            }
+          })
+          console.log('verify', verify)
+          console.log('verify1', followAll)
+          console.log('verify2', retweet)
+          if (!verify) {
+            isAllPass('Twitter not verify')
+            return
+          }
+          if (!followAll) {
+            isAllPass('Need to follow all users')
+            return
+          }
+          if (!retweet) {
+            isAllPass('Need to retweet')
+            return
+          }
+          isAllPass('')
+        } else {
+          throw Error('useVerifyTwitterFollow error')
+        }
+      })
+      .catch(e => {
+        console.error(e)
+      })
+  }, [account, chainId, sbt])
+
+  return {
+    verifyAll,
+    allPass
+  }
+}
+
 export function useVerifyTwitterFollow(sbtContract: string) {
   const { account, chainId } = useActiveWeb3React()
   const [follow, isFollow] = useState(false)

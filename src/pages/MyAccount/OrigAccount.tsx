@@ -138,7 +138,7 @@ function Activity({ addr }: { addr: string }) {
         Activity
       </Typography>
       {result.map((row, idx) => (
-        <ActRow key={idx} time={row.timestamp} address={row.contract} type={'Mint'} />
+        <ActRow key={idx} time={row.timestamp} address={row.account} type={'Mint'} />
       ))}
       <Divider />
       {false && (

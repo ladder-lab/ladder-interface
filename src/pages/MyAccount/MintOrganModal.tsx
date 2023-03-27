@@ -6,12 +6,13 @@ import useBreakpoint from '../../hooks/useBreakpoint'
 import { SbtListResult } from '../../hooks/useGetSbtList'
 import {
   useVerifyTwitter,
+  useVerifyTwitterAll,
   useVerifyTwitterFollow,
   useVerifyTwitterOauth,
   useVerifyTwitterRetweet
 } from '../../hooks/useVerifyTwitter'
 import { useMintSbt } from '../../hooks/useMintSbt'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import TransacitonPendingModal from '../../components/Modal/TransactionModals/TransactionPendingModal'
 import useModal from '../../hooks/useModal'
 import MessageBox from '../../components/Modal/TransactionModals/MessageBox'
@@ -54,6 +55,7 @@ const GreenLineBtn = styled(Box)(() => ({
 export default function MintOrganModal({ hide, sbtInfo }: { hide: () => void; sbtInfo: SbtListResult }) {
   const isDownSm = useBreakpoint('sm')
   const { account, chainId } = useActiveWeb3React()
+  const { verifyAll, allPass } = useVerifyTwitterAll(sbtInfo.contract)
   const { verifyOauth, oauth } = useVerifyTwitterOauth(sbtInfo.contract)
   const { verifyFollow, follow } = useVerifyTwitterFollow(sbtInfo.contract)
   const { verifyRetweet, retweet } = useVerifyTwitterRetweet(sbtInfo.contract)
@@ -63,22 +65,34 @@ export default function MintOrganModal({ hide, sbtInfo }: { hide: () => void; sb
   const { createTask } = useMintSbt()
   const followUsers = sbtInfo.twitter.split('&')
   const followUsersLink = sbtInfo.twitter_link.split('&')
-  const errMsg = useMemo(() => {
-    if (!oauth) {
-      return 'Twitter not verify'
-    }
-    if (!follow) {
-      return 'Need to follow all users'
-    }
-    if (!retweet) {
-      return 'Need to retweet'
-    }
-    return ''
-  }, [follow, oauth, retweet])
+  const [errMsg, setErrMsg] = useState('')
 
   useEffect(() => {
-    verifyOauth()
-  }, [verifyOauth])
+    console.log('allPass', allPass)
+    verifyAll().then(() => {
+      setErrMsg(allPass)
+    })
+  }, [allPass, verifyAll])
+
+  useEffect(() => {
+    if (!oauth) {
+      setErrMsg('Twitter not verify')
+      return
+      console.log('allPass-oauth')
+    }
+    if (!follow) {
+      console.log('allPass-follow')
+      setErrMsg('Need to follow all users')
+      return
+    }
+    if (!retweet) {
+      console.log('allPass-retweet')
+      setErrMsg('Need to retweet')
+      return
+    }
+    console.log('allPass-null')
+    setErrMsg('')
+  }, [follow, oauth, retweet])
 
   const handleMint = useCallback(async () => {
     if (errMsg) return
@@ -101,7 +115,7 @@ export default function MintOrganModal({ hide, sbtInfo }: { hide: () => void; sb
       .catch(err => {
         showModal(<MessageBox type="error">{err.message}</MessageBox>)
       })
-  }, [account, addTransaction, chainId, createTask, sbtInfo.contract, sbtInfo.name, showModal])
+  }, [account, addTransaction, chainId, createTask, errMsg, sbtInfo.contract, sbtInfo.name, showModal])
 
   function VerifyFollowBtn() {
     return (
@@ -149,6 +163,7 @@ export default function MintOrganModal({ hide, sbtInfo }: { hide: () => void; sb
               return
             }
             openVerify()
+            verifyOauth() // can't get windows close event, so recheck every click
           }}
         >
           {oauth ? 'Tweeted' : 'Tweet'}
