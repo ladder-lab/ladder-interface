@@ -122,7 +122,7 @@ function ActRow(props: { time: string; address: string; type: string }) {
     <Box width={'100%'}>
       <Divider />
       <Row gap={'14vw'} color={'#878D92'} padding={'20px 0'}>
-        <Typography>{new Date(Number(props.time)).toLocaleString()}</Typography>
+        <Typography>{new Date(Number(props.time) * 1000).toLocaleString()}</Typography>
         <Typography>{shortenAddress(props.address)}</Typography>
         <Typography>{props.type}</Typography>
       </Row>

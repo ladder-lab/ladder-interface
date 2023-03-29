@@ -6,7 +6,6 @@ import useBreakpoint from '../../hooks/useBreakpoint'
 import { SbtListResult } from '../../hooks/useGetSbtList'
 import {
   useVerifyTwitter,
-  useVerifyTwitterAll,
   useVerifyTwitterFollow,
   useVerifyTwitterOauth,
   useVerifyTwitterRetweet
@@ -55,7 +54,7 @@ const GreenLineBtn = styled(Box)(() => ({
 export default function MintOrganModal({ hide, sbtInfo }: { hide: () => void; sbtInfo: SbtListResult }) {
   const isDownSm = useBreakpoint('sm')
   const { account, chainId } = useActiveWeb3React()
-  const { verifyAll, allPass } = useVerifyTwitterAll(sbtInfo.contract)
+  // const { verifyAll, allPass } = useVerifyTwitterAll(sbtInfo.contract)
   const { verifyOauth, oauth } = useVerifyTwitterOauth(sbtInfo.contract)
   const { verifyFollow, follow } = useVerifyTwitterFollow(sbtInfo.contract)
   const { verifyRetweet, retweet } = useVerifyTwitterRetweet(sbtInfo.contract)
@@ -67,18 +66,23 @@ export default function MintOrganModal({ hide, sbtInfo }: { hide: () => void; sb
   const followUsersLink = sbtInfo.twitter_link.split('&')
   const [errMsg, setErrMsg] = useState('')
 
+  // useEffect(() => {
+  //   console.log('allPass', allPass)
+  //   verifyAll().then(() => {
+  //     setErrMsg(allPass)
+  //   })
+  // }, [allPass, verifyAll])
   useEffect(() => {
-    console.log('allPass', allPass)
-    verifyAll().then(() => {
-      setErrMsg(allPass)
-    })
-  }, [allPass, verifyAll])
+    verifyOauth()
+    verifyFollow()
+    verifyRetweet()
+  }, [verifyFollow, verifyOauth, verifyRetweet])
 
   useEffect(() => {
     if (!oauth) {
+      console.log('allPass-oauth')
       setErrMsg('Twitter not verify')
       return
-      console.log('allPass-oauth')
     }
     if (!follow) {
       console.log('allPass-follow')
