@@ -16,6 +16,7 @@ interface ActivityList {
 export function useGetActivityList(sbt: string) {
   const { chainId } = useActiveWeb3React()
   const [result, setResult] = useState<ActivityList[]>([])
+  const [total, setTotal] = useState(0)
   useEffect(() => {
     ;(async () => {
       try {
@@ -24,6 +25,7 @@ export function useGetActivityList(sbt: string) {
           sbt: sbt
         })
         const data = res.data.data.list as ActivityList[]
+        setTotal(res.data.data.total)
         if (!data) {
           setResult([])
           return
@@ -37,6 +39,7 @@ export function useGetActivityList(sbt: string) {
   }, [chainId, sbt])
 
   return {
-    result
+    result,
+    total
   }
 }

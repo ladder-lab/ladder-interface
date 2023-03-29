@@ -158,6 +158,7 @@ export default function OrigAccount() {
   const sbtInfo = state as SbtListResult
   const isDownSm = useBreakpoint('sm')
   const { token, sign } = useSignLogin()
+  const { total } = useGetActivityList(sbtInfo.contract)
   const SocialList = [
     {
       type: 'twitter',
@@ -225,7 +226,7 @@ export default function OrigAccount() {
             flexDirection={isDownSm ? 'column' : 'row'}
           >
             <Typography>Total Minted:</Typography>
-            <Typography variant={'h1'}>{sbtInfo.amount}</Typography>
+            <Typography variant={'h1'}>{total}</Typography>
           </Box>
           <Box gap={37} mt={45} display={'flex'}>
             <Button
