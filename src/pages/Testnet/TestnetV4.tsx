@@ -5,23 +5,16 @@ import { useActiveWeb3React } from 'hooks'
 import { ClaimState, useTestnetClaim } from 'hooks/useTestnetClaim'
 import ActionButton from 'components/Button/ActionButton'
 import { formatMillion, shortenAddress } from 'utils'
-import Collapse from 'components/Collapse'
 import ClaimableItem from './ClaimableItem'
-import V3TaskItem from './V3TaskItem'
 import { useMemo } from 'react'
 import { Token } from 'constants/token'
 import { ChainId } from 'constants/chain'
 import { ReactComponent as Explore } from 'assets/svg/explore.svg'
-import v2_my_icon from 'assets/images/v2_my_icon.png'
 // import prizepool_icon from 'assets/images/prizepool.jpeg'
-import Pencil from 'assets/images/pencil.png'
-import { routes } from 'constants/routes'
-import { useTestnetV2Status } from 'hooks/useTestnetBacked'
 import { StepTitle } from '.'
 import V4ActivityData from './V4ActivityData'
 import V3TestnetTable from 'components/Table/V3TestnetTable'
 import { useIsDarkMode } from 'state/user/hooks'
-import Image from 'components/Image'
 import {
   useV4AccountAssetsRankTop,
   useV4AccountLiquidityRankTop,
@@ -33,8 +26,9 @@ import {
 // import Copy from 'components/essential/Copy'
 import { LightTooltip } from 'components/TestnetV3Mark'
 import QuestionHelper from 'components/essential/QuestionHelper'
-import { useNavigate } from 'react-router-dom'
 import { useUserHasSubmitted } from 'state/transactions/hooks'
+import V4Medal from './V4Model'
+import CollapseWhite from '../../components/Collapse/CollapseWhite'
 
 const StyledButtonWrapper = styled(Box)(({ theme }) => ({
   maxWidth: 400,
@@ -54,8 +48,6 @@ const StyledButtonWrapper = styled(Box)(({ theme }) => ({
 }))
 
 export const StyledCardWrapper = styled(Box)(({ theme }) => ({
-  border: `1px solid ${theme.color.color1}`,
-  borderRadius: '16px',
   padding: '30px 28px',
   [theme.breakpoints.down('md')]: {
     padding: '16px'
@@ -112,12 +104,10 @@ const v3FaucetTokens = [
 export default function TestnetV4() {
   const theme = useTheme()
   const { account } = useActiveWeb3React()
-  const navigate = useNavigate()
   const toggleWalletModal = useWalletModalToggle()
   const { testnetClaim, claimState } = useTestnetClaim(account || undefined)
   const { submitted, complete } = useUserHasSubmitted(`${account}_claim4`)
 
-  const testnetV2Status = useTestnetV2Status(account || undefined)
   // const activeTimeStatus = useMemo(() => {
   //   const curTime = new Date().getTime()
   //   if (curTime < v3ActiveTimeStamp[0]) {
@@ -136,160 +126,132 @@ export default function TestnetV4() {
         </Typography>
         <V4ActivityData />
       </Box>
-
-      <StyledCardWrapper>
-        <Collapse
-          defaultOpen
-          title={
-            <RowBetween flexWrap={'wrap'}>
-              <Box display={'flex'} flexWrap={'wrap'}>
-                <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
-                  Ladder SEPOLIA Participate in preparation
-                </Typography>
-              </Box>
-            </RowBetween>
-          }
-        >
-          <Stack mt="56px" spacing={56}>
-            <Box>
-              <RowBetween>
-                <StepTitle step={1} title="Claim Test Asset" />
+      {false && (
+        <StyledCardWrapper>
+          <CollapseWhite
+            defaultOpen
+            title={
+              <RowBetween flexWrap={'wrap'}>
+                <Box display={'flex'} flexWrap={'wrap'}>
+                  <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                    Ladder SEPOLIA Participate in preparation
+                  </Typography>
+                </Box>
               </RowBetween>
+            }
+          >
+            <Stack mt="56px" spacing={56}>
               <Box>
-                <Box
-                  mt={28}
-                  sx={{
-                    display: 'none',
-                    gridTemplateColumns: { xs: '1fr', sm: '5fr 5fr 1.6fr' },
-                    alignItems: 'center',
-                    gap: { xs: '10px', sm: '24px 10px' },
-                    padding: '20px',
-                    backgroundColor: theme.palette.background.default,
-                    borderRadius: theme.shape.borderRadius + 'px'
-                  }}
-                >
-                  {v3FaucetTokens.map((item, index) => (
+                <RowBetween>
+                  <StepTitle step={1} title="Claim Test Asset" />
+                </RowBetween>
+                <Box>
+                  <Box
+                    mt={28}
+                    sx={{
+                      display: 'none',
+                      gridTemplateColumns: { xs: '1fr', sm: '5fr 5fr 1.6fr' },
+                      alignItems: 'center',
+                      gap: { xs: '10px', sm: '24px 10px' },
+                      padding: '20px',
+                      backgroundColor: theme.palette.background.default,
+                      borderRadius: theme.shape.borderRadius + 'px'
+                    }}
+                  >
+                    {v3FaucetTokens.map((item, index) => (
+                      <ClaimableItem
+                        key={index}
+                        token={item.token}
+                        amount={item.amount}
+                        claimable={claimState === ClaimState.UNCLAIMED ? item.amount : '0'}
+                      />
+                    ))}
                     <ClaimableItem
-                      key={index}
-                      token={item.token}
-                      amount={item.amount}
-                      claimable={claimState === ClaimState.UNCLAIMED ? item.amount : '0'}
+                      nftInfo={{ name: 'laddertest-v3-erc721' }}
+                      amount={'10'}
+                      claimable={claimState === ClaimState.UNCLAIMED ? '10' : '0'}
                     />
-                  ))}
-                  <ClaimableItem
-                    nftInfo={{ name: 'laddertest-v3-erc721' }}
-                    amount={'10'}
-                    claimable={claimState === ClaimState.UNCLAIMED ? '10' : '0'}
-                  />
-                  {/* <ClaimableItem
+                    {/* <ClaimableItem
                     nftInfo={{ name: 'laddertest-v2-erc1155' }}
                     amount={'10'}
                     claimable={claimState === ClaimState.UNCLAIMED ? '10' : '0'}
                   /> */}
-                </Box>
-                <Box display={'flex'} flexWrap="wrap" mt={16} alignItems="center">
-                  <StyledButtonWrapper>
-                    {account ? (
-                      <Box position={'relative'}>
+                  </Box>
+                  <Box display={'flex'} flexWrap="wrap" mt={16} alignItems="center">
+                    <StyledButtonWrapper>
+                      {account ? (
+                        <Box position={'relative'}>
+                          <StyledButtonWrapper>
+                            <ActionButton
+                              // pending={claimState === ClaimState.UNKNOWN}
+                              onAction={testnetClaim}
+                              // disableAction={new Date() < new Date(v3ActiveTimeStamp[0])}
+                              // disableAction={!isOpenClaim && activeTimeStatus !== 'active'}
+                              actionText="Claim your test assets"
+                              error={submitted || complete ? 'Test assets Claimed' : undefined}
+                            />
+                          </StyledButtonWrapper>
+                        </Box>
+                      ) : (
                         <StyledButtonWrapper>
-                          <ActionButton
-                            // pending={claimState === ClaimState.UNKNOWN}
-                            onAction={testnetClaim}
-                            // disableAction={new Date() < new Date(v3ActiveTimeStamp[0])}
-                            // disableAction={!isOpenClaim && activeTimeStatus !== 'active'}
-                            actionText="Claim your test assets"
-                            error={submitted || complete ? 'Test assets Claimed' : undefined}
-                          />
+                          <Button onClick={toggleWalletModal}>Connect the wallet to claim your test assets</Button>
                         </StyledButtonWrapper>
-                      </Box>
-                    ) : (
-                      <StyledButtonWrapper>
-                        <Button onClick={toggleWalletModal}>Connect the wallet to claim your test assets</Button>
-                      </StyledButtonWrapper>
-                    )}
-                  </StyledButtonWrapper>
-                  <Box margin="0 15px">
-                    <LightTooltip title={<FaucetsList />} arrow>
-                      <Link
-                        display={'flex'}
-                        alignItems="center"
-                        fontWeight={600}
-                        href="https://web.getlaika.app/faucets"
-                        target={'_blank'}
-                      >
-                        Sepolia Faucet
-                        <Explore />
-                      </Link>
-                    </LightTooltip>
+                      )}
+                    </StyledButtonWrapper>
+                    <Box margin="0 15px">
+                      <LightTooltip title={<FaucetsList />} arrow>
+                        <Link
+                          display={'flex'}
+                          alignItems="center"
+                          fontWeight={600}
+                          href="https://web.getlaika.app/faucets"
+                          target={'_blank'}
+                        >
+                          Sepolia Faucet
+                          <Explore />
+                        </Link>
+                      </LightTooltip>
+                    </Box>
                   </Box>
                 </Box>
               </Box>
-            </Box>
-          </Stack>
-        </Collapse>
-      </StyledCardWrapper>
+            </Stack>
+          </CollapseWhite>
+        </StyledCardWrapper>
+      )}
 
       <StyledCardWrapper>
-        <Collapse
+        <CollapseWhite
           defaultOpen
           title={
             <RowBetween>
               <Box display={'flex'}>
-                <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                <Typography fontSize={16} fontWeight={600} color={theme.palette.text.primary} mr={12}>
                   Experience more novel features of ladder!
                 </Typography>
               </Box>
             </RowBetween>
           }
         >
-          <Box>
-            <Stack spacing={12} mt={28}>
-              <V3TaskItem testnetStatus={testnetV2Status} />
-
-              <RowBetween flexWrap={'wrap'}>
-                <Box display={'flex'} width="100%" justifyContent="flex-end" alignItems="center" mt={5}>
-                  {testnetV2Status.pairIsFin &&
-                    testnetV2Status.buy721Completed &&
-                    testnetV2Status.sell721Completed &&
-                    testnetV2Status.buy1155Completed &&
-                    testnetV2Status.sell1155Completed && (
-                      <Typography fontWeight={600} mr={5} color={theme.palette.text.secondary}>
-                        Thanks for completing all tasks, you will go directly to the whitelist for the follow-up event
-                      </Typography>
-                    )}
-                  <Button
-                    variant="outlined"
-                    onClick={() => {
-                      if (!account) {
-                        toggleWalletModal()
-                      } else {
-                        navigate(routes.feedback)
-                      }
-                    }}
-                    sx={{
-                      width: 198,
-                      height: 52
-                    }}
-                  >
-                    <Typography mr={10} color={theme.palette.info.main} fontWeight={600} fontSize={16}>
-                      Submit feedback
-                    </Typography>
-                    <img src={Pencil} width={20} />
-                  </Button>
-                </Box>
-              </RowBetween>
-            </Stack>
+          <Box
+            sx={{
+              background: 'white',
+              borderRadius: '12px',
+              padding: '70px 24px 64px'
+            }}
+          >
+            <V4Medal />
           </Box>
-        </Collapse>
+        </CollapseWhite>
       </StyledCardWrapper>
 
       <StyledCardWrapper>
-        <Collapse
+        <CollapseWhite
           defaultOpen
           title={
             <RowBetween>
               <Box display={'flex'}>
-                <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                <Typography fontSize={16} fontWeight={600} color={theme.palette.text.primary} mr={12}>
                   Leaderboard
                 </Typography>
               </Box>
@@ -297,16 +259,16 @@ export default function TestnetV4() {
           }
         >
           <LeaderBoardBox />
-        </Collapse>
+        </CollapseWhite>
       </StyledCardWrapper>
 
       <StyledCardWrapper id="qa">
-        <Collapse
+        <CollapseWhite
           defaultOpen
           title={
             <RowBetween>
               <Box display={'flex'}>
-                <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                <Typography fontSize={16} fontWeight={600} color={theme.palette.text.primary} mr={12}>
                   Q&A
                 </Typography>
               </Box>
@@ -398,7 +360,7 @@ export default function TestnetV4() {
               </StyledQABody>
             </Box>
           </Stack>
-        </Collapse>
+        </CollapseWhite>
       </StyledCardWrapper>
     </Stack>
   )
@@ -503,9 +465,15 @@ function LeaderBoardBox() {
 
   const bgcolors = useMemo(() => {
     const _bgcolors = [
-      isDarkMode ? '#d8ff2029' : '#FDF1BE',
-      isDarkMode ? '#ffffff4d' : '#F6F6F6',
-      'rgba(209, 89, 57, 0.2)'
+      isDarkMode
+        ? 'linear-gradient(96.44deg, #D8FF2033 5.94%, #99F7F433 97.57%)'
+        : 'linear-gradient(96.44deg, #D8FF2088 5.94%, #99F7F488 97.57%)',
+      isDarkMode
+        ? 'linear-gradient(96.44deg, #D8FF2026 5.94%, #99F7F426 97.57%)'
+        : 'linear-gradient(96.44deg, #D8FF204D 5.94%, #99F7F44D 97.57%)',
+      isDarkMode
+        ? 'linear-gradient(96.44deg, #D8FF2017 5.94%, #99F7F417 97.57%)'
+        : 'linear-gradient(96.44deg, #D8FF201A 5.94%, #99F7F41A 97.57%)'
     ]
     if (account) _bgcolors.unshift('rgba(31, 152, 152, 0.1)')
     return _bgcolors
@@ -572,36 +540,16 @@ function LeaderBoardRank({
   const { account } = useActiveWeb3React()
   return (
     <Box>
-      <Box>
-        <Box
-          sx={{
-            marginLeft: 20,
-            padding: '10px 28px',
-            color: theme => theme.palette.primary.main,
-            backgroundColor: 'rgba(31, 152, 152, 0.1)',
-            borderRadius: '12px 12px 0px 0px',
-            display: 'inline-block'
-          }}
-        >
-          <Typography display={'flex'} alignItems="center">
-            {title}
-            {helper && <QuestionHelper style={{ marginLeft: 5 }} text={helper} />}
-          </Typography>
-        </Box>
-      </Box>
       <Box
         sx={{
           padding: '1.4px',
-          backgroundSize: '105% 105%',
-          borderRadius: '12px',
-          backgroundImage: `linear-gradient(to bottom , #1F9898 ,#fdd000, #ff00ac, #1F9898)`
+          borderRadius: '12px'
         }}
       >
         <Box
           sx={{
             backgroundColor: theme.palette.background.paper,
             borderRadius: '12px',
-            padding: '10px',
             minHeight: minHeight || {
               md: account ? 850 : 776,
               xs: 'unset'
@@ -610,6 +558,10 @@ function LeaderBoardRank({
             overflowX: 'auto'
           }}
         >
+          <Typography display={'flex'} alignItems="center" fontWeight={700} fontSize={18} padding={'15px 24px'}>
+            {title}
+            {helper && <QuestionHelper style={{ marginLeft: 5 }} text={helper} />}
+          </Typography>
           <V3TestnetTable
             fontSize={isSmDown ? '12px' : '16px'}
             bgcolors={bgcolors}
@@ -623,20 +575,19 @@ function LeaderBoardRank({
 }
 
 function MyRankItem({ num }: { num: string | number }) {
+  const theme = useTheme()
   return (
-    <Box key={1} sx={{ marginLeft: -13, position: 'relative' }}>
-      <Image width={40} src={v2_my_icon} />
-      <Typography
-        textAlign={'center'}
-        sx={{
-          position: 'absolute',
-          width: 40,
-          top: 10
-        }}
-      >
-        {num}
-      </Typography>
-    </Box>
+    <Typography
+      textAlign={'center'}
+      sx={{
+        width: 40,
+        top: 10,
+        fontSize: 16,
+        color: theme.palette.text.primary
+      }}
+    >
+      <span style={{ color: theme.palette.text.secondary }}>You </span>#{num}
+    </Typography>
   )
 }
 

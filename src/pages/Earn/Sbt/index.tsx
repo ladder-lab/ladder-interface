@@ -340,8 +340,8 @@ function MainBenefits() {
       desc: "As SBT introduces a system of merit where digital assets cannot be bought at any price and each holders has to work to earn that credential, it is a testament of the holder's effort. This recognition cannot be traded or exchanged."
     },
     {
-      title: 'SBT Leaderboard',
-      desc: 'Pit against other SBT holders to see how you fare in the Ladder Protocol and Ecosystem.'
+      title: 'To be a Ladder Protocol Node',
+      desc: 'Staking your SBT and participate in $LAD mining as a Node in our protocol'
     }
   ]
   return (

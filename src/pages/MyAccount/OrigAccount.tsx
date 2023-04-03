@@ -75,6 +75,7 @@ const ReferralBg = styled(Box)`
 `
 export const Row = styled(Box)`
   display: flex;
+  align-items: center;
 `
 // const ColorText = styled(Typography)`
 //   margin-left: 6px;

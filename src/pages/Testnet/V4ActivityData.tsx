@@ -1,16 +1,10 @@
-import { Box, useTheme, styled, Typography } from '@mui/material'
-import RankingImg from 'assets/images/testv2_user_ranking.png'
+import { Box, useTheme, Typography } from '@mui/material'
 import QuestionHelper from 'components/essential/QuestionHelper'
 import { ChainId } from 'constants/chain'
 import { useV3ActivityData } from 'hooks/useTestnetV3'
 import { useMemo } from 'react'
 import { formatMillion } from 'utils'
-
-const RowBetween = styled(Box)(({}) => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center'
-}))
+import { Row } from '../MyAccount/OrigAccount'
 
 export default function V3ActivityData() {
   const curChainId = ChainId.SEPOLIA
@@ -52,28 +46,26 @@ export default function V3ActivityData() {
           <Box
             key={item.name}
             sx={{
-              background: `url(${RankingImg}) no-repeat`,
-              padding: '6px',
-              backgroundSize: '100% 100%'
+              padding: '6px'
             }}
           >
             <Box
               sx={{
                 backgroundColor: theme.palette.background.paper,
-                padding: '30px 20px',
+                padding: '24px',
                 borderRadius: '16px'
               }}
             >
-              <RowBetween>
-                <Typography color={theme.palette.text.secondary} fontSize={16} component="div">
-                  <RowBetween>
+              <Box>
+                <Typography color={theme.palette.text.primary} fontSize={16} component="div" mb={16}>
+                  <Row>
                     {item.name} <QuestionHelper style={{ marginLeft: 5 }} text={item.helperText} />
-                  </RowBetween>
+                  </Row>
                 </Typography>
                 <Typography color={theme.palette.text.primary} fontSize={24} fontWeight={700}>
                   {item.value}
                 </Typography>
-              </RowBetween>
+              </Box>
             </Box>
           </Box>
         ))}

@@ -222,7 +222,7 @@ export default function Testnet() {
         sx={{
           width: '100%',
           height: '100%',
-          background: theme.palette.background.paper,
+          // background: theme.palette.background.paper,
           minHeight: `calc(100vh - ${isDownMD ? theme.height.mobileHeader : theme.height.header})`,
           padding: {
             xs: '20px 16px 114px',
@@ -263,7 +263,7 @@ export default function Testnet() {
                     ml: 5
                   }}
                 >
-                  {item === 3 ? 'LIVE' : 'CLOSE'}
+                  {item === 3 ? 'LIVE' : 'CLOSED'}
                 </Box>
               </Button>
             ))}
