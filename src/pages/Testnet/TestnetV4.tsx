@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme, Button, styled, Stack, Link } from '@mui/material'
+import { Box, Typography, useTheme, Button, styled, Stack, Link, Select, MenuItem } from '@mui/material'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { useActiveWeb3React } from 'hooks'
@@ -6,7 +6,7 @@ import { ClaimState, useTestnetClaim } from 'hooks/useTestnetClaim'
 import ActionButton from 'components/Button/ActionButton'
 import { formatMillion, shortenAddress } from 'utils'
 import ClaimableItem from './ClaimableItem'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Token } from 'constants/token'
 import { ChainId } from 'constants/chain'
 import { ReactComponent as Explore } from 'assets/svg/explore.svg'
@@ -16,11 +16,9 @@ import V4ActivityData from './V4ActivityData'
 import V3TestnetTable from 'components/Table/V3TestnetTable'
 import { useIsDarkMode } from 'state/user/hooks'
 import {
-  useV4AccountAssetsRankTop,
-  useV4AccountLiquidityRankTop,
-  useV4AccountVolumeRankTop
+  AccountRankValues
   // useV3PoolTop10
-} from 'hooks/useTestnetV3'
+} from 'hooks/useTestnetV4'
 // import { ShowTopPoolsCurrencyBox } from 'pages/Statistics'
 // import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
 // import Copy from 'components/essential/Copy'
@@ -29,6 +27,10 @@ import QuestionHelper from 'components/essential/QuestionHelper'
 import { useUserHasSubmitted } from 'state/transactions/hooks'
 import V4Medal from './V4Model'
 import CollapseWhite from '../../components/Collapse/CollapseWhite'
+import { StyledTabButtonText } from '../Statistics'
+import { Axios, v4Url } from '../../utils/axios'
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 
 const StyledButtonWrapper = styled(Box)(({ theme }) => ({
   maxWidth: 400,
@@ -48,7 +50,6 @@ const StyledButtonWrapper = styled(Box)(({ theme }) => ({
 }))
 
 export const StyledCardWrapper = styled(Box)(({ theme }) => ({
-  padding: '30px 28px',
   [theme.breakpoints.down('md')]: {
     padding: '16px'
   }
@@ -120,8 +121,8 @@ export default function TestnetV4() {
 
   return (
     <Stack spacing={40}>
-      <Box padding="10px">
-        <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mb={-10}>
+      <Box>
+        <Typography fontSize={16} fontWeight={600} mb={-10}>
           Activity data
         </Typography>
         <V4ActivityData />
@@ -275,8 +276,15 @@ export default function TestnetV4() {
             </RowBetween>
           }
         >
-          <Stack spacing={44}>
-            <Box mt={56}>
+          <Stack
+            spacing={44}
+            sx={{
+              background: 'white',
+              borderRadius: '12px',
+              padding: '32px 24px'
+            }}
+          >
+            <Box>
               <StyledQATitle>1. What is Ladder?</StyledQATitle>
               {/* <Table
                   fontSize="15px"
@@ -368,49 +376,144 @@ export default function TestnetV4() {
 
 function LeaderBoardBox() {
   const isDarkMode = useIsDarkMode()
-  const curChainId = ChainId.SEPOLIA
+  const chainId = ChainId.SEPOLIA
   const { account } = useActiveWeb3React()
+  const [currentType, setType] = useState('Total')
+  const [timestamp, setTimestamp] = useState<string>('0')
+  const [accountAssetsRankList, setAccountAssetsRankList] = useState<AccountRankValues[]>()
+  const [accountAssetsRank, setAccountAssetsRank] = useState<AccountRankValues>()
+  const [accountLiquidityRankList, setAccountLiquidityRankList] = useState<AccountRankValues[]>()
+  const [accountLiquidityRank, setAccountLiquidityRank] = useState<AccountRankValues>()
+  const [accountVolumeRankList, setAccountVolumeRankList] = useState<AccountRankValues[]>()
+  const [accountVolumeRank, setAccountVolumeRank] = useState<AccountRankValues>()
+  const [assetsPage, setAssetsPage] = useState(1)
+  const [liquidityPage, setLiquidityPage] = useState(1)
+  const [volumePage, setVolumePage] = useState(1)
 
-  // const v3PoolTop10 = useV3PoolTop10(curChainId)
-  // const topPairRows = useMemo(
-  //   () =>
-  //     v3PoolTop10?.map((item, index) => {
-  //       const nftInfo =
-  //         item.token0.type === Mode.ERC721 || item.token0.type === Mode.ERC1155
-  //           ? item.token0
-  //           : item.token1.type === Mode.ERC721 || item.token1.type === Mode.ERC1155
-  //           ? item.token1
-  //           : undefined
-  //       return [
-  //         index + 1,
-  //         <ShowTopPoolsCurrencyBox
-  //           key={index}
-  //           chainId={curChainId}
-  //           pair={item.pair}
-  //           token0Info={item.token0}
-  //           token1Info={item.token1}
-  //         />,
-  //         formatMillion(Number(item.tvl) || 0, '$ ', 2),
-  //         formatMillion(Number(item.Volume) || 0, '$ ', 2),
-  //         nftInfo ? formatMillion(Number(nftInfo.price) || 0, '$ ', 2) : '-',
-  //         nftInfo ? (
-  //           <Box display={'flex'} alignItems="center">
-  //             {shortenAddress(nftInfo.address)}
-  //             <Copy toCopy={nftInfo.address} />
-  //           </Box>
-  //         ) : (
-  //           '-'
-  //         )
-  //       ]
-  //     }) || [],
-  //   [curChainId, v3PoolTop10]
-  // )
+  useEffect(() => {
+    ;(async () => {
+      if (!chainId) {
+        setAccountAssetsRankList(undefined)
+        setAccountAssetsRank(undefined)
+        return
+      }
+      try {
+        const url = timestamp === '0' ? 'getAccountAssetRank' : 'getAccountAssetWeekRank'
+        const res = await Axios.get(v4Url + url, {
+          chainId,
+          address: account || '',
+          pageSize: 10,
+          timestamp,
+          pageNum: assetsPage
+        })
+        const data = res.data.data as any
+        if (!data) {
+          setAccountAssetsRankList(undefined)
+          setAccountAssetsRank(undefined)
+          return
+        }
+        setAccountAssetsRankList(
+          data.ranks.list.map((item: any) => ({
+            value: item.asset,
+            rank: item.rank,
+            account: item.account
+          }))
+        )
+        account &&
+          setAccountAssetsRank({
+            account: account || '',
+            rank: data.accountRank === -1 ? '-' : data.accountRank,
+            value: data.accountAsset
+          })
+      } catch (error) {
+        setAccountAssetsRankList(undefined)
+        setAccountAssetsRank(undefined)
+        console.error('useV4AccountAssetsRankTop', error)
+      }
+    })()
+  }, [account, assetsPage, chainId, timestamp])
 
-  const { rankList: accountVolumeRankList, accountRank: accountVolumeRank } = useV4AccountVolumeRankTop(curChainId)
-  const { rankList: accountAssetsRankList, accountRank: accountAssetsRank } = useV4AccountAssetsRankTop(curChainId)
+  useEffect(() => {
+    ;(async () => {
+      if (!chainId) {
+        setAccountLiquidityRankList(undefined)
+        setAccountLiquidityRank(undefined)
+        return
+      }
+      try {
+        const url = timestamp === '0' ? 'getAccountTvlRank' : 'getAccountTvlWeekRank'
+        const res = await Axios.get(v4Url + url, {
+          chainId,
+          address: account || '',
+          timestamp,
+          pageSize: 10,
+          pageNum: liquidityPage
+        })
+        const data = res.data.data as any
+        if (!data) {
+          setAccountLiquidityRankList(undefined)
+          setAccountLiquidityRank(undefined)
+          return
+        }
+        setAccountLiquidityRankList(
+          data.ranks.list.map((item: any) => ({
+            value: item.tvl,
+            rank: item.rank,
+            account: item.account
+          }))
+        )
+        account &&
+          setAccountLiquidityRank({
+            account: account || '',
+            rank: data.accountRank === -1 ? '-' : data.accountRank,
+            value: data.accountTvl
+          })
+      } catch (error) {
+        setAccountLiquidityRankList(undefined)
+        setAccountLiquidityRank(undefined)
+        console.error('useV3AccountLiquidityRankTop', error)
+      }
+    })()
+  }, [account, chainId, liquidityPage, timestamp])
 
-  const { rankList: accountLiquidityRankList, accountRank: accountLiquidityRank } =
-    useV4AccountLiquidityRankTop(curChainId)
+  useEffect(() => {
+    console.log('timestamp', timestamp)
+    ;(async () => {
+      try {
+        const res = await Axios.get(v4Url + 'getAccountVolumeRank', {
+          chainId,
+          address: account || '',
+          pageSize: 10,
+          timestamp,
+          pageNum: volumePage
+        })
+        const data = res.data.data as any
+        console.log('timestamp-data', data)
+        if (!data) {
+          setAccountVolumeRankList(undefined)
+          setAccountVolumeRank(undefined)
+          return
+        }
+        setAccountVolumeRankList(
+          data.ranks.list.map((item: any) => ({
+            value: item.volumes,
+            rank: item.rank,
+            account: item.account
+          }))
+        )
+        account &&
+          setAccountVolumeRank({
+            account: account || '',
+            rank: data.accountRank === -1 ? '-' : data.accountRank,
+            value: data.accountAsset
+          })
+      } catch (error) {
+        setAccountVolumeRankList(undefined)
+        setAccountVolumeRank(undefined)
+        console.error('useV3AccountAssetsRankTop', error)
+      }
+    })()
+  }, [account, chainId, timestamp, volumePage])
 
   const topVolumeTraded = useMemo(() => {
     const ret: (JSX.Element | string | number)[][] =
@@ -426,6 +529,7 @@ function LeaderBoardBox() {
         accountVolumeRank ? formatMillion(Number(accountVolumeRank.value), '$ ', 2) : '-'
       ])
     }
+    console.log('timestamp-ret', ret)
     return ret
   }, [account, accountVolumeRank, accountVolumeRankList])
 
@@ -481,6 +585,55 @@ function LeaderBoardBox() {
 
   return (
     <Box>
+      <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
+        <Box display={'flex'} gap={20}>
+          {['Total', 'Weekly'].map(item => (
+            <StyledTabButtonText
+              key={item}
+              className={item === currentType ? 'active' : ''}
+              onClick={() => {
+                setType(item)
+                if (item == 'Total') {
+                  setTimestamp('0')
+                } else {
+                  setTimestamp('1680451200')
+                }
+                setAssetsPage(1)
+                setLiquidityPage(1)
+                setVolumePage(1)
+              }}
+              sx={{
+                height: '33px',
+                display: 'flex',
+                alignItems: 'center'
+              }}
+            >
+              {item}
+            </StyledTabButtonText>
+          ))}
+        </Box>
+        {currentType == 'Weekly' && (
+          <Select
+            sx={{
+              height: '33px',
+              backgroundColor: 'white',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              padding: '6px 24px'
+            }}
+            onChange={event => {
+              setTimestamp(event.target.value)
+            }}
+            value={timestamp}
+          >
+            <MenuItem value={'1680451200'}>This Week</MenuItem>
+            <MenuItem value={'1679846400'}>Last Week</MenuItem>
+            <MenuItem value={'1679241600'}>Mar 20 - Mar 26, 2023</MenuItem>
+            <MenuItem value={'1678636800'}>Mar 13 - Mar 19, 2023</MenuItem>
+          </Select>
+        )}
+      </Box>
       <Box
         sx={{
           mt: 10,
@@ -498,14 +651,24 @@ function LeaderBoardBox() {
           bgcolors={bgcolors}
           title="Top Asset Value"
           helper="Update once an hour"
+          page={assetsPage}
+          setPage={setAssetsPage}
         />
         <LeaderBoardRank
           rows={topLiquidityValue}
           bgcolors={bgcolors}
           title="Top Liquidity Provided"
           helper="Update once an hour"
+          page={liquidityPage}
+          setPage={setLiquidityPage}
         />
-        <LeaderBoardRank rows={topVolumeTraded} bgcolors={bgcolors} title="Top Volume Traded" />
+        <LeaderBoardRank
+          rows={topVolumeTraded}
+          bgcolors={bgcolors}
+          title="Top Volume Traded"
+          page={volumePage}
+          setPage={setVolumePage}
+        />
       </Box>
 
       {/* <Box mt={30}>
@@ -526,7 +689,9 @@ function LeaderBoardRank({
   bgcolors,
   title,
   helper,
-  minHeight
+  minHeight,
+  page,
+  setPage
 }: {
   headers?: string[]
   title: string
@@ -534,10 +699,20 @@ function LeaderBoardRank({
   bgcolors?: string[]
   minHeight?: number
   helper?: string
+  page: number
+  setPage: (page: number) => void
 }) {
   const theme = useTheme()
   const isSmDown = useBreakpoint('sm')
   const { account } = useActiveWeb3React()
+  const arrowBtnSx = {
+    width: '24px',
+    height: '24px',
+    padding: '6px',
+    ':hover': {
+      cursor: 'pointer'
+    }
+  }
   return (
     <Box>
       <Box
@@ -568,6 +743,29 @@ function LeaderBoardRank({
             rows={rows}
             header={headers || ['#', 'User', 'Value']}
           ></V3TestnetTable>
+          <Box display={'flex'} width={'100%'} justifyContent={'center'} alignItems={'center'} mt={30}>
+            <ArrowBackIosIcon
+              sx={{
+                ...arrowBtnSx
+              }}
+              onClick={() => {
+                if (page > 1) {
+                  setPage(page - 1)
+                }
+              }}
+            />
+            <Typography>Page {page} of 5</Typography>
+            <ArrowForwardIosIcon
+              sx={{
+                ...arrowBtnSx
+              }}
+              onClick={() => {
+                if (page < 5) {
+                  setPage(page + 1)
+                }
+              }}
+            />
+          </Box>
         </Box>
       </Box>
     </Box>

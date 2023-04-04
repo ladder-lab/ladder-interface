@@ -43,12 +43,7 @@ export default function V3ActivityData() {
         }}
       >
         {data.map(item => (
-          <Box
-            key={item.name}
-            sx={{
-              padding: '6px'
-            }}
-          >
+          <Box key={item.name}>
             <Box
               sx={{
                 backgroundColor: theme.palette.background.paper,

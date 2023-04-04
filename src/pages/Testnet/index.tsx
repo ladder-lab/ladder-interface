@@ -217,7 +217,57 @@ export default function Testnet() {
           </Stack>
         </Box>
       </Box> */}
-
+      <Box
+        sx={{
+          background: 'white',
+          width: '100%',
+          padding: '18px 0'
+        }}
+      >
+        <Stack
+          direction={'row'}
+          spacing={20}
+          sx={{
+            width: '100%',
+            maxWidth: '1350px',
+            margin: '0 auto'
+          }}
+        >
+          {[0, 1, 2, 3].map(item => (
+            <Button
+              sx={{
+                width: 'fit-content',
+                height: 52,
+                fontSize: { xs: 12, sm: 16 },
+                color: roundIndex === item ? (item === 3 ? 'white' : '#343739') : '#878D92',
+                borderRadius: '12px',
+                background: roundIndex === item ? (item === 3 ? '#1F9898 !important' : '#E4E4E4') : 'inherit',
+                '&:hover': {
+                  boxShadow: 'unset',
+                  background: item === 3 ? '#1F9898' : '#F6F6F6'
+                }
+              }}
+              key={item}
+              onClick={() => setRoundIndex(item)}
+              variant={roundIndex === item ? 'contained' : 'text'}
+            >
+              {item === 2 ? 'Monopoly' : item === 3 ? `ROUND ${item}` : `ROUND ${item + 1}`}
+              <Box
+                sx={{
+                  background: item === 3 ? 'linear-gradient(96.44deg, #D8FF20 5.94%, #99F7F4 97.57%)' : '#F6F6F6',
+                  color: '#333333',
+                  padding: '0 5px',
+                  borderRadius: '4px',
+                  fontSize: 14,
+                  ml: 5
+                }}
+              >
+                {item === 3 ? 'live' : 'closed'}
+              </Box>
+            </Button>
+          ))}
+        </Stack>
+      </Box>
       <Box
         sx={{
           width: '100%',
@@ -234,41 +284,10 @@ export default function Testnet() {
           sx={{
             width: '100%',
             maxWidth: '1350px',
-            margin: '0 auto'
+            margin: '0 auto',
+            position: 'relative'
           }}
         >
-          <Stack margin="20px 0" direction={'row'} spacing={20}>
-            {[0, 1, 2, 3].map(item => (
-              <Button
-                sx={{
-                  width: 166,
-                  height: 52,
-                  fontSize: { xs: 12, sm: 14 },
-                  borderColor: '#1F9898',
-                  color: '#1F9898',
-                  background: roundIndex === item ? 'rgba(31, 152, 152, 0.1) !important' : 'inherit'
-                }}
-                key={item}
-                onClick={() => setRoundIndex(item)}
-                variant={roundIndex === item ? 'contained' : 'outlined'}
-              >
-                {item === 2 ? 'Monopoly' : item === 3 ? `ROUND ${item}` : `ROUND ${item + 1}`}
-                <Box
-                  sx={{
-                    backgroundColor: item === 3 ? '#1f9898' : '#F44E1F',
-                    color: '#fff',
-                    padding: '0 5px',
-                    borderRadius: '4px',
-                    fontSize: 12,
-                    ml: 5
-                  }}
-                >
-                  {item === 3 ? 'LIVE' : 'CLOSED'}
-                </Box>
-              </Button>
-            ))}
-          </Stack>
-
           {roundIndex === 0 && <TestnetV1 round={1} />}
           {roundIndex === 1 && <TestnetV1 round={2} />}
           {roundIndex === 2 && <TestnetV3 />}

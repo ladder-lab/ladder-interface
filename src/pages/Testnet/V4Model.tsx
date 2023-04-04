@@ -30,6 +30,8 @@ import whaleGray1 from 'assets/svg/round3/providor-gray-1.svg'
 import whaleGray2 from 'assets/svg/round3/providor-gray-2.svg'
 import whaleGray3 from 'assets/svg/round3/providor-gray-3.svg'
 import { useMemo } from 'react'
+import { useV4Medal } from '../../hooks/useTestnetV4'
+import { ChainId } from '../../constants/chain'
 
 interface Medal {
   type: string
@@ -40,47 +42,57 @@ interface Medal {
 }
 
 export default function V4Medal() {
-  const list: Medal[] = [
-    {
-      type: 'Lliquidity providooooor',
-      desc: 'Provide liquidity to level up!',
-      currentAmount: 0,
-      icons: [provider1, provider2, provider3],
-      grayIcons: [providerGray1, providerGray2, providerGray3]
-    },
-    {
-      type: 'Accumulatoor',
-      desc: "Purchase NFT's (ERC-721) to level up!",
-      currentAmount: 0,
-      icons: [accumulator1, accumulator2, accumulator3],
-      grayIcons: [accumulatorGray1, accumulatorGray2, accumulatorGray3]
-    },
-    {
-      type: 'Dumpooor',
-      desc: "Sell NFT's (721) to level up!",
-      currentAmount: 0,
-      icons: [dompor1, dompor2, dompor3],
-      grayIcons: [domporGray1, domporGray2, domporGray3]
-    },
-    {
-      type: 'tradoooor',
-      desc: "Purchase NFT's (1155) to level up!",
-      currentAmount: 0,
-      icons: [trador1, trador2, trador3],
-      grayIcons: [tradorGray1, tradorGray2, tradorGray3]
-    },
-    {
-      type: 'Whale',
-      desc: "Sell NFT's (1155) to level up!",
-      currentAmount: 0,
-      icons: [whale1, whale2, whale3],
-      grayIcons: [whaleGray1, whaleGray2, whaleGray3]
-    }
-  ]
+  const { result, milestone } = useV4Medal(ChainId.SEPOLIA)
+  const list: Medal[] = useMemo(() => {
+    return [
+      {
+        type: 'Lliquidity providooooor',
+        desc: 'Provide liquidity to level up!',
+        currentAmount: Number(result?.liquidityValume),
+        icons: [provider1, provider2, provider3],
+        grayIcons: [providerGray1, providerGray2, providerGray3]
+      },
+      {
+        type: 'Accumulatoor',
+        desc: "Purchase NFT's (ERC-721) to level up!",
+        currentAmount: Number(result?.buy721Valume),
+        icons: [accumulator1, accumulator2, accumulator3],
+        grayIcons: [accumulatorGray1, accumulatorGray2, accumulatorGray3]
+      },
+      {
+        type: 'Dumpooor',
+        desc: "Sell NFT's (721) to level up!",
+        currentAmount: Number(result?.sell721Valume),
+        icons: [dompor1, dompor2, dompor3],
+        grayIcons: [domporGray1, domporGray2, domporGray3]
+      },
+      {
+        type: 'tradoooor',
+        desc: "Purchase NFT's (1155) to level up!",
+        currentAmount: Number(result?.buy1155Valume),
+        icons: [trador1, trador2, trador3],
+        grayIcons: [tradorGray1, tradorGray2, tradorGray3]
+      },
+      {
+        type: 'Whale',
+        desc: "Sell NFT's (1155) to level up!",
+        currentAmount: Number(result?.sell1155Valume),
+        icons: [whale1, whale2, whale3],
+        grayIcons: [whaleGray1, whaleGray2, whaleGray3]
+      }
+    ]
+  }, [
+    result?.buy1155Valume,
+    result?.buy721Valume,
+    result?.liquidityValume,
+    result?.sell1155Valume,
+    result?.sell721Valume
+  ])
+
   return (
     <Stack spacing={60}>
       {list.map((item, idx) => (
-        <MedalRow key={idx} medal={item} />
+        <MedalRow key={idx} medal={item} curMilestone={milestone} />
       ))}
     </Stack>
   )
@@ -104,28 +116,31 @@ function Line({ isDash }: { isDash: boolean }) {
   )
 }
 
-function MedalRow({ medal }: { medal: Medal }) {
+function MedalRow({ medal, curMilestone }: { medal: Medal; curMilestone: number[] | undefined }) {
   const theme = useTheme()
+  const milestone = useMemo(() => {
+    return curMilestone ? curMilestone : [1000, 2000, 3000]
+  }, [curMilestone])
   const medalIcons = useMemo(() => {
-    if (medal.currentAmount < 1000) {
+    if (medal.currentAmount < milestone[0]) {
       return medal.grayIcons
-    } else if (medal.currentAmount < 2000) {
+    } else if (medal.currentAmount < milestone[1]) {
       return [medal.icons[0], medal.grayIcons[1], medal.grayIcons[2]]
-    } else if (medal.currentAmount < 3000) {
+    } else if (medal.currentAmount < milestone[2]) {
       return [medal.icons[0], medal.icons[1], medal.grayIcons[2]]
     } else {
       return medal.icons
     }
-  }, [medal.currentAmount, medal.grayIcons, medal.icons])
+  }, [medal.currentAmount, medal.grayIcons, medal.icons, milestone])
   const linesDash = useMemo(() => {
-    if (medal.currentAmount < 2000) {
+    if (medal.currentAmount < milestone[1]) {
       return [true, true]
-    } else if (medal.currentAmount < 3000) {
+    } else if (medal.currentAmount < milestone[2]) {
       return [false, true]
     } else {
       return [false, false]
     }
-  }, [medal.currentAmount])
+  }, [medal.currentAmount, milestone])
   return (
     <Box display={'flex'}>
       <Box minWidth={350}>
