@@ -48,6 +48,22 @@ export default function CurrencyList({
 
   const listHeight = useCurrencyModalListHeight('360px')
 
+  function filterByProperty<T extends { [key: string]: any }>(arr: T[], propName: string): T[] {
+    const uniqueArr: T[] = []
+    const valuesSeen: { [key: string]: boolean } = {}
+
+    for (const item of arr) {
+      const propValue = item[propName]
+      if (!valuesSeen[propValue]) {
+        valuesSeen[propValue] = true
+        uniqueArr.push(item)
+      }
+    }
+
+    return uniqueArr
+  }
+  const filteredOptions = filterByProperty(currencyOptions, 'symbol')
+
   return (
     <>
       {children}
@@ -85,10 +101,10 @@ export default function CurrencyList({
             </Box>
             <span style={{ fontWeight: 500 }}>{0}</span>
           </ListItem>
-        ) : currencyOptions?.length > 0 || currencyOptions?.length > 0 ? (
+        ) : filteredOptions?.length > 0 || filteredOptions?.length > 0 ? (
           <CurrencyListComponent
             onSelect={onSelectCurrency}
-            options={currencyOptions}
+            options={filteredOptions}
             fixedListRef={fixedListRef}
             showETH={showETH}
           />
