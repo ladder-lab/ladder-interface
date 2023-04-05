@@ -1,6 +1,8 @@
 import { Box, Collapse as MuiCollapse } from '@mui/material'
 import { useState } from 'react'
 import { ReactComponent as KeyboardArrowUpIcon } from 'assets/svg/round3/v4-arrow.svg'
+import { ReactComponent as KeyboardArrowUpDarkIcon } from 'assets/svg/round3/dark_arrow_up.svg'
+import { useIsDarkMode } from '../../state/user/hooks'
 
 export default function CollapseWhite({
   children,
@@ -12,6 +14,7 @@ export default function CollapseWhite({
   defaultOpen?: boolean
 }) {
   const [isOpen, setIsOpen] = useState(defaultOpen || false)
+  const isDark = useIsDarkMode()
   return (
     <Box>
       <Box
@@ -30,21 +33,12 @@ export default function CollapseWhite({
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            rotate: isOpen ? '0deg' : '180deg',
             cursor: 'pointer'
           }}
           onClick={() => setIsOpen(!isOpen)}
         >
-          {isOpen ? (
-            <KeyboardArrowUpIcon />
-          ) : (
-            <Box
-              sx={{
-                rotate: '180deg'
-              }}
-            >
-              <KeyboardArrowUpIcon />
-            </Box>
-          )}
+          {isDark ? <KeyboardArrowUpDarkIcon /> : <KeyboardArrowUpIcon />}
         </Box>
       </Box>
       <MuiCollapse in={isOpen}>{children}</MuiCollapse>

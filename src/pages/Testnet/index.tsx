@@ -133,6 +133,7 @@ export default function Testnet() {
   // const isDarkMode = useIsDarkMode()
   // const isDownSm = useBreakpoint('sm')
   const isDownMD = useBreakpoint('md')
+  const isDark = useIsDarkMode()
   const [roundIndex, setRoundIndex] = useState(3)
 
   return (
@@ -219,7 +220,7 @@ export default function Testnet() {
       </Box> */}
       <Box
         sx={{
-          background: 'white',
+          background: theme.palette.background.paper,
           width: '100%',
           padding: '18px 0'
         }}
@@ -256,7 +257,12 @@ export default function Testnet() {
               {item === 2 ? 'Monopoly' : item === 3 ? `ROUND ${item}` : `ROUND ${item + 1}`}
               <Box
                 sx={{
-                  background: item === 3 ? 'linear-gradient(96.44deg, #D8FF20 5.94%, #99F7F4 97.57%)' : '#F6F6F6',
+                  background:
+                    item === 3
+                      ? 'linear-gradient(96.44deg, #D8FF20 5.94%, #99F7F4 97.57%)'
+                      : isDark
+                      ? '#828282'
+                      : '#F6F6F6',
                   color: '#333333',
                   padding: '0 5px',
                   position: isDownMD ? 'absolute' : 'inherit',

@@ -164,7 +164,7 @@ function MedalRow({ medal, curMilestone }: { medal: Medal; curMilestone: number[
     <Box
       display={'flex'}
       sx={{
-        flexDirection: isDownMD ? 'column' : 'inherit'
+        flexDirection: isDownMD ? 'column' : 'row'
       }}
     >
       <Box minWidth={350} mb={isDownMD ? '22px' : '0'}>
