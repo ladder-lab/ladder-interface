@@ -130,10 +130,9 @@ export const v2ActiveTimeStamp = [1669093260000, 1669697940000]
 
 export default function Testnet() {
   const theme = useTheme()
-  // const isDarkMode = useIsDarkMode()
+  const isDarkMode = useIsDarkMode()
   // const isDownSm = useBreakpoint('sm')
   const isDownMD = useBreakpoint('md')
-  const isDark = useIsDarkMode()
   const [roundIndex, setRoundIndex] = useState(3)
 
   return (
@@ -260,7 +259,7 @@ export default function Testnet() {
                   background:
                     item === 3
                       ? 'linear-gradient(96.44deg, #D8FF20 5.94%, #99F7F4 97.57%)'
-                      : isDark
+                      : isDarkMode
                       ? '#828282'
                       : '#F6F6F6',
                   color: '#333333',
