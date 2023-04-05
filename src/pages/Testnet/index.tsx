@@ -130,7 +130,7 @@ export const v2ActiveTimeStamp = [1669093260000, 1669697940000]
 
 export default function Testnet() {
   const theme = useTheme()
-  // const isDarkMode = useIsDarkMode()
+  const isDarkMode = useIsDarkMode()
   // const isDownSm = useBreakpoint('sm')
   const isDownMD = useBreakpoint('md')
   const [roundIndex, setRoundIndex] = useState(3)
@@ -219,7 +219,7 @@ export default function Testnet() {
       </Box> */}
       <Box
         sx={{
-          background: 'white',
+          background: isDarkMode ? '#1A1C1E' : 'white',
           width: '100%',
           padding: '18px 0'
         }}

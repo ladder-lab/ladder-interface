@@ -164,14 +164,15 @@ function MedalRow({ medal, curMilestone }: { medal: Medal; curMilestone: number[
     <Box
       display={'flex'}
       sx={{
-        flexDirection: isDownMD ? 'column' : 'inherit'
+        flexDirection: isDownMD ? 'column' : 'row',
+        alignItems: 'center'
       }}
     >
-      <Box minWidth={350} mb={isDownMD ? '22px' : '0'}>
+      <Box minWidth={350} pl={isDownMD ? 20 : 0} mb={isDownMD ? '22px' : '0'}>
         <Typography color={theme.palette.text.primary} fontWeight={800} fontSize={18}>
           {medal.type}
         </Typography>
-        <Typography mt={11} color={'#747678'} fontSize={16}>
+        <Typography maxWidth={191} mt={11} color={'#747678'} fontSize={16}>
           {medal.desc}
         </Typography>
       </Box>
