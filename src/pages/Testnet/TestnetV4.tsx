@@ -382,10 +382,13 @@ function LeaderBoardBox() {
   const [timestamp, setTimestamp] = useState<string>('0')
   const [accountAssetsRankList, setAccountAssetsRankList] = useState<AccountRankValues[]>()
   const [accountAssetsRank, setAccountAssetsRank] = useState<AccountRankValues>()
+  const [assetsTotalPage, setAssetsTotalPage] = useState<number>(5)
   const [accountLiquidityRankList, setAccountLiquidityRankList] = useState<AccountRankValues[]>()
   const [accountLiquidityRank, setAccountLiquidityRank] = useState<AccountRankValues>()
+  const [liquidityTotalPage, setLiquidityTotalPage] = useState<number>(5)
   const [accountVolumeRankList, setAccountVolumeRankList] = useState<AccountRankValues[]>()
   const [accountVolumeRank, setAccountVolumeRank] = useState<AccountRankValues>()
+  const [volumeTotalPage, setVolumeTotalPage] = useState<number>(5)
   const [assetsPage, setAssetsPage] = useState(1)
   const [liquidityPage, setLiquidityPage] = useState(1)
   const [volumePage, setVolumePage] = useState(1)
@@ -419,6 +422,7 @@ function LeaderBoardBox() {
             account: item.account
           }))
         )
+        setAssetsTotalPage(data.ranks.lastPage)
         account &&
           setAccountAssetsRank({
             account: account || '',
@@ -462,6 +466,7 @@ function LeaderBoardBox() {
             account: item.account
           }))
         )
+        setLiquidityTotalPage(data.ranks.lastPage)
         account &&
           setAccountLiquidityRank({
             account: account || '',
@@ -477,7 +482,6 @@ function LeaderBoardBox() {
   }, [account, chainId, liquidityPage, timestamp])
 
   useEffect(() => {
-    console.log('timestamp', timestamp)
     ;(async () => {
       try {
         const res = await Axios.get(v4Url + 'getAccountVolumeRank', {
@@ -501,11 +505,12 @@ function LeaderBoardBox() {
             account: item.account
           }))
         )
+        setVolumeTotalPage(data.ranks.lastPage)
         account &&
           setAccountVolumeRank({
             account: account || '',
-            rank: data.accountRank === -1 ? '-' : data.accountRank,
-            value: data.accountAsset
+            rank: data.volumesRank === -1 ? '-' : data.volumesRank,
+            value: data.accountVolumes
           })
       } catch (error) {
         setAccountVolumeRankList(undefined)
@@ -653,6 +658,7 @@ function LeaderBoardBox() {
           helper="Update once an hour"
           page={assetsPage}
           setPage={setAssetsPage}
+          totalPage={assetsTotalPage}
         />
         <LeaderBoardRank
           rows={topLiquidityValue}
@@ -661,6 +667,7 @@ function LeaderBoardBox() {
           helper="Update once an hour"
           page={liquidityPage}
           setPage={setLiquidityPage}
+          totalPage={liquidityTotalPage}
         />
         <LeaderBoardRank
           rows={topVolumeTraded}
@@ -668,6 +675,7 @@ function LeaderBoardBox() {
           title="Top Volume Traded"
           page={volumePage}
           setPage={setVolumePage}
+          totalPage={volumeTotalPage}
         />
       </Box>
 
@@ -691,7 +699,8 @@ function LeaderBoardRank({
   helper,
   minHeight,
   page,
-  setPage
+  setPage,
+  totalPage
 }: {
   headers?: string[]
   title: string
@@ -701,6 +710,7 @@ function LeaderBoardRank({
   helper?: string
   page: number
   setPage: (page: number) => void
+  totalPage: number
 }) {
   const theme = useTheme()
   const isSmDown = useBreakpoint('sm')
@@ -754,13 +764,15 @@ function LeaderBoardRank({
                 }
               }}
             />
-            <Typography>Page {page} of 5</Typography>
+            <Typography>
+              Page {page} of {totalPage}
+            </Typography>
             <ArrowForwardIosIcon
               sx={{
                 ...arrowBtnSx
               }}
               onClick={() => {
-                if (page < 5) {
+                if (page < totalPage) {
                   setPage(page + 1)
                 }
               }}
