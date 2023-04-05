@@ -35,7 +35,7 @@ const StyledTableContainer = styled(TableContainer)(
     '& table': {
       width: '100%',
       borderCollapse: 'separate',
-      borderSpacing: '0 10px'
+      borderSpacing: '0'
     }
   })
 )
@@ -66,7 +66,6 @@ const StyledTableRow = styled(TableRow, { shouldForwardProp: () => true })<{
   theme?: any
 }>(({ fontSize, bgcolor, theme }) => ({
   height: 60,
-  borderRadius: '16px',
   overflow: 'hidden',
   position: 'relative',
   background: bgcolor || 'unset',
@@ -79,14 +78,10 @@ const StyledTableRow = styled(TableRow, { shouldForwardProp: () => true })<{
       fontSize: (fontSize ?? '16px') + '!important'
     },
     '&:first-of-type': {
-      paddingLeft: '20px',
-      borderTopLeftRadius: 12,
-      borderBottomLeftRadius: 12
+      paddingLeft: '20px'
     },
     '&:last-child': {
-      paddingRight: '20px',
-      borderTopRightRadius: 12,
-      borderBottomRightRadius: 12
+      paddingRight: '20px'
     },
     [theme.breakpoints.down('sm')]: {
       '&:first-of-type': {

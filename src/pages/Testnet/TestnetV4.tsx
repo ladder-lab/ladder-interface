@@ -1,40 +1,36 @@
-import { Box, Typography, useTheme, Button, styled, Stack, Link } from '@mui/material'
+import { Box, Typography, useTheme, Button, styled, Stack, Link, Select, MenuItem } from '@mui/material'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { useActiveWeb3React } from 'hooks'
 import { ClaimState, useTestnetClaim } from 'hooks/useTestnetClaim'
 import ActionButton from 'components/Button/ActionButton'
 import { formatMillion, shortenAddress } from 'utils'
-import Collapse from 'components/Collapse'
 import ClaimableItem from './ClaimableItem'
-import V3TaskItem from './V3TaskItem'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Token } from 'constants/token'
 import { ChainId } from 'constants/chain'
 import { ReactComponent as Explore } from 'assets/svg/explore.svg'
-import v2_my_icon from 'assets/images/v2_my_icon.png'
 // import prizepool_icon from 'assets/images/prizepool.jpeg'
-import Pencil from 'assets/images/pencil.png'
-import { routes } from 'constants/routes'
-import { useTestnetV2Status } from 'hooks/useTestnetBacked'
 import { StepTitle } from '.'
 import V4ActivityData from './V4ActivityData'
 import V3TestnetTable from 'components/Table/V3TestnetTable'
 import { useIsDarkMode } from 'state/user/hooks'
-import Image from 'components/Image'
 import {
-  useV4AccountAssetsRankTop,
-  useV4AccountLiquidityRankTop,
-  useV4AccountVolumeRankTop
+  AccountRankValues
   // useV3PoolTop10
-} from 'hooks/useTestnetV3'
+} from 'hooks/useTestnetV4'
 // import { ShowTopPoolsCurrencyBox } from 'pages/Statistics'
 // import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
 // import Copy from 'components/essential/Copy'
 import { LightTooltip } from 'components/TestnetV3Mark'
 import QuestionHelper from 'components/essential/QuestionHelper'
-import { useNavigate } from 'react-router-dom'
 import { useUserHasSubmitted } from 'state/transactions/hooks'
+import V4Medal from './V4Model'
+import CollapseWhite from '../../components/Collapse/CollapseWhite'
+import { StyledTabButtonText } from '../Statistics'
+import { Axios, v4Url } from '../../utils/axios'
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 
 const StyledButtonWrapper = styled(Box)(({ theme }) => ({
   maxWidth: 400,
@@ -53,14 +49,7 @@ const StyledButtonWrapper = styled(Box)(({ theme }) => ({
   }
 }))
 
-export const StyledCardWrapper = styled(Box)(({ theme }) => ({
-  border: `1px solid ${theme.color.color1}`,
-  borderRadius: '16px',
-  padding: '30px 28px',
-  [theme.breakpoints.down('md')]: {
-    padding: '16px'
-  }
-}))
+export const StyledCardWrapper = styled(Box)(({}) => ({}))
 
 const RowBetween = styled(Box)(({}) => ({
   display: 'flex',
@@ -112,12 +101,11 @@ const v3FaucetTokens = [
 export default function TestnetV4() {
   const theme = useTheme()
   const { account } = useActiveWeb3React()
-  const navigate = useNavigate()
   const toggleWalletModal = useWalletModalToggle()
   const { testnetClaim, claimState } = useTestnetClaim(account || undefined)
   const { submitted, complete } = useUserHasSubmitted(`${account}_claim4`)
+  const isDownMD = useBreakpoint('md')
 
-  const testnetV2Status = useTestnetV2Status(account || undefined)
   // const activeTimeStatus = useMemo(() => {
   //   const curTime = new Date().getTime()
   //   if (curTime < v3ActiveTimeStamp[0]) {
@@ -130,166 +118,138 @@ export default function TestnetV4() {
 
   return (
     <Stack spacing={40}>
-      <Box padding="10px">
-        <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mb={-10}>
+      <Box>
+        <Typography fontSize={16} fontWeight={600} mb={-10}>
           Activity data
         </Typography>
         <V4ActivityData />
       </Box>
-
-      <StyledCardWrapper>
-        <Collapse
-          defaultOpen
-          title={
-            <RowBetween flexWrap={'wrap'}>
-              <Box display={'flex'} flexWrap={'wrap'}>
-                <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
-                  Ladder SEPOLIA Participate in preparation
-                </Typography>
-              </Box>
-            </RowBetween>
-          }
-        >
-          <Stack mt="56px" spacing={56}>
-            <Box>
-              <RowBetween>
-                <StepTitle step={1} title="Claim Test Asset" />
+      {false && (
+        <StyledCardWrapper>
+          <CollapseWhite
+            defaultOpen
+            title={
+              <RowBetween flexWrap={'wrap'}>
+                <Box display={'flex'} flexWrap={'wrap'}>
+                  <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                    Ladder SEPOLIA Participate in preparation
+                  </Typography>
+                </Box>
               </RowBetween>
+            }
+          >
+            <Stack mt="56px" spacing={56}>
               <Box>
-                <Box
-                  mt={28}
-                  sx={{
-                    display: 'none',
-                    gridTemplateColumns: { xs: '1fr', sm: '5fr 5fr 1.6fr' },
-                    alignItems: 'center',
-                    gap: { xs: '10px', sm: '24px 10px' },
-                    padding: '20px',
-                    backgroundColor: theme.palette.background.default,
-                    borderRadius: theme.shape.borderRadius + 'px'
-                  }}
-                >
-                  {v3FaucetTokens.map((item, index) => (
+                <RowBetween>
+                  <StepTitle step={1} title="Claim Test Asset" />
+                </RowBetween>
+                <Box>
+                  <Box
+                    mt={28}
+                    sx={{
+                      display: 'none',
+                      gridTemplateColumns: { xs: '1fr', sm: '5fr 5fr 1.6fr' },
+                      alignItems: 'center',
+                      gap: { xs: '10px', sm: '24px 10px' },
+                      padding: '20px',
+                      backgroundColor: theme.palette.background.default,
+                      borderRadius: theme.shape.borderRadius + 'px'
+                    }}
+                  >
+                    {v3FaucetTokens.map((item, index) => (
+                      <ClaimableItem
+                        key={index}
+                        token={item.token}
+                        amount={item.amount}
+                        claimable={claimState === ClaimState.UNCLAIMED ? item.amount : '0'}
+                      />
+                    ))}
                     <ClaimableItem
-                      key={index}
-                      token={item.token}
-                      amount={item.amount}
-                      claimable={claimState === ClaimState.UNCLAIMED ? item.amount : '0'}
+                      nftInfo={{ name: 'laddertest-v3-erc721' }}
+                      amount={'10'}
+                      claimable={claimState === ClaimState.UNCLAIMED ? '10' : '0'}
                     />
-                  ))}
-                  <ClaimableItem
-                    nftInfo={{ name: 'laddertest-v3-erc721' }}
-                    amount={'10'}
-                    claimable={claimState === ClaimState.UNCLAIMED ? '10' : '0'}
-                  />
-                  {/* <ClaimableItem
+                    {/* <ClaimableItem
                     nftInfo={{ name: 'laddertest-v2-erc1155' }}
                     amount={'10'}
                     claimable={claimState === ClaimState.UNCLAIMED ? '10' : '0'}
                   /> */}
-                </Box>
-                <Box display={'flex'} flexWrap="wrap" mt={16} alignItems="center">
-                  <StyledButtonWrapper>
-                    {account ? (
-                      <Box position={'relative'}>
+                  </Box>
+                  <Box display={'flex'} flexWrap="wrap" mt={16} alignItems="center">
+                    <StyledButtonWrapper>
+                      {account ? (
+                        <Box position={'relative'}>
+                          <StyledButtonWrapper>
+                            <ActionButton
+                              // pending={claimState === ClaimState.UNKNOWN}
+                              onAction={testnetClaim}
+                              // disableAction={new Date() < new Date(v3ActiveTimeStamp[0])}
+                              // disableAction={!isOpenClaim && activeTimeStatus !== 'active'}
+                              actionText="Claim your test assets"
+                              error={submitted || complete ? 'Test assets Claimed' : undefined}
+                            />
+                          </StyledButtonWrapper>
+                        </Box>
+                      ) : (
                         <StyledButtonWrapper>
-                          <ActionButton
-                            // pending={claimState === ClaimState.UNKNOWN}
-                            onAction={testnetClaim}
-                            // disableAction={new Date() < new Date(v3ActiveTimeStamp[0])}
-                            // disableAction={!isOpenClaim && activeTimeStatus !== 'active'}
-                            actionText="Claim your test assets"
-                            error={submitted || complete ? 'Test assets Claimed' : undefined}
-                          />
+                          <Button onClick={toggleWalletModal}>Connect the wallet to claim your test assets</Button>
                         </StyledButtonWrapper>
-                      </Box>
-                    ) : (
-                      <StyledButtonWrapper>
-                        <Button onClick={toggleWalletModal}>Connect the wallet to claim your test assets</Button>
-                      </StyledButtonWrapper>
-                    )}
-                  </StyledButtonWrapper>
-                  <Box margin="0 15px">
-                    <LightTooltip title={<FaucetsList />} arrow>
-                      <Link
-                        display={'flex'}
-                        alignItems="center"
-                        fontWeight={600}
-                        href="https://web.getlaika.app/faucets"
-                        target={'_blank'}
-                      >
-                        Sepolia Faucet
-                        <Explore />
-                      </Link>
-                    </LightTooltip>
+                      )}
+                    </StyledButtonWrapper>
+                    <Box margin="0 15px">
+                      <LightTooltip title={<FaucetsList />} arrow>
+                        <Link
+                          display={'flex'}
+                          alignItems="center"
+                          fontWeight={600}
+                          href="https://web.getlaika.app/faucets"
+                          target={'_blank'}
+                        >
+                          Sepolia Faucet
+                          <Explore />
+                        </Link>
+                      </LightTooltip>
+                    </Box>
                   </Box>
                 </Box>
               </Box>
-            </Box>
-          </Stack>
-        </Collapse>
-      </StyledCardWrapper>
+            </Stack>
+          </CollapseWhite>
+        </StyledCardWrapper>
+      )}
 
       <StyledCardWrapper>
-        <Collapse
+        <CollapseWhite
           defaultOpen
           title={
             <RowBetween>
               <Box display={'flex'}>
-                <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                <Typography fontSize={16} fontWeight={600} color={theme.palette.text.primary} mr={12}>
                   Experience more novel features of ladder!
                 </Typography>
               </Box>
             </RowBetween>
           }
         >
-          <Box>
-            <Stack spacing={12} mt={28}>
-              <V3TaskItem testnetStatus={testnetV2Status} />
-
-              <RowBetween flexWrap={'wrap'}>
-                <Box display={'flex'} width="100%" justifyContent="flex-end" alignItems="center" mt={5}>
-                  {testnetV2Status.pairIsFin &&
-                    testnetV2Status.buy721Completed &&
-                    testnetV2Status.sell721Completed &&
-                    testnetV2Status.buy1155Completed &&
-                    testnetV2Status.sell1155Completed && (
-                      <Typography fontWeight={600} mr={5} color={theme.palette.text.secondary}>
-                        Thanks for completing all tasks, you will go directly to the whitelist for the follow-up event
-                      </Typography>
-                    )}
-                  <Button
-                    variant="outlined"
-                    onClick={() => {
-                      if (!account) {
-                        toggleWalletModal()
-                      } else {
-                        navigate(routes.feedback)
-                      }
-                    }}
-                    sx={{
-                      width: 198,
-                      height: 52
-                    }}
-                  >
-                    <Typography mr={10} color={theme.palette.info.main} fontWeight={600} fontSize={16}>
-                      Submit feedback
-                    </Typography>
-                    <img src={Pencil} width={20} />
-                  </Button>
-                </Box>
-              </RowBetween>
-            </Stack>
+          <Box
+            sx={{
+              background: theme.palette.background.paper,
+              borderRadius: '12px',
+              padding: isDownMD ? '24px 20px' : '70px 24px 64px'
+            }}
+          >
+            <V4Medal />
           </Box>
-        </Collapse>
+        </CollapseWhite>
       </StyledCardWrapper>
 
       <StyledCardWrapper>
-        <Collapse
+        <CollapseWhite
           defaultOpen
           title={
             <RowBetween>
               <Box display={'flex'}>
-                <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                <Typography fontSize={16} fontWeight={600} color={theme.palette.text.primary} mr={12}>
                   Leaderboard
                 </Typography>
               </Box>
@@ -297,24 +257,31 @@ export default function TestnetV4() {
           }
         >
           <LeaderBoardBox />
-        </Collapse>
+        </CollapseWhite>
       </StyledCardWrapper>
 
       <StyledCardWrapper id="qa">
-        <Collapse
+        <CollapseWhite
           defaultOpen
           title={
             <RowBetween>
               <Box display={'flex'}>
-                <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                <Typography fontSize={16} fontWeight={600} color={theme.palette.text.primary} mr={12}>
                   Q&A
                 </Typography>
               </Box>
             </RowBetween>
           }
         >
-          <Stack spacing={44}>
-            <Box mt={56}>
+          <Stack
+            spacing={44}
+            sx={{
+              background: theme.palette.background.paper,
+              borderRadius: '12px',
+              padding: '32px 24px'
+            }}
+          >
+            <Box>
               <StyledQATitle>1. What is Ladder?</StyledQATitle>
               {/* <Table
                   fontSize="15px"
@@ -398,7 +365,7 @@ export default function TestnetV4() {
               </StyledQABody>
             </Box>
           </Stack>
-        </Collapse>
+        </CollapseWhite>
       </StyledCardWrapper>
     </Stack>
   )
@@ -406,49 +373,150 @@ export default function TestnetV4() {
 
 function LeaderBoardBox() {
   const isDarkMode = useIsDarkMode()
-  const curChainId = ChainId.SEPOLIA
+  const chainId = ChainId.SEPOLIA
   const { account } = useActiveWeb3React()
+  const [currentType, setType] = useState('Total')
+  const [timestamp, setTimestamp] = useState<string>('0')
+  const [accountAssetsRankList, setAccountAssetsRankList] = useState<AccountRankValues[]>()
+  const [accountAssetsRank, setAccountAssetsRank] = useState<AccountRankValues>()
+  const [assetsTotalPage, setAssetsTotalPage] = useState<number>(5)
+  const [accountLiquidityRankList, setAccountLiquidityRankList] = useState<AccountRankValues[]>()
+  const [accountLiquidityRank, setAccountLiquidityRank] = useState<AccountRankValues>()
+  const [liquidityTotalPage, setLiquidityTotalPage] = useState<number>(5)
+  const [accountVolumeRankList, setAccountVolumeRankList] = useState<AccountRankValues[]>()
+  const [accountVolumeRank, setAccountVolumeRank] = useState<AccountRankValues>()
+  const [volumeTotalPage, setVolumeTotalPage] = useState<number>(5)
+  const [assetsPage, setAssetsPage] = useState(1)
+  const [liquidityPage, setLiquidityPage] = useState(1)
+  const [volumePage, setVolumePage] = useState(1)
+  const theme = useTheme()
 
-  // const v3PoolTop10 = useV3PoolTop10(curChainId)
-  // const topPairRows = useMemo(
-  //   () =>
-  //     v3PoolTop10?.map((item, index) => {
-  //       const nftInfo =
-  //         item.token0.type === Mode.ERC721 || item.token0.type === Mode.ERC1155
-  //           ? item.token0
-  //           : item.token1.type === Mode.ERC721 || item.token1.type === Mode.ERC1155
-  //           ? item.token1
-  //           : undefined
-  //       return [
-  //         index + 1,
-  //         <ShowTopPoolsCurrencyBox
-  //           key={index}
-  //           chainId={curChainId}
-  //           pair={item.pair}
-  //           token0Info={item.token0}
-  //           token1Info={item.token1}
-  //         />,
-  //         formatMillion(Number(item.tvl) || 0, '$ ', 2),
-  //         formatMillion(Number(item.Volume) || 0, '$ ', 2),
-  //         nftInfo ? formatMillion(Number(nftInfo.price) || 0, '$ ', 2) : '-',
-  //         nftInfo ? (
-  //           <Box display={'flex'} alignItems="center">
-  //             {shortenAddress(nftInfo.address)}
-  //             <Copy toCopy={nftInfo.address} />
-  //           </Box>
-  //         ) : (
-  //           '-'
-  //         )
-  //       ]
-  //     }) || [],
-  //   [curChainId, v3PoolTop10]
-  // )
+  useEffect(() => {
+    ;(async () => {
+      if (!chainId) {
+        setAccountAssetsRankList(undefined)
+        setAccountAssetsRank(undefined)
+        return
+      }
+      try {
+        const url = timestamp === '0' ? 'getAccountAssetRank' : 'getAccountAssetWeekRank'
+        const res = await Axios.get(v4Url + url, {
+          chainId,
+          address: account || '',
+          pageSize: 10,
+          timestamp,
+          pageNum: assetsPage
+        })
+        const data = res.data.data as any
+        if (!data) {
+          setAccountAssetsRankList(undefined)
+          setAccountAssetsRank(undefined)
+          return
+        }
+        setAccountAssetsRankList(
+          data.ranks.list.map((item: any) => ({
+            value: item.asset,
+            rank: item.rank,
+            account: item.account
+          }))
+        )
+        setAssetsTotalPage(data.ranks.lastPage)
+        account &&
+          setAccountAssetsRank({
+            account: account || '',
+            rank: data.accountRank === -1 ? '-' : data.accountRank,
+            value: data.accountAsset
+          })
+      } catch (error) {
+        setAccountAssetsRankList(undefined)
+        setAccountAssetsRank(undefined)
+        console.error('useV4AccountAssetsRankTop', error)
+      }
+    })()
+  }, [account, assetsPage, chainId, timestamp])
 
-  const { rankList: accountVolumeRankList, accountRank: accountVolumeRank } = useV4AccountVolumeRankTop(curChainId)
-  const { rankList: accountAssetsRankList, accountRank: accountAssetsRank } = useV4AccountAssetsRankTop(curChainId)
+  useEffect(() => {
+    ;(async () => {
+      if (!chainId) {
+        setAccountLiquidityRankList(undefined)
+        setAccountLiquidityRank(undefined)
+        return
+      }
+      try {
+        const url = timestamp === '0' ? 'getAccountTvlRank' : 'getAccountTvlWeekRank'
+        const res = await Axios.get(v4Url + url, {
+          chainId,
+          address: account || '',
+          timestamp,
+          pageSize: 10,
+          pageNum: liquidityPage
+        })
+        const data = res.data.data as any
+        if (!data) {
+          setAccountLiquidityRankList(undefined)
+          setAccountLiquidityRank(undefined)
+          return
+        }
+        setAccountLiquidityRankList(
+          data.ranks.list.map((item: any) => ({
+            value: item.tvl,
+            rank: item.rank,
+            account: item.account
+          }))
+        )
+        setLiquidityTotalPage(data.ranks.lastPage)
+        account &&
+          setAccountLiquidityRank({
+            account: account || '',
+            rank: data.accountRank === -1 ? '-' : data.accountRank,
+            value: data.accountTvl
+          })
+      } catch (error) {
+        setAccountLiquidityRankList(undefined)
+        setAccountLiquidityRank(undefined)
+        console.error('useV3AccountLiquidityRankTop', error)
+      }
+    })()
+  }, [account, chainId, liquidityPage, timestamp])
 
-  const { rankList: accountLiquidityRankList, accountRank: accountLiquidityRank } =
-    useV4AccountLiquidityRankTop(curChainId)
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const res = await Axios.get(v4Url + 'getAccountVolumeRank', {
+          chainId,
+          address: account || '',
+          pageSize: 10,
+          timestamp,
+          pageNum: volumePage
+        })
+        const data = res.data.data as any
+        console.log('timestamp-data', data)
+        if (!data) {
+          setAccountVolumeRankList(undefined)
+          setAccountVolumeRank(undefined)
+          return
+        }
+        setAccountVolumeRankList(
+          data.ranks.list.map((item: any) => ({
+            value: item.volumes,
+            rank: item.rank,
+            account: item.account
+          }))
+        )
+        setVolumeTotalPage(data.ranks.lastPage)
+        account &&
+          setAccountVolumeRank({
+            account: account || '',
+            rank: data.volumesRank === -1 ? '-' : data.volumesRank,
+            value: data.accountVolumes
+          })
+      } catch (error) {
+        setAccountVolumeRankList(undefined)
+        setAccountVolumeRank(undefined)
+        console.error('useV3AccountAssetsRankTop', error)
+      }
+    })()
+  }, [account, chainId, timestamp, volumePage])
 
   const topVolumeTraded = useMemo(() => {
     const ret: (JSX.Element | string | number)[][] =
@@ -464,6 +532,7 @@ function LeaderBoardBox() {
         accountVolumeRank ? formatMillion(Number(accountVolumeRank.value), '$ ', 2) : '-'
       ])
     }
+    console.log('timestamp-ret', ret)
     return ret
   }, [account, accountVolumeRank, accountVolumeRankList])
 
@@ -503,9 +572,15 @@ function LeaderBoardBox() {
 
   const bgcolors = useMemo(() => {
     const _bgcolors = [
-      isDarkMode ? '#d8ff2029' : '#FDF1BE',
-      isDarkMode ? '#ffffff4d' : '#F6F6F6',
-      'rgba(209, 89, 57, 0.2)'
+      isDarkMode
+        ? 'linear-gradient(96.44deg, #D8FF2033 5.94%, #99F7F433 97.57%)'
+        : 'linear-gradient(96.44deg, #D8FF2088 5.94%, #99F7F488 97.57%)',
+      isDarkMode
+        ? 'linear-gradient(96.44deg, #D8FF2026 5.94%, #99F7F426 97.57%)'
+        : 'linear-gradient(96.44deg, #D8FF204D 5.94%, #99F7F44D 97.57%)',
+      isDarkMode
+        ? 'linear-gradient(96.44deg, #D8FF2017 5.94%, #99F7F417 97.57%)'
+        : 'linear-gradient(96.44deg, #D8FF201A 5.94%, #99F7F41A 97.57%)'
     ]
     if (account) _bgcolors.unshift('rgba(31, 152, 152, 0.1)')
     return _bgcolors
@@ -513,6 +588,55 @@ function LeaderBoardBox() {
 
   return (
     <Box>
+      <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
+        <Box display={'flex'} gap={20}>
+          {['Total', 'Weekly'].map(item => (
+            <StyledTabButtonText
+              key={item}
+              className={item === currentType ? 'active' : ''}
+              onClick={() => {
+                setType(item)
+                if (item == 'Total') {
+                  setTimestamp('0')
+                } else {
+                  setTimestamp('1680451200')
+                }
+                setAssetsPage(1)
+                setLiquidityPage(1)
+                setVolumePage(1)
+              }}
+              sx={{
+                height: '33px',
+                display: 'flex',
+                alignItems: 'center'
+              }}
+            >
+              {item}
+            </StyledTabButtonText>
+          ))}
+        </Box>
+        {currentType == 'Weekly' && (
+          <Select
+            sx={{
+              height: '33px',
+              backgroundColor: theme.palette.background.paper,
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              padding: '6px 24px'
+            }}
+            onChange={event => {
+              setTimestamp(event.target.value)
+            }}
+            value={timestamp}
+          >
+            <MenuItem value={'1680451200'}>This Week</MenuItem>
+            <MenuItem value={'1679846400'}>Last Week</MenuItem>
+            <MenuItem value={'1679241600'}>Mar 20 - Mar 26, 2023</MenuItem>
+            <MenuItem value={'1678636800'}>Mar 13 - Mar 19, 2023</MenuItem>
+          </Select>
+        )}
+      </Box>
       <Box
         sx={{
           mt: 10,
@@ -530,14 +654,27 @@ function LeaderBoardBox() {
           bgcolors={bgcolors}
           title="Top Asset Value"
           helper="Update once an hour"
+          page={assetsPage}
+          setPage={setAssetsPage}
+          totalPage={assetsTotalPage}
         />
         <LeaderBoardRank
           rows={topLiquidityValue}
           bgcolors={bgcolors}
           title="Top Liquidity Provided"
           helper="Update once an hour"
+          page={liquidityPage}
+          setPage={setLiquidityPage}
+          totalPage={liquidityTotalPage}
         />
-        <LeaderBoardRank rows={topVolumeTraded} bgcolors={bgcolors} title="Top Volume Traded" />
+        <LeaderBoardRank
+          rows={topVolumeTraded}
+          bgcolors={bgcolors}
+          title="Top Volume Traded"
+          page={volumePage}
+          setPage={setVolumePage}
+          totalPage={volumeTotalPage}
+        />
       </Box>
 
       {/* <Box mt={30}>
@@ -558,7 +695,10 @@ function LeaderBoardRank({
   bgcolors,
   title,
   helper,
-  minHeight
+  minHeight,
+  page,
+  setPage,
+  totalPage
 }: {
   headers?: string[]
   title: string
@@ -566,42 +706,33 @@ function LeaderBoardRank({
   bgcolors?: string[]
   minHeight?: number
   helper?: string
+  page: number
+  setPage: (page: number) => void
+  totalPage: number
 }) {
   const theme = useTheme()
   const isSmDown = useBreakpoint('sm')
   const { account } = useActiveWeb3React()
+  const arrowBtnSx = {
+    width: '24px',
+    height: '24px',
+    padding: '6px',
+    ':hover': {
+      cursor: 'pointer'
+    }
+  }
   return (
     <Box>
-      <Box>
-        <Box
-          sx={{
-            marginLeft: 20,
-            padding: '10px 28px',
-            color: theme => theme.palette.primary.main,
-            backgroundColor: 'rgba(31, 152, 152, 0.1)',
-            borderRadius: '12px 12px 0px 0px',
-            display: 'inline-block'
-          }}
-        >
-          <Typography display={'flex'} alignItems="center">
-            {title}
-            {helper && <QuestionHelper style={{ marginLeft: 5 }} text={helper} />}
-          </Typography>
-        </Box>
-      </Box>
       <Box
         sx={{
           padding: '1.4px',
-          backgroundSize: '105% 105%',
-          borderRadius: '12px',
-          backgroundImage: `linear-gradient(to bottom , #1F9898 ,#fdd000, #ff00ac, #1F9898)`
+          borderRadius: '12px'
         }}
       >
         <Box
           sx={{
             backgroundColor: theme.palette.background.paper,
             borderRadius: '12px',
-            padding: '10px',
             minHeight: minHeight || {
               md: account ? 850 : 776,
               xs: 'unset'
@@ -610,12 +741,41 @@ function LeaderBoardRank({
             overflowX: 'auto'
           }}
         >
+          <Typography display={'flex'} alignItems="center" fontWeight={700} fontSize={18} padding={'15px 24px'}>
+            {title}
+            {helper && <QuestionHelper style={{ marginLeft: 5 }} text={helper} />}
+          </Typography>
           <V3TestnetTable
             fontSize={isSmDown ? '12px' : '16px'}
             bgcolors={bgcolors}
             rows={rows}
             header={headers || ['#', 'User', 'Value']}
           ></V3TestnetTable>
+          <Box display={'flex'} width={'100%'} justifyContent={'center'} alignItems={'center'} mt={30}>
+            <ArrowBackIosIcon
+              sx={{
+                ...arrowBtnSx
+              }}
+              onClick={() => {
+                if (page > 1) {
+                  setPage(page - 1)
+                }
+              }}
+            />
+            <Typography>
+              Page {page} of {totalPage}
+            </Typography>
+            <ArrowForwardIosIcon
+              sx={{
+                ...arrowBtnSx
+              }}
+              onClick={() => {
+                if (page < totalPage) {
+                  setPage(page + 1)
+                }
+              }}
+            />
+          </Box>
         </Box>
       </Box>
     </Box>
@@ -623,20 +783,19 @@ function LeaderBoardRank({
 }
 
 function MyRankItem({ num }: { num: string | number }) {
+  const theme = useTheme()
   return (
-    <Box key={1} sx={{ marginLeft: -13, position: 'relative' }}>
-      <Image width={40} src={v2_my_icon} />
-      <Typography
-        textAlign={'center'}
-        sx={{
-          position: 'absolute',
-          width: 40,
-          top: 10
-        }}
-      >
-        {num}
-      </Typography>
-    </Box>
+    <Typography
+      textAlign={'center'}
+      sx={{
+        width: 40,
+        top: 10,
+        fontSize: 16,
+        color: theme.palette.text.primary
+      }}
+    >
+      <span style={{ color: theme.palette.text.secondary }}>You </span>#{num}
+    </Typography>
   )
 }
 

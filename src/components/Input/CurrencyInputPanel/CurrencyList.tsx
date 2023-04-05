@@ -62,7 +62,6 @@ export default function CurrencyList({
 
     return uniqueArr
   }
-
   const filteredOptions = filterByProperty(currencyOptions, 'symbol')
 
   return (

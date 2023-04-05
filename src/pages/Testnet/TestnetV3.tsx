@@ -860,6 +860,7 @@ function Banner({ setOpenTrue }: { setOpenTrue: () => void }) {
     <Box
       sx={{
         mt: 0,
+        backgroundColor: 'white',
         backgroundImage: isDarkMode ? '' : `url(${bannerImg})`,
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'auto 100%',
