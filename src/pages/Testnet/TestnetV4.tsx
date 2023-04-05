@@ -49,11 +49,7 @@ const StyledButtonWrapper = styled(Box)(({ theme }) => ({
   }
 }))
 
-export const StyledCardWrapper = styled(Box)(({ theme }) => ({
-  [theme.breakpoints.down('md')]: {
-    padding: '16px'
-  }
-}))
+export const StyledCardWrapper = styled(Box)(({}) => ({}))
 
 const RowBetween = styled(Box)(({}) => ({
   display: 'flex',
@@ -108,6 +104,7 @@ export default function TestnetV4() {
   const toggleWalletModal = useWalletModalToggle()
   const { testnetClaim, claimState } = useTestnetClaim(account || undefined)
   const { submitted, complete } = useUserHasSubmitted(`${account}_claim4`)
+  const isDownMD = useBreakpoint('md')
 
   // const activeTimeStatus = useMemo(() => {
   //   const curTime = new Date().getTime()
@@ -236,9 +233,9 @@ export default function TestnetV4() {
         >
           <Box
             sx={{
-              background: 'white',
+              background: theme.palette.background.paper,
               borderRadius: '12px',
-              padding: '70px 24px 64px'
+              padding: isDownMD ? '24px 20px' : '70px 24px 64px'
             }}
           >
             <V4Medal />
@@ -279,7 +276,7 @@ export default function TestnetV4() {
           <Stack
             spacing={44}
             sx={{
-              background: 'white',
+              background: theme.palette.background.paper,
               borderRadius: '12px',
               padding: '32px 24px'
             }}
@@ -392,6 +389,7 @@ function LeaderBoardBox() {
   const [assetsPage, setAssetsPage] = useState(1)
   const [liquidityPage, setLiquidityPage] = useState(1)
   const [volumePage, setVolumePage] = useState(1)
+  const theme = useTheme()
 
   useEffect(() => {
     ;(async () => {
@@ -621,7 +619,7 @@ function LeaderBoardBox() {
           <Select
             sx={{
               height: '33px',
-              backgroundColor: 'white',
+              backgroundColor: theme.palette.background.paper,
               borderRadius: '8px',
               display: 'flex',
               alignItems: 'center',

@@ -237,11 +237,13 @@ export default function Testnet() {
             <Button
               sx={{
                 width: 'fit-content',
-                height: 52,
-                fontSize: { xs: 12, sm: 16 },
+                height: isDownMD ? 36 : 52,
+                fontSize: { xs: 13, sm: 16 },
+                fontWeight: isDownMD ? '500' : 'inherit',
                 color: roundIndex === item ? (item === 3 ? 'white' : '#343739') : '#878D92',
                 borderRadius: '12px',
                 background: roundIndex === item ? (item === 3 ? '#1F9898 !important' : '#E4E4E4') : 'inherit',
+                position: isDownMD ? 'relative' : 'inherit',
                 '&:hover': {
                   boxShadow: 'unset',
                   background: item === 3 ? '#1F9898' : '#F6F6F6'
@@ -257,8 +259,11 @@ export default function Testnet() {
                   background: item === 3 ? 'linear-gradient(96.44deg, #D8FF20 5.94%, #99F7F4 97.57%)' : '#F6F6F6',
                   color: '#333333',
                   padding: '0 5px',
+                  position: isDownMD ? 'absolute' : 'inherit',
+                  top: '-14px',
+                  right: '4px',
                   borderRadius: '4px',
-                  fontSize: 14,
+                  fontSize: isDownMD ? 12 : 14,
                   ml: 5
                 }}
               >

@@ -17,6 +17,7 @@ import whale3 from 'assets/svg/round3/whale-3.svg'
 import { useMemo } from 'react'
 import { useV4Medal } from '../../hooks/useTestnetV4'
 import { ChainId } from '../../constants/chain'
+import useBreakpoint from '../../hooks/useBreakpoint'
 
 interface Medal {
   type: string
@@ -27,6 +28,7 @@ interface Medal {
 
 export default function V4Medal() {
   const { result, milestone } = useV4Medal(ChainId.SEPOLIA)
+  const isDownMD = useBreakpoint('md')
   const list: Medal[] = useMemo(() => {
     return [
       {
@@ -69,7 +71,7 @@ export default function V4Medal() {
   ])
 
   return (
-    <Stack spacing={60}>
+    <Stack spacing={isDownMD ? 30 : 60}>
       {list.map((item, idx) => (
         <MedalRow key={idx} medal={item} curMilestone={milestone} />
       ))}
@@ -77,19 +79,22 @@ export default function V4Medal() {
   )
 }
 
-const Dot = styled(Box)`
-  background: #e4e4e4;
-  width: 6px;
-  height: 6px;
-  border-radius: 3px;
-`
+const Dot = styled(Box)(({ theme }) => ({
+  background: theme.palette.background.default,
+  width: '6px',
+  height: '6px',
+  borderRadius: '3px'
+}))
 
 function Line({ isDash }: { isDash: boolean }) {
+  const theme = useTheme()
   return (
     <Box
       style={{
         width: '100%',
-        border: isDash ? '1px dotted #e4e4e4' : '1px solid #e4e4e4'
+        border: isDash
+          ? `1px dotted ${theme.palette.background.default}`
+          : `1px solid ${theme.palette.background.default}`
       }}
     ></Box>
   )
@@ -104,6 +109,7 @@ const GrayImg = styled('img')`
 `
 
 function MedalRow({ medal, curMilestone }: { medal: Medal; curMilestone: number[] | undefined }) {
+  const isDownMD = useBreakpoint('md')
   const theme = useTheme()
   const milestone = useMemo(() => {
     return curMilestone ? curMilestone : [1000, 2000, 3000]
@@ -149,9 +155,19 @@ function MedalRow({ medal, curMilestone }: { medal: Medal; curMilestone: number[
       return [false, false]
     }
   }, [medal.currentAmount, milestone])
+  const imgStyle = {
+    // transform: isDownMD ? 'scale(0.7)' : 'scale(1)'
+    height: isDownMD ? '80%' : 'inherit',
+    width: isDownMD ? '80%' : 'inherit'
+  }
   return (
-    <Box display={'flex'}>
-      <Box minWidth={350}>
+    <Box
+      display={'flex'}
+      sx={{
+        flexDirection: isDownMD ? 'column' : 'inherit'
+      }}
+    >
+      <Box minWidth={350} mb={isDownMD ? '22px' : '0'}>
         <Typography color={theme.palette.text.primary} fontWeight={800} fontSize={18}>
           {medal.type}
         </Typography>
@@ -164,7 +180,11 @@ function MedalRow({ medal, curMilestone }: { medal: Medal; curMilestone: number[
           {medalIcons.map((ic, idx) => {
             return (
               <Box key={idx} display={'flex'} flexDirection={'column'} alignItems={'center'}>
-                {ic.isColor ? <img src={ic.icon} alt="" /> : <GrayImg src={ic.icon} alt="" />}
+                {ic.isColor ? (
+                  <img src={ic.icon} alt="" style={imgStyle} />
+                ) : (
+                  <GrayImg src={ic.icon} alt="" style={imgStyle} />
+                )}
                 <Typography fontWeight={600} fontSize={12} color={'black'} mt={10}>
                   {(idx + 1) * 1000}
                 </Typography>
@@ -172,7 +192,15 @@ function MedalRow({ medal, curMilestone }: { medal: Medal; curMilestone: number[
             )
           })}
         </Box>
-        <Box position={'absolute'} bottom={5} right={15} display={'flex'} width={'100%'} gap={50} padding={'0 100px'}>
+        <Box
+          position={'absolute'}
+          bottom={5}
+          right={isDownMD ? 11 : 15}
+          display={'flex'}
+          width={'100%'}
+          gap={50}
+          padding={isDownMD ? '0 75px' : '0 100px'}
+        >
           {linesDash.map((isDash, idx) => {
             return (
               <Box width={'100%'} display={'flex'} alignItems={'center'} key={idx}>
