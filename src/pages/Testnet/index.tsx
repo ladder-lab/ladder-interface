@@ -21,7 +21,7 @@ import { Token } from 'constants/token'
 import { ChainId } from 'constants/chain'
 import { ReactComponent as Explore } from 'assets/svg/explore.svg'
 import Pencil from 'assets/images/pencil.png'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { routes } from 'constants/routes'
 import V2Rewards from './V2Rewards'
 import round1Bg from 'assets/svg/bg/round1_bg.svg'
@@ -133,7 +133,22 @@ export default function Testnet() {
   // const isDarkMode = useIsDarkMode()
   // const isDownSm = useBreakpoint('sm')
   const isDownMD = useBreakpoint('md')
-  const [roundIndex, setRoundIndex] = useState(3)
+  const { testnet } = useParams()
+  const navigator = useNavigate()
+  const roundIndex = (() => {
+    switch (testnet) {
+      case 'round1':
+        return 0
+      case 'round2':
+        return 1
+      case 'monopoly':
+        return 2
+      case 'round3':
+        return 3
+      default:
+        return 3
+    }
+  })()
 
   return (
     <Box
@@ -249,7 +264,22 @@ export default function Testnet() {
                   background: roundIndex === item ? 'rgba(31, 152, 152, 0.1) !important' : 'inherit'
                 }}
                 key={item}
-                onClick={() => setRoundIndex(item)}
+                onClick={() => {
+                  switch (item) {
+                    case 0:
+                      navigator('/round1')
+                      break
+                    case 1:
+                      navigator('/round2')
+                      break
+                    case 2:
+                      navigator('/monopoly')
+                      break
+                    case 3:
+                      navigator('/round3')
+                      break
+                  }
+                }}
                 variant={roundIndex === item ? 'contained' : 'outlined'}
               >
                 {item === 2 ? 'Monopoly' : item === 3 ? `ROUND ${item}` : `ROUND ${item + 1}`}
@@ -263,7 +293,7 @@ export default function Testnet() {
                     ml: 5
                   }}
                 >
-                  {item === 3 ? 'LIVE' : 'CLOSE'}
+                  {item === 3 ? 'live' : 'closed'}
                 </Box>
               </Button>
             ))}
