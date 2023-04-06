@@ -23,7 +23,7 @@ const StepText = styled(Typography)`
   font-size: 28px;
   font-weight: 500;
 `
-const GreenBtn = styled(Box)(({ theme }) => ({
+export const GreenBtn = styled(Box)(({ theme }) => ({
   fontSize: 16,
   fontWeight: 500,
   width: 'fit-content',

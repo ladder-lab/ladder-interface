@@ -31,6 +31,9 @@ import { StyledTabButtonText } from '../Statistics'
 import { Axios, v4Url } from '../../utils/axios'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
+import { ReactComponent as Twitter } from 'assets/socialLinksIcon/twitter.svg'
+import { ReactComponent as OpenLink } from 'assets/svg/open_new_link.svg'
+import { GreenBtn } from '../MyAccount/MintOrganModal'
 
 const StyledButtonWrapper = styled(Box)(({ theme }) => ({
   maxWidth: 400,
@@ -101,10 +104,12 @@ const v3FaucetTokens = [
 export default function TestnetV4() {
   const theme = useTheme()
   const { account } = useActiveWeb3React()
-  const toggleWalletModal = useWalletModalToggle()
   const { testnetClaim, claimState } = useTestnetClaim(account || undefined)
+  const toggleWalletModal = useWalletModalToggle()
   const { submitted, complete } = useUserHasSubmitted(`${account}_claim4`)
   const isDownMD = useBreakpoint('md')
+  const [step, setStep] = useState(1)
+  console.log(setStep)
 
   // const activeTimeStatus = useMemo(() => {
   //   const curTime = new Date().getTime()
@@ -124,21 +129,36 @@ export default function TestnetV4() {
         </Typography>
         <V4ActivityData />
       </Box>
-      {false && (
-        <StyledCardWrapper>
-          <CollapseWhite
-            defaultOpen
-            title={
-              <RowBetween flexWrap={'wrap'}>
-                <Box display={'flex'} flexWrap={'wrap'}>
-                  <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
-                    Ladder SEPOLIA Participate in preparation
-                  </Typography>
-                </Box>
-              </RowBetween>
-            }
+      <StyledCardWrapper>
+        <CollapseWhite
+          defaultOpen
+          title={
+            <RowBetween flexWrap={'wrap'}>
+              <Box display={'flex'} flexWrap={'wrap'}>
+                <Typography fontSize={16} fontWeight={600} mr={12}>
+                  Ladder SEPOLIA Participate in preparation
+                </Typography>
+              </Box>
+            </RowBetween>
+          }
+        >
+          <Stack
+            spacing={56}
+            direction={'row'}
+            display={'flex'}
+            sx={{
+              background: 'white',
+              padding: '24px 24px 32px',
+              borderRadius: '12px'
+            }}
           >
-            <Stack mt="56px" spacing={56}>
+            <Step1 />
+            <Step2 step={step} />
+            <Step3 step={step} />
+          </Stack>
+
+          {false && (
+            <>
               <Box>
                 <RowBetween>
                   <StepTitle step={1} title="Claim Test Asset" />
@@ -170,10 +190,10 @@ export default function TestnetV4() {
                       claimable={claimState === ClaimState.UNCLAIMED ? '10' : '0'}
                     />
                     {/* <ClaimableItem
-                    nftInfo={{ name: 'laddertest-v2-erc1155' }}
-                    amount={'10'}
-                    claimable={claimState === ClaimState.UNCLAIMED ? '10' : '0'}
-                  /> */}
+                        nftInfo={{ name: 'laddertest-v2-erc1155' }}
+                        amount={'10'}
+                        claimable={claimState === ClaimState.UNCLAIMED ? '10' : '0'}
+                      /> */}
                   </Box>
                   <Box display={'flex'} flexWrap="wrap" mt={16} alignItems="center">
                     <StyledButtonWrapper>
@@ -213,11 +233,10 @@ export default function TestnetV4() {
                   </Box>
                 </Box>
               </Box>
-            </Stack>
-          </CollapseWhite>
-        </StyledCardWrapper>
-      )}
-
+            </>
+          )}
+        </CollapseWhite>
+      </StyledCardWrapper>
       <StyledCardWrapper>
         <CollapseWhite
           defaultOpen
@@ -242,7 +261,6 @@ export default function TestnetV4() {
           </Box>
         </CollapseWhite>
       </StyledCardWrapper>
-
       <StyledCardWrapper>
         <CollapseWhite
           defaultOpen
@@ -259,7 +277,6 @@ export default function TestnetV4() {
           <LeaderBoardBox />
         </CollapseWhite>
       </StyledCardWrapper>
-
       <StyledCardWrapper id="qa">
         <CollapseWhite
           defaultOpen
@@ -368,6 +385,131 @@ export default function TestnetV4() {
         </CollapseWhite>
       </StyledCardWrapper>
     </Stack>
+  )
+}
+
+const StepText = styled(Typography)`
+  font-weight: 800;
+  font-size: 18px;
+  line-height: 22px;
+  letter-spacing: 0.03em;
+  color: #333333;
+`
+const StepNameText = styled(Typography)`
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 170%;
+  margin-top: 9px;
+  text-transform: capitalize;
+  color: #343739;
+`
+const StepDescText = styled(Typography)`
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+  margin-top: 11px;
+  color: #747678;
+`
+const StepBtn = styled(GreenBtn)`
+  margin-top: 23px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 9px;
+  padding: 15px;
+`
+
+function Step1() {
+  return (
+    <Box flex={1}>
+      <StepText>Step1</StepText>
+      <StepNameText>Connect twitter</StepNameText>
+      <StepDescText>Please click this button below and tweet a verification message on Twitter</StepDescText>
+      <StepBtn
+        sx={{
+          '& svg': {
+            fill: 'white',
+            opacity: 1
+          }
+        }}
+      >
+        <Twitter />
+        <Typography>Tweet</Typography>
+      </StepBtn>
+    </Box>
+  )
+}
+
+function Step2({ step }: { step: number }) {
+  return (
+    <Box
+      flex={1}
+      sx={{
+        opacity: step > 1 ? 1 : 0.4
+      }}
+    >
+      <StepText>Step2</StepText>
+      <StepNameText>Make a tweet</StepNameText>
+      <StepDescText>Please click this button below and tweet a verification message on Twitter</StepDescText>
+      <StepBtn
+        sx={{
+          '& svg': {
+            fill: 'white',
+            opacity: 1
+          }
+        }}
+      >
+        <Twitter />
+        <Typography>Tweet</Typography>
+      </StepBtn>
+    </Box>
+  )
+}
+
+const GoerliLink = styled(Typography)`
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.02em;
+  color: #1f9898;
+  display: flex;
+  align-items: center;
+`
+const ClaimBtnWrapper = styled(Box)`
+  position: absolute;
+  bottom: 0;
+`
+
+function Step3({ step }: { step: number }) {
+  const { account } = useActiveWeb3React()
+  const { testnetClaim } = useTestnetClaim(account || undefined)
+  const { submitted, complete } = useUserHasSubmitted(`${account}_claim4`)
+
+  return (
+    <Box
+      flex={1}
+      sx={{
+        opacity: step > 2 ? 1 : 0.4,
+        position: 'relative'
+      }}
+    >
+      <StepText>Step3</StepText>
+      <StepNameText>claim your test assets</StepNameText>
+      <GoerliLink>
+        Goerli Faucet
+        <OpenLink />
+      </GoerliLink>
+      <ClaimBtnWrapper>
+        <ActionButton
+          // pending={claimState === ClaimState.UNKNOWN}
+          onAction={testnetClaim}
+          // disableAction={new Date() < new Date(v3ActiveTimeStamp[0])}
+          // disableAction={!isOpenClaim && activeTimeStatus !== 'active'}
+          actionText="Claim your test assets"
+          error={submitted || complete ? 'Test assets Claimed' : undefined}
+        />
+      </ClaimBtnWrapper>
+    </Box>
   )
 }
 
