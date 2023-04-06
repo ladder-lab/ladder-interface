@@ -60,7 +60,7 @@ const StyledTabText = styled(Box)(({ theme }) => ({
   }
 }))
 
-const StyledTabButtonText = styled(Box)(({ theme }) => ({
+export const StyledTabButtonText = styled(Box)(({ theme }) => ({
   fontSize: 12,
   fontWeight: 500,
   cursor: 'pointer',
