@@ -29,6 +29,7 @@ import ListOfWinners from './Testnet/ListOfWinners'
 import BecomePartnerNew from './Earn/Sbt/BecomePartnerNew'
 import MyAccount from './MyAccount'
 import OrigAccount from './MyAccount/OrigAccount'
+import Footer from '../components/Footer'
 
 const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
   ({ theme, isDarkMode }) => ({
@@ -120,6 +121,7 @@ export default function App() {
                 </Routes>
               </Web3ReactManager>
             </BodyWrapper>
+            <Footer />
           </ContentWrapper>
         </AppWrapper>
       </ModalProvider>
