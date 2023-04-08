@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { Axios, testURL } from '../utils/axios'
+import { Axios, testURL, v4Url } from '../utils/axios'
 import { useActiveWeb3React } from './index'
 import { useSignLogin } from './useSignIn'
 
@@ -156,17 +156,45 @@ export function useVerifyTwitterOauth(sbtContract: string) {
   }
 }
 
-export function useVerifyTwitter() {
+export function useVerifyLadderOauth() {
+  const { account } = useActiveWeb3React()
+  const [oauth, isOauth] = useState(false)
+
+  const verifyOauth = useCallback(async () => {
+    Axios.get(v4Url + 'cheackTwiterOauth', {
+      address: account
+    })
+      .then(r => {
+        if (r?.data.code === 200 && r.data.data.oauthStatus == 2) {
+          isOauth(true)
+        } else {
+          isOauth(false)
+          throw Error('useVerifyTwitterRetweet error')
+        }
+      })
+      .catch(e => {
+        isOauth(false)
+        console.error(e)
+      })
+  }, [account])
+
+  return {
+    oauth,
+    verifyOauth
+  }
+}
+
+export function useVerifyTwitter(isV4 = false) {
   const { token, sign } = useSignLogin()
   const { account } = useActiveWeb3React()
   const openVerify = useCallback(() => {
     async function jump() {
       try {
         if (!account) return
-        const res = await Axios.get(testURL + 'requestToken', {
+        const res = await Axios.get((isV4 ? v4Url : testURL) + 'requestToken', {
           address: account
         })
-        const data = res.data.msg as any
+        const data = res.data.msg as string
         if (!data) {
           return
         }
@@ -192,8 +220,36 @@ export function useVerifyTwitter() {
     } else {
       jump()
     }
-  }, [account, sign, token])
+  }, [account, isV4, sign, token])
   return {
     openVerify
+  }
+}
+
+export function useCheckMakeTwitter() {
+  const { account } = useActiveWeb3React()
+  const [makeTwitter, isMakeTwitter] = useState(false)
+
+  const checkMakeTwitter = useCallback(async () => {
+    Axios.get(v4Url + 'checkMakeTwitter', {
+      address: account
+    })
+      .then(r => {
+        if (r?.data.code === 200 && r.data.data.tweetStatus == 2) {
+          isMakeTwitter(true)
+        } else {
+          isMakeTwitter(false)
+          throw Error('useCheckMakeTwitter error')
+        }
+      })
+      .catch(e => {
+        isMakeTwitter(false)
+        console.error(e)
+      })
+  }, [account])
+
+  return {
+    makeTwitter,
+    checkMakeTwitter
   }
 }

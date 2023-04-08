@@ -34,6 +34,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import { ReactComponent as Twitter } from 'assets/socialLinksIcon/twitter.svg'
 import { ReactComponent as OpenLink } from 'assets/svg/open_new_link.svg'
 import { GreenBtn } from '../MyAccount/MintOrganModal'
+import { useCheckMakeTwitter, useVerifyLadderOauth, useVerifyTwitter } from '../../hooks/useVerifyTwitter'
 
 const StyledButtonWrapper = styled(Box)(({ theme }) => ({
   maxWidth: 400,
@@ -109,7 +110,6 @@ export default function TestnetV4() {
   const { submitted, complete } = useUserHasSubmitted(`${account}_claim4`)
   const isDownMD = useBreakpoint('md')
   const [step, setStep] = useState(1)
-  console.log(setStep)
 
   // const activeTimeStatus = useMemo(() => {
   //   const curTime = new Date().getTime()
@@ -152,9 +152,21 @@ export default function TestnetV4() {
               borderRadius: '12px'
             }}
           >
-            <Step1 />
-            <Step2 step={step} />
-            <Step3 step={step} />
+            {account ? (
+              <>
+                <Step1 step={step} setStep={setStep} />
+                <Step2 step={step} setStep={setStep} />
+                <Step3 step={step} />
+              </>
+            ) : (
+              <Box width={'100%'}>
+                <StepNameText>Connect the Wallet</StepNameText>
+                <StepDescText>Please click this button to connect the wallet.</StepDescText>
+                <StyledButtonWrapper mt={46}>
+                  <Button onClick={toggleWalletModal}>Connect the wallet to claim your test assets</Button>
+                </StyledButtonWrapper>
+              </Box>
+            )}
           </Stack>
 
           {false && (
@@ -416,31 +428,70 @@ const StepBtn = styled(GreenBtn)`
   justify-content: center;
   align-items: center;
   gap: 9px;
-  padding: 15px;
+  padding: 15px 58px;
+  font-weight: 600;
+  '&:disabled': {
+    pointer-events: none;
+  }
 `
 
-function Step1() {
+function Step1({ step, setStep }: { step: number; setStep: (step: number) => void }) {
+  const { openVerify } = useVerifyTwitter(true)
+  const { verifyOauth, oauth } = useVerifyLadderOauth()
+  useEffect(() => {
+    if (oauth) {
+      setStep(2)
+    }
+  }, [oauth, setStep])
+
   return (
     <Box flex={1}>
       <StepText>Step1</StepText>
       <StepNameText>Connect twitter</StepNameText>
       <StepDescText>Please click this button below and tweet a verification message on Twitter</StepDescText>
-      <StepBtn
-        sx={{
-          '& svg': {
-            fill: 'white',
-            opacity: 1
-          }
-        }}
-      >
-        <Twitter />
-        <Typography>Tweet</Typography>
-      </StepBtn>
+      <Box display={'flex'} gap={20}>
+        <StepBtn
+          sx={{
+            '& svg': {
+              fill: 'white',
+              opacity: 1
+            }
+          }}
+          onClick={() => {
+            openVerify()
+          }}
+        >
+          <Twitter />
+          Tweet
+        </StepBtn>
+        <StepBtn
+          sx={{
+            border: '1px solid #1F9898',
+            backgroundColor: 'white',
+            color: '#1F9898'
+          }}
+          onClick={() => {
+            if (step > 1) return
+            if (!oauth) {
+              verifyOauth()
+            }
+          }}
+        >
+          Verify
+        </StepBtn>
+      </Box>
     </Box>
   )
 }
 
-function Step2({ step }: { step: number }) {
+function Step2({ step, setStep }: { step: number; setStep: (step: number) => void }) {
+  const { makeTwitter, checkMakeTwitter } = useCheckMakeTwitter()
+
+  useEffect(() => {
+    if (makeTwitter) {
+      setStep(3)
+    }
+  }, [makeTwitter, setStep])
   return (
     <Box
       flex={1}
@@ -451,17 +502,38 @@ function Step2({ step }: { step: number }) {
       <StepText>Step2</StepText>
       <StepNameText>Make a tweet</StepNameText>
       <StepDescText>Please click this button below and tweet a verification message on Twitter</StepDescText>
-      <StepBtn
-        sx={{
-          '& svg': {
-            fill: 'white',
-            opacity: 1
-          }
-        }}
-      >
-        <Twitter />
-        <Typography>Tweet</Typography>
-      </StepBtn>
+      <Box display={'flex'} gap={20}>
+        <StepBtn
+          sx={{
+            '& svg': {
+              fill: 'white',
+              pointerEvents: step < 2 ? 'none' : 'auto',
+              opacity: 1
+            }
+          }}
+          onClick={() => {
+            if (step < 2) return
+            window.open(
+              'https://twitter.com/intent/tweet?text=I%20am%20participating%20in%20LADDER%20TESTNET%20activity',
+              'intent',
+              'scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=500,height=500,left=0,top=0'
+            )
+          }}
+        >
+          Tweet
+        </StepBtn>
+        <StepBtn
+          sx={{
+            border: '1px solid #1F9898',
+            backgroundColor: 'white',
+            color: '#1F9898',
+            pointerEvents: step < 2 ? 'none' : 'auto'
+          }}
+          onClick={checkMakeTwitter}
+        >
+          Verify
+        </StepBtn>
+      </Box>
     </Box>
   )
 }
@@ -495,10 +567,18 @@ function Step3({ step }: { step: number }) {
     >
       <StepText>Step3</StepText>
       <StepNameText>claim your test assets</StepNameText>
-      <GoerliLink>
-        Goerli Faucet
-        <OpenLink />
-      </GoerliLink>
+      <Link
+        display={'flex'}
+        alignItems="center"
+        fontWeight={600}
+        href="https://web.getlaika.app/faucets"
+        target={'_blank'}
+      >
+        <GoerliLink>
+          Sepolia Faucet
+          <OpenLink />
+        </GoerliLink>
+      </Link>
       <ClaimBtnWrapper>
         <ActionButton
           // pending={claimState === ClaimState.UNKNOWN}
@@ -507,6 +587,7 @@ function Step3({ step }: { step: number }) {
           // disableAction={!isOpenClaim && activeTimeStatus !== 'active'}
           actionText="Claim your test assets"
           error={submitted || complete ? 'Test assets Claimed' : undefined}
+          disableAction={step < 3}
         />
       </ClaimBtnWrapper>
     </Box>
