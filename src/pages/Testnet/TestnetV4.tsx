@@ -2,16 +2,13 @@ import { Box, Typography, useTheme, Button, styled, Stack, Link, Select, MenuIte
 import useBreakpoint from 'hooks/useBreakpoint'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { useActiveWeb3React } from 'hooks'
-import { ClaimState, useTestnetClaim } from 'hooks/useTestnetClaim'
+import { useTestnetClaim } from 'hooks/useTestnetClaim'
 import ActionButton from 'components/Button/ActionButton'
 import { formatMillion, shortenAddress } from 'utils'
-import ClaimableItem from './ClaimableItem'
 import { useEffect, useMemo, useState } from 'react'
-import { Token } from 'constants/token'
 import { ChainId } from 'constants/chain'
 import { ReactComponent as Explore } from 'assets/svg/explore.svg'
 // import prizepool_icon from 'assets/images/prizepool.jpeg'
-import { StepTitle } from '.'
 import V4ActivityData from './V4ActivityData'
 import V3TestnetTable from 'components/Table/V3TestnetTable'
 import { useIsDarkMode } from 'state/user/hooks'
@@ -32,7 +29,6 @@ import { Axios, v4Url } from '../../utils/axios'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import { ReactComponent as Twitter } from 'assets/socialLinksIcon/twitter.svg'
-import { ReactComponent as OpenLink } from 'assets/svg/open_new_link.svg'
 import { GreenBtn } from '../MyAccount/MintOrganModal'
 import { useCheckMakeTwitter, useVerifyLadderOauth, useVerifyTwitter } from '../../hooks/useVerifyTwitter'
 
@@ -77,37 +73,10 @@ const StyledQABody = styled(Box)(({ theme }) => ({
   }
 }))
 
-const v3FaucetTokens = [
-  {
-    token: new Token(
-      ChainId.SEPOLIA,
-      '0x55979784068d1BEf37B49F41cAC8040A4b79C4a7',
-      18,
-      'tUSDC',
-      'testUSDC-LadderV3-USDC-Testnet'
-    ),
-    amount: '1000'
-  },
-  {
-    token: new Token(
-      ChainId.SEPOLIA,
-      '0x5069129410122A4C1F2448c77becDc5A8A784a5D',
-      18,
-      'tWETH',
-      'testETH-LadderV3-ETH-Testnet'
-    ),
-    amount: '1000'
-  }
-]
-
-// const v3ActiveTimeStamp = [1676876400000, 1678086000000]
-
 export default function TestnetV4() {
   const theme = useTheme()
   const { account } = useActiveWeb3React()
-  const { testnetClaim, claimState } = useTestnetClaim(account || undefined)
   const toggleWalletModal = useWalletModalToggle()
-  const { submitted, complete } = useUserHasSubmitted(`${account}_claim4`)
   const isDownMD = useBreakpoint('md')
   const [step, setStep] = useState(1)
 
@@ -168,85 +137,6 @@ export default function TestnetV4() {
               </Box>
             )}
           </Stack>
-
-          {false && (
-            <>
-              <Box>
-                <RowBetween>
-                  <StepTitle step={1} title="Claim Test Asset" />
-                </RowBetween>
-                <Box>
-                  <Box
-                    mt={28}
-                    sx={{
-                      display: 'none',
-                      gridTemplateColumns: { xs: '1fr', sm: '5fr 5fr 1.6fr' },
-                      alignItems: 'center',
-                      gap: { xs: '10px', sm: '24px 10px' },
-                      padding: '20px',
-                      backgroundColor: theme.palette.background.default,
-                      borderRadius: theme.shape.borderRadius + 'px'
-                    }}
-                  >
-                    {v3FaucetTokens.map((item, index) => (
-                      <ClaimableItem
-                        key={index}
-                        token={item.token}
-                        amount={item.amount}
-                        claimable={claimState === ClaimState.UNCLAIMED ? item.amount : '0'}
-                      />
-                    ))}
-                    <ClaimableItem
-                      nftInfo={{ name: 'laddertest-v3-erc721' }}
-                      amount={'10'}
-                      claimable={claimState === ClaimState.UNCLAIMED ? '10' : '0'}
-                    />
-                    {/* <ClaimableItem
-                        nftInfo={{ name: 'laddertest-v2-erc1155' }}
-                        amount={'10'}
-                        claimable={claimState === ClaimState.UNCLAIMED ? '10' : '0'}
-                      /> */}
-                  </Box>
-                  <Box display={'flex'} flexWrap="wrap" mt={16} alignItems="center">
-                    <StyledButtonWrapper>
-                      {account ? (
-                        <Box position={'relative'}>
-                          <StyledButtonWrapper>
-                            <ActionButton
-                              // pending={claimState === ClaimState.UNKNOWN}
-                              onAction={testnetClaim}
-                              // disableAction={new Date() < new Date(v3ActiveTimeStamp[0])}
-                              // disableAction={!isOpenClaim && activeTimeStatus !== 'active'}
-                              actionText="Claim your test assets"
-                              error={submitted || complete ? 'Test assets Claimed' : undefined}
-                            />
-                          </StyledButtonWrapper>
-                        </Box>
-                      ) : (
-                        <StyledButtonWrapper>
-                          <Button onClick={toggleWalletModal}>Connect the wallet to claim your test assets</Button>
-                        </StyledButtonWrapper>
-                      )}
-                    </StyledButtonWrapper>
-                    <Box margin="0 15px">
-                      <LightTooltip title={<FaucetsList />} arrow>
-                        <Link
-                          display={'flex'}
-                          alignItems="center"
-                          fontWeight={600}
-                          href="https://web.getlaika.app/faucets"
-                          target={'_blank'}
-                        >
-                          Sepolia Faucet
-                          <Explore />
-                        </Link>
-                      </LightTooltip>
-                    </Box>
-                  </Box>
-                </Box>
-              </Box>
-            </>
-          )}
         </CollapseWhite>
       </StyledCardWrapper>
       <StyledCardWrapper>
@@ -538,15 +428,6 @@ function Step2({ step, setStep }: { step: number; setStep: (step: number) => voi
   )
 }
 
-const GoerliLink = styled(Typography)`
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 20px;
-  letter-spacing: 0.02em;
-  color: #1f9898;
-  display: flex;
-  align-items: center;
-`
 const ClaimBtnWrapper = styled(Box)`
   position: absolute;
   bottom: 0;
@@ -574,10 +455,20 @@ function Step3({ step }: { step: number }) {
         href="https://web.getlaika.app/faucets"
         target={'_blank'}
       >
-        <GoerliLink>
-          Sepolia Faucet
-          <OpenLink />
-        </GoerliLink>
+        <Box margin="17px 0">
+          <LightTooltip title={<FaucetsList />} arrow>
+            <Link
+              display={'flex'}
+              alignItems="center"
+              fontWeight={600}
+              href="https://web.getlaika.app/faucets"
+              target={'_blank'}
+            >
+              Sepolia Faucet
+              <Explore />
+            </Link>
+          </LightTooltip>
+        </Box>
       </Link>
       <ClaimBtnWrapper>
         <ActionButton

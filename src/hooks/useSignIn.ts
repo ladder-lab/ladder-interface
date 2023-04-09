@@ -5,7 +5,7 @@ import { Axios, axiosInstance, v4Url } from 'utils/axios'
 import { API_TOKEN, getCookie, setCookie } from 'utils/cookies'
 import { useWeb3Instance } from './useWeb3Instance'
 
-export function useSignLogin() {
+export function useSignLogin(afterToken?: () => void) {
   const { account, chainId, library } = useActiveWeb3React()
   const web3 = useWeb3Instance()
   const { token, setToken } = useUserTokenCallback()
@@ -28,6 +28,9 @@ export function useSignLogin() {
           setCookie(API_TOKEN + account, _token)
           setToken(_token)
           axiosInstance.defaults.headers.common['token'] = _token
+          if (afterToken) {
+            afterToken()
+          }
         } else {
           throw Error('Sign in error')
         }

@@ -185,42 +185,39 @@ export function useVerifyLadderOauth() {
 }
 
 export function useVerifyTwitter(isV4 = false) {
-  const { token, sign } = useSignLogin()
   const { account } = useActiveWeb3React()
-  const openVerify = useCallback(() => {
-    async function jump() {
-      try {
-        if (!account) return
-        const res = await Axios.get((isV4 ? v4Url : testURL) + 'requestToken', {
-          address: account
-        })
-        const data = res.data.msg as string
-        if (!data) {
-          return
-        }
-        const twitter = window.open(
-          data,
-          'intent',
-          'scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=500,height=500,left=0,top=0'
-        )
-        twitter?.addEventListener('beforeunload', () => {
-          // not working
-          console.log('close twitter')
-        })
-        return
-      } catch (error) {
-        console.error('useAccountTestInfo', error)
-      }
-    }
-
-    if (!token) {
-      sign().then(async () => {
-        jump()
+  const jump = useCallback(async () => {
+    try {
+      if (!account) return
+      const res = await Axios.get((isV4 ? v4Url : testURL) + 'requestToken', {
+        address: account
       })
+      const data = res.data.msg as string
+      if (!data) {
+        return
+      }
+      const twitter = window.open(
+        data,
+        'intent',
+        'scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=500,height=500,left=0,top=0'
+      )
+      twitter?.addEventListener('beforeunload', () => {
+        // not working
+        console.log('close twitter')
+      })
+      return
+    } catch (error) {
+      console.error('useAccountTestInfo', error)
+    }
+  }, [account, isV4])
+  const { token, sign } = useSignLogin(jump)
+  const openVerify = useCallback(() => {
+    if (!token) {
+      sign()
     } else {
       jump()
     }
-  }, [account, isV4, sign, token])
+  }, [jump, sign, token])
   return {
     openVerify
   }
