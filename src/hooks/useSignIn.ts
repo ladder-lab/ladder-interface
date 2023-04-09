@@ -29,7 +29,7 @@ export function useSignLogin(afterToken?: () => void) {
           setToken(_token)
           axiosInstance.defaults.headers.common['token'] = _token
           if (afterToken) {
-            afterToken()
+            setTimeout(afterToken, 1000)
           }
         } else {
           throw Error('Sign in error')
