@@ -29,7 +29,7 @@ export function useSignLogin(afterToken?: () => void) {
           setToken(_token)
           axiosInstance.defaults.headers.common['token'] = _token
           if (afterToken) {
-            setTimeout(afterToken, 1000)
+            setTimeout(afterToken)
           }
         } else {
           throw Error('Sign in error')
@@ -38,7 +38,7 @@ export function useSignLogin(afterToken?: () => void) {
       .catch(e => {
         console.error(e)
       })
-  }, [account, chainId, library, setToken, token, web3])
+  }, [account, afterToken, chainId, library, setToken, token, web3])
 
   return {
     sign,
