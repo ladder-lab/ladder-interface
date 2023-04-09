@@ -221,47 +221,61 @@ export default function TestnetV4() {
               </StyledQABody>
             </Box>
             <Box>
-              <StyledQATitle>2. How long will Testnet Round 3 run for?</StyledQATitle>
-              <StyledQABody>Testnet Round 3 is live from 3/14/23</StyledQABody>
+              <StyledQATitle>2. What are the trading simulations for Spring Training?</StyledQATitle>
+              <StyledQABody>
+                The trading simulation will be available for all pools. Every user will begin the simulation with the
+                same claimable amount of test assets. Claim yours now!
+                <br />
+                Training will stretch through the entire Spring season and will feature achievements for the user to
+                accomplish within the simulation. Accomplishing achievements will reward points to the users allowing
+                them to rank up through achievement tiers.
+              </StyledQABody>
             </Box>
             <Box>
-              <StyledQATitle>3. Which Network will Testnet Round 3 be on?</StyledQATitle>
+              <StyledQATitle>3. How long will Spring Training run for?</StyledQATitle>
               <StyledQABody>
-                This time Testnet Round 3 will be on the SEPOLIA TEST NETWORK, we recommend getting your Test ETH from a
-                faucet in advance from: (<Link href="https://sepoliafaucet.net/">https://sepoliafaucet.net/</Link>).{' '}
+                Spring Training is an on-going seasonal event at Ladder that will continue throughout the spring season.{' '}
+              </StyledQABody>
+            </Box>
+            <Box>
+              <StyledQATitle>4. Which Network will Spring Training be on?</StyledQATitle>
+              <StyledQABody>
+                This time Spring Training will be on the SEPOLIA TEST NETWORK, we recommend getting your Test ETH from a
+                faucet in advance from:
+                <Link target={'_blank'} href="https://sepoliafaucet.net/">
+                  https://sepoliafaucet.net/
+                </Link>
                 <br />
                 <br />
                 More detailed instructions on how to get test ETH will be pinned in our Telegram and Discord channel.
               </StyledQABody>
             </Box>
             <Box>
-              <StyledQATitle>4. What are the trading simulations for Testnet Round 3</StyledQATitle>
+              <StyledQATitle>5. How will Achievements/Rankings and Rewards work?</StyledQATitle>
               <StyledQABody>
-                The trading simulation will be available for all pools. Every user will begin the simulation with the
-                same claimable amount of test assets. Claim yours now!
+                Completing the achievements will reward points that level you up through the achievement tiers.
+                Achievement tiers make the ranking system easier for users to indicate their progress.
                 <br />
+                <b>Rewards will be tracked weekly and seasonally</b>
                 <br />
-                Simulation will go through the entire round and there are three categories we will be looking at for the
-                competition.
+                With rewards being tracked weekly and seasonally this means we will also be distributing rewards in
+                those intervals.
                 <br />
-                <ul>
-                  <li>1.Addresses in the top 20% of Daily TVL Average</li>
-                  <li>2.Addresses in the top 20% of Total Digital Asset Value</li>
-                  <li>3.Addresses in the top 20% of Total Transactions</li>
-                </ul>
-                All three competition winners will be rewarded with special claimable SBT at Tractor in the end that
-                will provide great value in the future. (probably something, or probably nothing)
+                Weekly rewards will be distributed among top ranked users based upon availability of offered reward.
+                <br />
+                Seasonal rewards will distribute the long awaited Ladder airdrop
               </StyledQABody>
             </Box>
             <Box>
-              <StyledQATitle>5. What happens after Testnet Round 3?</StyledQATitle>
+              <StyledQATitle>6. What happens after Spring Training?</StyledQATitle>
               <StyledQABody>
-                There will be more to expect as in community. Stay tuned with us and don’t miss out those incoming
-                opportunities to win future community rewards.
+                There will be more to expect, as in community events.
+                <br />
+                Stay tuned with us and don’t miss out on those incoming opportunities to win future community rewards.
               </StyledQABody>
             </Box>
             <Box>
-              <StyledQATitle>6. Where can I see upcoming events?</StyledQATitle>
+              <StyledQATitle>7. Where can I see upcoming events?</StyledQATitle>
               <StyledQABody>
                 <Box>
                   Twitter:{' '}
