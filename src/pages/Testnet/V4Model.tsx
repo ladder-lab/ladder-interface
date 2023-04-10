@@ -29,6 +29,7 @@ interface Medal {
 export default function V4Medal() {
   const { result, milestone } = useV4Medal(ChainId.SEPOLIA)
   const isDownMD = useBreakpoint('md')
+  const theme = useTheme()
   const list: Medal[] = useMemo(() => {
     return [
       {
@@ -72,6 +73,20 @@ export default function V4Medal() {
 
   return (
     <Stack spacing={isDownMD ? 30 : 60}>
+      <Typography
+        sx={{
+          background: theme.palette.background.default,
+          borderRadius: '12px',
+          padding: '19px 24px'
+        }}
+      >
+        Participating in Ladder&apos;s testnet is the easiest way to secure future airdrop rewards. By joining the
+        testnet, you will have an opportunity to contribute to improving our product. As a token of our appreciation, we
+        will reward early users and supporters with Ladder airdrop. To make the experience more engaging and exciting
+        for our community, we are offering five achievement badges as a gamification tool. Each badge has three levels,
+        with higher levels offering greater chances of receiving higher airdrop rewards. Don&apos;t miss out on the
+        chance to join our community, help shape the future of Ladder, and earn rewards as an early adopter!
+      </Typography>
       {list.map((item, idx) => (
         <MedalRow key={idx} medal={item} curMilestone={milestone} />
       ))}
@@ -93,7 +108,7 @@ function Line({ isDash }: { isDash: boolean }) {
       style={{
         width: '100%',
         border: isDash
-          ? `1px dotted ${theme.palette.background.default}`
+          ? `1px dashed ${theme.palette.background.default}`
           : `1px solid ${theme.palette.background.default}`
       }}
     ></Box>
@@ -186,7 +201,7 @@ function MedalRow({ medal, curMilestone }: { medal: Medal; curMilestone: number[
                 ) : (
                   <GrayImg src={ic.icon} alt="" style={imgStyle} />
                 )}
-                <Typography fontWeight={600} fontSize={12} color={'black'} mt={10}>
+                <Typography fontWeight={600} fontSize={12} mt={10}>
                   {(idx + 1) * 1000}
                 </Typography>
               </Box>

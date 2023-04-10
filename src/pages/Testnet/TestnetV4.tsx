@@ -156,7 +156,7 @@ export default function TestnetV4() {
             sx={{
               background: theme.palette.background.paper,
               borderRadius: '12px',
-              padding: isDownMD ? '24px 20px' : '70px 24px 64px'
+              padding: isDownMD ? '24px 20px' : '24px 24px 64px'
             }}
           >
             <V4Medal />
@@ -880,7 +880,9 @@ function LeaderBoardRank({
           <Box display={'flex'} width={'100%'} justifyContent={'center'} alignItems={'center'} mt={30}>
             <ArrowBackIosIcon
               sx={{
-                ...arrowBtnSx
+                ...arrowBtnSx,
+                color: page > 1 ? '#1F9898' : 'inherit',
+                opacity: page > 1 ? 1 : 0.3
               }}
               onClick={() => {
                 if (page > 1) {
@@ -893,7 +895,9 @@ function LeaderBoardRank({
             </Typography>
             <ArrowForwardIosIcon
               sx={{
-                ...arrowBtnSx
+                ...arrowBtnSx,
+                color: page < totalPage ? '#1F9898' : 'inherit',
+                opacity: page < totalPage ? 1 : 0.3
               }}
               onClick={() => {
                 if (page < totalPage) {
