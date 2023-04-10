@@ -116,7 +116,7 @@ export default function TestnetV4() {
             direction={'row'}
             display={'flex'}
             sx={{
-              background: 'white',
+              background: theme.palette.background.paper,
               padding: '24px 24px 32px',
               borderRadius: '12px'
             }}
@@ -309,7 +309,6 @@ const StepText = styled(Typography)`
   font-size: 18px;
   line-height: 22px;
   letter-spacing: 0.03em;
-  color: #333333;
 `
 const StepNameText = styled(Typography)`
   font-weight: 600;
@@ -317,7 +316,6 @@ const StepNameText = styled(Typography)`
   line-height: 170%;
   margin-top: 9px;
   text-transform: capitalize;
-  color: #343739;
 `
 const StepDescText = styled(Typography)`
   font-weight: 400;
@@ -371,7 +369,7 @@ function Step1({ step, setStep }: { step: number; setStep: (step: number) => voi
         <StepBtn
           sx={{
             border: '1px solid #1F9898',
-            backgroundColor: 'white',
+            backgroundColor: 'transparent',
             color: '#1F9898'
           }}
           onClick={() => {
@@ -409,9 +407,9 @@ function Step2({ step, setStep }: { step: number; setStep: (step: number) => voi
       <Box display={'flex'} gap={20}>
         <StepBtn
           sx={{
+            pointerEvents: step < 2 ? 'none' : 'auto',
             '& svg': {
               fill: 'white',
-              pointerEvents: step < 2 ? 'none' : 'auto',
               opacity: 1
             }
           }}
@@ -429,7 +427,7 @@ function Step2({ step, setStep }: { step: number; setStep: (step: number) => voi
         <StepBtn
           sx={{
             border: '1px solid #1F9898',
-            backgroundColor: 'white',
+            backgroundColor: 'transparent',
             color: '#1F9898',
             pointerEvents: step < 2 ? 'none' : 'auto'
           }}
