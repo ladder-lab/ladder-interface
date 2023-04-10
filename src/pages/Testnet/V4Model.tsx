@@ -18,6 +18,7 @@ import { useMemo } from 'react'
 import { useV4Medal } from '../../hooks/useTestnetV4'
 import { ChainId } from '../../constants/chain'
 import useBreakpoint from '../../hooks/useBreakpoint'
+import { useActiveWeb3React } from '../../hooks'
 
 interface Medal {
   type: string
@@ -124,12 +125,21 @@ const GrayImg = styled('img')`
 `
 
 function MedalRow({ medal, curMilestone }: { medal: Medal; curMilestone: number[] | undefined }) {
+  const { account } = useActiveWeb3React()
   const isDownMD = useBreakpoint('md')
   const theme = useTheme()
   const milestone = useMemo(() => {
     return curMilestone ? curMilestone : [1000, 2000, 3000]
   }, [curMilestone])
   const medalIcons = useMemo<{ icon: string; isColor: boolean }[]>(() => {
+    if (!account) {
+      return medal.icons.map(i => {
+        return {
+          icon: i,
+          isColor: false
+        }
+      })
+    }
     if (medal.currentAmount < milestone[0]) {
       return medal.icons.map(i => {
         return {
