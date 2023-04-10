@@ -113,7 +113,7 @@ export default function TestnetV4() {
         >
           <Stack
             spacing={56}
-            direction={'row'}
+            direction={isDownMD ? 'column' : 'row'}
             display={'flex'}
             sx={{
               background: theme.palette.background.paper,
@@ -325,7 +325,6 @@ const StepDescText = styled(Typography)`
   color: #747678;
 `
 const StepBtn = styled(GreenBtn)`
-  margin-top: 23px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -340,6 +339,7 @@ const StepBtn = styled(GreenBtn)`
 function Step1({ step, setStep }: { step: number; setStep: (step: number) => void }) {
   const { openVerify } = useVerifyTwitter(true)
   const { verifyOauth, oauth } = useVerifyLadderOauth()
+  const isDownMD = useBreakpoint('md')
   useEffect(() => {
     if (oauth) {
       setStep(2)
@@ -351,7 +351,7 @@ function Step1({ step, setStep }: { step: number; setStep: (step: number) => voi
       <StepText>Step1</StepText>
       <StepNameText>Connect twitter</StepNameText>
       <StepDescText>Please click this button below and tweet a verification message on Twitter</StepDescText>
-      <Box display={'flex'} gap={20}>
+      <Box display={'flex'} mt={23} gap={isDownMD ? 12 : 20} flexDirection={isDownMD ? 'column' : 'row'}>
         <StepBtn
           sx={{
             '& svg': {
@@ -388,6 +388,7 @@ function Step1({ step, setStep }: { step: number; setStep: (step: number) => voi
 
 function Step2({ step, setStep }: { step: number; setStep: (step: number) => void }) {
   const { makeTwitter, checkMakeTwitter } = useCheckMakeTwitter()
+  const isDownMD = useBreakpoint('md')
 
   useEffect(() => {
     if (makeTwitter) {
@@ -404,7 +405,7 @@ function Step2({ step, setStep }: { step: number; setStep: (step: number) => voi
       <StepText>Step2</StepText>
       <StepNameText>Make a tweet</StepNameText>
       <StepDescText>Please click this button below and tweet a verification message on Twitter</StepDescText>
-      <Box display={'flex'} gap={20}>
+      <Box display={'flex'} mt={23} gap={isDownMD ? 12 : 20} flexDirection={isDownMD ? 'column' : 'row'}>
         <StepBtn
           sx={{
             pointerEvents: step < 2 ? 'none' : 'auto',
@@ -440,15 +441,11 @@ function Step2({ step, setStep }: { step: number; setStep: (step: number) => voi
   )
 }
 
-const ClaimBtnWrapper = styled(Box)`
-  position: absolute;
-  bottom: 0;
-`
-
 function Step3({ step }: { step: number }) {
   const { account } = useActiveWeb3React()
   const { testnetClaim } = useTestnetClaim(account || undefined)
   const { submitted, complete } = useUserHasSubmitted(`${account}_claim4`)
+  const isDownMD = useBreakpoint('md')
 
   return (
     <Box
@@ -460,29 +457,26 @@ function Step3({ step }: { step: number }) {
     >
       <StepText>Step3</StepText>
       <StepNameText>claim your test assets</StepNameText>
-      <Link
-        display={'flex'}
-        alignItems="center"
-        fontWeight={600}
-        href="https://web.getlaika.app/faucets"
-        target={'_blank'}
+      <Box margin="17px 0">
+        <LightTooltip title={<FaucetsList />} arrow>
+          <Link
+            display={'flex'}
+            alignItems="center"
+            fontWeight={600}
+            href="https://web.getlaika.app/faucets"
+            target={'_blank'}
+          >
+            Sepolia Faucet
+            <Explore />
+          </Link>
+        </LightTooltip>
+      </Box>
+      <Box
+        sx={{
+          position: isDownMD ? 'inherit' : 'absolute',
+          bottom: 0
+        }}
       >
-        <Box margin="17px 0">
-          <LightTooltip title={<FaucetsList />} arrow>
-            <Link
-              display={'flex'}
-              alignItems="center"
-              fontWeight={600}
-              href="https://web.getlaika.app/faucets"
-              target={'_blank'}
-            >
-              Sepolia Faucet
-              <Explore />
-            </Link>
-          </LightTooltip>
-        </Box>
-      </Link>
-      <ClaimBtnWrapper>
         <ActionButton
           // pending={claimState === ClaimState.UNKNOWN}
           onAction={testnetClaim}
@@ -492,7 +486,7 @@ function Step3({ step }: { step: number }) {
           error={submitted || complete ? 'Test assets Claimed' : undefined}
           disableAction={step < 3}
         />
-      </ClaimBtnWrapper>
+      </Box>
     </Box>
   )
 }
