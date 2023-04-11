@@ -417,7 +417,7 @@ function Step2({ step, setStep }: { step: number; setStep: (step: number) => voi
           onClick={() => {
             if (step < 2) return
             window.open(
-              'https://twitter.com/intent/tweet?text=I%20am%20participating%20in%20LADDER%20TESTNET%20activity',
+              "https://twitter.com/intent/tweet?text=✅Secured%20my%20place%20in%20the@Laddertop_NFT%20community\n\n✅Traded%20NFT's%20in%20their%20ongoing%20Testnet\n\n✅Ready%20for%20what%20comes%20next😎",
               'intent',
               'scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=500,height=500,left=0,top=0'
             )

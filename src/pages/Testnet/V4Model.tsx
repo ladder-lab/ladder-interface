@@ -169,7 +169,7 @@ function MedalRow({ medal, curMilestone }: { medal: Medal; curMilestone: number[
         }
       })
     }
-  }, [medal.currentAmount, medal.icons, milestone])
+  }, [account, medal.currentAmount, medal.icons, milestone])
 
   const linesDash = useMemo(() => {
     if (medal.currentAmount < milestone[1]) {

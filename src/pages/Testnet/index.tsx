@@ -16,7 +16,7 @@ import Input from 'components/Input'
 import ClaimableItem from './ClaimableItem'
 import TaskBox from './TaskItem'
 import { Timer } from 'components/Timer'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Token } from 'constants/token'
 import { ChainId } from 'constants/chain'
 import { ReactComponent as Explore } from 'assets/svg/explore.svg'
@@ -135,6 +135,11 @@ export default function Testnet() {
   const isDownMD = useBreakpoint('md')
   const { testnet } = useParams()
   const navigator = useNavigate()
+  useEffect(() => {
+    if (testnet == ':testnet') {
+      navigator('/round3')
+    }
+  }, [navigator, testnet])
   const roundIndex = (() => {
     switch (testnet) {
       case 'round1':
