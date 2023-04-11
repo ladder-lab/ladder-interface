@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Axios, testURL, v4Url } from '../utils/axios'
 import { useActiveWeb3React } from './index'
 import { useSignLogin } from './useSignIn'
@@ -220,6 +220,31 @@ export function useVerifyTwitter(isV4 = false) {
   }, [jump, sign, token])
   return {
     openVerify
+  }
+}
+
+export function useGetRemoteStep() {
+  const { verifyOauth, oauth } = useVerifyLadderOauth()
+  const { makeTwitter, checkMakeTwitter } = useCheckMakeTwitter()
+
+  const verifyAll = useCallback(() => {
+    verifyOauth()
+    checkMakeTwitter()
+  }, [checkMakeTwitter, verifyOauth])
+
+  const remoteStep = useMemo(() => {
+    if (oauth && makeTwitter) {
+      return 3
+    } else if (oauth) {
+      return 2
+    } else {
+      return 1
+    }
+  }, [makeTwitter, oauth])
+
+  return {
+    verifyAll,
+    remoteStep
   }
 }
 

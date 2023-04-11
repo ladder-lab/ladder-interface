@@ -30,7 +30,13 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import { ReactComponent as Twitter } from 'assets/socialLinksIcon/twitter.svg'
 import { GreenBtn } from '../MyAccount/MintOrganModal'
-import { useCheckMakeTwitter, useVerifyLadderOauth, useVerifyTwitter } from '../../hooks/useVerifyTwitter'
+import {
+  useCheckMakeTwitter,
+  useGetRemoteStep,
+  useVerifyLadderOauth,
+  useVerifyTwitter
+} from '../../hooks/useVerifyTwitter'
+import { useSignLogin } from '../../hooks/useSignIn'
 
 const StyledButtonWrapper = styled(Box)(({ theme }) => ({
   maxWidth: 400,
@@ -78,17 +84,12 @@ export default function TestnetV4() {
   const { account } = useActiveWeb3React()
   const toggleWalletModal = useWalletModalToggle()
   const isDownMD = useBreakpoint('md')
+  const { verifyAll, remoteStep } = useGetRemoteStep()
   const [step, setStep] = useState(1)
-
-  // const activeTimeStatus = useMemo(() => {
-  //   const curTime = new Date().getTime()
-  //   if (curTime < v3ActiveTimeStamp[0]) {
-  //     return 'soon'
-  //   } else if (curTime >= v3ActiveTimeStamp[0] && curTime < v3ActiveTimeStamp[1]) {
-  //     return 'active'
-  //   }
-  //   return 'end'
-  // }, [])
+  const { sign, token } = useSignLogin(verifyAll)
+  useEffect(() => {
+    setStep(remoteStep)
+  }, [remoteStep])
 
   return (
     <Stack spacing={40}>
@@ -122,11 +123,21 @@ export default function TestnetV4() {
             }}
           >
             {account ? (
-              <>
-                <Step1 step={step} setStep={setStep} />
-                <Step2 step={step} setStep={setStep} />
-                <Step3 step={step} />
-              </>
+              token ? (
+                <>
+                  <Step1 step={step} setStep={setStep} />
+                  <Step2 step={step} setStep={setStep} />
+                  <Step3 step={step} />
+                </>
+              ) : (
+                <Box width={'100%'}>
+                  <StepNameText>Sign</StepNameText>
+                  <StepDescText>Please click this button to sign.</StepDescText>
+                  <StyledButtonWrapper mt={46}>
+                    <Button onClick={sign}>Sign to get token</Button>
+                  </StyledButtonWrapper>
+                </Box>
+              )
             ) : (
               <Box width={'100%'}>
                 <StepNameText>Connect the Wallet</StepNameText>
