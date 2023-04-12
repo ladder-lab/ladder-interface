@@ -224,6 +224,8 @@ export function useVerifyTwitter(isV4 = false) {
 }
 
 export function useGetRemoteStep() {
+  const { account } = useActiveWeb3React()
+  const { token } = useSignLogin()
   const { verifyOauth, oauth } = useVerifyLadderOauth()
   const { makeTwitter, checkMakeTwitter } = useCheckMakeTwitter()
 
@@ -233,14 +235,16 @@ export function useGetRemoteStep() {
   }, [checkMakeTwitter, verifyOauth])
 
   const remoteStep = useMemo(() => {
-    if (oauth && makeTwitter) {
+    if (!account || !token) {
+      return 0
+    } else if (oauth && makeTwitter) {
       return 3
     } else if (oauth) {
       return 2
     } else {
       return 1
     }
-  }, [makeTwitter, oauth])
+  }, [account, makeTwitter, oauth, token])
 
   return {
     verifyAll,

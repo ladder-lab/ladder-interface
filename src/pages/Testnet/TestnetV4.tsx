@@ -38,9 +38,11 @@ import {
 } from '../../hooks/useVerifyTwitter'
 import { useSignLogin } from '../../hooks/useSignIn'
 
-const StyledButtonWrapper = styled(Box)(({ theme }) => ({
+const StyledButtonWrapper = styled(Box)<{ isDownMD?: boolean }>(({ theme, isDownMD }) => ({
   maxWidth: 400,
   width: '100%',
+  position: isDownMD ? 'inherit' : 'absolute',
+  bottom: 0,
   '& button': {
     maxWidth: 400,
     width: '100%',
@@ -81,15 +83,8 @@ const StyledQABody = styled(Box)(({ theme }) => ({
 
 export default function TestnetV4() {
   const theme = useTheme()
-  const { account } = useActiveWeb3React()
-  const toggleWalletModal = useWalletModalToggle()
   const isDownMD = useBreakpoint('md')
-  const { verifyAll, remoteStep } = useGetRemoteStep()
-  const [step, setStep] = useState(1)
-  const { sign, token } = useSignLogin(verifyAll)
-  useEffect(() => {
-    setStep(remoteStep)
-  }, [remoteStep])
+  const [step, setStep] = useState(0)
 
   return (
     <Stack spacing={40}>
@@ -112,42 +107,21 @@ export default function TestnetV4() {
             </RowBetween>
           }
         >
-          <Stack
-            spacing={56}
-            direction={isDownMD ? 'column' : 'row'}
+          <Box
+            flexDirection={isDownMD ? 'column' : 'row'}
             display={'flex'}
+            gap={20}
             sx={{
               background: theme.palette.background.paper,
               padding: '24px 24px 32px',
               borderRadius: '12px'
             }}
           >
-            {account ? (
-              token ? (
-                <>
-                  <Step1 step={step} setStep={setStep} />
-                  <Step2 step={step} setStep={setStep} />
-                  <Step3 step={step} />
-                </>
-              ) : (
-                <Box width={'100%'}>
-                  <StepNameText>Sign</StepNameText>
-                  <StepDescText>Please click this button to sign.</StepDescText>
-                  <StyledButtonWrapper mt={46}>
-                    <Button onClick={sign}>Sign to get token</Button>
-                  </StyledButtonWrapper>
-                </Box>
-              )
-            ) : (
-              <Box width={'100%'}>
-                <StepNameText>Connect the Wallet</StepNameText>
-                <StepDescText>Please click this button to connect the wallet.</StepDescText>
-                <StyledButtonWrapper mt={46}>
-                  <Button onClick={toggleWalletModal}>Connect the wallet to claim your test assets</Button>
-                </StyledButtonWrapper>
-              </Box>
-            )}
-          </Stack>
+            <Step0 step={step} setStep={setStep} />
+            <Step1 step={step} setStep={setStep} />
+            <Step2 step={step} setStep={setStep} />
+            <Step3 step={step} />
+          </Box>
         </CollapseWhite>
       </StyledCardWrapper>
       <StyledCardWrapper>
@@ -340,12 +314,56 @@ const StepBtn = styled(GreenBtn)`
   justify-content: center;
   align-items: center;
   gap: 9px;
-  padding: 15px 58px;
+  padding: 12px 28px;
   font-weight: 600;
   '&:disabled': {
     pointer-events: none;
   }
 `
+
+function Step0({ step, setStep }: { step: number; setStep: (step: number) => void }) {
+  const { account } = useActiveWeb3React()
+  const toggleWalletModal = useWalletModalToggle()
+  const { verifyAll, remoteStep } = useGetRemoteStep()
+  const { sign, token } = useSignLogin(verifyAll)
+  const isDownMD = useBreakpoint('md')
+
+  useEffect(() => {
+    if (account && token) {
+      verifyAll()
+    }
+  }, [account, token, verifyAll])
+
+  useEffect(() => {
+    setStep(remoteStep)
+  }, [remoteStep, setStep])
+
+  return (
+    <>
+      {account ? (
+        <Box width={'100%'} flex={1} position={'relative'}>
+          <StepNameText>Sign</StepNameText>
+          <StepDescText>Please click this button to sign.</StepDescText>
+          <StyledButtonWrapper mt={46} isDownMD={isDownMD}>
+            <Button onClick={sign} disabled={step > 0}>
+              Sign to get token
+            </Button>
+          </StyledButtonWrapper>
+        </Box>
+      ) : (
+        <Box width={'100%'} flex={1} position={'relative'}>
+          <StepNameText>Connect the Wallet</StepNameText>
+          <StepDescText>Please click this button to connect the wallet.</StepDescText>
+          <StyledButtonWrapper mt={46} isDownMD={isDownMD}>
+            <Button onClick={toggleWalletModal} disabled={step > 0}>
+              <span style={{ fontSize: 14 }}>Connect the wallet to claim your test assets</span>
+            </Button>
+          </StyledButtonWrapper>
+        </Box>
+      )}
+    </>
+  )
+}
 
 function Step1({ step, setStep }: { step: number; setStep: (step: number) => void }) {
   const { openVerify } = useVerifyTwitter(true)
@@ -358,19 +376,26 @@ function Step1({ step, setStep }: { step: number; setStep: (step: number) => voi
   }, [oauth, setStep])
 
   return (
-    <Box flex={1}>
+    <Box
+      flex={1}
+      sx={{
+        opacity: step > 0 ? 1 : 0.4
+      }}
+    >
       <StepText>Step1</StepText>
       <StepNameText>Connect twitter</StepNameText>
       <StepDescText>Please click this button below and tweet a verification message on Twitter</StepDescText>
       <Box display={'flex'} mt={23} gap={isDownMD ? 12 : 20} flexDirection={isDownMD ? 'column' : 'row'}>
         <StepBtn
           sx={{
+            pointerEvents: step < 1 ? 'none' : 'auto',
             '& svg': {
               fill: 'white',
               opacity: 1
             }
           }}
           onClick={() => {
+            if (step < 1) return
             openVerify()
           }}
         >
@@ -379,12 +404,13 @@ function Step1({ step, setStep }: { step: number; setStep: (step: number) => voi
         </StepBtn>
         <StepBtn
           sx={{
+            pointerEvents: step < 1 ? 'none' : 'auto',
             border: '1px solid #1F9898',
             backgroundColor: 'transparent',
             color: '#1F9898'
           }}
           onClick={() => {
-            if (step > 1) return
+            if (step < 1) return
             if (!oauth) {
               verifyOauth()
             }
