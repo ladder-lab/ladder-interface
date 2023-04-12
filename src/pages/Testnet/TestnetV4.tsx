@@ -25,7 +25,7 @@ import { useUserHasSubmitted } from 'state/transactions/hooks'
 import V4Medal from './V4Model'
 import CollapseWhite from '../../components/Collapse/CollapseWhite'
 import { StyledTabButtonText } from '../Statistics'
-import { Axios, v4Url } from '../../utils/axios'
+import { Axios, axiosInstance, v4Url } from '../../utils/axios'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import { ReactComponent as Twitter } from 'assets/socialLinksIcon/twitter.svg'
@@ -37,6 +37,7 @@ import {
   useVerifyTwitter
 } from '../../hooks/useVerifyTwitter'
 import { useSignLogin } from '../../hooks/useSignIn'
+import { useUserTokenCallback } from '../../state/userToken/hooks'
 
 const StyledButtonWrapper = styled(Box)<{ isDownMD?: boolean }>(({ theme, isDownMD }) => ({
   maxWidth: 400,
@@ -85,6 +86,11 @@ export default function TestnetV4() {
   const theme = useTheme()
   const isDownMD = useBreakpoint('md')
   const [step, setStep] = useState(0)
+  const { token } = useUserTokenCallback()
+
+  useEffect(() => {
+    axiosInstance.defaults.headers.common['token'] = token
+  }, [token])
 
   return (
     <Stack spacing={40}>
