@@ -7,18 +7,32 @@ import { useActiveWeb3React } from 'hooks'
 interface MedalResp {
   buy721Valume: string
   buy1155Valume: string
-  firstMedal: string
   liquidityValume: string
-  secondMedal: string
   sell721Valume: string
   sell1155Valume: string
+  swapValume: string
+  transfers: string
+  nftValume: string
+  clickeeer: Milestone
+  legend: Milestone
+  providooor: Milestone
+  tradooor: Milestone
+}
+
+interface Milestone {
+  firstMedal: string
+  secondMedal: string
   threeMedal: string
 }
 
 export function useV4Medal(chainId: ChainId) {
   const { account } = useActiveWeb3React()
   const [result, setResult] = useState<MedalResp>()
-  const [milestone, setMilestone] = useState<number[]>()
+  const [milestone, setMilestone] = useState<number[][]>()
+
+  function genMilestone(data: Milestone): number[] {
+    return [Number(data.firstMedal), Number(data.secondMedal), Number(data.threeMedal)]
+  }
 
   useEffect(() => {
     ;(async () => {
@@ -36,7 +50,12 @@ export function useV4Medal(chainId: ChainId) {
           setResult(undefined)
           return
         }
-        setMilestone([Number(data.firstMedal), Number(data.secondMedal), Number(data.threeMedal)])
+        const milestone = []
+        milestone.push(genMilestone(data.providooor))
+        milestone.push(genMilestone(data.tradooor))
+        milestone.push(genMilestone(data.clickeeer))
+        milestone.push(genMilestone(data.legend))
+        setMilestone(milestone)
         setResult(data)
       } catch (error) {
         setResult(undefined)

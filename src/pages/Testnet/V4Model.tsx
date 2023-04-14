@@ -11,9 +11,9 @@ import dompor3 from 'assets/svg/round3/dumpoor-3.svg'
 import trador1 from 'assets/svg/round3/tradoor-1.svg'
 import trador2 from 'assets/svg/round3/tradoor-2.svg'
 import trador3 from 'assets/svg/round3/tradoor-3.svg'
-import whale1 from 'assets/svg/round3/whale-1.svg'
-import whale2 from 'assets/svg/round3/whale-2.svg'
-import whale3 from 'assets/svg/round3/whale-3.svg'
+// import whale1 from 'assets/svg/round3/whale-1.svg'
+// import whale2 from 'assets/svg/round3/whale-2.svg'
+// import whale3 from 'assets/svg/round3/whale-3.svg'
 import { useMemo } from 'react'
 import { useV4Medal } from '../../hooks/useTestnetV4'
 import { ChainId } from '../../constants/chain'
@@ -34,43 +34,31 @@ export default function V4Medal() {
   const list: Medal[] = useMemo(() => {
     return [
       {
-        type: 'Lliquidity providooooor',
+        type: 'Providooor (LP provider)',
         desc: 'Provide liquidity to level up!',
         currentAmount: Number(result?.liquidityValume),
         icons: [provider1, provider2, provider3]
       },
       {
-        type: 'Accumulatoor',
-        desc: "Purchase NFT's (ERC-721) to level up!",
-        currentAmount: Number(result?.buy721Valume),
-        icons: [accumulator1, accumulator2, accumulator3]
-      },
-      {
-        type: 'Dumpooor',
-        desc: "Sell NFT's (721) to level up!",
-        currentAmount: Number(result?.sell721Valume),
-        icons: [dompor1, dompor2, dompor3]
-      },
-      {
-        type: 'tradoooor',
-        desc: "Purchase NFT's (1155) to level up!",
-        currentAmount: Number(result?.buy1155Valume),
+        type: 'Tradoooor',
+        desc: 'Accumulate NFT trading volume  to level up!',
+        currentAmount: Number(result?.swapValume),
         icons: [trador1, trador2, trador3]
       },
       {
-        type: 'Whale',
-        desc: "Sell NFT's (1155) to level up!",
-        currentAmount: Number(result?.sell1155Valume),
-        icons: [whale1, whale2, whale3]
+        type: 'Top Clickeeer',
+        desc: 'Trade more times to level up!',
+        currentAmount: Number(result?.transfers),
+        icons: [accumulator1, accumulator2, accumulator3]
+      },
+      {
+        type: 'Legend Collectooor',
+        desc: 'Collect high value NFT to level up!',
+        currentAmount: Number(result?.nftValume),
+        icons: [dompor1, dompor2, dompor3]
       }
     ]
-  }, [
-    result?.buy1155Valume,
-    result?.buy721Valume,
-    result?.liquidityValume,
-    result?.sell1155Valume,
-    result?.sell721Valume
-  ])
+  }, [result?.liquidityValume, result?.nftValume, result?.swapValume, result?.transfers])
 
   return (
     <Stack spacing={isDownMD ? 30 : 60}>
@@ -89,7 +77,7 @@ export default function V4Medal() {
         chance to join our community, help shape the future of Ladder, and earn rewards as an early adopter!
       </Typography>
       {list.map((item, idx) => (
-        <MedalRow key={idx} medal={item} curMilestone={milestone} />
+        <MedalRow key={idx} medal={item} curMilestone={milestone?.[idx]} />
       ))}
     </Stack>
   )
@@ -129,7 +117,7 @@ function MedalRow({ medal, curMilestone }: { medal: Medal; curMilestone: number[
   const isDownMD = useBreakpoint('md')
   const theme = useTheme()
   const milestone = useMemo(() => {
-    return curMilestone ? curMilestone : [1000, 2000, 3000]
+    return curMilestone ? curMilestone : [1000000, 2000000, 30000000]
   }, [curMilestone])
   const medalIcons = useMemo<{ icon: string; isColor: boolean }[]>(() => {
     if (!account) {
@@ -212,7 +200,7 @@ function MedalRow({ medal, curMilestone }: { medal: Medal; curMilestone: number[
                   <GrayImg src={ic.icon} alt="" style={imgStyle} />
                 )}
                 <Typography fontWeight={600} fontSize={12} mt={10}>
-                  {(idx + 1) * 1000}
+                  {milestone[idx]}
                 </Typography>
               </Box>
             )
