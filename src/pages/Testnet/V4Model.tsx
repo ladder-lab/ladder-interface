@@ -112,12 +112,12 @@ const GrayImg = styled('img')`
   opacity: 0.3;
 `
 
-function MedalRow({ medal, curMilestone }: { medal: Medal; curMilestone: number[] | undefined }) {
+function MedalRow({ medal, curMilestone }: { medal: Medal; curMilestone: number[] }) {
   const { account } = useActiveWeb3React()
   const isDownMD = useBreakpoint('md')
   const theme = useTheme()
   const milestone = useMemo(() => {
-    return curMilestone ? curMilestone : [1000000, 2000000, 30000000]
+    return curMilestone
   }, [curMilestone])
   const medalIcons = useMemo<{ icon: string; isColor: boolean }[]>(() => {
     if (!account) {

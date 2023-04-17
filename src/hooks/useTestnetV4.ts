@@ -28,7 +28,12 @@ interface Milestone {
 export function useV4Medal(chainId: ChainId) {
   const { account } = useActiveWeb3React()
   const [result, setResult] = useState<MedalResp>()
-  const [milestone, setMilestone] = useState<number[][]>()
+  const [milestone, setMilestone] = useState<number[][]>([
+    [100000, 500000, 1000000],
+    [50000, 250000, 1000000],
+    [1500, 5000, 15000],
+    [5000, 10000, 20000]
+  ])
 
   function genMilestone(data: Milestone): number[] {
     return [Number(data.firstMedal), Number(data.secondMedal), Number(data.threeMedal)]
