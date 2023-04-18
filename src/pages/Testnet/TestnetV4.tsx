@@ -41,7 +41,7 @@ import { useUserTokenCallback } from '../../state/userToken/hooks'
 
 const StyledButtonWrapper = styled(Box)<{ isDownMD?: boolean }>(({ theme, isDownMD }) => ({
   maxWidth: 400,
-  width: '100%',
+  width: 'fit-content',
   position: isDownMD ? 'inherit' : 'absolute',
   bottom: 0,
   '& button': {
@@ -49,11 +49,10 @@ const StyledButtonWrapper = styled(Box)<{ isDownMD?: boolean }>(({ theme, isDown
     width: '100%',
     height: 50,
     fontSize: 16,
-    padding: 0,
+    padding: '0 60px',
     [theme.breakpoints.down('md')]: {
-      height: 70,
       fontSize: 16,
-      padding: '16px 40px'
+      padding: '0 40px'
     }
   }
 }))
@@ -107,7 +106,7 @@ export default function TestnetV4() {
             <RowBetween flexWrap={'wrap'}>
               <Box display={'flex'} flexWrap={'wrap'}>
                 <Typography fontSize={16} fontWeight={600} mr={12}>
-                  Ladder SEPOLIA Participate in preparation
+                  Join Ladder Spring Training for Free
                 </Typography>
               </Box>
             </RowBetween>
@@ -116,7 +115,7 @@ export default function TestnetV4() {
           <Box
             flexDirection={isDownMD ? 'column' : 'row'}
             display={'flex'}
-            gap={20}
+            gap={isDownMD ? 32 : 20}
             sx={{
               background: theme.palette.background.paper,
               padding: '24px 24px 32px',
@@ -348,6 +347,7 @@ function Step0({ step, setStep }: { step: number; setStep: (step: number) => voi
     <>
       {account ? (
         <Box width={'100%'} flex={1} position={'relative'}>
+          <StepText>Step 1</StepText>
           <StepNameText>Sign</StepNameText>
           <StepDescText>Please click this button to sign.</StepDescText>
           <StyledButtonWrapper mt={46} isDownMD={isDownMD}>
@@ -358,11 +358,12 @@ function Step0({ step, setStep }: { step: number; setStep: (step: number) => voi
         </Box>
       ) : (
         <Box width={'100%'} flex={1} position={'relative'}>
-          <StepNameText>Connect the Wallet</StepNameText>
-          <StepDescText>Please click this button to connect the wallet.</StepDescText>
+          <StepText>Step 1</StepText>
+          <StepNameText>Connect Wallet</StepNameText>
+          <StepDescText>Please connect your wallet to claim test assets</StepDescText>
           <StyledButtonWrapper mt={46} isDownMD={isDownMD}>
             <Button onClick={toggleWalletModal} disabled={step > 0}>
-              <span style={{ fontSize: 14 }}>Connect the wallet to claim your test assets</span>
+              <span style={{ fontSize: 14 }}>Connect</span>
             </Button>
           </StyledButtonWrapper>
         </Box>
@@ -388,9 +389,9 @@ function Step1({ step, setStep }: { step: number; setStep: (step: number) => voi
         opacity: step > 0 ? 1 : 0.4
       }}
     >
-      <StepText>Step1</StepText>
-      <StepNameText>Connect twitter</StepNameText>
-      <StepDescText>Please click this button below and tweet a verification message on Twitter</StepDescText>
+      <StepText>Step 2</StepText>
+      <StepNameText>Connect Twitter</StepNameText>
+      <StepDescText>Please connect and verify your twitter account</StepDescText>
       <Box display={'flex'} mt={23} gap={isDownMD ? 12 : 20} flexDirection={isDownMD ? 'column' : 'row'}>
         <StepBtn
           sx={{
@@ -406,7 +407,7 @@ function Step1({ step, setStep }: { step: number; setStep: (step: number) => voi
           }}
         >
           <Twitter />
-          Tweet
+          Connect
         </StepBtn>
         <StepBtn
           sx={{
@@ -445,9 +446,9 @@ function Step2({ step, setStep }: { step: number; setStep: (step: number) => voi
         opacity: step > 1 ? 1 : 0.4
       }}
     >
-      <StepText>Step2</StepText>
+      <StepText>Step 3</StepText>
       <StepNameText>Make a tweet</StepNameText>
-      <StepDescText>Please click this button below and tweet a verification message on Twitter</StepDescText>
+      <StepDescText>Please tweet to receive free Ladder test assets</StepDescText>
       <Box display={'flex'} mt={23} gap={isDownMD ? 12 : 20} flexDirection={isDownMD ? 'column' : 'row'}>
         <StepBtn
           sx={{
@@ -466,6 +467,7 @@ function Step2({ step, setStep }: { step: number; setStep: (step: number) => voi
             )
           }}
         >
+          <Twitter />
           Tweet
         </StepBtn>
         <StepBtn
@@ -498,25 +500,29 @@ function Step3({ step }: { step: number }) {
         position: 'relative'
       }}
     >
-      <StepText>Step3</StepText>
-      <StepNameText>claim your test assets</StepNameText>
-      <Box margin="17px 0">
-        <LightTooltip title={<FaucetsList />} arrow>
-          <Link
-            display={'flex'}
-            alignItems="center"
-            fontWeight={600}
-            href="https://web.getlaika.app/faucets"
-            target={'_blank'}
-          >
-            Sepolia Faucet
-            <Explore />
-          </Link>
-        </LightTooltip>
-      </Box>
+      <StepText>Step 4</StepText>
+      <StepNameText>Claim your test assets</StepNameText>
+      <LightTooltip title={<FaucetsList />} arrow>
+        <Link
+          display={'flex'}
+          alignItems="center"
+          fontWeight={600}
+          href="https://web.getlaika.app/faucets"
+          target={'_blank'}
+          style={{ textDecoration: 'none' }}
+        >
+          <Box>
+            <StepDescText>Claim your Ladder test assets on</StepDescText>
+            <span style={{ textDecoration: 'underline' }}>
+              Sepolia Faucet <Explore />
+            </span>
+          </Box>
+        </Link>
+      </LightTooltip>
       <Box
         sx={{
           position: isDownMD ? 'inherit' : 'absolute',
+          marginTop: isDownMD ? '23px' : '0',
           bottom: 0
         }}
       >
@@ -525,7 +531,7 @@ function Step3({ step }: { step: number }) {
           onAction={testnetClaim}
           // disableAction={new Date() < new Date(v3ActiveTimeStamp[0])}
           // disableAction={!isOpenClaim && activeTimeStatus !== 'active'}
-          actionText="Claim your test assets"
+          actionText="Claim"
           error={submitted || complete ? 'Test assets Claimed' : undefined}
           disableAction={step < 3}
         />

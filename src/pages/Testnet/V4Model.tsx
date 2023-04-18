@@ -34,7 +34,7 @@ export default function V4Medal() {
   const list: Medal[] = useMemo(() => {
     return [
       {
-        type: 'Providooor (LP provider)',
+        type: 'Liquidity Providooor',
         desc: 'Provide liquidity to level up!',
         currentAmount: Number(result?.liquidityValume),
         icons: [provider1, provider2, provider3]
@@ -46,7 +46,7 @@ export default function V4Medal() {
         icons: [trador1, trador2, trador3]
       },
       {
-        type: 'Top Clickeeer',
+        type: 'Flippooor',
         desc: 'Trade more times to level up!',
         currentAmount: Number(result?.transfers),
         icons: [accumulator1, accumulator2, accumulator3]
@@ -64,6 +64,7 @@ export default function V4Medal() {
     <Stack spacing={isDownMD ? 30 : 60}>
       <Typography
         sx={{
+          fontSize: '16px',
           background: theme.palette.background.default,
           borderRadius: '12px',
           padding: '19px 24px'
@@ -200,7 +201,7 @@ function MedalRow({ medal, curMilestone }: { medal: Medal; curMilestone: number[
                   <GrayImg src={ic.icon} alt="" style={imgStyle} />
                 )}
                 <Typography fontWeight={600} fontSize={12} mt={10}>
-                  {milestone[idx]}
+                  $ {milestone[idx]}
                 </Typography>
               </Box>
             )
@@ -212,7 +213,7 @@ function MedalRow({ medal, curMilestone }: { medal: Medal; curMilestone: number[
           right={isDownMD ? 11 : 15}
           display={'flex'}
           width={'100%'}
-          gap={50}
+          gap={80}
           padding={isDownMD ? '0 75px' : '0 100px'}
         >
           {linesDash.map((isDash, idx) => {

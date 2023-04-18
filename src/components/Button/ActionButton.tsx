@@ -46,7 +46,7 @@ export default function ActionButton({
         </Button>
       ) : (
         <Button
-          sx={{ height, width, background: theme.gradient.gradient1 }}
+          sx={{ height: height ? height : '50px', width, background: theme.gradient.gradient1, padding: '0 60px' }}
           onClick={onAction}
           disabled={disableAction}
         >
