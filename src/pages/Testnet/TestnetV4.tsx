@@ -318,6 +318,7 @@ const StepBtn = styled(GreenBtn)`
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 144px;
   gap: 9px;
   padding: 12px 28px;
   font-weight: 600;
@@ -362,7 +363,7 @@ function Step0({ step, setStep }: { step: number; setStep: (step: number) => voi
           <StepNameText>Connect Wallet</StepNameText>
           <StepDescText>Please connect your wallet to claim test assets</StepDescText>
           <StyledButtonWrapper mt={46} isDownMD={isDownMD}>
-            <Button onClick={toggleWalletModal} disabled={step > 0}>
+            <Button style={{ width: '144px' }} onClick={toggleWalletModal} disabled={step > 0}>
               <span style={{ fontSize: 14 }}>Connect</span>
             </Button>
           </StyledButtonWrapper>
@@ -527,6 +528,7 @@ function Step3({ step }: { step: number }) {
         }}
       >
         <ActionButton
+          width={'144px'}
           // pending={claimState === ClaimState.UNKNOWN}
           onAction={testnetClaim}
           // disableAction={new Date() < new Date(v3ActiveTimeStamp[0])}
