@@ -34,7 +34,7 @@ export default function V4Medal() {
   const list: Medal[] = useMemo(() => {
     return [
       {
-        type: 'Liquidity Providooor',
+        type: 'Providooor (LP provider)',
         desc: 'Provide liquidity to level up!',
         currentAmount: Number(result?.liquidityValume),
         icons: [provider1, provider2, provider3]
@@ -46,7 +46,7 @@ export default function V4Medal() {
         icons: [trador1, trador2, trador3]
       },
       {
-        type: 'Flippooor',
+        type: 'Top Clickeeer',
         desc: 'Trade more times to level up!',
         currentAmount: Number(result?.transfers),
         icons: [accumulator1, accumulator2, accumulator3]
@@ -78,7 +78,7 @@ export default function V4Medal() {
         chance to join our community, help shape the future of Ladder, and earn rewards as an early adopter!
       </Typography>
       {list.map((item, idx) => (
-        <MedalRow key={idx} medal={item} curMilestone={milestone?.[idx]} />
+        <MedalRow key={idx} medal={item} curMilestone={milestone?.[idx]} needDollar={idx != 2} />
       ))}
     </Stack>
   )
@@ -113,7 +113,15 @@ const GrayImg = styled('img')`
   opacity: 0.3;
 `
 
-function MedalRow({ medal, curMilestone }: { medal: Medal; curMilestone: number[] }) {
+function MedalRow({
+  medal,
+  curMilestone,
+  needDollar = true
+}: {
+  medal: Medal
+  curMilestone: number[]
+  needDollar?: boolean
+}) {
   const { account } = useActiveWeb3React()
   const isDownMD = useBreakpoint('md')
   const theme = useTheme()
@@ -201,7 +209,7 @@ function MedalRow({ medal, curMilestone }: { medal: Medal; curMilestone: number[
                   <GrayImg src={ic.icon} alt="" style={imgStyle} />
                 )}
                 <Typography fontWeight={600} fontSize={12} mt={10}>
-                  $ {milestone[idx]}
+                  {(needDollar ? '$' : '') + milestone[idx].toLocaleString()}
                 </Typography>
               </Box>
             )
