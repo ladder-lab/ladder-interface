@@ -2,12 +2,12 @@ import { Box, Stack, styled, Typography, useTheme } from '@mui/material'
 import provider1 from 'assets/svg/round3/providor-1.svg'
 import provider2 from 'assets/svg/round3/providor-2.svg'
 import provider3 from 'assets/svg/round3/providor-3.svg'
-import accumulator1 from 'assets/svg/round3/accumulator-1.svg'
-import accumulator2 from 'assets/svg/round3/accumulator-2.svg'
-import accumulator3 from 'assets/svg/round3/accumulator-3.svg'
-import dompor1 from 'assets/svg/round3/dumpoor-1.svg'
-import dompor2 from 'assets/svg/round3/dumpoor-2.svg'
-import dompor3 from 'assets/svg/round3/dumpoor-3.svg'
+import accumulator1 from 'assets/svg/round3/collector-1.svg'
+import accumulator2 from 'assets/svg/round3/collector-2.svg'
+import accumulator3 from 'assets/svg/round3/collector-3.svg'
+import dompor1 from 'assets/svg/round3/flippor-1.svg'
+import dompor2 from 'assets/svg/round3/flippor-2.svg'
+import dompor3 from 'assets/svg/round3/flippor-3.svg'
 import trador1 from 'assets/svg/round3/tradoor-1.svg'
 import trador2 from 'assets/svg/round3/tradoor-2.svg'
 import trador3 from 'assets/svg/round3/tradoor-3.svg'
@@ -34,28 +34,28 @@ export default function V4Medal() {
   const list: Medal[] = useMemo(() => {
     return [
       {
-        type: 'Providooor (LP provider)',
-        desc: 'Provide liquidity to level up!',
+        type: 'Liquidity Providooor',
+        desc: 'Provide more liquidity to level up!',
         currentAmount: Number(result?.liquidityValume),
         icons: [provider1, provider2, provider3]
       },
       {
         type: 'Tradoooor',
-        desc: 'Accumulate NFT trading volume  to level up!',
+        desc: 'Generate more NFT trading volume to level up!',
         currentAmount: Number(result?.swapValume),
         icons: [trador1, trador2, trador3]
       },
       {
-        type: 'Top Clickeeer',
-        desc: 'Trade more times to level up!',
+        type: 'Flippooor',
+        desc: 'Make more NFT swaps to level up!',
         currentAmount: Number(result?.transfers),
-        icons: [accumulator1, accumulator2, accumulator3]
+        icons: [dompor1, dompor2, dompor3]
       },
       {
         type: 'Legend Collectooor',
-        desc: 'Collect high value NFT to level up!',
+        desc: 'Trade(buy or sell) at least one high value NFT to level up!',
         currentAmount: Number(result?.nftValume),
-        icons: [dompor1, dompor2, dompor3]
+        icons: [accumulator1, accumulator2, accumulator3]
       }
     ]
   }, [result?.liquidityValume, result?.nftValume, result?.swapValume, result?.transfers])
@@ -64,7 +64,8 @@ export default function V4Medal() {
     <Stack spacing={isDownMD ? 30 : 60}>
       <Typography
         sx={{
-          fontSize: '16px',
+          fontSize: '18px',
+          lineHeight: '1.5',
           background: theme.palette.background.default,
           borderRadius: '12px',
           padding: '19px 24px'
@@ -208,7 +209,7 @@ function MedalRow({
                 ) : (
                   <GrayImg src={ic.icon} alt="" style={imgStyle} />
                 )}
-                <Typography fontWeight={600} fontSize={12} mt={10}>
+                <Typography fontSize={16} mt={10}>
                   {(needDollar ? '$' : '') + milestone[idx].toLocaleString()}
                 </Typography>
               </Box>
@@ -221,7 +222,7 @@ function MedalRow({
           right={isDownMD ? 11 : 15}
           display={'flex'}
           width={'100%'}
-          gap={80}
+          gap={85}
           padding={isDownMD ? '0 75px' : '0 100px'}
         >
           {linesDash.map((isDash, idx) => {

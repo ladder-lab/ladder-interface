@@ -378,10 +378,14 @@ function Step1({ step, setStep }: { step: number; setStep: (step: number) => voi
   const { verifyOauth, oauth } = useVerifyLadderOauth()
   const isDownMD = useBreakpoint('md')
   useEffect(() => {
-    if (oauth) {
+    if (oauth && step < 2) {
       setStep(2)
     }
-  }, [oauth, setStep])
+  }, [oauth, setStep, step])
+
+  useEffect(() => {
+    verifyOauth()
+  }, [verifyOauth])
 
   return (
     <Box
@@ -405,27 +409,38 @@ function Step1({ step, setStep }: { step: number; setStep: (step: number) => voi
           onClick={() => {
             if (step < 1) return
             openVerify()
+            let counter = 0
+            const intervalId = setInterval(() => {
+              counter++
+              if (counter > 20 || oauth) {
+                clearInterval(intervalId)
+                return
+              }
+              verifyOauth()
+            }, 1000)
           }}
         >
           <Twitter />
-          Connect
+          {oauth ? 'Connected' : 'Connect'}
         </StepBtn>
-        <StepBtn
-          sx={{
-            pointerEvents: step < 1 ? 'none' : 'auto',
-            border: '1px solid #1F9898',
-            backgroundColor: 'transparent',
-            color: '#1F9898'
-          }}
-          onClick={() => {
-            if (step < 1) return
-            if (!oauth) {
-              verifyOauth()
-            }
-          }}
-        >
-          Verify
-        </StepBtn>
+        {!oauth && (
+          <StepBtn
+            sx={{
+              pointerEvents: step < 1 ? 'none' : 'auto',
+              border: '1px solid #1F9898',
+              backgroundColor: 'transparent',
+              color: '#1F9898'
+            }}
+            onClick={() => {
+              if (step < 1) return
+              if (!oauth) {
+                verifyOauth()
+              }
+            }}
+          >
+            Verify
+          </StepBtn>
+        )}
       </Box>
     </Box>
   )
@@ -440,6 +455,11 @@ function Step2({ step, setStep }: { step: number; setStep: (step: number) => voi
       setStep(3)
     }
   }, [makeTwitter, setStep])
+
+  useEffect(() => {
+    checkMakeTwitter()
+  }, [checkMakeTwitter])
+
   return (
     <Box
       flex={1}
@@ -469,19 +489,21 @@ function Step2({ step, setStep }: { step: number; setStep: (step: number) => voi
           }}
         >
           <Twitter />
-          Tweet
+          {makeTwitter ? 'Tweeted' : 'Tweet'}
         </StepBtn>
-        <StepBtn
-          sx={{
-            border: '1px solid #1F9898',
-            backgroundColor: 'transparent',
-            color: '#1F9898',
-            pointerEvents: step < 2 ? 'none' : 'auto'
-          }}
-          onClick={checkMakeTwitter}
-        >
-          Verify
-        </StepBtn>
+        {!makeTwitter && (
+          <StepBtn
+            sx={{
+              border: '1px solid #1F9898',
+              backgroundColor: 'transparent',
+              color: '#1F9898',
+              pointerEvents: step < 2 ? 'none' : 'auto'
+            }}
+            onClick={checkMakeTwitter}
+          >
+            Verify
+          </StepBtn>
+        )}
       </Box>
     </Box>
   )
