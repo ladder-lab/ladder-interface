@@ -48,21 +48,18 @@ export default function CurrencyList({
 
   const listHeight = useCurrencyModalListHeight('360px')
 
-  function filterByProperty<T extends { [key: string]: any }>(arr: T[], propName: string): T[] {
+  function filterByProperty<T extends { [key: string]: Currency }>(arr: T[]): T[] {
     const uniqueArr: T[] = []
-    const valuesSeen: { [key: string]: boolean } = {}
 
     for (const item of arr) {
-      const propValue = item[propName]
-      if (!valuesSeen[propValue]) {
-        valuesSeen[propValue] = true
+      if (!uniqueArr.includes(item)) {
         uniqueArr.push(item)
       }
     }
 
     return uniqueArr
   }
-  const filteredOptions = filterByProperty(currencyOptions, 'symbol')
+  const filteredOptions = filterByProperty(currencyOptions)
 
   return (
     <>
