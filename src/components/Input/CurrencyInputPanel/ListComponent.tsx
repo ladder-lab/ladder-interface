@@ -7,10 +7,10 @@ import { Currency } from '@ladder/sdk'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks'
 import Spinner from 'components/Spinner'
-import useBreakpoint from 'hooks/useBreakpoint'
 import { getName, getSymbol } from 'utils/getSymbol'
 import { Token721 } from 'constants/token/token721'
 import TestnetV3Mark from 'components/TestnetV3Mark'
+import AutoSizer from 'react-virtualized-auto-sizer'
 
 export function CurrencyListComponent({
   onSelect,
@@ -24,7 +24,6 @@ export function CurrencyListComponent({
   showETH?: boolean
 }) {
   const { hideModal } = useModal()
-  const isDownMd = useBreakpoint('md')
 
   const key = useCallback((currency: Currency): string => {
     return currency ? currency.symbol || '' : ''
@@ -45,24 +44,30 @@ export function CurrencyListComponent({
     [hideModal, onSelect]
   )
 
-  const itemData: (Currency | undefined)[] = useMemo(() => {
+  const itemData: Currency[] = useMemo(() => {
     const formatted: (Currency | undefined)[] = showETH ? [Currency.ETHER, ...options] : options
 
-    return formatted
+    return formatted.filter(v => v) as Currency[]
   }, [options, showETH])
 
   return (
-    <FixedSizeList
-      height={isDownMd ? 290 : 450}
-      width="100%"
-      itemCount={itemData.length}
-      itemSize={56}
-      itemData={itemData}
-      itemKey={itemKey}
-      ref={fixedListRef as any}
-    >
-      {Rows}
-    </FixedSizeList>
+    <AutoSizer style={{ width: '100%', height: '100%' }}>
+      {({ width }) => {
+        return (
+          <FixedSizeList
+            height={48 * itemData.length}
+            width={width || '100%'}
+            itemCount={itemData.length}
+            itemSize={56}
+            itemData={itemData}
+            itemKey={itemKey}
+            ref={fixedListRef as any}
+          >
+            {Rows}
+          </FixedSizeList>
+        )
+      }}
+    </AutoSizer>
   )
 }
 
