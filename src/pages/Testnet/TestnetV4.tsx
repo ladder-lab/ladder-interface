@@ -123,8 +123,8 @@ export default function TestnetV4() {
             }}
           >
             <Step0 step={step} setStep={setStep} />
-            {/*<Step1 step={step} setStep={setStep} />*/}
-            {/*<Step2 step={step} setStep={setStep} />*/}
+            <Step1 step={step} setStep={setStep} />
+            <Step2 step={step} setStep={setStep} />
             <Step3 step={step} />
           </Box>
         </CollapseWhite>
@@ -373,7 +373,7 @@ function Step0({ step, setStep }: { step: number; setStep: (step: number) => voi
   )
 }
 
-export function Step1({ step, setStep }: { step: number; setStep: (step: number) => void }) {
+function Step1({ step, setStep }: { step: number; setStep: (step: number) => void }) {
   const { openVerify } = useVerifyTwitter(true)
   const { verifyOauth, oauth } = useVerifyLadderOauth()
   const isDownMD = useBreakpoint('md')
@@ -446,7 +446,7 @@ export function Step1({ step, setStep }: { step: number; setStep: (step: number)
   )
 }
 
-export function Step2({ step, setStep }: { step: number; setStep: (step: number) => void }) {
+function Step2({ step, setStep }: { step: number; setStep: (step: number) => void }) {
   const { makeTwitter, checkMakeTwitter } = useCheckMakeTwitter()
   const isDownMD = useBreakpoint('md')
 
@@ -519,14 +519,11 @@ function Step3({ step }: { step: number }) {
     <Box
       flex={1}
       sx={{
-        opacity: step > 0 ? 1 : 0.4,
-        minHeight: '200px',
-        // opacity: step > 2 ? 1 : 0.4,
+        opacity: step > 2 ? 1 : 0.4,
         position: 'relative'
       }}
     >
-      <StepText>Step 2</StepText>
-      {/*<StepText>Step 4</StepText>*/}
+      <StepText>Step 4</StepText>
       <StepNameText>Claim your test assets</StepNameText>
       <LightTooltip title={<FaucetsList />} arrow>
         <Link
@@ -560,8 +557,7 @@ function Step3({ step }: { step: number }) {
           // disableAction={!isOpenClaim && activeTimeStatus !== 'active'}
           actionText="Claim"
           error={submitted || complete ? 'Test assets Claimed' : undefined}
-          disableAction={step < 1}
-          // disableAction={step < 3}
+          disableAction={step < 3}
         />
       </Box>
     </Box>
