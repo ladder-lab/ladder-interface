@@ -69,8 +69,9 @@ export function useTestnetClaim(account: string | undefined) {
       hideModal()
       showModal(<TransactionSubmittedModal />)
     } catch (e) {
+      const err: any = e
       hideModal()
-      showModal(<MessageBox type="error">Claim Test assets Failed</MessageBox>)
+      showModal(<MessageBox type="error">{err?.error?.message || 'Claim Test assets Failed'}</MessageBox>)
       console.error(e)
     }
   }, [account, addTransaction, claimState, contract, hideModal, showModal])
