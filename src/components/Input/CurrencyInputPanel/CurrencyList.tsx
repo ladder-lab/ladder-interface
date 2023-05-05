@@ -48,7 +48,7 @@ export default function CurrencyList({
 
   const listHeight = useCurrencyModalListHeight('360px')
 
-  function filterByProperty<T extends { [key: string]: Currency }>(arr: T[]): T[] {
+  function filterByProperty<T extends Currency>(arr: T[]): T[] {
     const uniqueArr: T[] = []
 
     for (const item of arr) {
