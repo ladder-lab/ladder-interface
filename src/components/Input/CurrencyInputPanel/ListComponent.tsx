@@ -44,29 +44,27 @@ export function CurrencyListComponent({
     [hideModal, onSelect]
   )
 
-  const itemData: Currency[] = useMemo(() => {
+  const itemData: (Currency | undefined)[] = useMemo(() => {
     const formatted: (Currency | undefined)[] = showETH ? [Currency.ETHER, ...options] : options
 
-    return formatted.filter(v => v) as Currency[]
+    return formatted
   }, [options, showETH])
 
   return (
     <AutoSizer style={{ width: '100%', height: '100%' }}>
-      {({ width }) => {
-        return (
-          <FixedSizeList
-            height={48 * itemData.length}
-            width={width || '100%'}
-            itemCount={itemData.length}
-            itemSize={56}
-            itemData={itemData}
-            itemKey={itemKey}
-            ref={fixedListRef as any}
-          >
-            {Rows}
-          </FixedSizeList>
-        )
-      }}
+      {({ height, width }) => (
+        <FixedSizeList
+          height={Number(height) || 100}
+          width={width || '100%'}
+          itemCount={itemData.length}
+          itemSize={56}
+          itemData={itemData}
+          itemKey={itemKey}
+          ref={fixedListRef as any}
+        >
+          {Rows}
+        </FixedSizeList>
+      )}
     </AutoSizer>
   )
 }
