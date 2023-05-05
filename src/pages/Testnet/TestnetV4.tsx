@@ -409,21 +409,27 @@ function Step1({ step, setStep }: { step: number; setStep: (step: number) => voi
           onClick={() => {
             if (step < 1) return
             openVerify()
-            let counter = 0
-            const intervalId = setInterval(() => {
-              counter++
-              if (counter > 20 || oauth) {
-                clearInterval(intervalId)
-                return
+            setTimeout(() => {
+              if (step < 2) {
+                setStep(2)
               }
-              verifyOauth()
-            }, 1000)
+            }, 5000)
+            // let counter = 0
+            // const intervalId = setInterval(() => {
+            //   counter++
+            //   if (counter > 20 || oauth) {
+            //     clearInterval(intervalId)
+            //     return
+            //   }
+            //   verifyOauth()
+            // }, 1000)
           }}
         >
           <Twitter />
           {oauth ? 'Connected' : 'Connect'}
         </StepBtn>
-        {!oauth && (
+        {/*{!oauth && (*/}
+        {false && (
           <StepBtn
             sx={{
               pointerEvents: step < 1 ? 'none' : 'auto',
@@ -486,12 +492,18 @@ function Step2({ step, setStep }: { step: number; setStep: (step: number) => voi
               'intent',
               'scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=500,height=500,left=0,top=0'
             )
+            setTimeout(() => {
+              if (step < 3) {
+                setStep(3)
+              }
+            }, 5000)
           }}
         >
           <Twitter />
           {makeTwitter ? 'Tweeted' : 'Tweet'}
         </StepBtn>
-        {!makeTwitter && (
+        {/*{!makeTwitter && (*/}
+        {false && (
           <StepBtn
             sx={{
               border: '1px solid #1F9898',
