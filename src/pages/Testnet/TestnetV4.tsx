@@ -572,7 +572,7 @@ function Step3({ step }: { step: number }) {
         }}
       >
         <ActionButton
-          width={'144px'}
+          width={'247px'}
           // pending={claimState === ClaimState.UNKNOWN}
           onAction={testnetClaim}
           // disableAction={new Date() < new Date(v3ActiveTimeStamp[0])}

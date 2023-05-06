@@ -81,6 +81,12 @@ export default function V4Medal() {
       {list.map((item, idx) => (
         <MedalRow key={idx} medal={item} curMilestone={milestone?.[idx]} needDollar={idx != 2} />
       ))}
+      <Typography textAlign={'right'}>
+        *$ = test usdt or/and usdc
+        <br />
+        <br />
+        *value of one single NFT asset sold/bought
+      </Typography>
     </Stack>
   )
 }
