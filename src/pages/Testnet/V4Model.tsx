@@ -85,17 +85,9 @@ export default function V4Medal() {
         future of Ladder, and earn rewards as an early adopter!
       </Typography>
       {list.map((item, idx) => (
-        <MedalRow key={idx} medal={item} curMilestone={milestone?.[idx]} needDollar={idx != 2} />
+        <MedalRow key={idx} medal={item} curMilestone={milestone?.[idx]} needDollar={idx != 2} needTips={idx === 3} />
       ))}
-      <Typography textAlign={'right'}>
-        ** $ = test usdt or/and usdc
-        <br />
-        <br />
-        ** value of one single NFT asset sold/bought
-        <br />
-        <br />
-        ** should also be put after each of the numbers (5000, 10000, 20000) of Legend Collector badge line.
-      </Typography>
+      <Typography textAlign={'right'}></Typography>
       <></>
     </Stack>
   )
@@ -133,11 +125,13 @@ const GrayImg = styled('img')`
 function MedalRow({
   medal,
   curMilestone,
-  needDollar = true
+  needDollar = true,
+  needTips
 }: {
   medal: Medal
   curMilestone: number[]
   needDollar?: boolean
+  needTips?: boolean
 }) {
   const { account } = useActiveWeb3React()
   const isDownMD = useBreakpoint('md')
@@ -225,8 +219,9 @@ function MedalRow({
                 ) : (
                   <GrayImg src={ic.icon} alt="" style={imgStyle} />
                 )}
-                <Typography fontSize={16} mt={10}>
-                  {(needDollar ? '$' : '') + milestone[idx].toLocaleString()}
+                <Typography fontSize={16} mt={10} textAlign={'center'} maxWidth={96}>
+                  {(needDollar ? '$' : '') + milestone[idx].toLocaleString()}{' '}
+                  {needTips ? ' value of one single NFT asset sold/bought' : ''}
                 </Typography>
               </Box>
             )
@@ -237,8 +232,8 @@ function MedalRow({
           bottom={5}
           right={isDownMD ? 11 : 15}
           display={'flex'}
-          width={'100%'}
-          gap={85}
+          width={needTips ? '98%' : '100%'}
+          gap={needTips ? 106 : 85}
           padding={isDownMD ? '0 75px' : '0 100px'}
         >
           {linesDash.map((isDash, idx) => {
