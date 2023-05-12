@@ -87,8 +87,12 @@ export default function V4Medal() {
       {list.map((item, idx) => (
         <MedalRow key={idx} medal={item} curMilestone={milestone?.[idx]} needDollar={idx != 2} needTips={idx === 3} />
       ))}
-      <Typography textAlign={'right'}>*$ = test usdt or/and usdc</Typography>
-      <></>
+      <Typography textAlign={'right'}>
+        *$ = test usdt or/and usdc
+        <br />
+        <br />
+        **value of one single NFT asset sold/bought
+      </Typography>
     </Stack>
   )
 }
@@ -220,10 +224,8 @@ function MedalRow({
                   <GrayImg src={ic.icon} alt="" style={imgStyle} />
                 )}
                 <Typography fontSize={16} mt={10} textAlign={'center'} maxWidth={96}>
-                  {(needDollar ? '$' : '') + milestone[idx].toLocaleString() + ' '}{' '}
-                </Typography>
-                <Typography fontSize={16} mt={10} textAlign={'center'} maxWidth={96}>
-                  {needTips ? 'value of one single NFT asset sold/bought' : ''}
+                  {(needDollar ? '$' : '') + milestone[idx].toLocaleString()}
+                  {needTips ? '**' : ''}{' '}
                 </Typography>
               </Box>
             )
@@ -234,7 +236,7 @@ function MedalRow({
           bottom={5}
           right={isDownMD ? 11 : 15}
           display={'flex'}
-          width={needTips ? '98%' : '100%'}
+          width={'100%'}
           gap={needTips ? 106 : 85}
           padding={isDownMD ? '0 75px' : '0 100px'}
         >
