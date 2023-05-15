@@ -78,7 +78,7 @@ export default function V4Medal() {
         Participating in Ladder&apos;s testnet is the easiest way to <LineText>secure future airdrop rewards</LineText>.
         By joining the testnet, you will have an opportunity to contribute to improving our product. As a token of our
         appreciation, we will <LineText>reward early users and supporters with Ladder airdrop</LineText>. To make the
-        experience more engaging and exciting for our community, we are offering five achievement badges as a
+        experience more engaging and exciting for our community, we are offering four achievement badges as a
         gamification tool. Each badge has three levels, with <LineText>higher levels</LineText> offering{' '}
         <LineText>greater chances </LineText>
         of receiving higher airdrop rewards. Don&apos;t miss out on the chance to join our community, help shape the
