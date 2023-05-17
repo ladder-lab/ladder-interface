@@ -34,7 +34,7 @@ export function useTestnetClaim(account: string | undefined) {
           }
         )
         if (signRes.data?.data?.index) {
-          const claimed = await contract.isClaimed(signRes.data.data.index)
+          const claimed = await contract.isClaimedAddress(account)
           if (claimed) {
             setClaimState(ClaimState.CLAIMED)
           } else {
