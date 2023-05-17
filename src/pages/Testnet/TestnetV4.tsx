@@ -123,7 +123,7 @@ export default function TestnetV4() {
             }}
           >
             <Step0 step={step} setStep={setStep} />
-            {/*<Step1 step={step} setStep={setStep} />*/}
+            <Step1 step={step} setStep={setStep} />
             <Step2 step={step} setStep={setStep} />
             <Step3 step={step} />
           </Box>
@@ -391,6 +391,10 @@ export function Step1({ step, setStep }: { step: number; setStep: (step: number)
     <Box
       flex={1}
       sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        minHeight: '200px',
         opacity: step > 0 ? 1 : 0.4
       }}
     >
@@ -474,34 +478,35 @@ export function Step2({ step, setStep }: { step: number; setStep: (step: number)
         flexDirection: 'column',
         justifyContent: 'space-between',
         minHeight: '200px',
-        opacity: step > 0 ? 1 : 0.4
+        opacity: step > 1 ? 1 : 0.4
+        // opacity: step > 0 ? 1 : 0.4
       }}
     >
       <Box>
-        {/*<StepText>Step 3</StepText>*/}
-        <StepText>Step 2</StepText>
+        <StepText>Step 3</StepText>
+        {/*<StepText>Step 2</StepText>*/}
         <StepNameText>Make a tweet</StepNameText>
         <StepDescText>Please tweet to receive free Ladder test assets</StepDescText>
       </Box>
       <Box display={'flex'} mt={23} gap={isDownMD ? 12 : 20} flexDirection={isDownMD ? 'column' : 'row'}>
         <StepBtn
           sx={{
-            pointerEvents: step < 1 ? 'none' : 'auto',
+            pointerEvents: step < 2 ? 'none' : 'auto',
             '& svg': {
               fill: 'white',
               opacity: 1
             }
           }}
           onClick={() => {
-            // if (step < 2) return
+            if (step < 2) return
             window.open(
               `https://twitter.com/intent/tweet?text=Something's%20stirring%20in%20the%20world%20of%20NFTs.%20%0A%0A%20Are%20you%20ready%20to%20explore?%20%F0%9F%8C%AA%EF%B8%8F%20@Laddertop_NFT%20%0A%0A%20`,
               'intent',
               'scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=500,height=500,left=0,top=0'
             )
             setTimeout(() => {
-              if (step < 2) {
-                setStep(2)
+              if (step < 3) {
+                setStep(3)
               }
             }, 5000)
           }}
@@ -538,14 +543,14 @@ function Step3({ step }: { step: number }) {
     <Box
       flex={1}
       sx={{
-        opacity: step > 1 ? 1 : 0.4,
+        // opacity: step > 1 ? 1 : 0.4,
+        opacity: step > 2 ? 1 : 0.4,
         minHeight: '200px',
-        // opacity: step > 2 ? 1 : 0.4,
         position: 'relative'
       }}
     >
-      <StepText>Step 3</StepText>
-      {/*<StepText>Step 4</StepText>*/}
+      {/*<StepText>Step 3</StepText>*/}
+      <StepText>Step 4</StepText>
       <StepNameText>Claim your test assets</StepNameText>
       <LightTooltip title={<FaucetsList />} arrow>
         <Link
@@ -579,8 +584,8 @@ function Step3({ step }: { step: number }) {
           // disableAction={!isOpenClaim && activeTimeStatus !== 'active'}
           actionText="Claim"
           error={submitted || complete ? 'Test assets Claimed' : undefined}
-          disableAction={step < 2}
-          // disableAction={step < 3}
+          // disableAction={step < 2}
+          disableAction={step < 3}
         />
       </Box>
     </Box>
