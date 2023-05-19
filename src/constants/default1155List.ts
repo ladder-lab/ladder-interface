@@ -64,11 +64,63 @@ export const DEFAULT_1155_LIST: { [chainId in ChainId]?: Token1155[] } = {
     new Token1155(56, '0x26cA871A864f85A3673F7240D72daE54d1FcFd63', 2)
   ],
   [ChainId.GÖRLI]: TEST_1155_LIST,
-  [ChainId.SEPOLIA]: test1155Sepolia.map((address, idx) => {
-    return new Token1155(ChainId.SEPOLIA, address, '1', {
-      name: `Test NFT-ERC1155-${idx + 1}`,
-      symbol: `TNT-${idx + 1}`,
-      uri: ` https://info.chainswap.com/file/tnt-${idx + 1}.jpg`
+  [ChainId.SEPOLIA]: [
+    new Token1155(11155111, '0x59865Bc13A66091eD7d55F5ea064E7e2ac8503A2', 1, {
+      name: 'Color Lines  ColorLines',
+      symbol: 'ColorLines',
+      uri: `https://v1-test.ladder.top/ladder/ColorLines/1.jpg`
+    }),
+    new Token1155(11155111, '0x7e590B1e6d2C79107eA7752bA1e9E260255a2FCe', 1, {
+      name: '10KTF Stockroom',
+      symbol: 'Long Ass Tape Measure',
+      uri: `https://v1-test.ladder.top/ladder/LATM/1.jpg`
+    }),
+    new Token1155(11155111, '0x428d0B7CA1B798f7854183599EFf962fF028b0CF', 1, {
+      name: 'Proceed w/ Caution Defy',
+      symbol: 'Defy',
+      uri: `https://v1-test.ladder.top/ladder/Defy/1.jpg`
+    }),
+    new Token1155(11155111, '0x4C5C83aE03b25fBc4a02AD8Df9bD3c13c4274C97', 1, {
+      name: 'Parallel Alpha  Recon [SE] - Artigraph',
+      symbol: 'Recon [SE] - Artigraph',
+      uri: `https://v1-test.ladder.top/ladder/ReconArtigraph/1.jpg`
+    }),
+    new Token1155(11155111, '0xF147304398B5c03A09D576208300E3E1ae52Ae7B', 1, {
+      name: 'Nakameebto',
+      symbol: 'Nakameebto',
+      uri: `https://v1-test.ladder.top/ladder/Nakameebto/1.jpg`
+    }),
+    new Token1155(11155111, '0x2dFC4FF9591f39aD2327b4ea92B2f32387812291', 1, {
+      name: 'Town Star',
+      symbol: 'Legendary Bitrue Wheat',
+      uri: `https://v1-test.ladder.top/ladder/LegendaryBitrueWheat/1.jpg`
+    }),
+    new Token1155(11155111, '0xEd226f9Ada7B93c7401d6CA4a7be7fD9AAc289C7', 1, {
+      name: 'Memo Angeles Presents: The Killa Chronicles',
+      symbol: 'Volume 3: The Rescue',
+      uri: `https://v1-test.ladder.top/ladder/Volume3/1.jpg`
+    }),
+    new Token1155(11155111, '0x35da36ae500092102e889fF73282c8D140b2Fcf5', 1, {
+      name: 'ikehaya Pass',
+      symbol: 'ikehaya Pass Genesis',
+      uri: `https://v1-test.ladder.top/ladder/ikehayaPassGenesis/1.jpg`
+    }),
+    new Token1155(11155111, '0x939b9a830d736d483C9511CD3849C2d21E5bB3d6', 1, {
+      name: 'Genesis Oath',
+      symbol: 'VIP',
+      uri: `https://v1-test.ladder.top/ladder/VIP/1.jpg`
+    }),
+    new Token1155(11155111, '0x27AB6D927Fa84D933bf0e5493Dd20f3a6270CBe8', 1, {
+      name: 'Nyan Balloon',
+      symbol: 'Multi-Nyan Balloons',
+      uri: `https://v1-test.ladder.top/ladder/Multi-NyanBalloons/1.webp`
+    }),
+    ...test1155Sepolia.map((address, idx) => {
+      return new Token1155(ChainId.SEPOLIA, address, '1', {
+        name: `Test NFT-ERC1155-${idx + 1}`,
+        symbol: `TNT-${idx + 1}`,
+        uri: ` https://info.chainswap.com/file/tnt-${idx + 1}.jpg`
+      })
     })
-  })
+  ]
 }
