@@ -851,8 +851,8 @@ function LeaderBoardBox() {
             }}
             value={timestamp}
           >
-            <MenuItem value={'1680451200'}>This Week</MenuItem>
-            <MenuItem value={'1679846400'}>Last Week</MenuItem>
+            <MenuItem value={'1685923200'}>This Week</MenuItem>
+            <MenuItem value={'1685232000'}>Last Week</MenuItem>
             <MenuItem value={'1679241600'}>Mar 20 - Mar 26, 2023</MenuItem>
             <MenuItem value={'1678636800'}>Mar 13 - Mar 19, 2023</MenuItem>
           </Select>
