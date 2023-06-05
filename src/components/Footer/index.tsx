@@ -36,22 +36,22 @@ export default function Footer() {
           </Box>
           <Stack direction={'row'}>
             <Button variant="text">
-              <ExternalLink href="">
+              <ExternalLink href="https://twitter.com/Laddertop_NFT">
                 <Twitter />
               </ExternalLink>
             </Button>
             <Button variant="text">
-              <ExternalLink href="">
+              <ExternalLink href="https://t.me/+CQuxqoqD7GIxZTY1">
                 <Telegram />
               </ExternalLink>
             </Button>
             <Button variant="text">
-              <ExternalLink href="">
+              <ExternalLink href="https://discord.com/invite/FjXpN8wYBq">
                 <Discord />
               </ExternalLink>
             </Button>
             <Button variant="text">
-              <ExternalLink href="">
+              <ExternalLink href="https://medium.com/@ladder_top">
                 <Medium />
               </ExternalLink>
             </Button>

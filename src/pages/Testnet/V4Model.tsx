@@ -27,6 +27,10 @@ interface Medal {
   icons: string[]
 }
 
+const LineText = styled('span')({
+  textDecoration: 'underline'
+})
+
 export default function V4Medal() {
   const { result, milestone } = useV4Medal(ChainId.SEPOLIA)
   const isDownMD = useBreakpoint('md')
@@ -53,7 +57,7 @@ export default function V4Medal() {
       },
       {
         type: 'Legend Collectooor',
-        desc: 'Trade(buy or sell) at least one high value NFT to level up!',
+        desc: 'Trade (buy or sell) at least one high value NFT to level up!',
         currentAmount: Number(result?.nftValume),
         icons: [accumulator1, accumulator2, accumulator3]
       }
@@ -71,16 +75,24 @@ export default function V4Medal() {
           padding: '19px 24px'
         }}
       >
-        Participating in Ladder&apos;s testnet is the easiest way to secure future airdrop rewards. By joining the
-        testnet, you will have an opportunity to contribute to improving our product. As a token of our appreciation, we
-        will reward early users and supporters with Ladder airdrop. To make the experience more engaging and exciting
-        for our community, we are offering five achievement badges as a gamification tool. Each badge has three levels,
-        with higher levels offering greater chances of receiving higher airdrop rewards. Don&apos;t miss out on the
-        chance to join our community, help shape the future of Ladder, and earn rewards as an early adopter!
+        Participating in Ladder&apos;s testnet is the easiest way to <LineText>secure future airdrop rewards</LineText>.
+        By joining the testnet, you will have an opportunity to contribute to improving our product. As a token of our
+        appreciation, we will <LineText>reward early users and supporters with Ladder airdrop</LineText>. To make the
+        experience more engaging and exciting for our community, we are offering four achievement badges as a
+        gamification tool. Each badge has three levels, with <LineText>higher levels</LineText> offering{' '}
+        <LineText>greater chances </LineText>
+        of receiving higher airdrop rewards. Don&apos;t miss out on the chance to join our community, help shape the
+        future of Ladder, and earn rewards as an early adopter!
       </Typography>
       {list.map((item, idx) => (
-        <MedalRow key={idx} medal={item} curMilestone={milestone?.[idx]} needDollar={idx != 2} />
+        <MedalRow key={idx} medal={item} curMilestone={milestone?.[idx]} needDollar={idx != 2} needTips={idx === 3} />
       ))}
+      <Typography textAlign={'right'}>
+        *$ = test usdt or/and usdc
+        <br />
+        <br />
+        **value of one single NFT asset sold/bought
+      </Typography>
     </Stack>
   )
 }
@@ -117,11 +129,13 @@ const GrayImg = styled('img')`
 function MedalRow({
   medal,
   curMilestone,
-  needDollar = true
+  needDollar = true,
+  needTips
 }: {
   medal: Medal
   curMilestone: number[]
   needDollar?: boolean
+  needTips?: boolean
 }) {
   const { account } = useActiveWeb3React()
   const isDownMD = useBreakpoint('md')
@@ -209,8 +223,9 @@ function MedalRow({
                 ) : (
                   <GrayImg src={ic.icon} alt="" style={imgStyle} />
                 )}
-                <Typography fontSize={16} mt={10}>
+                <Typography fontSize={16} mt={10} textAlign={'center'} maxWidth={96}>
                   {(needDollar ? '$' : '') + milestone[idx].toLocaleString()}
+                  {needTips ? '**' : ''}{' '}
                 </Typography>
               </Box>
             )
@@ -222,7 +237,7 @@ function MedalRow({
           right={isDownMD ? 11 : 15}
           display={'flex'}
           width={'100%'}
-          gap={85}
+          gap={needTips ? 106 : 85}
           padding={isDownMD ? '0 75px' : '0 100px'}
         >
           {linesDash.map((isDash, idx) => {
