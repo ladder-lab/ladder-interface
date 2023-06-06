@@ -4,7 +4,7 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 import { useActiveWeb3React } from 'hooks'
 import { useTestnetClaim } from 'hooks/useTestnetClaim'
 import ActionButton from 'components/Button/ActionButton'
-import { formatMillion, shortenAddress } from 'utils'
+import { formatMillion, getUTC0MondayMidnightTimestamp, shortenAddress } from 'utils'
 import { useEffect, useMemo, useState } from 'react'
 import { ChainId } from 'constants/chain'
 import { ReactComponent as Explore } from 'assets/svg/explore.svg'
@@ -595,9 +595,11 @@ function Step3({ step }: { step: number }) {
 function LeaderBoardBox() {
   const isDarkMode = useIsDarkMode()
   const chainId = ChainId.SEPOLIA
+  const curWeekTime = getUTC0MondayMidnightTimestamp()
+  const prevWeekTime = curWeekTime - 86400 * 7
   const { account } = useActiveWeb3React()
   const [currentType, setType] = useState('Total')
-  const [timestamp, setTimestamp] = useState<string>('0')
+  const [timestamp, setTimestamp] = useState<string>(curWeekTime.toString())
   const [accountAssetsRankList, setAccountAssetsRankList] = useState<AccountRankValues[]>()
   const [accountAssetsRank, setAccountAssetsRank] = useState<AccountRankValues>()
   const [assetsTotalPage, setAssetsTotalPage] = useState<number>(5)
@@ -820,7 +822,7 @@ function LeaderBoardBox() {
                 if (item == 'Total') {
                   setTimestamp('0')
                 } else {
-                  setTimestamp('1680451200')
+                  setTimestamp(curWeekTime.toString())
                 }
                 setAssetsPage(1)
                 setLiquidityPage(1)
@@ -851,8 +853,8 @@ function LeaderBoardBox() {
             }}
             value={timestamp}
           >
-            <MenuItem value={'1685923200'}>This Week</MenuItem>
-            <MenuItem value={'1685318400'}>Last Week</MenuItem>
+            <MenuItem value={curWeekTime.toString()}>This Week</MenuItem>
+            <MenuItem value={prevWeekTime.toString()}>Last Week</MenuItem>
             <MenuItem value={'1679241600'}>Mar 20 - Mar 26, 2023</MenuItem>
             <MenuItem value={'1678636800'}>Mar 13 - Mar 19, 2023</MenuItem>
           </Select>
