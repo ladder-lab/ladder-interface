@@ -557,7 +557,7 @@ function Step3({ step }: { step: number }) {
           display={'flex'}
           alignItems="center"
           fontWeight={600}
-          href="https://web.getlaika.app/faucets"
+          href="https://sepoliafaucet.com/"
           target={'_blank'}
           style={{ textDecoration: 'none' }}
         >
@@ -1030,24 +1030,24 @@ function FaucetsList() {
   const list = [
     {
       name: 'Faucet Link',
-      link: 'https://faucetlink.to/sepolia'
-    },
-    {
-      name: 'Ethereum Sepolia | Coinbase Faucet',
-      link: 'https://coinbase.com/faucets/ethereum-sepolia-faucet'
-    },
-    {
-      name: 'Sepolia Faucet',
-      link: 'https://sepoliafaucet.net/'
-    },
-    {
-      name: 'All That Node | Multi-chain API & Dev-tools, Web3 Infrastructure',
-      link: 'https://www.allthatnode.com/faucet/ethereum.dsrv'
-    },
-    {
-      name: 'Laika',
-      link: 'https://web.getlaika.app/faucets'
+      link: 'https://sepolia-faucet.pk910.de/'
     }
+    // {
+    //   name: 'Ethereum Sepolia | Coinbase Faucet',
+    //   link: 'https://coinbase.com/faucets/ethereum-sepolia-faucet'
+    // },
+    // {
+    //   name: 'Sepolia Faucet',
+    //   link: 'https://sepoliafaucet.net/'
+    // },
+    // {
+    //   name: 'All That Node | Multi-chain API & Dev-tools, Web3 Infrastructure',
+    //   link: 'https://www.allthatnode.com/faucet/ethereum.dsrv'
+    // },
+    // {
+    //   name: 'Laika',
+    //   link: 'https://web.getlaika.app/faucets'
+    // }
   ]
   return (
     <Box>
