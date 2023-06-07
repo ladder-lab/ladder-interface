@@ -599,7 +599,7 @@ function LeaderBoardBox() {
   const prevWeekTime = curWeekTime - 86400 * 7
   const { account } = useActiveWeb3React()
   const [currentType, setType] = useState('Total')
-  const [timestamp, setTimestamp] = useState<string>(curWeekTime.toString())
+  const [timestamp, setTimestamp] = useState<string>('0')
   const [accountAssetsRankList, setAccountAssetsRankList] = useState<AccountRankValues[]>()
   const [accountAssetsRank, setAccountAssetsRank] = useState<AccountRankValues>()
   const [assetsTotalPage, setAssetsTotalPage] = useState<number>(5)
@@ -822,7 +822,7 @@ function LeaderBoardBox() {
                 if (item == 'Total') {
                   setTimestamp('0')
                 } else {
-                  setTimestamp(curWeekTime.toString())
+                  setTimestamp(prevWeekTime.toString())
                 }
                 setAssetsPage(1)
                 setLiquidityPage(1)
@@ -853,7 +853,7 @@ function LeaderBoardBox() {
             }}
             value={timestamp}
           >
-            <MenuItem value={curWeekTime.toString()}>This Week</MenuItem>
+            {/* <MenuItem value={curWeekTime.toString()}>This Week</MenuItem> */}
             <MenuItem value={prevWeekTime.toString()}>Last Week</MenuItem>
             <MenuItem value={'1679241600'}>Mar 20 - Mar 26, 2023</MenuItem>
             <MenuItem value={'1678636800'}>Mar 13 - Mar 19, 2023</MenuItem>
@@ -876,7 +876,7 @@ function LeaderBoardBox() {
           rows={topAssetsValue}
           bgcolors={bgcolors}
           title="Top Asset Value"
-          helper="Update once an hour"
+          helper={currentType == 'Weekly' ? 'Update every Monday' : 'Update once an hour'}
           page={assetsPage}
           setPage={setAssetsPage}
           totalPage={assetsTotalPage}
@@ -885,7 +885,8 @@ function LeaderBoardBox() {
           rows={topLiquidityValue}
           bgcolors={bgcolors}
           title="Top Liquidity Provided"
-          helper="Update once an hour"
+          // helper="Update once an hour"
+          helper={currentType == 'Weekly' ? 'Update every Monday' : 'Update once an hour'}
           page={liquidityPage}
           setPage={setLiquidityPage}
           totalPage={liquidityTotalPage}
@@ -894,6 +895,7 @@ function LeaderBoardBox() {
           rows={topVolumeTraded}
           bgcolors={bgcolors}
           title="Top Volume Traded"
+          // helper={currentType == 'Weekly' ? 'Update every Monday' : 'Update once an hour'}
           page={volumePage}
           setPage={setVolumePage}
           totalPage={volumeTotalPage}
