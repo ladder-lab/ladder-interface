@@ -5,11 +5,13 @@ import { useV3ActivityData } from 'hooks/useTestnetV3'
 import { useMemo } from 'react'
 import { formatMillion } from 'utils'
 import { Row } from '../MyAccount/OrigAccount'
+import { useStatisticsOverviewData } from '../../hooks/useStatBacked'
 
 export default function V3ActivityData() {
   const curChainId = ChainId.SEPOLIA
   const theme = useTheme()
   const v3ActivityData = useV3ActivityData(curChainId)
+  const { result: statisticsGlobalTVL } = useStatisticsOverviewData(curChainId || ChainId.SEPOLIA)
 
   const data = useMemo(
     () => [
@@ -19,9 +21,9 @@ export default function V3ActivityData() {
         value: v3ActivityData ? formatMillion(v3ActivityData.tvl, '$ ', 2) : '-'
       },
       {
-        name: 'Assets',
+        name: 'Trading volume',
         helperText: 'Equity Value of NFT and Token',
-        value: v3ActivityData ? formatMillion(v3ActivityData.assets, '$ ', 2) : '-'
+        value: statisticsGlobalTVL ? formatMillion(statisticsGlobalTVL.totalVolume, '', 2) : '-'
       },
       {
         name: 'Transactions',
