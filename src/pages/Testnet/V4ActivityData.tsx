@@ -31,7 +31,7 @@ export default function V3ActivityData() {
         value: v3ActivityData ? v3ActivityData.transfers : '-'
       }
     ],
-    [v3ActivityData]
+    [statisticsGlobalTVL, v3ActivityData]
   )
 
   return (
