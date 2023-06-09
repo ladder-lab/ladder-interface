@@ -582,10 +582,10 @@ export function TestnetV1Old() {
                       display={'flex'}
                       alignItems="center"
                       fontWeight={600}
-                      href="https://faucet.paradigm.xyz/ "
+                      href="https://sepoliafaucet.com/"
                       target={'_blank'}
                     >
-                      Goerli Faucet
+                      Faucet
                       <Explore />
                     </Link>
                   </Box>

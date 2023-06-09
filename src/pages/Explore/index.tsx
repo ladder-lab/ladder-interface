@@ -168,7 +168,7 @@ export default function Explore() {
               value={statisticsGlobalTVL ? formatMillion(statisticsGlobalTVL.totalTvl, '', 2) : '--'}
             />
             <NumericCard
-              title="Total Volume(24hrs)"
+              title="Total Volume"
               value={statisticsGlobalTVL ? formatMillion(statisticsGlobalTVL.totalVolume, '', 2) : '--'}
             />
           </Box>

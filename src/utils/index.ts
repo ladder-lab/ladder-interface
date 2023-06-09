@@ -202,3 +202,19 @@ export function timeStampToFormat(timeStamp: number | Date | undefined, format =
 export function replaceErrorMessage(str: string) {
   return str.replace(/UniswapV2/g, 'Ladder')
 }
+
+export function getUTC0MondayMidnightTimestamp(): number {
+  const currentDate = new Date()
+  const currentDay = currentDate.getUTCDay()
+  let diffDays = currentDay - 1
+  if (currentDay === 0) {
+    diffDays = 6
+  }
+  const mondayDate = new Date(currentDate.getTime() - diffDays * 24 * 60 * 60 * 1000)
+  mondayDate.setUTCHours(0, 0, 0, 0)
+  const mondayTimestamp = Math.floor(mondayDate.getTime() / 1000)
+  return mondayTimestamp
+}
+
+const utc0MondayMidnightTimestamp = getUTC0MondayMidnightTimestamp()
+console.log(utc0MondayMidnightTimestamp)
