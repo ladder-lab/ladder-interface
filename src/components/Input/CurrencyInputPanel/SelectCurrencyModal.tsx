@@ -63,6 +63,7 @@ export default function SelectCurrencyModal({
   const { hideModal } = useModal()
 
   const allTokens = useAllTokens()
+
   const allToken1155 = useTrackedToken1155List()
 
   // if they input an address, use it

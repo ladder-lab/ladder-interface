@@ -164,9 +164,10 @@ const testTokens = {
 }
 export function useAllTokens(): { [address: string]: Token } {
   const allTokens = useDefaultTokenList()
+  const { chainId } = useActiveWeb3React()
   //add user added tokens
   const tokens = useTokensFromMap(allTokens, true)
-  return useMemo(() => ({ ...tokens, ...(NETWORK_CHAIN_ID === 11155111 ? testTokens[11155111] : {}) }), [tokens])
+  return useMemo(() => ({ ...tokens, ...(chainId === 11155111 ? testTokens[11155111] : {}) }), [tokens, chainId])
 }
 
 // parse a name or symbol from a token response

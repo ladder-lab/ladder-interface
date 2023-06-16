@@ -3,6 +3,9 @@ import { ReactComponent as ETH } from 'assets/svg/eth_logo.svg'
 import EthUrl from 'assets/svg/eth_logo.svg'
 import { ReactComponent as BSC } from 'assets/svg/binance.svg'
 import BSCUrl from 'assets/svg/binance.svg'
+import { ReactComponent as MATIC } from 'assets/svg/matic.svg'
+import MATICUrl from 'assets/svg/matic.svg'
+// import { toHex } from 'web3-utils'
 
 export enum ChainId {
   MAINNET = 1,
@@ -11,7 +14,8 @@ export enum ChainId {
   GÖRLI = 5,
   KOVAN = 42,
   BSC = 56,
-  SEPOLIA = 11155111
+  SEPOLIA = 11155111,
+  MATIC = 137
 }
 
 export const NETWORK_CHAIN_ID: ChainId = process.env.REACT_APP_CHAIN_ID
@@ -72,6 +76,14 @@ export const AllChainList = [
     name: 'Binance Smart Chain',
     id: ChainId.BSC,
     hex: '0x38'
+  },
+  {
+    icon: <MATIC />,
+    logo: MATICUrl,
+    symbol: 'MATIC',
+    name: 'Matic',
+    id: ChainId.MATIC,
+    hex: '0xA86A'
   }
 ]
 
@@ -173,5 +185,16 @@ export const SUPPORTED_NETWORKS: {
     },
     rpcUrls: ['https://sepolia.infura.io/v3/f338fa7411a945db8bed616683b2ade5'],
     blockExplorerUrls: ['https://sepolia.etherscan.io/']
+  },
+  [ChainId.MATIC]: {
+    chainId: '0x89',
+    chainName: 'Matic',
+    nativeCurrency: {
+      name: 'Matic Token',
+      symbol: 'MATIC',
+      decimals: 18
+    },
+    rpcUrls: ['https://polygon-rpc.com/'],
+    blockExplorerUrls: ['https://polygonscan.com']
   }
 }
