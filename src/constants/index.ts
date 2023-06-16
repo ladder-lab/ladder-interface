@@ -1,10 +1,8 @@
-import { Percent, JSBI, WETH, ChainId, Token, FACTORY_ADDRESS as sdkFactory } from '@ladder/sdk'
+import { Percent, JSBI, WETH, ChainId, Token } from '@ladder/sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
 import { NETWORK_CHAIN_ID } from './chain'
 import { DEFAULT_1155_LIST } from './default1155List'
-console.log('1155 FACTORY', sdkFactory(11155111, false))
-console.log('721 FACTORY', sdkFactory(11155111, true))
 
 type ChainTokenList = {
   readonly [chainId in ChainId]: Token[]
@@ -20,7 +18,8 @@ export const ROUTER_ADDRESS_721: string =
       [4]: '0xC61d146BB1965ba0e387aA2Ad94c500a17dfe65F',
       [56]: '',
       [1]: '',
-      [11155111]: '0x146ADA3E3A615CAdEBC06C1b02cBE3D040DcC3A0'
+      [11155111]: '0x146ADA3E3A615CAdEBC06C1b02cBE3D040DcC3A0',
+      [137]: '0xBa5a17945e4694a3E4416235C7CeE9ae9C5cE561'
     } as any
   )[NETWORK_CHAIN_ID] ?? ''
 
@@ -31,7 +30,8 @@ export const FACTORY_ADDRESS_721: string =
       [4]: '0x50A180230A11734FFD1A9A55e80c442387d42931',
       [56]: '',
       [1]: '',
-      [11155111]: '0x6413e73875EF1B4D315D5247bdc6d3BF311de4e5'
+      [11155111]: '0x6413e73875EF1B4D315D5247bdc6d3BF311de4e5',
+      [137]: '0xc5240a99cd17225B4E2471101aCA86d84a3ed295'
     } as any
   )[NETWORK_CHAIN_ID] ?? ''
 
@@ -42,7 +42,8 @@ export const ROUTER_ADDRESS: string =
       [56]: '0x54F0d8485e931c22D542D7b95dbbf5ecdE9C91E8',
       [1]: '',
       [5]: '0x6ECBC55F9087b86aF9AADF553F086EfdAC5c1458',
-      [11155111]: '0x6e2c879382520c7B15927902eEf1c0FbC1F8de91'
+      [11155111]: '0x6e2c879382520c7B15927902eEf1c0FbC1F8de91',
+      [137]: '0xc5E97c6edF0Cb9437125549765cA4f47Eaf3640A'
     } as any
   )[NETWORK_CHAIN_ID] ?? ''
 
@@ -53,7 +54,8 @@ export const FACTORY_ADDRESS =
       [56]: '0xa1bf45AF7cDe8c105054611383E8ae3dA65615a3',
       [1]: '',
       [5]: '0x075333bF761555D28D78E40232ABdC548083C3D7',
-      [11155111]: '0x83b115AdC58A951B77cD249b41977B2Fd1f13772'
+      [11155111]: '0x83b115AdC58A951B77cD249b41977B2Fd1f13772',
+      [137]: '0x03dD3b632b767e808E9b3De47852e90250112382'
     } as any
   )[NETWORK_CHAIN_ID] ?? ''
 
@@ -77,7 +79,8 @@ const WETH_ONLY: ChainTokenList = {
   [ChainId.GÖRLI]: [WETH[ChainId.GÖRLI]],
   [ChainId.KOVAN]: [WETH[ChainId.KOVAN]],
   [ChainId.BSC]: [WETH[ChainId.BSC]],
-  [ChainId.SEPOLIA]: [WETH[ChainId.SEPOLIA]]
+  [ChainId.SEPOLIA]: [WETH[ChainId.SEPOLIA]],
+  [ChainId.MATIC]: [WETH[ChainId.MATIC]]
 }
 
 // used to construct intermediary pairs for trading

@@ -138,7 +138,7 @@ function CurrencyRow({ currency, onClick, style }: { currency: Currency; onClick
       <Box display="flex">
         <CurrencyLogo currency={currency} style={{ width: '30px', height: '30px' }} />
         <Box display="flex" flexDirection="column" marginLeft="16px">
-          <Typography variant="inherit" display="flex" alignItems="center">
+          <Typography variant="inherit" display="flex" alignItems="center" component="div">
             {getSymbol(currency)}
             <TestnetV3Mark addresss={[_token.address]} />
           </Typography>
