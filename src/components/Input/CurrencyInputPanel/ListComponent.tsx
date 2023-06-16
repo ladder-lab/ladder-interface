@@ -32,14 +32,14 @@ export function CurrencyListComponent({
   const itemKey = useCallback((index: number, data: any) => key(data[index]), [key])
 
   const Rows = useCallback(
-    ({ data, index }: any) => {
+    ({ data, index, style }: any) => {
       const currency: Currency = data[index]
       const onClickCurrency = () => {
         onSelect && onSelect(currency)
         hideModal()
       }
 
-      return <CurrencyRow currency={currency} onClick={onClickCurrency} />
+      return <CurrencyRow currency={currency} onClick={onClickCurrency} style={style} />
     },
     [hideModal, onSelect]
   )
