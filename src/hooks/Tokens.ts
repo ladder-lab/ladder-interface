@@ -245,7 +245,7 @@ export function useToken1155(tokenAddress?: string, tokenId?: string | number): 
   const nftContract = use1155Contract(address ? address : undefined)
 
   useEffect(() => {
-    if (tokenAddress && library)
+    if (tokenAddress && library && !!isAddress(tokenAddress))
       checkTokenType(tokenAddress, library).then(r => {
         if (r === 'erc1155') {
           setIs1155(true)
@@ -293,7 +293,7 @@ export function useToken721(
   const symbolRes = useSingleCallResult(is721 ? nftContract : null, 'symbol')
 
   useEffect(() => {
-    if (tokenAddress && library)
+    if (tokenAddress && library && !!isAddress(tokenAddress))
       checkTokenType(tokenAddress, library).then(r => {
         if (r === 'erc721') {
           setIs721(true)
