@@ -170,6 +170,7 @@ export function useDerivedSwapInfo(): {
     !isExactIn ? parsedAmount : undefined,
     !!tokenIds[Field.OUTPUT]?.length
   )
+  console.log({ isExactIn, bestTradeExactIn, bestTradeExactOut, parsedAmount })
 
   const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
 

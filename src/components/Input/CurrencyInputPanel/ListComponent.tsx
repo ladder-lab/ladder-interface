@@ -129,7 +129,7 @@ const ListItem = styled('div')({
 })
 
 function CurrencyRow({ currency, onClick, style }: { currency: Currency; onClick: () => void; style?: any }) {
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const balance = useCurrencyBalance(account ?? undefined, currency)
   const _token: any = currency
 
@@ -139,10 +139,10 @@ function CurrencyRow({ currency, onClick, style }: { currency: Currency; onClick
         <CurrencyLogo currency={currency} style={{ width: '30px', height: '30px' }} />
         <Box display="flex" flexDirection="column" marginLeft="16px">
           <Typography variant="inherit" display="flex" alignItems="center" component="div">
-            {getSymbol(currency)}
+            {getSymbol(currency, chainId)}
             <TestnetV3Mark addresss={[_token.address]} />
           </Typography>
-          <Typography variant="caption">{getName(currency)}</Typography>
+          <Typography variant="caption">{getName(currency, chainId)}</Typography>
         </Box>
       </Box>
       <span style={{ fontWeight: 500 }}>

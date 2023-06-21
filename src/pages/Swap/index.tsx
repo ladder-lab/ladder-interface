@@ -312,14 +312,14 @@ export default function Swap() {
 
   useEffect(() => {
     if (currency0) {
-      if (currency0.symbol === 'WETH' || currency0.symbol === 'WBNB') {
+      if (currency0.symbol === 'WETH' || currency0.symbol === 'WBNB' || currency0.symbol === 'WMATIC') {
         onCurrencySelection(Field.INPUT, ETHER)
       } else {
         onCurrencySelection(Field.INPUT, currency0)
       }
     }
     if (currency1) {
-      if (currency1.symbol === 'WETH' || currency1.symbol === 'WBNB') {
+      if (currency1.symbol === 'WETH' || currency1.symbol === 'WBNB' || currency1.symbol === 'WMATIC') {
         onCurrencySelection(Field.OUTPUT, ETHER)
       } else {
         onCurrencySelection(Field.OUTPUT, currency1)
@@ -527,7 +527,6 @@ function TokenInfo({
   fromErc721SubTokens?: Token721[] | null
   toErc721SubTokens?: Token721[] | null
 }) {
-  null
   return (
     <AppBody width={'100%'} maxWidth={'680px'} sx={{ marginTop: 33 }}>
       <Box

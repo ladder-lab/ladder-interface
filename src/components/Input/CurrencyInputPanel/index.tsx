@@ -98,7 +98,7 @@ export default function CurrencyInputPanel({
   pairAddress
 }: Props) {
   // const [isOpen, setIsOpen] = useState(false)
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const is1155 = checkIs1155(currency)
   const is721 = filter721(currency)
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
@@ -229,7 +229,10 @@ export default function CurrencyInputPanel({
           selected={!!currency}
         >
           {currency ? (
-            <LogoText logo={<CurrencyLogo currency={currency} />} text={is1155 ? currency.name : getSymbol(currency)} />
+            <LogoText
+              logo={<CurrencyLogo currency={currency} />}
+              text={is1155 ? currency.name : getSymbol(currency, chainId)}
+            />
           ) : (
             <>Select Token</>
           )}

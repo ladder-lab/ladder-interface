@@ -118,11 +118,11 @@ export default function RemoveLiquidity() {
             'Remove ' +
             parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
             ' ' +
-            getSymbol(currencyA) +
+            getSymbol(currencyA, chainId) +
             ' and ' +
             parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
             ' ' +
-            getSymbol(currencyB)
+            getSymbol(currencyB, chainId)
         })
         onUserInput(Field.LIQUIDITY_PERCENT, '0')
       })

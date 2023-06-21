@@ -194,8 +194,8 @@ export function useSwapCallback(
           ...(value && !isZero(value) ? { value, from: account } : { from: account })
         })
           .then((response: any) => {
-            const inputSymbol = getSymbol(trade.inputAmount.currency)
-            const outputSymbol = getSymbol(trade.outputAmount.currency)
+            const inputSymbol = getSymbol(trade.inputAmount.currency, chainId)
+            const outputSymbol = getSymbol(trade.outputAmount.currency, chainId)
             const inputAmount = trade.inputAmount.toSignificant(3)
             const outputAmount = trade.outputAmount.toSignificant(3)
 

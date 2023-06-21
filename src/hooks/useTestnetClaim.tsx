@@ -16,7 +16,7 @@ export enum ClaimState {
 
 export function useTestnetClaim(account: string | undefined) {
   const [data, setData] = useState<null | { proof: string[]; index: string }>(null)
-  console.log('11', data)
+  console.log(data)
   const [claimState, setClaimState] = useState<ClaimState>(ClaimState.UNKNOWN)
   const { showModal, hideModal } = useModal()
   const contract = useMerkleContract()

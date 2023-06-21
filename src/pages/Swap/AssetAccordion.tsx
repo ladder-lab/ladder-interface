@@ -14,6 +14,7 @@ import { shortenAddress } from 'utils'
 import { getName } from 'utils/getSymbol'
 import { Token721 } from 'constants/token/token721'
 import TestnetV3Mark from 'components/TestnetV3Mark'
+import { useActiveWeb3React } from 'hooks'
 
 export function AssetAccordion({
   token,
@@ -27,6 +28,7 @@ export function AssetAccordion({
   const _token: any = useMemo(() => token, [token])
   const [expanded, setExpanded] = useState(false)
   const theme = useTheme()
+  const { chainId } = useActiveWeb3React()
 
   useEffect(() => {
     if (!subTokens) {
@@ -99,7 +101,7 @@ export function AssetAccordion({
             <Box key={idx} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <LogoText
                 logo={<CurrencyLogo currency={token} style={{ width: 28 }} />}
-                text={getName(token) + `#${token.tokenId}`}
+                text={getName(token, chainId) + `#${token.tokenId}`}
                 fontSize={12}
               />
               <ExternalLink sx={{ color: theme.palette.text.secondary, fontSize: 12 }} href={'#'} showIcon>
@@ -110,7 +112,7 @@ export function AssetAccordion({
           ))}
       </Box>
     )
-  }, [subTokens, theme.palette.text.secondary])
+  }, [chainId, subTokens, theme.palette.text.secondary])
 
   return (
     <Accordion
