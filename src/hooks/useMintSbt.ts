@@ -49,7 +49,6 @@ export function useMintSbt() {
           s: s
         }
       ]
-      console.log('args', args)
       return await contract['bindSBT'](...args)
     },
     [account, contract]

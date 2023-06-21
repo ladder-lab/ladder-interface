@@ -22,53 +22,29 @@ type ChainTokenList = {
 // used to ensure the user doesn't send so much ETH so they end up with <.01
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
 
-export const ROUTER_ADDRESS_721: string =
-  (
+export const ROUTER_ADDRESS_721: (chainId: ChainId | null | undefined) => string = chainId =>
+  ((
     {
       [5]: '0xB2d06a54f2DBC5a2b608358c034be6aA88646Df4',
       [4]: '0xC61d146BB1965ba0e387aA2Ad94c500a17dfe65F',
       [56]: '',
       [1]: '',
       [11155111]: '0x146ADA3E3A615CAdEBC06C1b02cBE3D040DcC3A0',
-      [137]: '0xBa5a17945e4694a3E4416235C7CeE9ae9C5cE561'
+      [137]: '0xf434274C78CF5567D47D765420CDbf552d1C1067'
     } as any
-  )[NETWORK_CHAIN_ID] ?? ''
+  )[chainId ?? NETWORK_CHAIN_ID] ?? '')
 
-export const FACTORY_ADDRESS_721: string =
-  (
-    {
-      [5]: '0xfE354EA7a06f6dBDEF06F087C4Be5A6d4E021442',
-      [4]: '0x50A180230A11734FFD1A9A55e80c442387d42931',
-      [56]: '',
-      [1]: '',
-      [11155111]: '0x6413e73875EF1B4D315D5247bdc6d3BF311de4e5',
-      [137]: '0xc5240a99cd17225B4E2471101aCA86d84a3ed295'
-    } as any
-  )[NETWORK_CHAIN_ID] ?? ''
-
-export const ROUTER_ADDRESS: string =
-  (
+export const ROUTER_ADDRESS: (chainId: ChainId | null | undefined) => string = chainId =>
+  ((
     {
       [4]: '0x2cB34c38f7FFF789fab70AB69DAA9f7F05a4ecc8',
       [56]: '0x54F0d8485e931c22D542D7b95dbbf5ecdE9C91E8',
       [1]: '',
       [5]: '0x6ECBC55F9087b86aF9AADF553F086EfdAC5c1458',
       [11155111]: '0x6e2c879382520c7B15927902eEf1c0FbC1F8de91',
-      [137]: '0xc5E97c6edF0Cb9437125549765cA4f47Eaf3640A'
+      [137]: '0x3c36a8F43c583c3b4d54E3170cCE7D04EfD41a49'
     } as any
-  )[NETWORK_CHAIN_ID] ?? ''
-
-export const FACTORY_ADDRESS =
-  (
-    {
-      [4]: '0xB4AA7ce0558A8EbfC943928d6F3E5ceCc1650a46',
-      [56]: '0xa1bf45AF7cDe8c105054611383E8ae3dA65615a3',
-      [1]: '',
-      [5]: '0x075333bF761555D28D78E40232ABdC548083C3D7',
-      [11155111]: '0x83b115AdC58A951B77cD249b41977B2Fd1f13772',
-      [137]: '0x03dD3b632b767e808E9b3De47852e90250112382'
-    } as any
-  )[NETWORK_CHAIN_ID] ?? ''
+  )[chainId ?? NETWORK_CHAIN_ID] ?? '')
 
 export const MERKLE_TREE_ADDRESS = '0x6bA46c1B67C9B1C2436EC9d7ca2a169BF9d0F167'
 export const TEST_NFT_URI_ADDRESS = '0x5D0F0780c6f7d95780D50de1413919E8CdD5579d'

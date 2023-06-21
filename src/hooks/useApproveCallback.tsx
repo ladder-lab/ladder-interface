@@ -137,20 +137,22 @@ export function useApproveCallback(
 
 // wraps useApproveCallback in the context of a swap
 export function useApproveCallbackFromTrade(trade?: Trade, allowedSlippage = 0) {
+  const { chainId } = useActiveWeb3React()
   const amountToApprove = useMemo(
     () => (trade ? computeSlippageAdjustedAmounts(trade, allowedSlippage)[Field.INPUT as Field] : undefined),
     [trade, allowedSlippage]
   )
 
-  return useApproveCallback(amountToApprove, ROUTER_ADDRESS)
+  return useApproveCallback(amountToApprove, ROUTER_ADDRESS(chainId))
 }
 
 export function useAllTokenApproveCallback(token: AllTokens | undefined, amount?: CurrencyAmount, is721Pair?: boolean) {
+  const { chainId } = useActiveWeb3React()
   const is1155 = checkIs1155(token)
   const is721 = checkIs721(token)
   const erc20 = useApproveCallback(
     is1155 || is721 ? undefined : amount,
-    is721Pair ? ROUTER_ADDRESS_721 : ROUTER_ADDRESS
+    is721Pair ? ROUTER_ADDRESS_721(chainId) : ROUTER_ADDRESS(chainId)
   )
   const erc1155 = useApproveERC1155Callback(filter1155(token))
   const erc721 = useApproveERC721Callback(filter721(token))

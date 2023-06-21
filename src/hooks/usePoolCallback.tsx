@@ -166,10 +166,15 @@ export function useBurnCallback(currencyA: AllTokens | undefined, currencyB: All
   const deadline = useTransactionDeadline()
   const { parsedAmounts, pair } = useDerivedBurnInfo(currencyA ?? undefined, currencyB ?? undefined)
   const Field = BurnField
+
+  const ADDRESSES = useMemo(() => {
+    return { [721]: ROUTER_ADDRESS_721(chainId), [1155]: ROUTER_ADDRESS(chainId) }
+  }, [chainId])
+
   const is721Pair = checkIs721(currencyA) || checkIs721(currencyB)
   const [approval, approveCallback] = useApproveCallback(
     parsedAmounts[Field.LIQUIDITY],
-    is721Pair ? ROUTER_ADDRESS_721 : ROUTER_ADDRESS
+    is721Pair ? ADDRESSES[721] : ADDRESSES[1155]
   )
   const isArgentWallet = useIsArgentWallet()
 
