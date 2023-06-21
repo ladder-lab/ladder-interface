@@ -126,11 +126,11 @@ export default function AddLiquidy() {
             'Add ' +
             parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
             ' ' +
-            getSymbol(currencies[Field.CURRENCY_A]) +
+            getSymbol(currencies[Field.CURRENCY_A], chainId) +
             ' and ' +
             parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
             ' ' +
-            getSymbol(currencies[Field.CURRENCY_B])
+            getSymbol(currencies[Field.CURRENCY_B], chainId)
         })
       })
       .catch(error => {
@@ -145,7 +145,17 @@ export default function AddLiquidy() {
           )
         }
       })
-  }, [addLiquidityCb, addTransaction, currencies, hideModal, onFieldAInput, onSetTokenIds, parsedAmounts, showModal])
+  }, [
+    addLiquidityCb,
+    addTransaction,
+    chainId,
+    currencies,
+    hideModal,
+    onFieldAInput,
+    onSetTokenIds,
+    parsedAmounts,
+    showModal
+  ])
 
   const handleAdd = useCallback(() => {
     expertMode ? handleAddCb() : setShowConfirm(true)
@@ -179,14 +189,14 @@ export default function AddLiquidy() {
 
   useEffect(() => {
     if (currency0) {
-      if (currency0.symbol === 'WETH' || currency0.symbol === 'WBNB') {
+      if (currency0.symbol === 'WETH' || currency0.symbol === 'WBNB' || currency0.symbol === 'WMATIC') {
         setCurrencyA(ETHER)
       } else {
         setCurrencyA(currency0)
       }
     }
     if (currency1) {
-      if (currency1.symbol === 'WETH' || currency1.symbol === 'WBNB') {
+      if (currency1.symbol === 'WETH' || currency1.symbol === 'WBNB' || currency1.symbol === 'WMATIC') {
         setCurrencyB(ETHER)
       } else {
         setCurrencyB(currency1)

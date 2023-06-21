@@ -17,7 +17,7 @@ function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): Pair[] {
   const [tokenA, tokenB] = chainId
     ? [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]
     : [undefined, undefined]
-
+  console.log({ currencyA, currencyB })
   const bases: Token[] = useMemo(() => {
     if (!chainId) return []
 
@@ -64,6 +64,8 @@ function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): Pair[] {
     [tokenA, tokenB, bases, basePairs, chainId]
   )
 
+  console.log({ allPairCombinations, tokenA, tokenB })
+
   const allPairs = usePairs(allPairCombinations)
 
   // only pass along valid pairs, non-duplicated pairs
@@ -92,7 +94,7 @@ export function useTradeExactIn(currencyAmountIn?: CurrencyAmount, currencyOut?:
   const allowedPairs = useAllCommonPairs(currencyAmountIn?.currency, currencyOut)
 
   const [singleHopOnly] = useUserSingleHopOnly()
-
+  console.log({ allowedPairs, currencyAmountIn, currencyOut })
   return useMemo(() => {
     const is721Pair = checkIs721(currencyAmountIn?.currency) || checkIs721(currencyOut)
     if (currencyAmountIn && currencyOut && allowedPairs.length > 0) {
