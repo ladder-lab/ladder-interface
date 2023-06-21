@@ -26,11 +26,15 @@ function useGetApproved(contract: Contract | null, spender: string, tokenId: str
 }
 
 // returns a variable indicating the state of the approval and a function which approves if necessary or early returns
-const spender = ROUTER_ADDRESS
+
 export function useApproveERC1155Callback(token1155: Token1155 | undefined): [ApprovalState, () => Promise<void>] {
-  // const { account } = useActiveWeb3React()
+  const { chainId } = useActiveWeb3React()
   const contractAddress = token1155?.address
   const tokenId = token1155?.tokenId ?? ''
+
+  const spender = useMemo(() => {
+    return ROUTER_ADDRESS(chainId)
+  }, [chainId])
 
   const { hideModal, showModal } = useModal()
   const contract = use1155Contract(contractAddress)
@@ -94,7 +98,7 @@ export function useApproveERC1155Callback(token1155: Token1155 | undefined): [Ap
         console.debug('Failed to approve nft', error)
         throw error
       })
-  }, [approvalState, tokenId, contract, showModal, getGasPrice, hideModal, addTransaction])
+  }, [approvalState, tokenId, contract, spender, showModal, getGasPrice, hideModal, addTransaction])
 
   return [approvalState, approve]
 }

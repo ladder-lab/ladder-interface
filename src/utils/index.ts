@@ -144,12 +144,12 @@ export function getContract(address: string, ABI: any, library: Web3Provider, ac
 }
 
 // account is optional
-export function getRouterContract(_: number, library: Web3Provider, account?: string): Contract {
-  return getContract(ROUTER_ADDRESS, V2RouterABI, library, account)
+export function getRouterContract(chainId: number, library: Web3Provider, account?: string): Contract {
+  return getContract(ROUTER_ADDRESS(chainId), V2RouterABI, library, account)
 }
 
-export function getRouterContract721(_: number, library: Web3Provider, account?: string): Contract {
-  return getContract(ROUTER_ADDRESS_721, router721ABI, library, account)
+export function getRouterContract721(chainId: number, library: Web3Provider, account?: string): Contract {
+  return getContract(ROUTER_ADDRESS_721(chainId), router721ABI, library, account)
 }
 
 export function escapeRegExp(string: string): string {

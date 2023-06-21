@@ -132,7 +132,7 @@ export default function RemoveLiquidity() {
         // we only care if the error is something _other_ than the user rejected the tx
         console.error(error)
       })
-  }, [addTransaction, burnCallback, currencyA, currencyB, hideModal, onUserInput, parsedAmounts, showModal])
+  }, [addTransaction, burnCallback, chainId, currencyA, currencyB, hideModal, onUserInput, parsedAmounts, showModal])
 
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false)
