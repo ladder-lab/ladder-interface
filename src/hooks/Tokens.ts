@@ -353,6 +353,7 @@ export function useCurrency(
       setTokenType('erc1155')
       return
     }
+    if (!isAddress(currencyId)) return
     checkTokenType(currencyId, library).then(r => {
       setTokenType(r)
     })
