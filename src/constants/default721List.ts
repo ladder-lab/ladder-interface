@@ -56,6 +56,18 @@ const test721ListSepolia = [
 
 const test721TestnetV3ListSepolia = [
   {
+    address: '0xbef96b9354EaF451FaD72E41A1a4d4fE9D696ef4',
+    name: 'Rh!noX',
+    symbol: 'RNX',
+    metaDataUri: 'https://v1-test.ladder.top/ladder/RNX/'
+  },
+  {
+    address: '0x3e9fc47be41ef38eb97822856b9145fbe632902b',
+    name: 'DCC',
+    symbol: 'DCC',
+    metaDataUri: 'https://v1-test.ladder.top/ladder/DCC/'
+  },
+  {
     address: '0xAd1b8Fa357265D15a056B51c299a29843bE874DB',
     name: 'GensoKishiOnline.v2',
     symbol: 'Genso_NFT_v2',
@@ -152,7 +164,7 @@ const TEST_721_TESTNET_V3_LIST_SEPOLIA = test721TestnetV3ListSepolia.map(
       name,
       symbol,
       tokenUri: metaDataUri,
-      uri: metaDataUri ? undefined : getTest721uri(name, uriName)
+      uri: metaDataUri ? metaDataUri + '1' : getTest721uri(name, uriName)
     })
   }
 )
