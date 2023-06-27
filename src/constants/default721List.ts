@@ -164,7 +164,7 @@ const TEST_721_TESTNET_V3_LIST_SEPOLIA = test721TestnetV3ListSepolia.map(
       name,
       symbol,
       tokenUri: metaDataUri,
-      uri: metaDataUri ? metaDataUri + '1' : getTest721uri(name, uriName)
+      uri: metaDataUri ? metaDataUri + '1.jpg' : getTest721uri(name, uriName)
     })
   }
 )
