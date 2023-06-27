@@ -292,6 +292,14 @@ export function useToken721(
   const nameRes = useSingleCallResult(is721 ? nftContract : null, 'name')
   const symbolRes = useSingleCallResult(is721 ? nftContract : null, 'symbol')
 
+  const name = useMemo(() => {
+    return nameRes.result?.[0] ?? undefined
+  }, [nameRes.result])
+
+  const symbol = useMemo(() => {
+    return symbolRes.result?.[0] ?? undefined
+  }, [symbolRes.result])
+
   useEffect(() => {
     if (tokenAddress && library && !!isAddress(tokenAddress))
       checkTokenType(tokenAddress, library).then(r => {
@@ -309,13 +317,11 @@ export function useToken721(
     if (!chainId || !address) return undefined
     const list = DEFAULT_721_LIST[chainId ?? NETWORK_CHAIN_ID]
     if (list) {
-      const token = list.find(token721 => token721.address === tokenAddress)
+      const token = list.find(token721 => token721.address === address)
       if (token) return token
     }
-    return nameRes.result && is721
-      ? new Token721(chainId, address, tokenId, { name: nameRes.result?.[0], symbol: symbolRes.result?.[0] })
-      : undefined
-  }, [address, chainId, is721, nameRes.result, symbolRes.result, tokenAddress, tokenId])
+    return name && is721 ? new Token721(chainId, address, tokenId, { name: name, symbol: symbol }) : undefined
+  }, [address, chainId, is721, name, symbol, tokenId])
 }
 
 export function useToken721WithLoadingIndicator(

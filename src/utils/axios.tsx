@@ -19,10 +19,10 @@ export const axiosTestInstance = axios.create({
   headers: { 'content-type': 'application/json', accept: 'application/json' }
 })
 
-const axiosToken1155Instance = axios.create({
-  baseURL: 'https://bsc-mainnet.blockvision.org/v1/2EL8whf4KemeNi9Pr3b1hPshJoA',
+export const axiosNftScanInstance = axios.create({
+  baseURL: 'https://polygonapi.nftscan.com/api/v2/',
   timeout: 10000,
-  headers: { 'content-type': 'application/json', accept: 'application/json' }
+  headers: { 'content-type': 'application/json', accept: 'application/json', 'X-API-KEY': 'lz5gWLaiA8ZXOHlyFK854hRg' }
 })
 export const Axios = {
   get<T = any>(url: string, params: { [key: string]: any } = {}): AxiosPromise<ResponseType<T>> {
@@ -37,15 +37,8 @@ export const Axios = {
   ): AxiosPromise<ResponseType<T>> {
     return axiosInstance.post(url, isFormData ? qs.stringify(data) : data, { params, ...config })
   },
-  getMetadata(contractAddress: string, tokenId: string | number): AxiosPromise<NFTResponseType> {
-    return axiosToken1155Instance.post('', {
-      jsonrpc: '2.0',
-      method: 'nft_metadata',
-      params: {
-        tokenId: tokenId + '',
-        contractAddress: contractAddress
-      }
-    })
+  getMetadata(contractAddress: string, tokenId: string | number): AxiosPromise<ResponseType<NFTResponseType>> {
+    return axiosNftScanInstance.get(`assets/${contractAddress}/${tokenId}`)
   }
 }
 
@@ -58,21 +51,22 @@ export interface ResponseType<T = any> {
 }
 
 export interface NFTResponseType {
-  jsonrpc: string
-  result: {
-    contractAddress: string
-    description: string
-    ercStandard: string
-    image: string
-    metadata: {
-      description: string
-      id: string
-      image: string
-      name: string
-    }
-    name: string
-    protocol: string
-    tokenID: string
-    tokenURI: string
-  }
+  contract_address: string
+  contract_name: string
+  contract_token_id: string
+  token_id: string
+  erc_type: string
+  amount: string
+  minter: string
+  token_uri: null | string
+  metadata_json: null | any
+  name: null | string
+  description: null | string
+  image_uri: null | string
+}
+
+export interface erc721CollectionResponseType {
+  total: number
+  next: null
+  content: NFTResponseType[]
 }

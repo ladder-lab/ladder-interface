@@ -1,10 +1,11 @@
-import { ChainId, IS_TEST_NET } from '../chain'
+import { ChainId } from '../chain'
 import { Token } from '@ladder/sdk'
 import { Axios } from 'utils/axios'
 
 /**
  * Represents an ERC721 token with a unique address and some metadata.
  */
+
 export class Token721 extends Token {
   public readonly tokenId: string | number | undefined
   public readonly is721: true
@@ -31,19 +32,23 @@ export class Token721 extends Token {
     this.name = metadata?.name ?? 'ERC721'
     this.symbol = metadata?.symbol ?? 'NFT'
     this.tokenUri = metadata?.tokenUri ?? ''
-
-    if ((!metadata || !metadata.uri) && !IS_TEST_NET) {
-      if (tokenId) {
-        Axios.getMetadata(address, tokenId)
-          .then(r => {
-            const metadata = r.data.result.metadata
-            this.uri = metadata.image
-            this.name = metadata.name
-          })
-          .catch(e => {
-            console.error(e)
-          })
-      }
+    if ((!metadata || !metadata.uri) && chainId !== ChainId.SEPOLIA) {
+      Axios.getMetadata(address, tokenId ?? '1')
+        .then(r => {
+          const data = r.data.data
+          if (!metadata?.uri) {
+            this.uri = data?.image_uri ?? ''
+          }
+          if (!metadata?.name) {
+            this.name = data?.name ?? data?.contract_name ?? ''
+          }
+          if (!metadata?.symbol) {
+            this.symbol = data?.contract_name ?? data?.name ?? ''
+          }
+        })
+        .catch(e => {
+          console.error(e)
+        })
     } else if (metadata && metadata.tokenUri) {
       const _tokenUri = metadata.tokenUri + (tokenId !== undefined && tokenId !== '' ? tokenId : '1')
       Axios.get(_tokenUri)

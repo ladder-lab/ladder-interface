@@ -13,6 +13,7 @@ import { checkIs1155, checkIs721, filter721 } from 'utils/checkIs1155'
 import { useBlockNumber } from 'state/application/hooks'
 import { Token721 } from 'constants/token/token721'
 import { getTest721uriWithIndex, isTest721 } from 'constants/default721List'
+import { axiosNftScanInstance, erc721CollectionResponseType, ResponseType } from 'utils/axios'
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -275,43 +276,65 @@ export function useToken721BalanceTokens(tokenAmount?: TokenAmount): {
   const [loading, setLoading] = useState(false)
   const [tokens, setTokens] = useState<Token721[] | undefined>(undefined)
 
-  const contract = use721Contract(isAddress(tokenAmount?.token?.address) ? tokenAmount?.token?.address : undefined)
+  // const contract = use721Contract(isAddress(tokenAmount?.token?.address) ? tokenAmount?.token?.address : undefined)
 
-  const calls = useMemo(() => {
-    const balance = tokenAmount?.toExact()
+  // const calls = useMemo(() => {
+  //   const balance = tokenAmount?.toExact()
 
-    if (!balance || !account || !contract) return
+  //   if (!balance || !account || !contract) return
 
-    const total = parseInt(balance)
-    const arr = Array.from(Array(total).keys()).map((_, idx) => {
-      return contract.tokenOfOwnerByIndex(account, idx)
-    })
-    return arr
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account, contract, tokenAmount?.toExact()])
+  //   const total = parseInt(balance)
+  //   const arr = Array.from(Array(total).keys()).map((_, idx) => {
+  //     return contract.tokenOfOwnerByIndex(account, idx)
+  //   })
+  //   return arr
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [account, contract, tokenAmount?.toExact()])
 
   useEffect(() => {
-    if (!calls || !chainId || !tokenAmount?.raw) {
+    if (!chainId || !tokenAmount?.raw || !account || !tokenAmount?.token?.address) {
       return
     }
     ;(async () => {
       setLoading(true)
       try {
-        const indexes = await Promise.all(calls)
-        const token721 = filter721(tokenAmount.token)
-        const tokens = indexes.map(
-          id =>
-            new Token721(chainId, tokenAmount.token.address, id.toString(), {
-              name: tokenAmount.token.name,
-              symbol: tokenAmount.token.symbol,
-              tokenUri: token721?.tokenUri,
-              uri:
-                chainId === ChainId.SEPOLIA && isTest721(tokenAmount.token.address) && token721?.uri
-                  ? getTest721uriWithIndex(token721.uri, id)
-                  : undefined
-            })
+        const res = await axiosNftScanInstance.get<ResponseType<erc721CollectionResponseType>>(
+          `account/own/${account}`,
+          {
+            params: { erc_type: 'erc721', contract_address: tokenAmount?.token?.address }
+          }
         )
-        setTokens(tokens)
+        if (res?.data?.data?.total > 0) {
+          const token721 = filter721(tokenAmount.token)
+          const tokens = res.data.data.content.map(
+            data =>
+              new Token721(chainId, data.contract_address, data.token_id, {
+                name: tokenAmount?.token?.name ?? data.name ?? data.contract_name,
+                symbol: tokenAmount?.token?.symbol ?? data.contract_name,
+                tokenUri: token721?.tokenUri,
+                uri:
+                  ChainId.SEPOLIA && isTest721(tokenAmount.token.address) && token721?.uri
+                    ? getTest721uriWithIndex(token721.uri, parseInt(data.token_id))
+                    : data.image_uri ?? undefined
+              })
+          )
+          setTokens(tokens)
+        }
+        // const indexes = await Promise.all(calls)
+        // const token721 = filter721(tokenAmount.token)
+        // const tokens = indexes.map(
+        //   id =>
+        //     new Token721(chainId, tokenAmount.token.address, id.toString(), {
+        //       name: tokenAmount.token.name,
+        //       symbol: tokenAmount.token.symbol,
+        //       tokenUri: token721?.tokenUri,
+        //       uri:
+        //         chainId === ChainId.SEPOLIA && isTest721(tokenAmount.token.address) && token721?.uri
+        //           ? getTest721uriWithIndex(token721.uri, id)
+        //           : undefined
+        //     })
+        // )
+
         setLoading(false)
       } catch (e) {
         setLoading(false)
@@ -319,7 +342,7 @@ export function useToken721BalanceTokens(tokenAmount?: TokenAmount): {
       }
     })()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [calls, chainId, tokenAmount?.toExact()])
+  }, [chainId, tokenAmount?.toExact()])
 
   const res = useMemo(() => {
     return { loading, availableTokens: tokens }
