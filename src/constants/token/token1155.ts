@@ -1,4 +1,4 @@
-import { ChainId, IS_TEST_NET } from '../chain'
+import { ChainId } from '../chain'
 // import ERC1155Abi from 'constants/abis/erc1155.json'
 import { Token } from '@ladder/sdk'
 import { Axios } from 'utils/axios'
@@ -31,13 +31,19 @@ export class Token1155 extends Token {
     this.name = metadata?.name ?? 'ERC1155'
     this.symbol = metadata?.symbol ?? 'NFT'
 
-    if (!metadata && !IS_TEST_NET) {
-      Axios.getMetadata(address, tokenId)
+    if ((!metadata || !metadata.uri) && chainId !== ChainId.SEPOLIA) {
+      Axios.getMetadata(address, tokenId ?? '1')
         .then(r => {
-          const metadata = r.data.result.metadata
-          this.uri = metadata.image
-          this.name = metadata.name
-          this.symbol = 'NFT'
+          const data = r.data.data
+          if (!metadata?.uri) {
+            this.uri = data?.image_uri ?? ''
+          }
+          if (!metadata?.name) {
+            this.name = data?.name ?? data?.contract_name ?? 'ERC1155'
+          }
+          if (!metadata?.symbol) {
+            this.symbol = data?.contract_name ?? data?.name ?? 'NFT'
+          }
         })
         .catch(e => {
           console.error(e)
