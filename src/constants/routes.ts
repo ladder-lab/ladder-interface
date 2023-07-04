@@ -21,7 +21,8 @@ export const routes = {
   becomePartner: '/earn/sbt/become-partner',
   myAccount: '/myAccount',
   origAccount: '/origAccount',
-  feedback: '/feedback'
+  feedback: '/feedback',
+  airdrop: '/airdrop'
 }
 
 export function liquidityParamBuilder(currencyA: Currency | undefined, currencyB: Currency | undefined) {
