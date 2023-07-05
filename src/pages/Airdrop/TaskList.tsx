@@ -4,6 +4,7 @@ import { SUPPORTED_NETWORKS } from 'constants/chain'
 import React, { useCallback } from 'react'
 import { ReactComponent as Chip } from 'assets/svg/airdrop/chip.svg'
 import { ReactComponent as Completed } from 'assets/svg/airdrop/completed.svg'
+import { useIsDarkMode } from 'state/user/hooks'
 
 export enum TYPE {
   box,
@@ -32,9 +33,19 @@ interface TaskListData {
 export default function TaskList({ type, data }: { type: TYPE; data?: TaskListData }) {
   const theme = useTheme()
   return (
-    <Box width={'100%'} maxWidth={theme.width.maxContent} margin="0 auto" display="grid" gap={20}>
+    <Box
+      width={'100%'}
+      maxWidth={theme.width.maxContent}
+      margin="0 auto"
+      display="grid"
+      gap={20}
+      padding={24}
+      // overflow="hidden"
+    >
       <Typography variant="h5">{type === TYPE.box ? 'Get Box' : 'Luck task'}</Typography>
-      <Typography>Complete the specified task → get Box, the number of Box is defined by the task.</Typography>
+      <Typography whiteSpace={'break-spaces'}>
+        Complete the specified task → get Box, the number of Box is defined by the task.
+      </Typography>
       <Tabs
         titles={[
           `Tasks that can be done : ${data?.canBeDone?.length ?? '0'}`,
@@ -68,11 +79,16 @@ function Tabs(props: Props) {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Box>
+      <Box maxWidth={{ xs: '80vw', sm: 'unset', overflow: 'hidden' }} mb={15}>
         <MuiTabs
+          variant="scrollable"
+          scrollButtons
+          allowScrollButtonsMobile
           value={customCurrentTab !== undefined ? customCurrentTab : value}
           onChange={onChange}
-          sx={{ mb: -1 }}
+          sx={{
+            mb: -1
+          }}
           indicatorColor={'transparent' as any}
         >
           {titles.map((tab, idx) => (
@@ -82,14 +98,15 @@ function Tabs(props: Props) {
               label={tab}
               sx={{
                 padding: '6px 20px',
+                mt: 6,
                 mr: { xs: 23, md: 25 },
                 textTransform: 'none',
                 background: '#ffffff',
                 borderRadius: '60px',
                 minHeight: 'unset',
-                color: theme => theme.palette.text.primary,
+                color: theme => theme.palette.primary.contrastText,
                 '&.Mui-selected, &:hover': {
-                  color: theme => theme.palette.text.primary,
+                  color: theme => theme.palette.primary.contrastText,
                   background: theme => theme.palette.primary.main
                 }
               }}
@@ -107,10 +124,11 @@ function Tabs(props: Props) {
 }
 
 function TaskCards({ data, type }: { data: CardProp[]; type: TYPE }) {
+  const isDarkMode = useIsDarkMode()
   return (
-    <Box display={'grid'} gridTemplateColumns={{ xs: '1fr 1fr', md: '1fr 1fr 1fr' }} gap={20}>
+    <Box display={'grid'} gridTemplateColumns={{ xs: '100%', md: '1fr 1fr 1fr' }} gap={20} maxWidth={'100vw'}>
       {data.map((data, idx) => (
-        <Card key={data.title + idx}>
+        <Card key={data.title + idx} color={isDarkMode ? '#1A1C1E' : undefined} width="100%">
           <Box padding="24px" display={'grid'} gap={20}>
             <Box
               sx={{ color: type === TYPE.box ? '#4A9EEB' : '#1F9898' }}

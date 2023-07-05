@@ -10,7 +10,7 @@ const questionList = [
 
 export default function QuestionList() {
   return (
-    <Box width={'100%'} maxWidth={theme => theme.width.maxContent} margin="40px auto 0">
+    <Box width={'100%'} maxWidth={theme => theme.width.maxContent} margin="40px auto 0" padding={24}>
       <Typography fontSize={24} fontWeight={500} mb={20} variant="h5">
         Q&A
       </Typography>
@@ -27,11 +27,7 @@ export default function QuestionList() {
                 }
               }}
             >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon style={{ marginRight: 24 }} />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-              >
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
                 <Typography margin={'20px 24px'} fontSize={20} fontWeight={700}>
                   {q[0]}
                 </Typography>
