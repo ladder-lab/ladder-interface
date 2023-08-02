@@ -143,7 +143,7 @@ export default function TestnetV3() {
   const [queryAddress, setQueryAddress] = useState('')
   const { claimState: queryClaimState } = useTestnetClaim(isAddress(queryAddress) ? queryAddress : undefined)
   const testnetV2Status = useTestnetV2Status(account || undefined)
-  const [open, setOpen] = useState(false)
+  const [, setOpen] = useState(false)
 
   const queryNotice = useMemo(() => {
     return (
