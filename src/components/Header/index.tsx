@@ -45,17 +45,12 @@ interface Tab extends TabContent {
 export const Tabs: Tab[] = [
   {
     title: 'Event',
-    subTab: [
-      {
-        title: 'Airdop',
-        route: routes.airdrop
-      },
-      {
-        title: 'Testnet',
-        route: routes.testnet
-      }
-    ]
+    route: routes.testnet
   },
+  // {
+  //   title: 'Airdop',
+  //   route: routes.airdrop
+  // },
   { title: 'Swap', route: routes.swap },
   { title: 'Pool', route: routes.pool },
   { title: 'Explore', route: routes.explorer },
