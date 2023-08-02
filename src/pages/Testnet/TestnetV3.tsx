@@ -81,7 +81,7 @@ const RowBetween = styled(Box)(({}) => ({
   alignItems: 'center'
 }))
 
-const StyledQATitle = styled(Box)(({ theme }) => ({
+export const StyledQATitle = styled(Box)(({ theme }) => ({
   fontSize: 20,
   marginBottom: 16,
   [theme.breakpoints.down('md')]: {
@@ -89,7 +89,7 @@ const StyledQATitle = styled(Box)(({ theme }) => ({
   }
 }))
 
-const StyledQABody = styled(Box)(({ theme }) => ({
+export const StyledQABody = styled(Box)(({ theme }) => ({
   fontSize: 20,
   color: theme.palette.text.secondary,
   [theme.breakpoints.down('md')]: {
@@ -144,7 +144,6 @@ export default function TestnetV3() {
   const { claimState: queryClaimState } = useTestnetClaim(isAddress(queryAddress) ? queryAddress : undefined)
   const testnetV2Status = useTestnetV2Status(account || undefined)
   const [open, setOpen] = useState(false)
-  console.log(open)
 
   const queryNotice = useMemo(() => {
     return (
