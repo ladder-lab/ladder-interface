@@ -92,7 +92,7 @@ export default function App() {
               {/* <WarningModal /> */}
               <Web3ReactManager>
                 <Routes>
-                  <Route path={routes.airdrop} element={<Airdrop />} />
+                  {/* <Route path={routes.airdrop} element={<Airdrop />} /> */}
                   <Route path={routes.testnet} element={<Testnet />} />
                   <Route path={routes.winners} element={<ListOfWinners />} />
                   <Route path={routes.explorer} element={<Explorer />} />
