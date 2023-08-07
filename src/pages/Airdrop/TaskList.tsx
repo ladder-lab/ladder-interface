@@ -52,11 +52,11 @@ export default function TaskList({ type, data }: { type: TYPE; data?: TaskListDa
       padding={24}
       // overflow="hidden"
     >
-      <Typography variant="h5">{type === TYPE.box ? 'Get Box' : 'Luck task'}</Typography>
+      <Typography variant="h5">{type === TYPE.box ? 'Earn Boxes' : 'Boost your Luck'}</Typography>
       <Typography whiteSpace={'break-spaces'}>
         {type === TYPE.box
-          ? 'Complete the specified task → get Box, the number of Box is defined by the task.'
-          : 'The probability of obtaining high-value rewards increases when completing the Luck task→opening the Box.'}
+          ? 'Complete these tasks to earn more boxes!'
+          : 'Increase your chances of getting better rewards from Ladder Boxes by completing these tasks!'}
       </Typography>
       <Tabs
         titles={[

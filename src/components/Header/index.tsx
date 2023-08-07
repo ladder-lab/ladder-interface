@@ -325,14 +325,14 @@ export function DesktopMenu() {
 
   const options = useMemo(() => {
     return [
-      { title: 'About', link: 'https://www.ladder.top/about', icon: <AboutIcon /> },
+      // { title: 'About', link: 'https://www.ladder.top/about', icon: <AboutIcon /> },
       // { title: 'Help Center', link: '#', icon: <HelpCenterIcon /> },
       // { title: 'Request Features', link: '#', icon: <RequestFeatureIcon /> },
       { title: 'Discord', link: 'https://discord.gg/KWgkFMt9qZ', icon: <DiscordIcon /> },
       // { title: 'Language', link: '#', icon: <LanguageIcon /> },
-      { title: darkMode ? 'LightMode' : 'Dark Theme', action: toggleDarkMode, icon: <DarkThemeIcon /> },
+      { title: darkMode ? 'LightMode' : 'Dark Theme', action: toggleDarkMode, icon: <DarkThemeIcon /> }
       // { title: 'Docs', link: '#', icon: <DocsIcon /> },
-      { title: 'Legal & Privacy', link: 'https://github.com/ladder-lab/core', icon: <LegalPrivacyIcon /> }
+      // { title: 'Legal & Privacy', link: 'https://github.com/ladder-lab/core', icon: <LegalPrivacyIcon /> }
     ]
   }, [darkMode, toggleDarkMode])
 
