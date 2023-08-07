@@ -126,7 +126,6 @@ export default function Header() {
   const { pathname } = useLocation()
   const isDownMd = useBreakpoint('md')
   const navigate = useNavigate()
-
   const [darkMode] = useDarkModeManager()
 
   const handleMobileMenueDismiss = useCallback(() => {
@@ -160,8 +159,9 @@ export default function Header() {
 
         <HideOnMobile breakpoint="md">
           <LinksWrapper>
-            {Tabs.map(({ title, route, subTab, link, titleContent }, idx) =>
-              subTab ? (
+            {Tabs.map(({ title, route, subTab, link, titleContent }, idx) => {
+              console.log(pathname, title, pathname === '/round3' && title === 'Event')
+              return subTab ? (
                 <Box
                   sx={{
                     marginRight: {
@@ -191,6 +191,7 @@ export default function Header() {
                     {subTab.map((sub, idx) =>
                       sub.link ? (
                         <MenuItem
+                          onClick={() => setMenuOpen(false)}
                           key={sub.link + idx}
                           sx={{ backgroundColor: 'transparent!important', background: 'transparent!important' }}
                           selected={false}
@@ -209,7 +210,7 @@ export default function Header() {
                           </ExternalLink>
                         </MenuItem>
                       ) : (
-                        <MenuItem key={sub.title + idx}>
+                        <MenuItem key={sub.title + idx} onClick={() => setMenuOpen(false)}>
                           <StyledNavLink to={sub.route ?? ''}>{sub.titleContent ?? sub.title}</StyledNavLink>
                         </MenuItem>
                       )
@@ -218,6 +219,7 @@ export default function Header() {
                 </Box>
               ) : link ? (
                 <ExternalLink
+                  onClick={() => setMenuOpen(false)}
                   href={link}
                   className={'link'}
                   key={link + idx}
@@ -227,6 +229,7 @@ export default function Header() {
                 </ExternalLink>
               ) : (
                 <Link
+                  onClick={() => setMenuOpen(false)}
                   key={title + idx}
                   id={`${route}-nav-link`}
                   to={route ?? ''}
@@ -234,10 +237,13 @@ export default function Header() {
                     (route
                       ? pathname.includes(route)
                         ? 'active'
-                        : pathname.includes('account')
-                        ? route.includes('account')
-                          ? 'active'
-                          : ''
+                        : pathname.includes('account') && route.includes('account')
+                        ? 'active'
+                        : (pathname.includes('/round') ||
+                            pathname.includes('/airdrop') ||
+                            pathname.includes('/monopoly')) &&
+                          title.includes('Event')
+                        ? 'active'
                         : ''
                       : '') + ' link'
                   }
@@ -245,7 +251,7 @@ export default function Header() {
                   {titleContent ?? title}
                 </Link>
               )
-            )}
+            })}
           </LinksWrapper>
         </HideOnMobile>
 
@@ -327,7 +333,7 @@ export function DesktopMenu() {
       // { title: 'Language', link: '#', icon: <LanguageIcon /> },
       { title: darkMode ? 'LightMode' : 'Dark Theme', action: toggleDarkMode, icon: <DarkThemeIcon /> },
       // { title: 'Docs', link: '#', icon: <DocsIcon /> },
-      { title: 'Legal&Privacy', link: 'https://github.com/ladder-lab/core', icon: <LegalPrivacyIcon /> }
+      { title: 'Legal & Privacy', link: 'https://github.com/ladder-lab/core', icon: <LegalPrivacyIcon /> }
     ]
   }, [darkMode, toggleDarkMode])
 

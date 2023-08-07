@@ -33,31 +33,36 @@ const tasks = [
     title: 'Obtain a level 1 badge (Testnet 3)',
     chain: ChainId.SEPOLIA,
     id: 'test3',
-    icon: <Badges />
+    icon: <Badges />,
+    route: 'round3'
   },
   {
     title: 'Obtain all level 1 badges (Testnet 3)',
     chain: ChainId.SEPOLIA,
     id: 'all-Level-1',
-    icon: <Badges />
+    icon: <Badges />,
+    route: 'round3'
   },
   {
     title: 'Obtain all level 2 badges (Testnet 3)',
     chain: ChainId.SEPOLIA,
     id: 'all-Level-2',
-    icon: <Badges />
+    icon: <Badges />,
+    route: 'round3'
   },
   {
     title: 'Obtain all level 3 badges (Testnet 3)',
     chain: ChainId.SEPOLIA,
     id: 'all-Level-3',
-    icon: <Badges />
+    icon: <Badges />,
+    route: 'round3'
   }
 ]
 
 export default function TaskListLuck({ refreshCb }: { refreshCb: () => void }) {
   const { getBox, taskState: state } = useBoxTasks(refreshCb)
   const { showModal } = useModal()
+
   const sorted: TaskListData = useMemo(
     () =>
       tasks.reduce(
@@ -65,13 +70,13 @@ export default function TaskListLuck({ refreshCb }: { refreshCb: () => void }) {
           const itemState = state?.[item.id]
           if (itemState) {
             if (itemState.claimed === true) {
-              acc.completed.push({ ...item, completed: itemState.completed, claimed: itemState.claimed })
+              acc.completed.push({ ...item, completed: itemState.finished, claimed: itemState.claimed })
               return acc
             } else {
-              if (expiredList.includes(item.id) && !itemState.complete) {
+              if (expiredList.includes(item.id) && !itemState.finished) {
                 acc.cannotComplete.push({
                   ...item,
-                  completed: itemState.complete,
+                  completed: itemState.finished,
                   claimed: itemState.claimed,
                   expired: true
                 })
@@ -79,12 +84,12 @@ export default function TaskListLuck({ refreshCb }: { refreshCb: () => void }) {
               }
               acc.canBeDone.push({
                 ...item,
-                completed: itemState.complete,
+                completed: itemState.finished,
                 claimed: itemState.claimed,
                 action: () => {
-                  itemState.complete
+                  itemState.finished
                     ? showModal(<BoxModal getBox={getBox({ boxType: itemState.boxType, boxs: itemState.boxs })} />)
-                    : showModal(<IncompleteModal />)
+                    : showModal(<IncompleteModal route={item.route} />)
                 }
               })
               return acc

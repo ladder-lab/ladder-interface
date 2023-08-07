@@ -142,7 +142,7 @@ export default function Statistics() {
               <Typography ml={16}>ETH Price: $1.18k</Typography>
             </Box>
           </RowBetween> */}
-          <RowBetween padding="20px 0">
+          <RowBetween padding="20px 24px">
             <RowBetween width={'100%'} flexWrap={'wrap'}>
               <Stack direction={'row'} spacing={24} alignItems="center">
                 <StyledTabText className="active" onClick={() => scrollToElement('Overview')}>
@@ -167,7 +167,7 @@ export default function Statistics() {
                 ></Box>
               )}
               <Box display={'flex'} alignItems="center" sx={{ mt: { sm: 0, xs: 15 } }}>
-                <Select defaultValue={curChainId} value={curChainId} width="max-content" height={'40px'}>
+                {/* <Select defaultValue={curChainId} value={curChainId} width="max-content" height={'40px'}>
                   {ChainList.map(option => (
                     <MenuItem value={option.id} key={option.id} selected={curChainId === option.id}>
                       {isDownSm ? (
@@ -177,7 +177,7 @@ export default function Statistics() {
                       )}
                     </MenuItem>
                   ))}
-                </Select>
+                </Select> */}
                 <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
                   <Box ml={10}>
                     <Input

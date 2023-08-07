@@ -7,7 +7,7 @@ export const baseURL = 'https://test-nftapi.antimatter.finance:8443/web/'
 export const testURL = 'https://testapi.settle3.com/web/'
 export const testAssetUrl = 'https://testapi.settle3.com'
 export const v4Url = 'https://v1-test.ladder.top/web/'
-export const testAirdropUrl = 'https://dualinvest-testapi.antimatter.finance/'
+export const testAirdropUrl = 'https://v1-test.ladder.top/'
 
 export const axiosInstance = axios.create({
   baseURL,

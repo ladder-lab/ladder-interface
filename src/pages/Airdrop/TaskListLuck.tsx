@@ -1,14 +1,15 @@
 import { ChainId } from '@ladder/sdk'
 import TaskList, { TYPE, TaskListData } from './TaskList'
-import { useLuckTasks } from 'hooks/useAirdrop'
+import { useLuckTasks, useVerifyEmail } from 'hooks/useAirdrop'
 import { useMemo } from 'react'
 import { IncompleteModal, LuckModal } from './AirdropModal'
 import useModal from 'hooks/useModal'
 import { ReactComponent as Monopoly } from 'assets/svg/airdrop/monopoly.svg'
 import { ReactComponent as Social } from 'assets/svg/airdrop/social.svg'
 import { ReactComponent as Sbt } from 'assets/svg/airdrop/sbt.svg'
+import { useVerifyTwitter } from 'hooks/useVerifyTwitter'
 
-const expiredList = ['monopolyRank']
+const expiredList = ['monopolyRank', 'eventSbt', 'partneredSbt', 'dcRole']
 
 const tasks = [
   {
@@ -47,20 +48,24 @@ const tasks = [
 export default function TaskListLuck({ refreshCb }: { refreshCb: () => void }) {
   const { showModal } = useModal()
   const { getLuck, taskState: state } = useLuckTasks(refreshCb)
+  const { openVerify } = useVerifyTwitter(true)
+  const { openVerify: openVerifyEmail } = useVerifyEmail()
+
   const sorted: TaskListData = useMemo(
     () =>
       tasks.reduce(
         (acc, item) => {
           const itemState = state?.[item.id]
+
           if (itemState) {
             if (itemState.claimed === true) {
               acc.completed.push({ ...item, completed: itemState.completed, claimed: itemState.claimed })
               return acc
             } else {
-              if (expiredList.includes(item.id) && !itemState.complete) {
+              if (expiredList.includes(item.id) && !itemState.completed) {
                 acc.cannotComplete.push({
                   ...item,
-                  completed: itemState.complete,
+                  completed: itemState.completed,
                   claimed: itemState.claimed,
                   expired: true
                 })
@@ -68,12 +73,22 @@ export default function TaskListLuck({ refreshCb }: { refreshCb: () => void }) {
               }
               acc.canBeDone.push({
                 ...item,
-                completed: itemState.complete,
+                completed: itemState.completed,
                 claimed: itemState.claimed,
                 action: () => {
-                  itemState.complete
+                  itemState.completed
                     ? showModal(<LuckModal getLuck={getLuck({ luckType: itemState.luckType, luck: itemState.luck })} />)
-                    : showModal(<IncompleteModal />)
+                    : showModal(
+                        <IncompleteModal
+                          action={
+                            item.id === 'twitterOauth'
+                              ? openVerify
+                              : item.id === 'googleOauth'
+                              ? openVerifyEmail
+                              : undefined
+                          }
+                        />
+                      )
                 }
               })
               return acc
@@ -89,7 +104,7 @@ export default function TaskListLuck({ refreshCb }: { refreshCb: () => void }) {
         },
         { canBeDone: [], completed: [], cannotComplete: [] } as TaskListData
       ),
-    [getLuck, showModal, state]
+    [getLuck, openVerify, openVerifyEmail, showModal, state]
   )
 
   return <TaskList type={TYPE.luck} data={sorted} />
