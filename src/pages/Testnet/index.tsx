@@ -249,6 +249,7 @@ export default function Testnet() {
       >
         <Stack
           direction={'row'}
+          flexWrap="wrap"
           spacing={20}
           sx={{
             width: '100%',

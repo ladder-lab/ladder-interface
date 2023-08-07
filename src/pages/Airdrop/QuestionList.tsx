@@ -55,7 +55,7 @@ const RowBetween = styled(Box)(({}) => ({
 export default function QuestionList() {
   const isDarkMode = useIsDarkMode()
   return (
-    <Box width={'100%'} maxWidth={theme => theme.width.maxContent} margin="40px auto 0" padding={24}>
+    <Box width={'100%'} maxWidth={theme => theme.width.maxContent} margin="40px auto 0" padding={{ xs: 0, sm: 24 }}>
       <StyledCardWrapper id="qa">
         <Collapse
           defaultOpen
