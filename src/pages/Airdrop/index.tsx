@@ -58,10 +58,10 @@ export default function Airdrop() {
 
           width: '100%'
         }}
-        padding="60px 24px"
+        padding={{ xs: 0, sm: '60px 24px' }}
       >
         <Box
-          padding="24px"
+          padding={'24px'}
           maxWidth={'1440px'}
           margin="0 auto"
           gap={{ xs: 20, xl: 80 }}

@@ -8,8 +8,6 @@ import incompleteModalUrl from 'assets/images/incomplete_modal.png'
 import useModal from 'hooks/useModal'
 import { useIsDarkMode } from 'state/user/hooks'
 import { Link } from 'react-router-dom'
-import Input from 'components/Input'
-import { useState } from 'react'
 
 export default function BoxModal({ getBox }: { getBox: () => void }) {
   const isDardMode = useIsDarkMode()

@@ -7,7 +7,6 @@ import {
   Stack,
   Tooltip,
   Link,
-  MenuItem,
   Popper,
   ClickAwayListener,
   Divider
@@ -16,10 +15,7 @@ import AreaChart from 'components/Chart'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 // import { StyledPollingDot } from 'components/essential/Polling'
 import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
-import LogoText from 'components/LogoText'
-import { ChainList } from 'constants/chain'
 import { routes } from 'constants/routes'
-import useBreakpoint from 'hooks/useBreakpoint'
 import {
   useTopTokensList,
   useTopPoolsList,
@@ -36,8 +32,6 @@ import { useNavigate } from 'react-router-dom'
 import { useIsDarkMode } from 'state/user/hooks'
 import { formatMillion, getEtherscanLink, isAddress, scrollToElement, shortenAddress } from 'utils'
 import StatTable, { TableHeadCellsProp, TableRowCellsProp } from './StatTable'
-import Image from 'components/Image'
-import Select from 'components/Select/Select'
 import Input from 'components/Input'
 import { Loader } from 'components/AnimatedSvg/Loader'
 import { useActiveWeb3React } from 'hooks'
@@ -85,7 +79,6 @@ export enum PoolPairType {
 export default function Statistics() {
   const { chainId } = useActiveWeb3React()
   const curChainId = useMemo(() => chainId || ChainId.SEPOLIA, [chainId])
-  const isDownSm = useBreakpoint('sm')
   const isDarkMode = useIsDarkMode()
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)

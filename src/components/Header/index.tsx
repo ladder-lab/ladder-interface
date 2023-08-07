@@ -219,7 +219,6 @@ export default function Header() {
                 </Box>
               ) : link ? (
                 <ExternalLink
-                  onClick={() => setMenuOpen(false)}
                   href={link}
                   className={'link'}
                   key={link + idx}
