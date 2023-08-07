@@ -12,6 +12,7 @@ import TaskListBox from './TaskListBox'
 import { useAirdropData } from 'hooks/useAirdrop'
 import { useRef } from 'react'
 import darkBg2 from 'assets/images/dark_bg.png'
+import QuestionHelper from 'components/essential/QuestionHelper'
 
 const StyledLuck = styled(Luck)({})
 
@@ -116,7 +117,7 @@ export default function Airdrop() {
                     })
                 }}
               >
-                Q&A
+                FAQ
               </Link>
             </Box>
             <Box
@@ -153,10 +154,10 @@ export default function Airdrop() {
                 <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }} gap={5}>
                   <BoxIcon />
                   YOUR BOXES
-                  {/* <QuestionHelper
-                  text="The Luck meter shows how likely it is for your boxes to contain better rewards! The more Luck you possess, the higher your chances of securing a top-tier reward. We have prepared separate tasks specifically designed to boost your Luck!"
-                  style={{ background: 'transparent' }}
-                /> */}
+                  <QuestionHelper
+                    text="Ladder Boxes contain random amount of Ladder tokens and can be earned by interacting with our protocol."
+                    style={{ background: 'transparent' }}
+                  />
                 </Typography>
                 <Typography fontSize={32} fontWeight={700}>
                   {airdropData ? airdropData?.myBoxs : '--'}
@@ -188,7 +189,10 @@ export default function Airdrop() {
                 <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }} gap={5}>
                   <LuckIcon />
                   YOUR LUCK
-                  {/* <QuestionHelper text="Answer" style={{ background: 'transparent' }} /> */}
+                  <QuestionHelper
+                    text="Luck determines the quality of your rewards from Ladder Boxes! By increasing your luck parameter, you enhance your chances of receiving more valuable rewards in the box."
+                    style={{ background: 'transparent' }}
+                  />
                 </Typography>
                 <Typography fontSize={32} fontWeight={700} mb={15}>
                   {airdropData ? airdropData?.myLuck : '--'}%
