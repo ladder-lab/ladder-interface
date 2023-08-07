@@ -31,6 +31,7 @@ interface CardProp {
   action?: () => void
   icon?: React.ReactNode
   expired?: boolean
+  route?: string
 }
 
 export interface TaskListData {
@@ -53,7 +54,9 @@ export default function TaskList({ type, data }: { type: TYPE; data?: TaskListDa
     >
       <Typography variant="h5">{type === TYPE.box ? 'Get Box' : 'Luck task'}</Typography>
       <Typography whiteSpace={'break-spaces'}>
-        Complete the specified task → get Box, the number of Box is defined by the task.
+        {type === TYPE.box
+          ? 'Complete the specified task → get Box, the number of Box is defined by the task.'
+          : 'The probability of obtaining high-value rewards increases when completing the Luck task→opening the Box.'}
       </Typography>
       <Tabs
         titles={[
@@ -144,7 +147,7 @@ function TaskCards({ data, type }: { data: CardProp[]; type: TYPE }) {
     )
 
   return (
-    <Box display={'grid'} gridTemplateColumns={{ xs: '100%', md: '1fr 1fr 1fr' }} gap={20} maxWidth={'100vw'}>
+    <Box display={'grid'} gridTemplateColumns={{ xs: '100%', md: '1fr 1fr 1fr', lg: '1fr 1fr 1fr 1fr' }} gap={20}>
       {data.map((data, idx) => (
         <Card key={data.title + idx} color={isDarkMode ? '#1A1C1E' : undefined} width="100%">
           <Box padding="24px" display={'flex'} flexDirection={'column'} gap={20} height="100%">

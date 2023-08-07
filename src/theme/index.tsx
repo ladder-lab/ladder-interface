@@ -67,7 +67,7 @@ const themeConstants = {
   },
   width: {
     sidebar: '250px',
-    maxContent: '1110px',
+    maxContent: '1440px',
     minContent: '350px'
   },
   shape: {

@@ -3,6 +3,7 @@ import useInterval from './useInterval'
 import { useActiveWeb3React } from 'hooks'
 import { useCallback, useEffect, useState } from 'react'
 import useModal from './useModal'
+import { useSignLogin } from './useSignIn'
 
 export function useLuckTasks(refreshCb: () => void) {
   const { account, chainId } = useActiveWeb3React()
@@ -136,4 +137,46 @@ export function useAirdropData() {
   useInterval(cb, account ? 60000 : null)
 
   return { airdropData, refreshCb }
+}
+
+export function useVerifyEmail() {
+  const { account } = useActiveWeb3React()
+  const jump = useCallback(async () => {
+    try {
+      if (!account) return
+      const res = await axiosAirdropInstance.get('/drop/googleOauth', {
+        params: {
+          address: account
+        }
+      })
+      const data = res.data.msg as string
+      if (!data) {
+        return
+      }
+      const google = window.open(
+        data,
+        'intent',
+        'scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=500,height=500,left=0,top=0'
+      )
+      google?.addEventListener('beforeunload', () => {
+        // not working
+        console.log('close email oauth')
+      })
+      return
+    } catch (error) {
+      console.error('useGoogleOauth', error)
+    }
+  }, [account])
+
+  const { token, sign } = useSignLogin(jump)
+  const openVerify = useCallback(() => {
+    if (!token) {
+      sign()
+    } else {
+      jump()
+    }
+  }, [jump, sign, token])
+  return {
+    openVerify
+  }
 }

@@ -7,6 +7,9 @@ import luckModalUrl2 from 'assets/images/luck_modal2.png'
 import incompleteModalUrl from 'assets/images/incomplete_modal.png'
 import useModal from 'hooks/useModal'
 import { useIsDarkMode } from 'state/user/hooks'
+import { Link } from 'react-router-dom'
+import Input from 'components/Input'
+import { useState } from 'react'
 
 export default function BoxModal({ getBox }: { getBox: () => void }) {
   const isDardMode = useIsDarkMode()
@@ -26,7 +29,7 @@ export default function BoxModal({ getBox }: { getBox: () => void }) {
   )
 }
 
-export function IncompleteModal() {
+export function IncompleteModal({ route, action }: { route?: string; action?: () => void }) {
   const { hideModal } = useModal()
   return (
     <Modal maxWidth="360px">
@@ -37,9 +40,25 @@ export function IncompleteModal() {
           Your task has not been completed yet,
           <br /> Go on and finish!
         </Typography>
-        <Button onClick={hideModal} sx={{ mt: '20px' }}>
-          CLOSE
-        </Button>
+        {action ? (
+          <Button
+            onClick={() => {
+              action && action()
+              hideModal()
+            }}
+            sx={{ mt: '20px' }}
+          >
+            TO FINISH
+          </Button>
+        ) : route ? (
+          <Link to={route ?? ''} style={{ width: '100%' }} onClick={hideModal}>
+            <Button> TO FINISH </Button>
+          </Link>
+        ) : (
+          <Button onClick={hideModal} sx={{ mt: '20px' }}>
+            CLOSE
+          </Button>
+        )}
       </Box>
     </Modal>
   )
