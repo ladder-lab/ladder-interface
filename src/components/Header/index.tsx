@@ -22,14 +22,14 @@ import NetworkSelect from './NetworkSelect'
 import { useDarkModeManager } from 'state/user/hooks'
 import MainLogo from 'components/MainLogo'
 import useBreakpoint from 'hooks/useBreakpoint'
-import { ReactComponent as AboutIcon } from 'assets/svg/menu/about.svg'
+// import { ReactComponent as AboutIcon } from 'assets/svg/menu/about.svg'
 // import { ReactComponent as HelpCenterIcon } from 'assets/svg/menu/help_center.svg'
 // import { ReactComponent as RequestFeatureIcon } from 'assets/svg/menu/request_feature.svg'
 import { ReactComponent as DiscordIcon } from 'assets/svg/menu/discord.svg'
 // import { ReactComponent as LanguageIcon } from 'assets/svg/menu/language.svg'
 import { ReactComponent as DarkThemeIcon } from 'assets/svg/menu/dark_theme.svg'
 // import { ReactComponent as DocsIcon } from 'assets/svg/menu/docs.svg'
-import { ReactComponent as LegalPrivacyIcon } from 'assets/svg/menu/legal_privacy.svg'
+// import { ReactComponent as LegalPrivacyIcon } from 'assets/svg/menu/legal_privacy.svg'
 
 interface TabContent {
   title: string
