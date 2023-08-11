@@ -1,6 +1,6 @@
 import { useCallback, useState, ChangeEvent, useMemo, useEffect } from 'react'
 import { Typography, Box, Button } from '@mui/material'
-import { CurrencyAmount, ETHER, JSBI, Pair, Trade } from '@ladder/sdk'
+import { CurrencyAmount, ETHER, JSBI, Pair, Token, Trade } from '@ladder/sdk'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
 import { ReactComponent as SwitchCircle } from 'assets/svg/switch_circle.svg'
@@ -30,13 +30,18 @@ import { Token721 } from 'constants/token/token721'
 import { useSwap721State } from 'state/swap/useSwap721State'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
 import usePriceCorrection from 'hooks/usePriceCorrection'
-import { useNavigate, useParams } from 'react-router-dom'
-import { liquidityParamBuilder, liquidityParamSplitter, routes } from 'constants/routes'
-import { useCurrency } from 'hooks/Tokens'
+import { useNavigate } from 'react-router-dom'
+import { liquidityParamBuilder, routes } from 'constants/routes'
+// import { useCurrency } from 'hooks/Tokens'
 import { replaceErrorMessage } from 'utils'
 import dogewalkUrl from 'assets/images/dogewalk.png'
 import { ExternalLink } from 'theme/components'
 import Image from 'components/Image'
+
+const [currency0, currency1] = [
+  new Token(56, '0xedf0c420bc3b92b961c6ec411cc810ca81f5f21a', 18, 'mUSDC', ' MockERC20'),
+  new Token721(56, '0xf4F7139b1FcC5Cac2f573Cc4B684Cc75367A9cfD', undefined)
+]
 
 export default function Swap() {
   // const theme = useTheme()
@@ -59,12 +64,12 @@ export default function Swap() {
     txHash: undefined
   })
 
-  const { currencyIdA, currencyIdB, tokenIds } = useParams()
-  const [tokenIdA, tokenIdB] = tokenIds?.split(liquidityParamSplitter) ?? ['', '']
-  const [currency0, currency1] = [
-    useCurrency(currencyIdA, tokenIdA) ?? undefined,
-    useCurrency(currencyIdB, tokenIdB) ?? undefined
-  ]
+  // const { currencyIdA, currencyIdB, tokenIds } = useParams()
+  // const [tokenIdA, tokenIdB] = tokenIds?.split(liquidityParamSplitter) ?? ['', '']
+  // const [currency0, currency1] = [
+  //   useCurrency(currencyIdA, tokenIdA) ?? undefined,
+  //   useCurrency(currencyIdB, tokenIdB) ?? undefined
+  // ]
 
   const { showModal, hideModal } = useModal()
   const toggleWallet = useWalletModalToggle()
@@ -329,7 +334,7 @@ export default function Swap() {
       }
     }
     return
-  }, [currency0, currency1, onCurrencySelection])
+  }, [onCurrencySelection])
 
   return (
     <>
