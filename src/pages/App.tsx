@@ -10,7 +10,7 @@ import { ModalProvider } from 'context/ModalContext'
 import { routes } from 'constants/routes'
 import Swap from './Swap'
 // import Pool from './Pool'
-// import AddLiquidity from './Pool/AddLiquidity'
+import AddLiquidity from './Pool/AddLiquidity'
 // import ImportPool from './Pool/ImportPool'
 import darkBg from 'assets/images/dark_bg.png'
 import lightBg from 'assets/images/light_bg.png'
@@ -106,18 +106,18 @@ export default function App() {
                     element={<StatisticsTokens />}
                   />
                   <Route path={routes.statisticsPools + routes.statisticsPoolsParams} element={<StatisticsPools />} />
-                  <Route path={routes.importPool} element={<ImportPool />} />
+                  <Route path={routes.importPool} element={<ImportPool />} />*/}
                   <Route path={routes.addLiquidity} element={<AddLiquidity />}>
                     <Route path={routes.removeLiquidityParams.slice(1)} element={<AddLiquidity />} />
                   </Route>
-                  <Route path={routes.removeLiquidity}>
+                  {/* <Route path={routes.removeLiquidity}>
                     <Route path={routes.removeLiquidity + routes.removeLiquidityParams} element={<RemoveLiquidity />} />
                   </Route>
                   <Route path={routes.feedback} element={<Feedback />} />
                   <Route path={routes.sbt} element={<Sbt />} />
                   <Route path={routes.becomePartner} element={<BecomePartnerNew />} />
                   <Route path={routes.myAccount} element={<MyAccount />} />
-                  <Route path={routes.origAccount} element={<OrigAccount />} /> */}
+                  <Route path={routes.origAccount} element={<OrigAccount />} />  */}
                   <Route path="*" element={<Navigate to={routes.swap} replace />} />
                 </Routes>
               </Web3ReactManager>
