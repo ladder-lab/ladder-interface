@@ -92,9 +92,9 @@ function deserializeToken(serializedToken: SerializedToken): Token | Token1155 {
 } */
 
 export function useIsDarkMode(): boolean {
-  const { userDarkMode } = useSelector<AppState, { userDarkMode: boolean | null }>(({ user: { userDarkMode } }) => ({
-    userDarkMode
-  }))
+  // const { userDarkMode } = useSelector<AppState, { userDarkMode: boolean | null }>(({ user: { userDarkMode } }) => ({
+  //   userDarkMode
+  // }))
   return true
   // return userDarkMode ?? false
 }
