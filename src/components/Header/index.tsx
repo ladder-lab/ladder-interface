@@ -12,12 +12,12 @@ import {
   useTheme
 } from '@mui/material'
 import { ExternalLink } from 'theme/components'
-import Web3Status from './Web3Status'
-import { HideOnMobile } from 'theme/index'
-import PlainSelect from 'components/Select/PlainSelect'
+// import Web3Status from './Web3Status'
+// import { HideOnMobile } from 'theme/index'
+// import PlainSelect from 'components/Select/PlainSelect'
 import { routes } from 'constants/routes'
 import MobileMenu from './MobileMenu'
-import NetworkSelect from './NetworkSelect'
+// import NetworkSelect from './NetworkSelect'
 // import SwitchToggle from 'components/SwitchToggle'
 import { useDarkModeManager } from 'state/user/hooks'
 import MainLogo from 'components/MainLogo'
@@ -43,18 +43,18 @@ interface Tab extends TabContent {
 }
 
 export const Tabs: Tab[] = [
-  {
-    title: 'Event',
-    route: routes.testnet
-  },
+  // {
+  //   title: 'Event',
+  //   route: routes.testnet
+  // },
   // {
   //   title: 'Airdop',
   //   route: routes.airdrop
   // },
-  { title: 'Swap', route: routes.swap },
-  { title: 'Pool', route: routes.pool },
-  { title: 'Explore', route: routes.explorer },
-  { title: 'Statistics', route: routes.statistics }
+  { title: 'Swap', route: routes.swap }
+  // { title: 'Pool', route: routes.pool },
+  // { title: 'Explore', route: routes.explorer },
+  // { title: 'Statistics', route: routes.statistics }
 ]
 
 const navLinkSX = ({ theme }: any) => ({
@@ -157,7 +157,7 @@ export default function Header() {
           {/* </Box> */}
         </Box>
 
-        <HideOnMobile breakpoint="md">
+        {/* <HideOnMobile breakpoint="md">
           <LinksWrapper>
             {Tabs.map(({ title, route, subTab, link, titleContent }, idx) => {
               console.log(pathname, title, pathname === '/round3' && title === 'Event')
@@ -252,11 +252,11 @@ export default function Header() {
               )
             })}
           </LinksWrapper>
-        </HideOnMobile>
+        </HideOnMobile> */}
 
         <Box display="flex" alignItems="center" gap={{ xs: '8px', sm: '20px' }}>
-          <NetworkSelect />
-          <Web3Status />
+          {/* <NetworkSelect />
+          <Web3Status /> */}
           <Box sx={{ position: 'relative' }}>
             <MenuButton
               onClick={() => {
