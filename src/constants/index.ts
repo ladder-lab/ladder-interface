@@ -27,7 +27,7 @@ export const ROUTER_ADDRESS_721: (chainId: ChainId | null | undefined) => string
     {
       [5]: '0xB2d06a54f2DBC5a2b608358c034be6aA88646Df4',
       [4]: '0xC61d146BB1965ba0e387aA2Ad94c500a17dfe65F',
-      [56]: '',
+      [56]: '0x210Ea48877465041e8AeDD20a2f0BCCce0DA830F',
       [1]: '',
       [11155111]: '0x146ADA3E3A615CAdEBC06C1b02cBE3D040DcC3A0',
       [137]: '0xf434274C78CF5567D47D765420CDbf552d1C1067'

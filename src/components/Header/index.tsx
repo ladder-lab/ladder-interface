@@ -12,12 +12,12 @@ import {
   useTheme
 } from '@mui/material'
 import { ExternalLink } from 'theme/components'
-// import Web3Status from './Web3Status'
+import Web3Status from './Web3Status'
 // import { HideOnMobile } from 'theme/index'
 // import PlainSelect from 'components/Select/PlainSelect'
 import { routes } from 'constants/routes'
 import MobileMenu from './MobileMenu'
-// import NetworkSelect from './NetworkSelect'
+import NetworkSelect from './NetworkSelect'
 // import SwitchToggle from 'components/SwitchToggle'
 import { useDarkModeManager } from 'state/user/hooks'
 import MainLogo from 'components/MainLogo'
@@ -123,7 +123,7 @@ const LinksWrapper = muiStyled('div')(({ theme }) => ({
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const { pathname } = useLocation()
+  // const { pathname } = useLocation()
   const isDownMd = useBreakpoint('md')
   const navigate = useNavigate()
   const [darkMode] = useDarkModeManager()
@@ -255,8 +255,8 @@ export default function Header() {
         </HideOnMobile> */}
 
         <Box display="flex" alignItems="center" gap={{ xs: '8px', sm: '20px' }}>
-          {/* <NetworkSelect />
-          <Web3Status /> */}
+          <NetworkSelect />
+          <Web3Status />
           <Box sx={{ position: 'relative' }}>
             <MenuButton
               onClick={() => {

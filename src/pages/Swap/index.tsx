@@ -34,8 +34,9 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { liquidityParamBuilder, liquidityParamSplitter, routes } from 'constants/routes'
 import { useCurrency } from 'hooks/Tokens'
 import { replaceErrorMessage } from 'utils'
-import { ReactComponent as Dogewalk } from 'assets/svg/dogewalk/logo.svg'
+import dogewalkUrl from 'assets/svg/dogewalk/logo.svg'
 import { ExternalLink } from 'theme/components'
+import Image from 'components/Image'
 
 export default function Swap() {
   // const theme = useTheme()
@@ -521,7 +522,7 @@ export default function Swap() {
           <Typography fontSize={34} fontWeight={700}>
             Welcome to DogeWalk’s SFT AMM trading platform, powered by Ladder.
           </Typography>
-          <Dogewalk style={{ margin: '20px 0' }} />
+          <Image src={dogewalkUrl} style={{ margin: '20px 0' }} />
           <Box>
             <Typography>
               <Typography component={'span'} fontWeight={700}>
