@@ -34,7 +34,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { liquidityParamBuilder, liquidityParamSplitter, routes } from 'constants/routes'
 import { useCurrency } from 'hooks/Tokens'
 import { replaceErrorMessage } from 'utils'
-import dogewalkUrl from 'assets/svg/dogewalk/logo.svg'
+import dogewalkUrl from 'assets/images/dogewalk.png'
 import { ExternalLink } from 'theme/components'
 import Image from 'components/Image'
 
@@ -382,6 +382,7 @@ export default function Swap() {
                     currency={fromAsset}
                     onMax={handleMaxInput}
                     disabled={!account}
+                    disableCurrencySelect
                     onSelectSubTokens={handleFromSubAssets}
                   />
                   {PriceCorrectInput}
@@ -407,6 +408,7 @@ export default function Swap() {
               <Box mb={toAsset ? 16 : 0}>
                 <>
                   <CurrencyInputPanel
+                    disableCurrencySelect
                     value={formattedAmounts[Field.OUTPUT]}
                     onChange={handleToVal}
                     onSelectCurrency={handleToAsset}
