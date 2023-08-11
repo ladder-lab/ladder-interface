@@ -95,8 +95,8 @@ export function useIsDarkMode(): boolean {
   const { userDarkMode } = useSelector<AppState, { userDarkMode: boolean | null }>(({ user: { userDarkMode } }) => ({
     userDarkMode
   }))
-
-  return userDarkMode ?? false
+  return true
+  // return userDarkMode ?? false
 }
 
 export function useDarkModeManager(): [boolean, () => void] {

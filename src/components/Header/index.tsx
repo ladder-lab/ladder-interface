@@ -4,7 +4,7 @@ import {
   AppBar,
   Box,
   ButtonBase,
-  IconButton,
+  // IconButton,
   MenuItem,
   /*styled as muiStyled,*/
   styled,
@@ -21,7 +21,7 @@ import NetworkSelect from './NetworkSelect'
 // import SwitchToggle from 'components/SwitchToggle'
 import { useDarkModeManager } from 'state/user/hooks'
 import MainLogo from 'components/MainLogo'
-import useBreakpoint from 'hooks/useBreakpoint'
+// import useBreakpoint from 'hooks/useBreakpoint'
 // import { ReactComponent as AboutIcon } from 'assets/svg/menu/about.svg'
 // import { ReactComponent as HelpCenterIcon } from 'assets/svg/menu/help_center.svg'
 // import { ReactComponent as RequestFeatureIcon } from 'assets/svg/menu/request_feature.svg'
@@ -121,10 +121,10 @@ const Filler = styled('div')(({ theme }) => ({
 // }))
 
 export default function Header() {
-  const [menuOpen, setMenuOpen] = useState(false)
+  // const [menuOpen, setMenuOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   // const { pathname } = useLocation()
-  const isDownMd = useBreakpoint('md')
+  // const isDownMd = useBreakpoint('md')
   const navigate = useNavigate()
   const [darkMode] = useDarkModeManager()
 
@@ -257,67 +257,67 @@ export default function Header() {
         <Box display="flex" alignItems="center" gap={{ xs: '8px', sm: '20px' }}>
           <NetworkSelect />
           <Web3Status />
-          <Box sx={{ position: 'relative' }}>
+          {/* <Box sx={{ position: 'relative' }}>
             <MenuButton
               onClick={() => {
                 isDownMd ? setMobileMenuOpen(open => !open) : setMenuOpen(open => !open)
               }}
             />
             {menuOpen && !isDownMd && <DesktopMenu />}
-          </Box>
+          </Box> */}
         </Box>
       </StyledAppBar>
     </>
   )
 }
 
-function MenuButton({ onClick }: { onClick: () => void }) {
-  const theme = useTheme()
+// function MenuButton({ onClick }: { onClick: () => void }) {
+//   const theme = useTheme()
 
-  return (
-    <IconButton
-      sx={{
-        height: 46,
-        width: 46,
-        padding: '4px',
-        borderRadius: '8px',
-        background: theme => theme.palette.background.default
-      }}
-      onClick={onClick}
-    >
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path
-          d="M21 10.7825H7"
-          stroke={theme.palette.text.primary}
-          strokeWidth="1.7"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M21 6H3"
-          stroke={theme.palette.text.primary}
-          strokeWidth="1.7"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M21 15.5652H3"
-          stroke={theme.palette.text.primary}
-          strokeWidth="1.7"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M21 20.3479H7"
-          stroke={theme.palette.text.primary}
-          strokeWidth="1.7"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </IconButton>
-  )
-}
+//   return (
+//     <IconButton
+//       sx={{
+//         height: 46,
+//         width: 46,
+//         padding: '4px',
+//         borderRadius: '8px',
+//         background: theme => theme.palette.background.default
+//       }}
+//       onClick={onClick}
+//     >
+//       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+//         <path
+//           d="M21 10.7825H7"
+//           stroke={theme.palette.text.primary}
+//           strokeWidth="1.7"
+//           strokeLinecap="round"
+//           strokeLinejoin="round"
+//         />
+//         <path
+//           d="M21 6H3"
+//           stroke={theme.palette.text.primary}
+//           strokeWidth="1.7"
+//           strokeLinecap="round"
+//           strokeLinejoin="round"
+//         />
+//         <path
+//           d="M21 15.5652H3"
+//           stroke={theme.palette.text.primary}
+//           strokeWidth="1.7"
+//           strokeLinecap="round"
+//           strokeLinejoin="round"
+//         />
+//         <path
+//           d="M21 20.3479H7"
+//           stroke={theme.palette.text.primary}
+//           strokeWidth="1.7"
+//           strokeLinecap="round"
+//           strokeLinejoin="round"
+//         />
+//       </svg>
+//     </IconButton>
+//   )
+// }
 
 export function DesktopMenu() {
   const theme = useTheme()
