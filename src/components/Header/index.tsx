@@ -1,12 +1,12 @@
 import { useState, useCallback, useMemo } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { /*Link, useLocation,*/ useNavigate } from 'react-router-dom'
 import {
   AppBar,
   Box,
   ButtonBase,
   IconButton,
   MenuItem,
-  styled as muiStyled,
+  /*styled as muiStyled,*/
   styled,
   Typography,
   useTheme
@@ -57,17 +57,17 @@ export const Tabs: Tab[] = [
   // { title: 'Statistics', route: routes.statistics }
 ]
 
-const navLinkSX = ({ theme }: any) => ({
-  textDecoration: 'none',
-  fontSize: 14,
-  color: theme.palette.text.primary,
-  opacity: 0.5,
-  '&:hover': {
-    opacity: 1
-  }
-})
+// const navLinkSX = ({ theme }: any) => ({
+//   textDecoration: 'none',
+//   fontSize: 14,
+//   color: theme.palette.text.primary,
+//   opacity: 0.5,
+//   '&:hover': {
+//     opacity: 1
+//   }
+// })
 
-const StyledNavLink = styled(Link)(navLinkSX)
+// const StyledNavLink = styled(Link)(navLinkSX)
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   position: 'fixed',
@@ -113,12 +113,12 @@ const Filler = styled('div')(({ theme }) => ({
   }
 }))
 
-const LinksWrapper = muiStyled('div')(({ theme }) => ({
-  marginLeft: 60,
-  [theme.breakpoints.down('lg')]: {
-    marginLeft: 0
-  }
-}))
+// const LinksWrapper = muiStyled('div')(({ theme }) => ({
+//   marginLeft: 60,
+//   [theme.breakpoints.down('lg')]: {
+//     marginLeft: 0
+//   }
+// }))
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
