@@ -4,7 +4,7 @@ export const HelperText = {
   priceImpact: 'The impact your trade has on the market price of this pool.',
   minReceived:
     'The minimum amount you are guaranteed to receive.If the price slips any further,your transaction will revert.',
-  networkFee: 'The fee paid to miners who process your transaction.This must be paid in ETH.',
+  networkFee: 'The fee paid to miners who process your transaction.This must be paid in native token.',
   selectNft: 'selectNft',
   selectToken: 'selectToken'
 }
