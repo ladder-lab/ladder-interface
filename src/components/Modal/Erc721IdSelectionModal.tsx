@@ -23,6 +23,9 @@ import Close from '@mui/icons-material/Close'
 import SwitchToggle from 'components/SwitchToggle'
 import { useCurrencyModalListHeight } from 'hooks/useScreenSize'
 import Pagination from 'components/Pagination'
+import { useContract } from 'hooks/useContract'
+import ERC3525_ABI from 'constants/abis/erc3525.json'
+import { useSingleCallResult } from 'state/multicall/hooks'
 
 export default function Erc721IdSelectionModal({
   // isOpen,
@@ -332,6 +335,11 @@ function NftCard({
   const theme = useTheme()
   const isDarkMode = useIsDarkMode()
 
+  const arg = useMemo(() => [token.tokenId], [token])
+
+  const contract = useContract(token.address, ERC3525_ABI)
+  const result = useSingleCallResult(contract, 'assets', arg)
+
   return (
     <Box
       onClick={disabled ? undefined : onClick}
@@ -396,8 +404,11 @@ function NftCard({
       <Typography sx={{ color: theme.palette.text.secondary, fontSize: 10, fontWeight: 400, mb: 4 }}>
         {shortenAddress(token.address) ?? ''}
       </Typography>
-      <Typography sx={{ fontSize: 10, fontWeight: 600 }}>
+      {/* <Typography sx={{ fontSize: 10, fontWeight: 600 }}>
         <span style={{ color: theme.palette.text.secondary }}>balance: </span> 1
+      </Typography> */}
+      <Typography sx={{ fontSize: 10, fontWeight: 600 }}>
+        <span style={{ color: theme.palette.text.secondary }}>amount: </span> {result.result?.toString() ?? '0'}
       </Typography>
     </Box>
   )
