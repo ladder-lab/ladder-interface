@@ -364,7 +364,7 @@ function NftCard({
         background: isDarkMode ? '#15171A' : '#F6F6F6',
         transition: '0.5s',
         cursor: 'pointer',
-        opacity: disabled || insufficientAmount ? 0.8 : 1,
+        opacity: disabled || insufficientAmount ? 0.5 : 1,
         '&:hover':
           disabled || insufficientAmount
             ? {}
