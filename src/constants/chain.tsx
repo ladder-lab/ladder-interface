@@ -129,7 +129,7 @@ export const SUPPORTED_NETWORKS: {
       decimals: 18
     },
     rpcUrls: ['https://ropsten.infura.io/v3/'],
-    blockExplorerUrls: ['https://ropsten.etherscan.io/']
+    blockExplorerUrls: ['https://ropsten.etherscan.io']
   },
   [ChainId.RINKEBY]: {
     chainId: '0x4',
@@ -162,7 +162,7 @@ export const SUPPORTED_NETWORKS: {
       decimals: 18
     },
     rpcUrls: ['https://bsc-dataseed.binance.org'],
-    blockExplorerUrls: ['https://bscscan.com/']
+    blockExplorerUrls: ['https://bscscan.com']
   },
   [ChainId.GÖRLI]: {
     chainId: '0x5',
@@ -173,7 +173,7 @@ export const SUPPORTED_NETWORKS: {
       decimals: 18
     },
     rpcUrls: ['https://goerli.infura.io/v3/bf5759dec68b48629379e1d53ababd45'],
-    blockExplorerUrls: ['https://goerli.etherscan.io/']
+    blockExplorerUrls: ['https://goerli.etherscan.io']
   },
   [ChainId.SEPOLIA]: {
     chainId: '0xaa36a7',
@@ -184,7 +184,7 @@ export const SUPPORTED_NETWORKS: {
       decimals: 18
     },
     rpcUrls: ['https://sepolia.infura.io/v3/f338fa7411a945db8bed616683b2ade5'],
-    blockExplorerUrls: ['https://sepolia.etherscan.io/']
+    blockExplorerUrls: ['https://sepolia.etherscan.io']
   },
   [ChainId.MATIC]: {
     chainId: '0x89',

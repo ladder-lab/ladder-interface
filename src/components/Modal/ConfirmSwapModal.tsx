@@ -134,7 +134,7 @@ function SwapPanelRow({
         </Box>
       </Box>
       <Box display={'flex'} flexDirection="column" gap={8} alignItems="flex-end" width="50%">
-        <Tag>{type}</Tag>
+        <Tag>{type.includes('721') ? 'ERC3525' : type}</Tag>
         <Typography fontSize={16} textAlign="right">
           {type !== 'ERC20' ? asset?.name : asset?.symbol}
           {type === 'ERC1155' ? `#${filter1155(asset)?.tokenId}` : ''}
