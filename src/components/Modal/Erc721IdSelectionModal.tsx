@@ -26,6 +26,8 @@ import Pagination from 'components/Pagination'
 import { useContract } from 'hooks/useContract'
 import ERC3525_ABI from 'constants/abis/erc3525.json'
 import { useSingleCallResult } from 'state/multicall/hooks'
+import { Token, TokenAmount } from '@ladder/sdk'
+import { ZERO_ADDRESS } from 'constants'
 
 export default function Erc721IdSelectionModal({
   // isOpen,
@@ -343,10 +345,11 @@ function NftCard({
 
   const amount = useMemo(() => {
     const res = result.result?.[1]?.toString() ?? '0'
-    if (Number(res) >= 250) {
+    const amountInString = new TokenAmount(new Token(1, ZERO_ADDRESS, 18), res).toExact()
+    if (Number(amountInString) >= 250) {
       setInsufficientAmount(false)
     }
-    return res
+    return amountInString
   }, [result.result])
 
   return (
