@@ -27,7 +27,7 @@ import { useContract } from 'hooks/useContract'
 import ERC3525_ABI from 'constants/abis/erc3525.json'
 import { useSingleCallResult } from 'state/multicall/hooks'
 import { Token, TokenAmount } from '@ladder/sdk'
-import { ZERO_ADDRESS } from 'constants'
+import { ZERO_ADDRESS } from 'constants/index'
 
 export default function Erc721IdSelectionModal({
   // isOpen,
