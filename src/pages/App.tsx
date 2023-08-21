@@ -15,7 +15,7 @@ import AddLiquidity from './Pool/AddLiquidity'
 import darkBg from 'assets/images/dark_bg.png'
 import lightBg from 'assets/images/light_bg.png'
 import { useIsDarkMode } from 'state/user/hooks'
-// import RemoveLiquidity from './Pool/RemoveLiquidity'
+import RemoveLiquidity from './Pool/RemoveLiquidity'
 // import Testnet from './Testnet'
 // import Explorer from './Explore'
 // import Collection from './Collection'
@@ -110,10 +110,10 @@ export default function App() {
                   <Route path={routes.addLiquidity} element={<AddLiquidity />}>
                     <Route path={routes.removeLiquidityParams.slice(1)} element={<AddLiquidity />} />
                   </Route>
-                  {/* <Route path={routes.removeLiquidity}>
+                  <Route path={routes.removeLiquidity}>
                     <Route path={routes.removeLiquidity + routes.removeLiquidityParams} element={<RemoveLiquidity />} />
                   </Route>
-                  <Route path={routes.feedback} element={<Feedback />} />
+                  {/* <Route path={routes.feedback} element={<Feedback />} />
                   <Route path={routes.sbt} element={<Sbt />} />
                   <Route path={routes.becomePartner} element={<BecomePartnerNew />} />
                   <Route path={routes.myAccount} element={<MyAccount />} />
