@@ -9,6 +9,7 @@ import { ReactComponent as LuckIcon } from 'assets/svg/airdrop/luck_icon.svg'
 import { ReactComponent as BoxIcon } from 'assets/svg/airdrop/box_icon.svg'
 import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
+import QuestionHelper from 'components/essential/QuestionHelper'
 
 export enum TYPE {
   box,
@@ -32,6 +33,7 @@ interface CardProp {
   icon?: React.ReactNode
   expired?: boolean
   route?: string
+  tooltip?: string
 }
 
 export interface TaskListData {
@@ -173,8 +175,9 @@ function TaskCards({ data, type }: { data: CardProp[]; type: TYPE }) {
                 </Typography>
               </Box>
             </Box>
-            <Typography fontSize={18} fontWeight={700}>
+            <Typography fontSize={18} fontWeight={700} component="div">
               {data.title}
+              {data.tooltip && <QuestionHelper text={data.tooltip} />}
             </Typography>
             <br />
             <Box

@@ -160,7 +160,6 @@ export default function Header() {
         <HideOnMobile breakpoint="md">
           <LinksWrapper>
             {Tabs.map(({ title, route, subTab, link, titleContent }, idx) => {
-              console.log(pathname, title, pathname === '/round3' && title === 'Event')
               return subTab ? (
                 <Box
                   sx={{
