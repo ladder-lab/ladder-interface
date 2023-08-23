@@ -9,7 +9,7 @@ import Web3ReactManager from '../components/essential/Web3ReactManager'
 import { ModalProvider } from 'context/ModalContext'
 import { routes } from 'constants/routes'
 import Swap from './Swap'
-import Pool from './Pool'
+// import Pool from './Pool'
 import AddLiquidity from './Pool/AddLiquidity'
 // import ImportPool from './Pool/ImportPool'
 import darkBg from 'assets/images/dark_bg.png'
@@ -99,7 +99,7 @@ export default function App() {
                   <Route path={routes.swap} element={<Swap />}>
                     <Route path={routes.removeLiquidityParams.slice(1)} element={<Swap />} />
                   </Route>
-                  <Route path={routes.pool} element={<Pool />} />
+                  {/* <Route path={routes.pool} element={<Pool />} /> */}
                   {/* <Route path={routes.statistics} element={<Statistics />} />
                   <Route
                     path={routes.statisticsTokens + routes.statisticsTokensParams}
