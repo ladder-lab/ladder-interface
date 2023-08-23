@@ -7,6 +7,7 @@ import BoxModal, { IncompleteModal } from './AirdropModal'
 import { ReactComponent as Tester } from 'assets/svg/airdrop/tester.svg'
 import { ReactComponent as Monopoly } from 'assets/svg/airdrop/monopoly.svg'
 import { ReactComponent as Badges } from 'assets/svg/airdrop/badges.svg'
+import { ReactComponent as Trading } from 'assets/svg/airdrop/trading.svg'
 
 const expiredList = ['test1', 'test2', 'monopoly']
 
@@ -56,6 +57,22 @@ const tasks = [
     id: 'all-Level-3',
     icon: <Badges />,
     route: 'round3'
+  },
+  {
+    title: 'Buy at least 1 DWD-SFT',
+    id: 'dogewalkSwap',
+    chain: ChainId.BSC,
+    link: 'http://dogewalk.ladder.top/',
+    icon: <Trading />
+  },
+  {
+    title: 'Hold at least 4 DWD-SFT',
+    id: 'dogewalkHold',
+    chain: ChainId.BSC,
+    link: 'http://dogewalk.ladder.top/',
+    icon: <Trading />,
+    tooltip:
+      'A snapshot will be taken on a random date. All wallets with more than 4 DW SFTs will qualify for the reward.						'
   }
 ]
 
@@ -89,7 +106,7 @@ export default function TaskListLuck({ refreshCb }: { refreshCb: () => void }) {
                 action: () => {
                   itemState.finished
                     ? showModal(<BoxModal getBox={getBox({ boxType: itemState.boxType, boxs: itemState.boxs })} />)
-                    : showModal(<IncompleteModal route={item.route} />)
+                    : showModal(<IncompleteModal route={item.route} link={item.link} />)
                 }
               })
               return acc
