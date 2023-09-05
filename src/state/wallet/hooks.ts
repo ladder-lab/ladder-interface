@@ -314,7 +314,7 @@ export function useToken721BalanceTokens(tokenAmount?: TokenAmount): {
                 tokenUri: token721?.tokenUri,
                 uri:
                   ChainId.SEPOLIA && isTest721(tokenAmount.token.address) && token721?.uri
-                    ? getTest721uriWithIndex(token721.uri, parseInt(data.token_id))
+                    ? getTest721uriWithIndex(token721.uri, data.token_id ? parseInt(data.token_id) : 1)
                     : data.image_uri ?? undefined
               })
           )
