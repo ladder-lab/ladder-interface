@@ -390,7 +390,18 @@ function NftCard({
       >
         {token.name ?? ''}
       </Typography>
-      <Typography sx={{ color: theme.palette.text.secondary, fontSize: 12, fontWeight: 600, mb: 8 }}>
+      <Typography
+        sx={{
+          color: theme.palette.text.secondary,
+          fontSize: 12,
+          fontWeight: 600,
+          mb: 8,
+          maxWidth: '100%',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap'
+        }}
+      >
         #{token.tokenId ?? ''}
       </Typography>
       <Typography sx={{ color: theme.palette.text.secondary, fontSize: 10, fontWeight: 400, mb: 4 }}>

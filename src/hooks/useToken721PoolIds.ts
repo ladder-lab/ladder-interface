@@ -12,6 +12,7 @@ export function useToken721PoolIds(pairAddress: string | undefined, collection: 
   const pageSize = 20
   const contract = use721PairContract(pairAddress)
   const length = useSingleCallResult(contract, 'erc721MapLength')
+  const [, setRefresh] = useState(false)
 
   const maxLength = useMemo(() => (length.result ? Number(length.result.toString()) : undefined), [length.result])
 
@@ -29,12 +30,21 @@ export function useToken721PoolIds(pairAddress: string | undefined, collection: 
       poolTokens:
         ids.result && collection
           ? ids.result?.[0]?.map((id: any) => {
-              const _t = new Token721(collection?.chainId, collection?.address, +id.toString(), {
-                name: collection.name,
-                symbol: collection.symbol,
-                tokenUri: collection.tokenUri,
-                uri: isTeset721 && !collection.tokenUri ? getTest721uriWithIndex(collection?.uri || '', id) : undefined
-              })
+              const _t = new Token721(
+                collection?.chainId,
+                collection?.address,
+                id.toString(),
+                {
+                  name: collection.name,
+                  symbol: collection.symbol,
+                  tokenUri: collection.tokenUri,
+                  uri:
+                    isTeset721 && !collection.tokenUri ? getTest721uriWithIndex(collection?.uri || '', id) : undefined
+                },
+                () => {
+                  setRefresh(prev => !prev)
+                }
+              )
               return _t
             })
           : undefined,

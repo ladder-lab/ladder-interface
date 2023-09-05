@@ -18,6 +18,7 @@ import { Token721 } from 'constants/token/token721'
 import ERC721_ABI from 'constants/abis/erc721.json'
 import tUSDCImg from 'assets/images/tUSDC.jpg'
 import tWETHImg from 'assets/images/tWETH.jpg'
+import { Axios } from 'utils/axios'
 
 // Check if currency is included in custom list from user storage
 export function useIsUserAddedToken(currency: Currency | undefined | null): boolean {
@@ -239,7 +240,7 @@ const interface1155 = ['0xd9b67a26']
 
 export function useToken1155(tokenAddress?: string, tokenId?: string | number): Token1155 | undefined | null {
   const [is1155, setIs1155] = useState(false)
-  const [meta, setMeta] = useState({ name: 'Erc1155', symbol: 'ERC1155' })
+  const [meta, setMeta] = useState({ name: 'Erc1155', symbol: 'ERC1155', uri: '' })
   const { chainId, library } = useActiveWeb3React()
   const address = isAddress(tokenAddress)
   const nftContract = use1155Contract(address ? address : undefined)
@@ -254,17 +255,32 @@ export function useToken1155(tokenAddress?: string, tokenId?: string | number): 
   }, [library, tokenAddress])
 
   useEffect(() => {
-    if (is1155 && nftContract) {
+    if (is1155 && nftContract && tokenId) {
+      // Axios.getMetadata(address, tokenId ?? '1')
+      // .then(r => {
+      //   const data = r.data.data
+      //   this.uri = data?.image_uri ?? ''
+      //   this.name = data?.name ?? data?.contract_name ?? 'ERC1155'
+      //   this.symbol = data?.contract_name ?? data?.name ?? 'NFT'
+      // })
+      // .catch(e => {
+      //   console.error(e)
+      // })
       ;(async () => {
         try {
-          const data = await Promise.all([nftContract.name(), nftContract.symbol()])
-          if (data) {
-            setMeta({ name: data[0] ?? 'Erc1155', symbol: data[1] ?? 'ERC1155' })
+          const r = await Axios.getMetadata(nftContract.address, tokenId ?? '1')
+          if (r.data.data.name) {
+            const data = r.data.data
+            setMeta({
+              name: data?.name ?? data?.contract_name ?? 'Erc1155',
+              symbol: data?.contract_name ?? data?.name ?? 'NFT',
+              uri: data?.image_uri ?? data?.logo_url ?? ''
+            })
           }
         } catch (e) {}
       })()
     }
-  }, [is1155, nftContract])
+  }, [is1155, nftContract, tokenId])
 
   return useMemo(() => {
     if (!chainId || !address || !tokenId) return undefined
@@ -273,8 +289,10 @@ export function useToken1155(tokenAddress?: string, tokenId?: string | number): 
       const token = list.find(token1155 => token1155.address === tokenAddress && token1155.tokenId == tokenId)
       if (token) return token
     }
-    return is1155 ? new Token1155(chainId, address, tokenId, { name: meta.name, symbol: meta.symbol }) : undefined
-  }, [address, chainId, is1155, meta.name, meta.symbol, tokenAddress, tokenId])
+    return is1155
+      ? new Token1155(chainId, address, tokenId, { name: meta.name, symbol: meta.symbol, uri: meta.uri })
+      : undefined
+  }, [address, chainId, is1155, meta.name, meta.symbol, meta.uri, tokenAddress, tokenId])
 }
 
 const interface721 = ['0x80ac58cd']
@@ -285,20 +303,49 @@ export function useToken721(
   loadingCb?: any
 ): Token721 | undefined | null {
   const [is721, setIs721] = useState(false)
+  const [meta, setMeta] = useState({ name: 'Erc721', symbol: 'NFT', uri: '' })
   const { chainId, library } = useActiveWeb3React()
   const address = isAddress(tokenAddress)
   const nftContract = use721Contract(address ? address : undefined)
 
-  const nameRes = useSingleCallResult(is721 ? nftContract : null, 'name')
-  const symbolRes = useSingleCallResult(is721 ? nftContract : null, 'symbol')
+  // const nameRes = useSingleCallResult(is721 ? nftContract : null, 'name')
+  // const symbolRes = useSingleCallResult(is721 ? nftContract : null, 'symbol')
 
-  const name = useMemo(() => {
-    return nameRes.result?.[0] ?? undefined
-  }, [nameRes.result])
+  // const name = useMemo(() => {
+  //   return nameRes.result?.[0] ?? undefined
+  // }, [nameRes.result])
 
-  const symbol = useMemo(() => {
-    return symbolRes.result?.[0] ?? undefined
-  }, [symbolRes.result])
+  // const symbol = useMemo(() => {
+  //   return symbolRes.result?.[0] ?? undefined
+  // }, [symbolRes.result])
+  useEffect(() => {
+    if (is721 && nftContract) {
+      // Axios.getMetadata(address, tokenId ?? '1')
+      // .then(r => {
+      //   const data = r.data.data
+      //   this.uri = data?.image_uri ?? ''
+      //   this.name = data?.name ?? data?.contract_name ?? 'ERC1155'
+      //   this.symbol = data?.contract_name ?? data?.name ?? 'NFT'
+      // })
+      // .catch(e => {
+      //   console.error(e)
+      // })
+      ;(async () => {
+        try {
+          const r = await Axios.getMetadata(nftContract.address)
+          if (r.data.data.name) {
+            const data = r.data.data
+            setMeta({
+              name: data?.name ?? data?.contract_name ?? 'Erc721',
+              symbol: data?.symbol ?? data?.contract_name ?? data?.name ?? 'NFT',
+              uri: data?.image_uri ?? data?.logo_url ?? ''
+            })
+          }
+          loadingCb && loadingCb(true)
+        } catch (e) {}
+      })()
+    }
+  }, [is721, loadingCb, nftContract, tokenId])
 
   useEffect(() => {
     if (tokenAddress && library && !!isAddress(tokenAddress))
@@ -309,10 +356,6 @@ export function useToken721(
       })
   }, [library, tokenAddress])
 
-  useEffect(() => {
-    loadingCb && loadingCb(!!nameRes?.loading)
-  }, [loadingCb, nameRes?.loading])
-
   return useMemo(() => {
     if (!chainId || !address) return undefined
     const list = DEFAULT_721_LIST[chainId ?? NETWORK_CHAIN_ID]
@@ -320,8 +363,10 @@ export function useToken721(
       const token = list.find(token721 => token721.address === address)
       if (token) return token
     }
-    return name && is721 ? new Token721(chainId, address, tokenId, { name: name, symbol: symbol }) : undefined
-  }, [address, chainId, is721, name, symbol, tokenId])
+    return meta.name && is721
+      ? new Token721(chainId, address, tokenId, { name: meta.name, symbol: meta.symbol, uri: meta.uri })
+      : undefined
+  }, [address, chainId, is721, meta.name, meta.symbol, meta.uri, tokenId])
 }
 
 export function useToken721WithLoadingIndicator(
