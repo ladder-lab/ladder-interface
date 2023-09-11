@@ -36,15 +36,9 @@ export class Token721 extends Token {
       Axios.getMetadata(address, tokenId ?? '1')
         .then(r => {
           const data = r.data.data
-          if (!metadata?.uri) {
-            this.uri = data?.image_uri ?? ''
-          }
-          if (!metadata?.name) {
-            this.name = data?.name ?? data?.contract_name ?? ''
-          }
-          if (!metadata?.symbol) {
-            this.symbol = data?.contract_name ?? data?.name ?? ''
-          }
+          this.uri = data?.image_uri ?? ''
+          this.name = data?.name ?? data?.contract_name ?? 'ERC721'
+          this.symbol = data?.contract_name ?? data?.name ?? 'NFT'
         })
         .catch(e => {
           console.error(e)
@@ -58,7 +52,7 @@ export class Token721 extends Token {
           if (tokenId !== undefined && tokenId !== '') this.name = metadata.name
         })
         .catch(e => {
-          console.error(e)
+          // console.error(e)
         })
     }
   }

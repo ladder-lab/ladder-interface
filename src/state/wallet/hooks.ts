@@ -276,20 +276,7 @@ export function useToken721BalanceTokens(tokenAmount?: TokenAmount): {
   const [loading, setLoading] = useState(false)
   const [tokens, setTokens] = useState<Token721[] | undefined>(undefined)
 
-  // const contract = use721Contract(isAddress(tokenAmount?.token?.address) ? tokenAmount?.token?.address : undefined)
-
-  // const calls = useMemo(() => {
-  //   const balance = tokenAmount?.toExact()
-
-  //   if (!balance || !account || !contract) return
-
-  //   const total = parseInt(balance)
-  //   const arr = Array.from(Array(total).keys()).map((_, idx) => {
-  //     return contract.tokenOfOwnerByIndex(account, idx)
-  //   })
-  //   return arr
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [account, contract, tokenAmount?.toExact()])
+  const contract = use721Contract(isAddress(tokenAmount?.token?.address) ? tokenAmount?.token?.address : undefined)
 
   useEffect(() => {
     if (!chainId || !tokenAmount?.raw || !account || !tokenAmount?.token?.address) {
@@ -304,7 +291,7 @@ export function useToken721BalanceTokens(tokenAmount?: TokenAmount): {
             params: { erc_type: 'erc721', contract_address: tokenAmount?.token?.address }
           }
         )
-        if (res?.data?.data?.total > 0) {
+        if (res?.data?.data?.total > 0 && !isTest721(tokenAmount.token.address)) {
           const token721 = filter721(tokenAmount.token)
           const tokens = res.data.data.content.map(
             data =>
@@ -319,22 +306,33 @@ export function useToken721BalanceTokens(tokenAmount?: TokenAmount): {
               })
           )
           setTokens(tokens)
-        }
-        // const indexes = await Promise.all(calls)
-        // const token721 = filter721(tokenAmount.token)
-        // const tokens = indexes.map(
-        //   id =>
-        //     new Token721(chainId, tokenAmount.token.address, id.toString(), {
-        //       name: tokenAmount.token.name,
-        //       symbol: tokenAmount.token.symbol,
-        //       tokenUri: token721?.tokenUri,
-        //       uri:
-        //         chainId === ChainId.SEPOLIA && isTest721(tokenAmount.token.address) && token721?.uri
-        //           ? getTest721uriWithIndex(token721.uri, id)
-        //           : undefined
-        //     })
-        // )
+        } else {
+          const balance = tokenAmount?.toExact()
 
+          if (!balance || !account || !contract) return
+
+          const total = parseInt(balance)
+          const arr = Array.from(Array(total).keys()).map((_, idx) => {
+            return contract.tokenOfOwnerByIndex(account, idx)
+          })
+          const calls = arr
+
+          const indexes = await Promise.all(calls)
+          const token721 = filter721(tokenAmount.token)
+          const tokens = indexes.map(
+            id =>
+              new Token721(chainId, tokenAmount.token.address, id.toString(), {
+                name: tokenAmount.token.name,
+                symbol: tokenAmount.token.symbol,
+                tokenUri: token721?.tokenUri,
+                uri:
+                  chainId === ChainId.SEPOLIA && isTest721(tokenAmount.token.address) && token721?.uri
+                    ? getTest721uriWithIndex(token721.uri, id)
+                    : undefined
+              })
+          )
+          setTokens(tokens)
+        }
         setLoading(false)
       } catch (e) {
         setLoading(false)
