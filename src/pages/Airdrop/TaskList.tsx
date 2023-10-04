@@ -1,8 +1,8 @@
-import { Box, Tab, Typography, useTheme, Tabs as MuiTabs, Button } from '@mui/material'
+import { Box, Tab, Typography, useTheme, Tabs as MuiTabs, Button, SxProps } from '@mui/material'
 import Card from 'components/Card'
 import { SUPPORTED_NETWORKS } from 'constants/chain'
 import React, { useCallback } from 'react'
-
+import { ReactComponent as SwapPlus1 } from 'assets/svg/airdrop/swap-plus-1.svg'
 import { ReactComponent as Completed } from 'assets/svg/airdrop/completed.svg'
 import { useIsDarkMode } from 'state/user/hooks'
 import { ReactComponent as LuckIcon } from 'assets/svg/airdrop/luck_icon.svg'
@@ -13,7 +13,8 @@ import QuestionHelper from 'components/essential/QuestionHelper'
 
 export enum TYPE {
   box,
-  luck
+  luck,
+  swap
 }
 
 interface Props {
@@ -34,6 +35,9 @@ interface CardProp {
   expired?: boolean
   route?: string
   tooltip?: string
+  desc?: string
+  plus1Icon?: React.ReactNode
+  chainTag?: React.ReactNode
 }
 
 export interface TaskListData {
@@ -137,7 +141,7 @@ function Tabs(props: Props) {
   )
 }
 
-function TaskCards({ data, type }: { data: CardProp[]; type: TYPE }) {
+export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx?: SxProps }) {
   const { account } = useActiveWeb3React()
   const isDarkMode = useIsDarkMode()
   const toggleWalletModal = useWalletModalToggle()
@@ -149,7 +153,12 @@ function TaskCards({ data, type }: { data: CardProp[]; type: TYPE }) {
     )
 
   return (
-    <Box display={'grid'} gridTemplateColumns={{ xs: '100%', md: '1fr 1fr 1fr', lg: '1fr 1fr 1fr 1fr' }} gap={20}>
+    <Box
+      display={'grid'}
+      gridTemplateColumns={{ xs: '100%', md: '1fr 1fr 1fr', lg: '1fr 1fr 1fr 1fr' }}
+      gap={20}
+      sx={sx}
+    >
       {data.map((data, idx) => (
         <Card key={data.title + idx} color={isDarkMode ? '#1A1C1E' : undefined} width="100%">
           <Box padding="24px" display={'flex'} flexDirection={'column'} gap={20} height="100%">
@@ -163,23 +172,32 @@ function TaskCards({ data, type }: { data: CardProp[]; type: TYPE }) {
                 {data.icon}
                 <Typography
                   sx={{
-                    fontSize: 16,
+                    fontSize: 12,
                     color: '#747678',
                     background: isDarkMode ? '#343739' : '#F4F4F4',
                     padding: '4px 8px 6px',
                     borderRadius: 0.6,
-                    fontWeight: 700
+                    fontWeight: 700,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 5
                   }}
                 >
-                  {SUPPORTED_NETWORKS[data.chain as keyof typeof SUPPORTED_NETWORKS]?.chainName ?? 'NETWORK'}
+                  {data.chainTag ? (
+                    data.chainTag
+                  ) : (
+                    <>{SUPPORTED_NETWORKS[data.chain as keyof typeof SUPPORTED_NETWORKS]?.chainName ?? 'NETWORK'}</>
+                  )}
                 </Typography>
               </Box>
+              {data.tooltip && <QuestionHelper text={data.tooltip} />}
             </Box>
             <Typography fontSize={18} fontWeight={700} component="div">
               {data.title}
-              {data.tooltip && <QuestionHelper text={data.tooltip} />}
             </Typography>
-            <br />
+
+            {data.desc ? <Typography color="#747678"> {data.desc}</Typography> : <br />}
+
             <Box
               borderTop={'2px dotted'}
               borderColor={isDarkMode ? '#343739' : '#E4E4E4'}
@@ -188,31 +206,47 @@ function TaskCards({ data, type }: { data: CardProp[]; type: TYPE }) {
               marginTop={'auto'}
             ></Box>
             <Box display={'flex'} justifyContent={'space-between'}>
-              <Box
-                display={'flex'}
-                alignItems={'center'}
-                gap={10}
-                sx={
-                  data.expired
-                    ? {
-                        '& svg': {
-                          opacity: 0.4
-                        },
-                        '& .bg': {
-                          fill: isDarkMode ? '#343739' : '#34373980'
+              {data.plus1Icon ? (
+                <Box display={'flex'} alignItems={'center'}>
+                  {data.plus1Icon}
+                </Box>
+              ) : type == TYPE.swap ? (
+                <Box display={'flex'} alignItems={'center'}>
+                  <SwapPlus1 />
+                </Box>
+              ) : (
+                <Box
+                  display={'flex'}
+                  alignItems={'center'}
+                  gap={10}
+                  sx={
+                    data.expired
+                      ? {
+                          '& svg': {
+                            opacity: 0.4
+                          },
+                          '& .bg': {
+                            fill: isDarkMode ? '#343739' : '#34373980'
+                          }
                         }
-                      }
-                    : undefined
-                }
-              >
-                {type === TYPE.box ? <BoxIcon width={28} /> : <LuckIcon width={28} />}
-                <Typography fontSize={16} fontWeight={700}>
-                  {type === TYPE.box ? 'x 1' : '+ 10%'}
-                </Typography>
-              </Box>
+                      : undefined
+                  }
+                >
+                  {type === TYPE.box ? <BoxIcon width={28} /> : <LuckIcon width={28} />}
+                  <Typography fontSize={16} fontWeight={700}>
+                    {type === TYPE.box ? 'x 1' : '+ 10%'}
+                  </Typography>
+                </Box>
+              )}
               {!account && (
                 <Button
-                  sx={{ width: 'max-content', padding: '10px', minHeight: 'unset', height: '40px' }}
+                  sx={{
+                    width: 'max-content',
+                    padding: '10px',
+                    minHeight: 'unset',
+                    height: '40px',
+                    background: type === TYPE.swap ? 'linear-gradient(90deg, #FFB3F3 0%, #D7C6FF 106.67%)' : undefined
+                  }}
                   onClick={toggleWalletModal}
                 >
                   Connect Wallet

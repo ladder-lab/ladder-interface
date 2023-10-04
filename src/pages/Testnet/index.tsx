@@ -30,7 +30,6 @@ import { useIsDarkMode } from 'state/user/hooks'
 import { useTestnetV2Status } from 'hooks/useTestnetBacked'
 import TestnetV3 from './TestnetV3'
 import TestnetV4 from './TestnetV4'
-import Airdrop from 'pages/Airdrop'
 
 const StyledButtonWrapper = styled(Box)(({ theme }) => ({
   maxWidth: 400,
@@ -257,7 +256,7 @@ export default function Testnet() {
             margin: '0 auto'
           }}
         >
-          {[0, 1, 2, 3, 4].map(item => (
+          {[0, 1, 2, 3].map(item => (
             <Button
               sx={{
                 width: 'fit-content',
@@ -320,7 +319,7 @@ export default function Testnet() {
           ))}
         </Stack>
       </Box>
-      {roundIndex === 4 && <Airdrop />}
+      {/* {roundIndex === 4 && <Airdrop />} */}
       {roundIndex !== 4 && (
         <Box
           sx={{

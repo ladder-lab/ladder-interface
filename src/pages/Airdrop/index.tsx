@@ -13,6 +13,7 @@ import { useAirdropData } from 'hooks/useAirdrop'
 import { useRef } from 'react'
 import darkBg2 from 'assets/images/dark_bg.png'
 import QuestionHelper from 'components/essential/QuestionHelper'
+import Mua from './Mua'
 
 const StyledLuck = styled(Luck)({})
 
@@ -228,6 +229,7 @@ export default function Airdrop() {
           </Box>
         </Box>
       </Box>
+      <Mua />
       <Box id="box" ref={boxSection}>
         <TaskListBox refreshCb={refreshCb} />
       </Box>
