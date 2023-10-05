@@ -8,6 +8,7 @@ import incompleteModalUrl from 'assets/images/incomplete_modal.png'
 import useModal from 'hooks/useModal'
 import { useIsDarkMode } from 'state/user/hooks'
 import { Link } from 'react-router-dom'
+import { ExternalLink } from 'theme/components'
 
 export default function BoxModal({ getBox }: { getBox: () => void }) {
   const isDardMode = useIsDarkMode()
@@ -27,7 +28,7 @@ export default function BoxModal({ getBox }: { getBox: () => void }) {
   )
 }
 
-export function IncompleteModal({ route, action }: { route?: string; action?: () => void }) {
+export function IncompleteModal({ route, action, link }: { route?: string; link?: string; action?: () => void }) {
   const { hideModal } = useModal()
   return (
     <Modal maxWidth="360px">
@@ -52,6 +53,10 @@ export function IncompleteModal({ route, action }: { route?: string; action?: ()
           <Link to={route ?? ''} style={{ width: '100%' }} onClick={hideModal}>
             <Button> TO FINISH </Button>
           </Link>
+        ) : link ? (
+          <ExternalLink href={link ?? ''} style={{ width: '100%' }}>
+            <Button onClick={hideModal}> TO FINISH </Button>
+          </ExternalLink>
         ) : (
           <Button onClick={hideModal} sx={{ mt: '20px' }}>
             CLOSE

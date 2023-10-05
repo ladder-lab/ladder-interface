@@ -16,7 +16,7 @@ import darkBg from 'assets/images/dark_bg.png'
 import lightBg from 'assets/images/light_bg.png'
 import { useIsDarkMode } from 'state/user/hooks'
 // import RemoveLiquidity from './Pool/RemoveLiquidity'
-// import Testnet from './Testnet'
+import Testnet from './Testnet'
 // import Explorer from './Explore'
 // import Collection from './Collection'
 // import Statistics from './Statistics'
@@ -30,6 +30,7 @@ import GoogleAnalyticsReporter from 'components/analytics/GoogleAnalyticsReporte
 // import MyAccount from './MyAccount'
 // import OrigAccount from './MyAccount/OrigAccount'
 import Footer from '../components/Footer'
+import Airdrop from './Airdrop'
 
 const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
   ({ theme, isDarkMode }) => ({
@@ -95,9 +96,9 @@ export default function App() {
               {/* <WarningModal /> */}
               <Web3ReactManager>
                 <Routes>
-                  {/* <Route path={routes.airdrop} element={<Airdrop />} /> */}
-                  {/* <Route path={routes.testnet} element={<Testnet />} />
-                  <Route path={routes.winners} element={<ListOfWinners />} />
+                  <Route path={routes.airdrop} element={<Airdrop />} />
+                  <Route path={routes.testnet} element={<Testnet />} />
+                  {/*  <Route path={routes.winners} element={<ListOfWinners />} />
                   <Route path={routes.explorer} element={<Explorer />} />
                   <Route path={routes.explorer + routes.collectionParams} element={<Collection />} /> */}
                   <Route path={routes.swap} element={<Swap />}>

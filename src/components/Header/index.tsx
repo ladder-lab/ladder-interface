@@ -21,7 +21,7 @@ import NetworkSelect from './NetworkSelect'
 // import SwitchToggle from 'components/SwitchToggle'
 import { useDarkModeManager } from 'state/user/hooks'
 import MainLogo from 'components/MainLogo'
-// import useBreakpoint from 'hooks/useBreakpoint'
+import useBreakpoint from 'hooks/useBreakpoint'
 // import { ReactComponent as AboutIcon } from 'assets/svg/menu/about.svg'
 // import { ReactComponent as HelpCenterIcon } from 'assets/svg/menu/help_center.svg'
 // import { ReactComponent as RequestFeatureIcon } from 'assets/svg/menu/request_feature.svg'
@@ -43,18 +43,18 @@ interface Tab extends TabContent {
 }
 
 export const Tabs: Tab[] = [
-  // {
-  //   title: 'Event',
-  //   route: routes.testnet
-  // },
-  // {
-  //   title: 'Airdop',
-  //   route: routes.airdrop
-  // },
-  { title: 'Swap', route: routes.swap }
-  // { title: 'Pool', route: routes.pool },
-  // { title: 'Explore', route: routes.explorer },
-  // { title: 'Statistics', route: routes.statistics }
+  {
+    title: 'Airdop',
+    route: routes.airdrop
+  },
+  {
+    title: 'Event',
+    route: routes.testnet
+  },
+  { title: 'Swap', route: routes.swap },
+  { title: 'Pool', route: routes.pool },
+  { title: 'Explore', route: routes.explorer },
+  { title: 'Statistics', route: routes.statistics }
 ]
 
 // const navLinkSX = ({ theme }: any) => ({
@@ -160,7 +160,6 @@ export default function Header() {
         {/* <HideOnMobile breakpoint="md">
           <LinksWrapper>
             {Tabs.map(({ title, route, subTab, link, titleContent }, idx) => {
-              console.log(pathname, title, pathname === '/round3' && title === 'Event')
               return subTab ? (
                 <Box
                   sx={{
@@ -239,7 +238,7 @@ export default function Header() {
                         : pathname.includes('account') && route.includes('account')
                         ? 'active'
                         : (pathname.includes('/round') ||
-                            pathname.includes('/airdrop') ||
+                            // pathname.includes('/airdrop') ||
                             pathname.includes('/monopoly')) &&
                           title.includes('Event')
                         ? 'active'

@@ -184,7 +184,7 @@ export const SUPPORTED_NETWORKS: {
       decimals: 18
     },
     rpcUrls: ['https://sepolia.infura.io/v3/f338fa7411a945db8bed616683b2ade5'],
-    blockExplorerUrls: ['https://sepolia.etherscan.io']
+    blockExplorerUrls: ['https://sepolia.etherscan.io/']
   },
   [ChainId.MATIC]: {
     chainId: '0x89',
