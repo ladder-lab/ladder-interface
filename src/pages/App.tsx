@@ -40,17 +40,21 @@ const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMo
     '&:after': {
       content: '""',
       width: '100%',
-      height: '100%',
+      height: isDarkMode ? '80%' : '100%',
       bottom: 0,
       zIndex: -1,
       position: 'absolute',
       backgroundImage: `url(${isDarkMode ? darkBg : lightBg})`,
       backgroundRepeat: 'no-repeat',
       backgroundPosition: isDarkMode ? 'bottom' : 'top',
-      backgroundSize: isDarkMode ? '100% auto' : '100% 100%'
+      backgroundSize: isDarkMode ? 'cover' : '100% 100%'
     },
     [theme.breakpoints.down('md')]: {
-      flexDirection: 'column'
+      flexDirection: 'column',
+      '&:after': {
+        backgroundSize: isDarkMode ? 'auto 50%' : '100% 100%',
+        backgroundPosition: isDarkMode ? 'right bottom' : 'top'
+      }
     }
   })
 )

@@ -352,7 +352,7 @@ export default function Swap() {
         slippageAdjustedAmounts={slippageAdjustedAmounts}
         tokenIds={selectedTokenIds}
       />
-      <Box display={{ xs: 'grid', md: 'flex' }} gap={{ xs: 20, md: 60 }}>
+      <Box display={{ xs: 'grid', md: 'flex' }} gap={{ xs: 20, md: 60 }} padding="24px">
         <Box>
           <AppBody width={'100%'} maxWidth={'680px'}>
             <Box
@@ -525,7 +525,7 @@ export default function Swap() {
             />
           )}
         </Box>
-        <Box maxWidth={470} mt={100}>
+        <Box maxWidth={{ xs: '100%', md: 470 }} mt={100} pb={{ xs: 100, md: 0 }}>
           <Typography fontSize={34} fontWeight={700}>
             Welcome to DogeWalk’s SFT AMM trading platform, powered by Ladder.
           </Typography>
@@ -534,7 +534,8 @@ export default function Swap() {
             <Typography>
               <Typography component={'span'} fontWeight={700}>
                 🐶 This is a designated platform to support DogeWalk users in trading DogeWalk SFTs,
-              </Typography>{' '}
+              </Typography>
+              <br />
               which are received as a reward by holding Genesis DogeWalk NFTs.{' '}
             </Typography>
             <br />
