@@ -14,6 +14,7 @@ import { useBlockNumber } from 'state/application/hooks'
 import { Token721 } from 'constants/token/token721'
 import { getTest721uriWithIndex, isTest721 } from 'constants/default721List'
 import { axiosNftScanInstance, erc721CollectionResponseType, ResponseType } from 'utils/axios'
+import { getAddress } from 'ethers/lib/utils'
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -308,7 +309,7 @@ export function useToken721BalanceTokens(tokenAmount?: TokenAmount): {
           const token721 = filter721(tokenAmount.token)
           const tokens = res.data.data.content.map(
             data =>
-              new Token721(chainId, data.contract_address, data.token_id, {
+              new Token721(chainId, getAddress(data.contract_address), data.token_id, {
                 name: tokenAmount?.token?.name ?? data.name ?? data.contract_name,
                 symbol: tokenAmount?.token?.symbol ?? data.contract_name,
                 tokenUri: token721?.tokenUri,
