@@ -12,8 +12,8 @@ import { fortmatic, injected, portis, walletconnect, walletlink } from '../conne
 import { NETWORK_CHAIN_ID } from './chain'
 import { DEFAULT_1155_LIST } from './default1155List'
 
-console.log(FACTORY_ADDRESS_SDK(137, false))
-console.log(INIT_CODE_HASH(137, false))
+console.log(FACTORY_ADDRESS_SDK(56, false))
+console.log(INIT_CODE_HASH(56, false))
 
 type ChainTokenList = {
   readonly [chainId in ChainId]: Token[]

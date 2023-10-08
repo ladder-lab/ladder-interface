@@ -2104,9 +2104,9 @@
     "@json-rpc-tools/types" "^1.7.6"
     "@pedrouid/environment" "^1.0.1"
 
-"@ladder/sdk@ladder-lab/sdk.git#master":
+"@ladder/sdk@ladder-lab/sdk.git#dogewalk":
   version "1.0.10"
-  resolved "https://codeload.github.com/ladder-lab/sdk/tar.gz/186b54811294b13c53b4ba9f460e05092432f963"
+  resolved "https://codeload.github.com/ladder-lab/sdk/tar.gz/7e159d5a371a5454353f2b3524f3f73fc30f7693"
   dependencies:
     "@uniswap/v2-core" "^1.0.0"
     big.js "^5.2.2"
