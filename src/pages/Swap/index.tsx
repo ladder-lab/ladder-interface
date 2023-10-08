@@ -88,7 +88,7 @@ export default function Swap() {
     selectedTokenIds
   } = useDerivedSwapInfo()
   const { [Field.INPUT]: fromAsset, [Field.OUTPUT]: toAsset } = currencies
-  console.log(888, { currencies })
+
   const [fromErc721SubTokens, setFromErc721SubTokens] = useState<Token721[] | null>(null)
   const [toErc721SubTokens, setToErc721SubTokens] = useState<Token721[] | null>(null)
 
