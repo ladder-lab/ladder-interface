@@ -39,8 +39,8 @@ import { ExternalLink } from 'theme/components'
 import Image from 'components/Image'
 
 const [currency0, currency1] = [
-  new Token(56, '0x55d398326f99059ff775485246999027b3197955', 18, 'mUSDC', ' MockERC20'),
-  new Token721(56, '0xf4F7139b1FcC5Cac2f573Cc4B684Cc75367A9cfD', undefined)
+  new Token(56, '0x9DDAA979473f3172299B066dDF46cEF51838791B', 18, 'mUSDC', 'MockERC20'),
+  new Token721(56, '0xf4f7139b1fcc5cac2f573cc4b684cc75367a9cfd', undefined)
 ]
 
 export default function Swap() {
