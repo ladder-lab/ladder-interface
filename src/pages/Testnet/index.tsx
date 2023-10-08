@@ -137,7 +137,7 @@ export default function Testnet() {
   const navigator = useNavigate()
   useEffect(() => {
     if (testnet == ':testnet') {
-      navigator('/airdrop')
+      navigator('/round3')
     }
   }, [navigator, testnet])
   const roundIndex = (() => {

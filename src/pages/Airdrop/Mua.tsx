@@ -1,6 +1,7 @@
 import { Box, Typography } from '@mui/material'
 import { ReactComponent as MuaLadder } from 'assets/svg/airdrop/mua.svg'
 import { ReactComponent as Badge1 } from 'assets/svg/airdrop/badge1.svg'
+import { ReactComponent as Badge1Color } from 'assets/svg/airdrop/badge1-color.svg'
 import { ReactComponent as Polygon } from 'assets/svg/airdrop/polygon.svg'
 import { ReactComponent as Bnb } from 'assets/svg/airdrop/bnb.svg'
 import { ReactComponent as Dogewalk } from 'assets/svg/airdrop/dogewalk.svg'
@@ -8,12 +9,20 @@ import { ReactComponent as Ladder } from 'assets/svg/airdrop/ladder.svg'
 import QuestionHelper from 'components/essential/QuestionHelper'
 import { TYPE, TaskCards } from './TaskList'
 import { ChainId } from '@ladder/sdk'
+import { useMuaTasks } from 'hooks/useAirdrop'
+import { useIsDarkMode } from 'state/user/hooks'
+import { useNavigate } from 'react-router-dom'
+import { routes } from 'constants/routes'
+const refresh = () => {}
 
 export default function Mua() {
+  const { taskState } = useMuaTasks(refresh)
+  const isDarkMode = useIsDarkMode()
+  const navigate = useNavigate()
   return (
     <Box
       sx={{
-        background: '#ffffff40',
+        background: isDarkMode ? '#ffffff20' : '#ffffff40',
         width: '100%',
         display: 'grid',
         justifyItems: 'center',
@@ -36,23 +45,39 @@ export default function Mua() {
       </Typography>
       <Box display={'flex'} alignItems={'center'} gap={40}>
         <Box
-          sx={{ padding: '6px 24px', background: '#ffffff70', borderRadius: 6, fontWeight: 500 }}
+          sx={{
+            padding: '6px 24px',
+            background: isDarkMode ? '#ffffff50' : '#ffffff70',
+            borderRadius: 6,
+            fontWeight: 500
+          }}
           display={'flex'}
           alignItems={'center'}
           gap={5}
           my={20}
         >
           To MUA
-          <QuestionHelper text="Check out how many points you earn at MUA" style={{ background: 'transparent' }} />
+          <QuestionHelper
+            text="Check out how many points you earn at MUA"
+            style={{ background: 'transparent', color: isDarkMode ? '#555555' : undefined }}
+          />
         </Box>
         <Box
-          sx={{ padding: '6px 24px', background: '#ffffff70', borderRadius: 6, fontWeight: 500 }}
+          sx={{
+            padding: '6px 24px',
+            background: isDarkMode ? '#ffffff50' : '#ffffff70',
+            borderRadius: 6,
+            fontWeight: 500
+          }}
           display={'flex'}
           alignItems={'center'}
           gap={5}
         >
           To QuestN
-          <QuestionHelper text="Earn extra by completing mini-tasks at QuestN" style={{ background: 'transparent' }} />
+          <QuestionHelper
+            text="Earn extra by completing mini-tasks at QuestN"
+            style={{ background: 'transparent', color: isDarkMode ? '#555555' : undefined }}
+          />
         </Box>
       </Box>
       <Box display={'flex'} justifyContent={'center'} mb={20}>
@@ -67,7 +92,10 @@ export default function Mua() {
               chain: ChainId.SEPOLIA,
               completed: false,
               id: 'fansiNft',
-              action: () => {},
+              count: taskState.nftSwapCount,
+              action: () => {
+                window.open('https://ladder-wolfpack.netlify.app/', '_blank')
+              },
               chainTag: (
                 <>
                   <Polygon />
@@ -89,8 +117,11 @@ export default function Mua() {
               chain: ChainId.SEPOLIA,
               completed: false,
               id: 'fansiNft',
-              action: () => {},
+              action: () => {
+                window.open('https://ladder-dogewalk3.netlify.app/swap', '_blank')
+              },
               icon: <Dogewalk />,
+              count: taskState.sftSwapCount,
               chainTag: (
                 <>
                   <Bnb />
@@ -106,10 +137,12 @@ export default function Mua() {
             {
               title: 'Obtain a level 1 badge (Testnet 3)',
               chain: ChainId.SEPOLIA,
-              completed: false,
-              id: 'fansiNft',
-              action: () => {},
-              plus1Icon: <Badge1 />,
+              completed: taskState.task3,
+              id: 'badge',
+              action: () => {
+                navigate(routes.testnet)
+              },
+              plus1Icon: !!taskState.task3 ? <Badge1Color /> : <Badge1 style={{ opacity: isDarkMode ? 0.6 : 1 }} />,
               chainTag: 'Testnet 3',
               icon: <Ladder />,
               // route?: string

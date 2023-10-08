@@ -180,3 +180,65 @@ export function useVerifyEmail() {
     openVerify
   }
 }
+
+interface MuaTastState {
+  nftSwapCount: number
+  sftSwapCount: number
+  task3: boolean
+}
+export function useMuaTasks(refreshCb: () => void) {
+  const { account, chainId } = useActiveWeb3React()
+  const [taskState, setTaskState] = useState<MuaTastState>({ nftSwapCount: 0, sftSwapCount: 0, task3: false })
+
+  const cb = useCallback(() => {
+    if (!account || !chainId) return
+    Promise.all([
+      axiosAirdropInstance.get('/mua/nftBuyCount', {
+        params: { address: account, chainId: 137 }
+      }),
+      axiosAirdropInstance.get('/mua/nftSellCount', {
+        params: { address: account, chainId: 137 }
+      }),
+      axiosAirdropInstance.get('/mua/sftBuyCount', {
+        params: { address: account, chainId: 56 }
+      }),
+      axiosAirdropInstance.get('/mua/sftSellCount', {
+        params: { address: account, chainId: 56 }
+      }),
+      axiosAirdropInstance.get('/mua/test3Task', {
+        params: { address: account, chainId }
+      })
+    ])
+      .then(r => {
+        const res = { nftSwapCount: 0, sftSwapCount: 0, task3: false }
+        r.map((r, idx) => {
+          if (r.data.code === 200) {
+            switch (idx) {
+              case 0:
+              case 1:
+                res.nftSwapCount += r.data.data.count
+                break
+              case 2:
+              case 3:
+                res.sftSwapCount += r.data.data.count
+                break
+              case 4:
+                res.task3 = r.data.data
+            }
+          }
+        })
+        setTaskState(res)
+      })
+      .catch(e => {
+        console.error(e)
+      })
+  }, [account, chainId])
+
+  useEffect(() => {
+    cb()
+  }, [cb])
+
+  useInterval(cb, account ? 60000 : null)
+
+  return { taskState }
+}

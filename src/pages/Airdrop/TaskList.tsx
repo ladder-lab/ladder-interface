@@ -3,7 +3,9 @@ import Card from 'components/Card'
 import { SUPPORTED_NETWORKS } from 'constants/chain'
 import React, { useCallback } from 'react'
 import { ReactComponent as SwapPlus1 } from 'assets/svg/airdrop/swap-plus-1.svg'
+import { ReactComponent as SwapPlus1Color } from 'assets/svg/airdrop/swap-plus-1-color.svg'
 import { ReactComponent as Completed } from 'assets/svg/airdrop/completed.svg'
+import { ReactComponent as CompletedColor } from 'assets/svg/airdrop/completed-color.svg'
 import { useIsDarkMode } from 'state/user/hooks'
 import { ReactComponent as LuckIcon } from 'assets/svg/airdrop/luck_icon.svg'
 import { ReactComponent as BoxIcon } from 'assets/svg/airdrop/box_icon.svg'
@@ -38,6 +40,7 @@ interface CardProp {
   desc?: string
   plus1Icon?: React.ReactNode
   chainTag?: React.ReactNode
+  count?: number
 }
 
 export interface TaskListData {
@@ -212,7 +215,26 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                 </Box>
               ) : type == TYPE.swap ? (
                 <Box display={'flex'} alignItems={'center'}>
-                  <SwapPlus1 />
+                  {!!data.count ? (
+                    <SwapPlus1Color />
+                  ) : (
+                    <SwapPlus1 style={{ color: isDarkMode ? '#343739' : '#B0B0B0' }} />
+                  )}
+
+                  {data.count !== undefined && (
+                    <>
+                      <Typography
+                        fontSize={18}
+                        fontWeight={600}
+                        color={
+                          data.count > 0 ? (isDarkMode ? '#ffffff' : '#333333') : isDarkMode ? '#747678' : '#B0B0B0'
+                        }
+                        marginLeft={-5}
+                      >
+                        {data.count > 0 ? `X ${data.count}` : '+ 0'}
+                      </Typography>
+                    </>
+                  )}
                 </Box>
               ) : (
                 <Box
@@ -245,14 +267,19 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                     padding: '10px',
                     minHeight: 'unset',
                     height: '40px',
-                    background: type === TYPE.swap ? 'linear-gradient(90deg, #FFB3F3 0%, #D7C6FF 106.67%)' : undefined
+                    background:
+                      type === TYPE.swap ? 'linear-gradient(90deg, #FFB3F3 0%, #D7C6FF 106.67%)!important' : undefined,
+                    '&.MuiButton-root.MuiButton-contained.MuiButtonBase-root:hover': {
+                      background:
+                        type === TYPE.swap ? 'linear-gradient(90deg, #D7C6FF 0%, #FFB3F3 106.67%)!important' : undefined
+                    }
                   }}
                   onClick={toggleWalletModal}
                 >
                   Connect Wallet
                 </Button>
               )}
-              {account && (
+              {account && type !== TYPE.swap && (
                 <>
                   {data.claimed ? (
                     <Box
@@ -291,10 +318,78 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                     </Box>
                   ) : (
                     <Button
-                      sx={{ width: 'max-content', padding: '10px 50px', minHeight: 'unset', height: '40px' }}
+                      sx={{
+                        maxWidth: '130px',
+                        padding: '10px 50px',
+                        minHeight: 'unset',
+                        height: '40px',
+                        whiteSpace: 'nowrap'
+                      }}
                       onClick={data.action}
                     >
                       {type === TYPE.box ? 'Get Box' : 'Boost'}
+                    </Button>
+                  )}
+                </>
+              )}
+              {account && type === TYPE.swap && !data.plus1Icon && (
+                <Button
+                  sx={{
+                    width: '150px',
+                    padding: '10px',
+                    minHeight: 'unset',
+                    height: '40px',
+                    background: type === TYPE.swap ? 'linear-gradient(90deg, #FFB3F3 0%, #D7C6FF 106.67%)' : undefined,
+                    '&.MuiButton-root.MuiButton-contained.MuiButtonBase-root:hover': {
+                      background:
+                        type === TYPE.swap ? 'linear-gradient(90deg, #D7C6FF 0%, #FFB3F3 106.67%)!important' : undefined
+                    }
+                  }}
+                  onClick={data.action}
+                >
+                  Swap Now
+                </Button>
+              )}
+              {account && type === TYPE.swap && !!data.plus1Icon && (
+                <>
+                  {data.completed ? (
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      sx={{
+                        color: '#333333',
+                        background: 'transparent',
+                        height: '40px',
+                        borderRadius: 1.2,
+                        padding: '10px 20px',
+                        border: '1px solid #FFB3F3'
+                      }}
+                      gap={5}
+                    >
+                      <CompletedColor />
+                      <Typography fontSize={16} fontWeight={600}>
+                        Completed
+                      </Typography>
+                    </Box>
+                  ) : (
+                    <Button
+                      sx={{
+                        width: '150px',
+                        padding: '10px',
+                        minHeight: 'unset',
+                        height: '40px',
+                        background:
+                          type === TYPE.swap ? 'linear-gradient(90deg, #FFB3F3 0%, #D7C6FF 106.67%)' : undefined,
+                        '&.MuiButton-root.MuiButton-contained.MuiButtonBase-root:hover': {
+                          background:
+                            type === TYPE.swap
+                              ? 'linear-gradient(90deg, #D7C6FF 0%, #FFB3F3 106.67%)!important'
+                              : undefined
+                        }
+                      }}
+                      onClick={data.action}
+                    >
+                      Finish Now
                     </Button>
                   )}
                 </>
