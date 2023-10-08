@@ -201,7 +201,8 @@ export const override: (palette: any) => any & {
         width: '100%',
         height: 60,
         fontSize: 16,
-        fontWeight: 500
+        fontWeight: 500,
+        lineHeight: 1
       },
       contained: {
         background: themeConstants.gradient.gradient1,
