@@ -40,7 +40,7 @@ import Image from 'components/Image'
 
 const [currency0, currency1] = [
   new Token(56, '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', 18, 'BUSD', 'BUSD'),
-  new Token721(56, '0xf4f7139b1fcc5cac2f573cc4b684cc75367a9cfd', undefined)
+  new Token721(56, '0xf4F7139b1FcC5Cac2f573Cc4B684Cc75367A9cfD', undefined)
 ]
 
 export default function Swap() {
@@ -88,7 +88,7 @@ export default function Swap() {
     selectedTokenIds
   } = useDerivedSwapInfo()
   const { [Field.INPUT]: fromAsset, [Field.OUTPUT]: toAsset } = currencies
-
+  console.log(888, { currencies })
   const [fromErc721SubTokens, setFromErc721SubTokens] = useState<Token721[] | null>(null)
   const [toErc721SubTokens, setToErc721SubTokens] = useState<Token721[] | null>(null)
 

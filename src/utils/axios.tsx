@@ -45,8 +45,10 @@ export const Axios = {
   ): AxiosPromise<ResponseType<T>> {
     return axiosInstance.post(url, isFormData ? qs.stringify(data) : data, { params, ...config })
   },
-  getMetadata(contractAddress: string, tokenId: string | number): AxiosPromise<ResponseType<NFTResponseType>> {
-    return axiosNftScanInstance.get(`assets/${contractAddress}/${tokenId}`)
+  getMetadata(contractAddress: string, tokenId?: string | number): AxiosPromise<ResponseType<NFTResponseType>> {
+    return tokenId
+      ? axiosNftScanInstance.get(`assets/${contractAddress}/${tokenId}`)
+      : axiosNftScanInstance.get(`collections/${contractAddress}`)
   }
 }
 
@@ -62,7 +64,7 @@ export interface NFTResponseType {
   contract_address: string
   contract_name: string
   contract_token_id: string
-  token_id: string
+  token_id?: string
   erc_type: string
   amount: string
   minter: string
@@ -71,6 +73,8 @@ export interface NFTResponseType {
   name: null | string
   description: null | string
   image_uri: null | string
+  symbol?: string
+  logo_url?: string
 }
 
 export interface erc721CollectionResponseType {

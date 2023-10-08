@@ -54,7 +54,7 @@ const test721ListSepolia = [
   // { name: 'LADDER-TEST-721-10', symbol: ' T-721-10', address: '0xDE9e6C49C1E009314973A1FF37385b443d418971' }
 ]
 
-const test721TestnetV3ListSepolia = [
+const test721TestnetV3ListSepolia: any[] = [
   // {
   //   address: '0xbef96b9354EaF451FaD72E41A1a4d4fE9D696ef4',
   //   name: 'Rh!noX',
@@ -67,78 +67,78 @@ const test721TestnetV3ListSepolia = [
   //   symbol: 'DCC',
   //   metaDataUri: 'https://v1-test.ladder.top/ladder/DCC/'
   // },
-  {
-    address: '0xbef96b9354EaF451FaD72E41A1a4d4fE9D696ef4',
-    name: 'Rh!noX',
-    symbol: 'RNX',
-    metaDataUri: 'https://v1-test.ladder.top/ladder/RNX/'
-  },
-  {
-    address: '0x3e9fc47be41ef38eb97822856b9145fbe632902b',
-    name: 'DCC',
-    symbol: 'DCC',
-    metaDataUri: 'https://v1-test.ladder.top/ladder/DCC/'
-  },
-  {
-    address: '0xAd1b8Fa357265D15a056B51c299a29843bE874DB',
-    name: 'GensoKishiOnline.v2',
-    symbol: 'Genso_NFT_v2',
-    uriName: 'GensoKishiOnline.v2'
-  },
-  {
-    address: '0x3ec2Bb9E04C8DB50fb77E170BF9116B330293209',
-    name: 'MetaBoom',
-    symbol: 'MMU',
-    metaDataUri: 'https://api.fansi.me/NFT/biopunk/'
-  },
-  {
-    address: '0x3CB855C19fEf72DFbe8d238e07Ba49F7017EF85f',
-    name: 'Weirdo Ghost Gang',
-    symbol: 'GHOST',
-    metaDataUri: 'https://ipfs.io/ipfs/QmU61BwmB9fm3kN4EWS14YxrB1FFJcMWj9GRrf4hsEvaYE/'
-  },
-  {
-    address: '0x67852c84F7e80fFE522cAEE29328631797ef35E8',
-    name: 'Furion',
-    symbol: 'FURION',
-    uriName: 'Furion'
-  },
-  {
-    address: '0xC1DFf0458508FF9c3C44b3f1aF97C6495607C05C',
-    name: 'Isekai Metaverse',
-    symbol: 'IGC',
-    uriName: 'IGC'
-  },
-  {
-    address: '0x2B95cc8D52e986C8cC209ef4DfBF2aA02D81fC2D',
-    name: 'GrittiNFT',
-    symbol: 'GNFT',
-    metaDataUri: 'https://tkres.gritti.io/nftjson/56/'
-  },
-  {
-    address: '0xdCF53E67375DaD97A273f0Ae49E5EBf2fEf44D91',
-    name: 'NextType',
-    symbol: 'NEXTYPE',
-    uriName: 'NEXTYPE'
-  },
-  {
-    address: '0x338b3f0Dbdf521c39e2a61e6D850e2eAdEe85c02',
-    name: 'StarryNift',
-    symbol: 'SNFT',
-    uriName: 'StarryNift'
-  },
-  {
-    address: '0xbCaf52f2C202C0f44Ed3404a1Acb6AE4b07E1544',
-    name: 'WonderPals',
-    symbol: 'WNDR',
-    metaDataUri: 'https://wonderpals.mypinata.cloud/ipfs/QmSvKdz3ecY3tKT4k7bcMnwPHXRby7tSLfPCngtb1Eq9PQ/'
-  },
-  {
-    address: '0xE9DDf46639dbaD61e4B180296AEE4e6c05562CFC',
-    name: 'Cheers UP',
-    symbol: 'CUP',
-    uriName: 'CheersUp'
-  }
+  // {
+  //   address: '0xbef96b9354EaF451FaD72E41A1a4d4fE9D696ef4',
+  //   name: 'Rh!noX',
+  //   symbol: 'RNX',
+  //   metaDataUri: 'https://v1-test.ladder.top/ladder/RNX/'
+  // },
+  // {
+  //   address: '0x3e9fc47be41ef38eb97822856b9145fbe632902b',
+  //   name: 'DCC',
+  //   symbol: 'DCC',
+  //   metaDataUri: 'https://v1-test.ladder.top/ladder/DCC/'
+  // },
+  // {
+  //   address: '0xAd1b8Fa357265D15a056B51c299a29843bE874DB',
+  //   name: 'GensoKishiOnline.v2',
+  //   symbol: 'Genso_NFT_v2',
+  //   uriName: 'GensoKishiOnline.v2'
+  // },
+  // {
+  //   address: '0x3ec2Bb9E04C8DB50fb77E170BF9116B330293209',
+  //   name: 'MetaBoom',
+  //   symbol: 'MMU',
+  //   metaDataUri: 'https://api.fansi.me/NFT/biopunk/'
+  // },
+  // {
+  //   address: '0x3CB855C19fEf72DFbe8d238e07Ba49F7017EF85f',
+  //   name: 'Weirdo Ghost Gang',
+  //   symbol: 'GHOST',
+  //   metaDataUri: 'https://ipfs.io/ipfs/QmU61BwmB9fm3kN4EWS14YxrB1FFJcMWj9GRrf4hsEvaYE/'
+  // },
+  // {
+  //   address: '0x67852c84F7e80fFE522cAEE29328631797ef35E8',
+  //   name: 'Furion',
+  //   symbol: 'FURION',
+  //   uriName: 'Furion'
+  // },
+  // {
+  //   address: '0xC1DFf0458508FF9c3C44b3f1aF97C6495607C05C',
+  //   name: 'Isekai Metaverse',
+  //   symbol: 'IGC',
+  //   uriName: 'IGC'
+  // },
+  // {
+  //   address: '0x2B95cc8D52e986C8cC209ef4DfBF2aA02D81fC2D',
+  //   name: 'GrittiNFT',
+  //   symbol: 'GNFT',
+  //   metaDataUri: 'https://tkres.gritti.io/nftjson/56/'
+  // },
+  // {
+  //   address: '0xdCF53E67375DaD97A273f0Ae49E5EBf2fEf44D91',
+  //   name: 'NextType',
+  //   symbol: 'NEXTYPE',
+  //   uriName: 'NEXTYPE'
+  // },
+  // {
+  //   address: '0x338b3f0Dbdf521c39e2a61e6D850e2eAdEe85c02',
+  //   name: 'StarryNift',
+  //   symbol: 'SNFT',
+  //   uriName: 'StarryNift'
+  // },
+  // {
+  //   address: '0xbCaf52f2C202C0f44Ed3404a1Acb6AE4b07E1544',
+  //   name: 'WonderPals',
+  //   symbol: 'WNDR',
+  //   metaDataUri: 'https://wonderpals.mypinata.cloud/ipfs/QmSvKdz3ecY3tKT4k7bcMnwPHXRby7tSLfPCngtb1Eq9PQ/'
+  // },
+  // {
+  //   address: '0xE9DDf46639dbaD61e4B180296AEE4e6c05562CFC',
+  //   name: 'Cheers UP',
+  //   symbol: 'CUP',
+  //   uriName: 'CheersUp'
+  // }
 ]
 
 export const getTest721uri = (name: string, uriName?: string) => {

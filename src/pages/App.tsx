@@ -9,14 +9,14 @@ import Web3ReactManager from '../components/essential/Web3ReactManager'
 import { ModalProvider } from 'context/ModalContext'
 import { routes } from 'constants/routes'
 import Swap from './Swap'
-// import Pool from './Pool'
+import Pool from './Pool'
 import AddLiquidity from './Pool/AddLiquidity'
 // import ImportPool from './Pool/ImportPool'
 import darkBg from 'assets/images/dark_bg.png'
 import lightBg from 'assets/images/light_bg.png'
 import { useIsDarkMode } from 'state/user/hooks'
-// import RemoveLiquidity from './Pool/RemoveLiquidity'
-import Testnet from './Testnet'
+import RemoveLiquidity from './Pool/RemoveLiquidity'
+// import Testnet from './Testnet'
 // import Explorer from './Explore'
 // import Collection from './Collection'
 // import Statistics from './Statistics'
@@ -97,15 +97,15 @@ export default function App() {
               <Web3ReactManager>
                 <Routes>
                   <Route path={routes.airdrop} element={<Airdrop />} />
-                  <Route path={routes.testnet} element={<Testnet />} />
+                  {/* <Route path={routes.testnet} element={<Testnet />} /> */}
                   {/*  <Route path={routes.winners} element={<ListOfWinners />} />
                   <Route path={routes.explorer} element={<Explorer />} />
                   <Route path={routes.explorer + routes.collectionParams} element={<Collection />} /> */}
                   <Route path={routes.swap} element={<Swap />}>
                     <Route path={routes.removeLiquidityParams.slice(1)} element={<Swap />} />
                   </Route>
-                  {/* <Route path={routes.pool} element={<Pool />} />
-                  <Route path={routes.statistics} element={<Statistics />} />
+                  <Route path={routes.pool} element={<Pool />} />
+                  {/*  <Route path={routes.statistics} element={<Statistics />} />
                   <Route
                     path={routes.statisticsTokens + routes.statisticsTokensParams}
                     element={<StatisticsTokens />}
@@ -115,10 +115,10 @@ export default function App() {
                   <Route path={routes.addLiquidity} element={<AddLiquidity />}>
                     <Route path={routes.removeLiquidityParams.slice(1)} element={<AddLiquidity />} />
                   </Route>
-                  {/* <Route path={routes.removeLiquidity}>
+                  <Route path={routes.removeLiquidity}>
                     <Route path={routes.removeLiquidity + routes.removeLiquidityParams} element={<RemoveLiquidity />} />
                   </Route>
-                  <Route path={routes.feedback} element={<Feedback />} />
+                  {/* <Route path={routes.feedback} element={<Feedback />} />
                   <Route path={routes.sbt} element={<Sbt />} />
                   <Route path={routes.becomePartner} element={<BecomePartnerNew />} />
                   <Route path={routes.myAccount} element={<MyAccount />} />

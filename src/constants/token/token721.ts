@@ -23,7 +23,8 @@ export class Token721 extends Token {
       symbol?: string
       uri?: string
       tokenUri?: string
-    }
+    },
+    refresh?: () => void
   ) {
     super(chainId, address, 0, metadata?.symbol, metadata?.name)
     this.tokenId = tokenId === '' ? undefined : tokenId
@@ -33,18 +34,13 @@ export class Token721 extends Token {
     this.symbol = metadata?.symbol ?? 'NFT'
     this.tokenUri = metadata?.tokenUri ?? ''
     if ((!metadata || !metadata.uri) && chainId !== ChainId.SEPOLIA) {
-      Axios.getMetadata(address, tokenId ?? '1')
+      Axios.getMetadata(address, tokenId)
         .then(r => {
           const data = r.data.data
-          if (!metadata?.uri) {
-            this.uri = data?.image_uri ?? ''
-          }
-          if (!metadata?.name) {
-            this.name = data?.name ?? data?.contract_name ?? ''
-          }
-          if (!metadata?.symbol) {
-            this.symbol = data?.contract_name ?? data?.name ?? ''
-          }
+          this.uri = data?.image_uri ?? data?.logo_url ?? ''
+          this.name = data?.name ?? data?.contract_name ?? 'ERC721'
+          this.symbol = data?.contract_name ?? data?.name ?? 'NFT'
+          refresh && refresh()
         })
         .catch(e => {
           console.error(e)
