@@ -111,7 +111,7 @@ export default function App() {
                     element={<StatisticsTokens />}
                   />
                   <Route path={routes.statisticsPools + routes.statisticsPoolsParams} element={<StatisticsPools />} />
-                  <Route path={routes.importPool} element={<ImportPool />} />*/}
+                  <Route path={routes.importPool} element={<ImportPool />} /> */}
                   <Route path={routes.addLiquidity} element={<AddLiquidity />}>
                     <Route path={routes.removeLiquidityParams.slice(1)} element={<AddLiquidity />} />
                   </Route>

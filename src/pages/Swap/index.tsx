@@ -37,7 +37,9 @@ import { replaceErrorMessage } from 'utils'
 import dogewalkUrl from 'assets/images/dogewalk.png'
 import { ExternalLink } from 'theme/components'
 import Image from 'components/Image'
-
+import useBreakpoint from 'hooks/useBreakpoint'
+// 0x491C966eAd438a76F8992A443049D250fb333337
+// 0x55d398326f99059fF775485246999027B3197955
 const [currency0, currency1] = [
   new Token(56, '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', 18, 'BUSD', 'BUSD'),
   new Token721(56, '0xf4F7139b1FcC5Cac2f573Cc4B684Cc75367A9cfD', undefined)
@@ -73,7 +75,7 @@ export default function Swap() {
 
   const { showModal, hideModal } = useModal()
   const toggleWallet = useWalletModalToggle()
-
+  const isDownSm = useBreakpoint('sm')
   // get custom setting values for user
   const [allowedSlippage] = useUserSlippageTolerance()
   const [isExpertMode] = useExpertModeManager()
@@ -352,9 +354,9 @@ export default function Swap() {
         slippageAdjustedAmounts={slippageAdjustedAmounts}
         tokenIds={selectedTokenIds}
       />
-      <Box display={{ xs: 'grid', md: 'flex' }} gap={{ xs: 20, md: 60 }} padding="24px">
-        <Box>
-          <AppBody width={'100%'} maxWidth={'680px'}>
+      <Box display={{ xs: 'grid', md: 'flex' }} gap={{ xs: 20, md: 60 }} maxWidth={isDownSm ? '90vw' : 'auto'}>
+        <Box width={isDownSm ? '90vw' : 'auto'}>
+          <AppBody width={isDownSm ? '90vw' : '100%'} maxWidth={'680px'}>
             <Box
               sx={{
                 padding: { xs: '24px 20px 20px', md: '33px 32px 30px' },
@@ -525,7 +527,7 @@ export default function Swap() {
             />
           )}
         </Box>
-        <Box maxWidth={{ xs: '100%', md: 470 }} mt={100} pb={{ xs: 100, md: 0 }}>
+        <Box maxWidth={isDownSm ? '90vw' : 470} margin={`${isDownSm ? '0 0 40px ' : '100px 0 0'} `}>
           <Typography fontSize={34} fontWeight={700}>
             Welcome to DogeWalk’s SFT AMM trading platform, powered by Ladder.
           </Typography>

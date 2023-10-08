@@ -23,6 +23,11 @@ import Close from '@mui/icons-material/Close'
 import SwitchToggle from 'components/SwitchToggle'
 import { useCurrencyModalListHeight } from 'hooks/useScreenSize'
 import Pagination from 'components/Pagination'
+import { useContract } from 'hooks/useContract'
+import ERC3525_ABI from 'constants/abis/erc3525.json'
+import { useSingleCallResult } from 'state/multicall/hooks'
+import { Token, TokenAmount } from '@ladder/sdk'
+import { ZERO_ADDRESS } from 'constants/index'
 
 export default function Erc721IdSelectionModal({
   // isOpen,
@@ -331,10 +336,25 @@ function NftCard({
 }) {
   const theme = useTheme()
   const isDarkMode = useIsDarkMode()
+  const [insufficientAmount, setInsufficientAmount] = useState(true)
+
+  const arg = useMemo(() => [token.tokenId], [token])
+
+  const contract = useContract(token.address, ERC3525_ABI)
+  const result = useSingleCallResult(contract, 'assets', arg)
+
+  const amount = useMemo(() => {
+    const res = result.result?.[1]?.toString() ?? '0'
+    const amountInString = new TokenAmount(new Token(1, ZERO_ADDRESS, 18), res).toExact()
+    if (Number(amountInString) >= 250) {
+      setInsufficientAmount(false)
+    }
+    return amountInString
+  }, [result.result])
 
   return (
     <Box
-      onClick={disabled ? undefined : onClick}
+      onClick={disabled || insufficientAmount ? undefined : onClick}
       sx={{
         border: '1px solid transparent',
         borderColor: selected ? theme.palette.primary.main : 'transparnet',
@@ -347,14 +367,15 @@ function NftCard({
         background: isDarkMode ? '#15171A' : '#F6F6F6',
         transition: '0.5s',
         cursor: 'pointer',
-        opacity: disabled ? 0.8 : 1,
-        '&:hover': disabled
-          ? {}
-          : {
-              boxShadow: isDarkMode ? 'none' : '0px 3px 10px rgba(0, 0, 0, 0.15)',
-              background: isDarkMode ? '#2E3133' : '#FFFFFF',
-              cursor: 'pointer'
-            }
+        opacity: disabled || insufficientAmount ? 0.5 : 1,
+        '&:hover':
+          disabled || insufficientAmount
+            ? {}
+            : {
+                boxShadow: isDarkMode ? 'none' : '0px 3px 10px rgba(0, 0, 0, 0.15)',
+                background: isDarkMode ? '#2E3133' : '#FFFFFF',
+                cursor: 'pointer'
+              }
       }}
     >
       <Box sx={{ width: '100%', height: 120, overflow: 'hidden' }}>
@@ -397,7 +418,7 @@ function NftCard({
         {shortenAddress(token.address) ?? ''}
       </Typography>
       <Typography sx={{ fontSize: 10, fontWeight: 600 }}>
-        <span style={{ color: theme.palette.text.secondary }}>balance: </span> 1
+        <span style={{ color: theme.palette.text.secondary }}>amount: </span> {amount}
       </Typography>
     </Box>
   )
