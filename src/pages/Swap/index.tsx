@@ -39,7 +39,7 @@ import { ExternalLink } from 'theme/components'
 import Image from 'components/Image'
 
 const [currency0, currency1] = [
-  new Token(56, '0x9DDAA979473f3172299B066dDF46cEF51838791B', 18, 'mUSDC', 'MockERC20'),
+  new Token(56, '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', 18, 'BUSD', 'BUSD'),
   new Token721(56, '0xf4f7139b1fcc5cac2f573cc4b684cc75367a9cfd', undefined)
 ]
 
