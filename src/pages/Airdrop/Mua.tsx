@@ -13,10 +13,9 @@ import { useMuaTasks } from 'hooks/useAirdrop'
 import { useIsDarkMode } from 'state/user/hooks'
 import { useNavigate } from 'react-router-dom'
 import { routes } from 'constants/routes'
-const refresh = () => {}
 
 export default function Mua() {
-  const { taskState } = useMuaTasks(refresh)
+  const { taskState } = useMuaTasks()
   const isDarkMode = useIsDarkMode()
   const navigate = useNavigate()
   return (
