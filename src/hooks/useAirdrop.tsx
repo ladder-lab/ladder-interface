@@ -186,7 +186,7 @@ interface MuaTastState {
   sftSwapCount: number
   task3: boolean
 }
-export function useMuaTasks(refreshCb: () => void) {
+export function useMuaTasks() {
   const { account, chainId } = useActiveWeb3React()
   const [taskState, setTaskState] = useState<MuaTastState>({ nftSwapCount: 0, sftSwapCount: 0, task3: false })
 
