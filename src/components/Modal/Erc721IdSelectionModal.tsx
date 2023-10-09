@@ -49,6 +49,7 @@ export default function Erc721IdSelectionModal({
   const [selectAll, setSelectAll] = useState(false)
   const isDownMd = useBreakpoint('md')
   const container = useRef<any>(null)
+  const [insufficiantTokenMap, setInsufficientTokenMap] = useState<{ [key: string]: boolean }>({})
 
   const { onClearTokens, onRemoveToken, tokens, onToggleToken, setTokens } = useERC721Tokens()
 
@@ -72,9 +73,9 @@ export default function Erc721IdSelectionModal({
     onDismiss()
   }, [collection, onDismiss, onSelectSubTokens, setAmount, tokens])
 
-  const searchIdToken = useMemo(() => {
+  const searchIdTokens = useMemo(() => {
     if (!filteredAvailableTokens || searchId == '') return undefined
-    const res = filteredAvailableTokens.find((token: Token721) => (token.tokenId + '').includes(searchId))
+    const res = filteredAvailableTokens.filter((token: Token721) => (token.tokenId + '').includes(searchId))
     return res ? res : null
   }, [filteredAvailableTokens, searchId])
 
@@ -159,7 +160,10 @@ export default function Erc721IdSelectionModal({
               onChange={() => {
                 setSelectAll(state => {
                   if (!state) {
-                    setTokens(filteredAvailableTokens)
+                    const tokenList = searchIdTokens ?? filteredAvailableTokens
+                    if (tokenList) {
+                      setTokens(tokenList?.filter((token: any) => !insufficiantTokenMap[token.tokenId + '']))
+                    }
                   } else {
                     setTokens([])
                   }
@@ -179,7 +183,7 @@ export default function Erc721IdSelectionModal({
               </Box>
             ) : (
               <Grid container spacing={6} width="100%">
-                {(searchIdToken === null ||
+                {(searchIdTokens === null ||
                   filteredAvailableTokens?.length === 0 ||
                   (!filteredAvailableTokens && !loading)) && (
                   <Box width={'100%'} display="flex" alignItems="center" justifyContent="center" mt={100}>
@@ -197,20 +201,25 @@ export default function Erc721IdSelectionModal({
                     </Typography>
                   </Box>
                 )}
-                {searchIdToken && (
-                  <Grid item xs={6} md={3}>
-                    <NftCard
-                      selected={!!tokens.find(item => item.tokenId === searchIdToken.tokenId)}
-                      token={searchIdToken}
-                      onClick={() => {
-                        onToggleToken(searchIdToken)
-                        resetSearchId()
-                      }}
-                      disabled={false}
-                    />{' '}
-                  </Grid>
-                )}
-                {searchIdToken === undefined &&
+                {searchIdTokens &&
+                  searchIdTokens?.map((token: Token721) => {
+                    const selected = tokens.filter(item => item.tokenId === token.tokenId)
+                    return (
+                      <Grid item key={token.tokenId} xs={6} md={3}>
+                        <NftCard
+                          selected={!!selected.length}
+                          token={token}
+                          onClick={() => {
+                            onToggleToken(token)
+                            resetSearchId()
+                          }}
+                          disabled={false}
+                          setInsufficientTokenMap={setInsufficientTokenMap}
+                        />
+                      </Grid>
+                    )
+                  })}
+                {searchIdTokens === undefined &&
                   filteredAvailableTokens?.map((token: Token721) => {
                     const selected = tokens.filter(item => item.tokenId === token.tokenId)
                     return (
@@ -223,6 +232,7 @@ export default function Erc721IdSelectionModal({
                             resetSearchId()
                           }}
                           disabled={false}
+                          setInsufficientTokenMap={setInsufficientTokenMap}
                         />
                       </Grid>
                     )
@@ -327,12 +337,14 @@ function NftCard({
   token,
   onClick,
   disabled,
-  selected = false
+  selected = false,
+  setInsufficientTokenMap
 }: {
   token: Token721
   onClick: () => void
   disabled: boolean
   selected?: boolean
+  setInsufficientTokenMap: any
 }) {
   const theme = useTheme()
   const isDarkMode = useIsDarkMode()
@@ -346,11 +358,21 @@ function NftCard({
   const amount = useMemo(() => {
     const res = result.result?.[1]?.toString() ?? '0'
     const amountInString = new TokenAmount(new Token(1, ZERO_ADDRESS, 18), res).toExact()
+
     if (Number(amountInString) >= 250) {
       setInsufficientAmount(false)
     }
+
     return amountInString
   }, [result.result])
+
+  useEffect(() => {
+    if (token.tokenId !== undefined) {
+      setInsufficientTokenMap((prev: any) => {
+        return { ...prev, [token.tokenId + '']: insufficientAmount } as { [key: string]: boolean }
+      })
+    }
+  }, [insufficientAmount, setInsufficientTokenMap, token.tokenId])
 
   return (
     <Box
