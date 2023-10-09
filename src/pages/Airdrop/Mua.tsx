@@ -33,7 +33,7 @@ export default function Mua() {
         MUA Boarding Odyssey: Season Two - Ladder
       </Typography>
       <Typography textAlign={'center'} fontSize={14}>
-        Ladder Task Time: Oct 9th 2023 - Oct 20, 2023 at Ladder ｜ Mua Raffle Time: Oct 19, 2023 - Oct 20, 2023 at MUA
+        Ladder Task Time: Oct 9th 2023 - Oct 20, 2023 at Ladder | Mua Raffle Time: Oct 19, 2023 - Oct 20, 2023 at MUA
       </Typography>
       <Typography maxWidth={600} textAlign={'center'}>
         Ladder is joining the MUAverse and onboarding the Odyssey Season Two. Complete the following Ladder tasks, earn
@@ -121,6 +121,7 @@ export default function Mua() {
               },
               icon: <Dogewalk />,
               count: taskState.sftSwapCount,
+              desc: 'Earn 500 MUA points on each Swap. (Max 5000 pt)',
               chainTag: (
                 <>
                   <Bnb />
@@ -137,12 +138,13 @@ export default function Mua() {
               title: 'Obtain a level 1 badge (Testnet 3)',
               chain: ChainId.SEPOLIA,
               completed: taskState.task3,
+              desc: ' Earn 500 MUA points.',
               id: 'badge',
               action: () => {
                 navigate(routes.testnet)
               },
               plus1Icon: !!taskState.task3 ? <Badge1Color /> : <Badge1 style={{ opacity: isDarkMode ? 0.6 : 1 }} />,
-              chainTag: 'Testnet 3',
+              chainTag: 'Sepolia',
               icon: <Ladder />,
               // route?: string
               tooltip:
