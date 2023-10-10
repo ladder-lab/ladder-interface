@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material'
 import { ReactComponent as MuaLadder } from 'assets/svg/airdrop/mua.svg'
 import { ReactComponent as Badge1 } from 'assets/svg/airdrop/badge1.svg'
 import { ReactComponent as Badge1Color } from 'assets/svg/airdrop/badge1-color.svg'
-import { ReactComponent as Polygon } from 'assets/svg/airdrop/polygon.svg'
+// import { ReactComponent as Polygon } from 'assets/svg/airdrop/polygon.svg'
 import { ReactComponent as Bnb } from 'assets/svg/airdrop/bnb.svg'
 import { ReactComponent as Dogewalk } from 'assets/svg/airdrop/dogewalk.svg'
 import { ReactComponent as Ladder } from 'assets/svg/airdrop/ladder.svg'
@@ -33,7 +33,7 @@ export default function Mua() {
         MUA Boarding Odyssey: Season Two - Ladder
       </Typography>
       <Typography textAlign={'center'} fontSize={14}>
-        Ladder Task Time: Oct 9th 2023 - Oct 20, 2023 at Ladder | Mua Raffle Time: Oct 19, 2023 - Oct 20, 2023 at MUA
+        Ladder Task Time: Oct 11th 2023 - Oct 25, 2023 at Ladder | Mua Raffle Time: Oct 124, 2023 - Oct 25, 2023 at MUA
       </Typography>
       <Typography maxWidth={600} textAlign={'center'}>
         Ladder is joining the MUAverse and onboarding the Odyssey Season Two. Complete the following Ladder tasks, earn
@@ -48,12 +48,19 @@ export default function Mua() {
             padding: '6px 24px',
             background: isDarkMode ? '#ffffff50' : '#ffffff70',
             borderRadius: 6,
-            fontWeight: 500
+            fontWeight: 500,
+            border: '1px solid transparent',
+            '&:hover': {
+              border: '1px solid #FFB3F3'
+            }
           }}
           display={'flex'}
           alignItems={'center'}
           gap={5}
           my={20}
+          onClick={() => {
+            window.open('https://muaverse.build/boarding', '_blank')
+          }}
         >
           To MUA
           <QuestionHelper
@@ -66,11 +73,18 @@ export default function Mua() {
             padding: '6px 24px',
             background: isDarkMode ? '#ffffff50' : '#ffffff70',
             borderRadius: 6,
-            fontWeight: 500
+            fontWeight: 500,
+            border: '1px solid transparent',
+            '&:hover': {
+              border: '1px solid #FFB3F3'
+            }
           }}
           display={'flex'}
           alignItems={'center'}
           gap={5}
+          onClick={() => {
+            window.open('https://muaverse.build/boarding', '_blank')
+          }}
         >
           To QuestN
           <QuestionHelper
@@ -82,35 +96,35 @@ export default function Mua() {
       <Box display={'flex'} justifyContent={'center'} mb={20}>
         <TaskCards
           sx={{
-            gridTemplateColumns: { xs: '100%', md: '332px 332px 332px' }
+            gridTemplateColumns: { xs: '100%', md: '332px 332px' }
           }}
           type={TYPE.swap}
           data={[
-            {
-              title: 'Fansi NFT Swap',
-              chain: ChainId.SEPOLIA,
-              completed: false,
-              id: 'fansiNft',
-              count: taskState.nftSwapCount,
-              action: () => {
-                window.open('https://ladder-wolfpack.netlify.app/', '_blank')
-              },
-              chainTag: (
-                <>
-                  <Polygon />
-                  <span>Polygon</span>
-                </>
-              ),
-              icon: (
-                <svg width="40" height="41" viewBox="0 0 40 41" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle opacity="0.2" cx="20" cy="20.4395" r="20" fill="#7D74FF" />
-                </svg>
-              ),
+            // {
+            //   title: 'Fansi NFT Swap',
+            //   chain: ChainId.SEPOLIA,
+            //   completed: false,
+            //   id: 'fansiNft',
+            //   count: taskState.nftSwapCount,
+            //   action: () => {
+            //     window.open('https://ladder-wolfpack.netlify.app/', '_blank')
+            //   },
+            //   chainTag: (
+            //     <>
+            //       <Polygon />
+            //       <span>Polygon</span>
+            //     </>
+            //   ),
+            //   icon: (
+            //     <svg width="40" height="41" viewBox="0 0 40 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+            //       <circle opacity="0.2" cx="20" cy="20.4395" r="20" fill="#7D74FF" />
+            //     </svg>
+            //   ),
 
-              desc: 'Earn 500 MUA points on each Swap. (Max 5000 pt)'
-              // route?: string
-              // tooltip?: string
-            },
+            //   desc: 'Earn 500 MUA points on each Swap. (Max 5000 pt)'
+            //   // route?: string
+            //   // tooltip?: string
+            // },
             {
               title: 'DogeWalk SFT Swap',
               chain: ChainId.SEPOLIA,
