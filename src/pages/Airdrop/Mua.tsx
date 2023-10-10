@@ -83,7 +83,7 @@ export default function Mua() {
           alignItems={'center'}
           gap={5}
           onClick={() => {
-            window.open('https://muaverse.build/boarding', '_blank')
+            window.open('https://app.questn.com/quest/825937186727813605', '_blank')
           }}
         >
           To QuestN
