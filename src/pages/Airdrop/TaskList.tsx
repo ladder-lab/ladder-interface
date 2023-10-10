@@ -13,6 +13,8 @@ import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
 import QuestionHelper from 'components/essential/QuestionHelper'
 
+const disabledBtn = true
+
 export enum TYPE {
   box,
   luck,
@@ -274,7 +276,7 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                         type === TYPE.swap ? 'linear-gradient(90deg, #D7C6FF 0%, #FFB3F3 106.67%)!important' : undefined
                     }
                   }}
-                  disabled
+                  disabled={disabledBtn}
                   onClick={toggleWalletModal}
                 >
                   Connect Wallet
@@ -326,6 +328,7 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                         height: '40px',
                         whiteSpace: 'nowrap'
                       }}
+                      disabled={disabledBtn}
                       onClick={data.action}
                     >
                       {type === TYPE.box ? 'Get Box' : 'Boost'}
@@ -346,6 +349,7 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                         type === TYPE.swap ? 'linear-gradient(90deg, #D7C6FF 0%, #FFB3F3 106.67%)!important' : undefined
                     }
                   }}
+                  disabled={disabledBtn}
                   onClick={data.action}
                 >
                   Swap Now
@@ -388,6 +392,7 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                               : undefined
                         }
                       }}
+                      disabled={disabledBtn}
                       onClick={data.action}
                     >
                       Finish Now

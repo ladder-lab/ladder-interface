@@ -35,7 +35,7 @@ export default function Mua() {
         MUA Boarding Odyssey: Season Two - Ladder
       </Typography>
       <Typography textAlign={'center'} fontSize={14}>
-        Ladder Task Time: Oct 11th 2023 - Oct 25, 2023 at Ladder | Mua Raffle Time: Oct 124, 2023 - Oct 25, 2023 at MUA
+        Ladder Task Time: Oct 11, 2023 - Oct 25, 2023 at Ladder | MUA Raffle Time: Oct 24, 2023 - Oct 25, 2023 at MUA
       </Typography>
       <Typography maxWidth={600} textAlign={'center'}>
         Ladder is joining the MUAverse and onboarding the Odyssey Season Two. Complete the following Ladder tasks, earn
