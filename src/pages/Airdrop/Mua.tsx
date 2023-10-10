@@ -14,6 +14,8 @@ import { useIsDarkMode } from 'state/user/hooks'
 import { useNavigate } from 'react-router-dom'
 import { routes } from 'constants/routes'
 
+const disabledBtn = true
+
 export default function Mua() {
   const { taskState } = useMuaTasks()
   const isDarkMode = useIsDarkMode()
@@ -45,6 +47,8 @@ export default function Mua() {
       <Box display={'flex'} alignItems={'center'} gap={40}>
         <Box
           sx={{
+            cursor: disabledBtn ? 'not-allowed' : 'pointer',
+            opacity: disabledBtn ? 0.6 : 1,
             padding: '6px 24px',
             background: isDarkMode ? '#ffffff50' : '#ffffff70',
             borderRadius: 6,
@@ -59,7 +63,7 @@ export default function Mua() {
           gap={5}
           my={20}
           onClick={() => {
-            window.open('https://muaverse.build/boarding', '_blank')
+            !disabledBtn && window.open('https://muaverse.build/boarding', '_blank')
           }}
         >
           To MUA
@@ -70,6 +74,8 @@ export default function Mua() {
         </Box>
         <Box
           sx={{
+            cursor: disabledBtn ? 'not-allowed' : 'pointer',
+            opacity: disabledBtn ? 0.6 : 1,
             padding: '6px 24px',
             background: isDarkMode ? '#ffffff50' : '#ffffff70',
             borderRadius: 6,
@@ -83,7 +89,7 @@ export default function Mua() {
           alignItems={'center'}
           gap={5}
           onClick={() => {
-            window.open('https://app.questn.com/quest/825937186727813605', '_blank')
+            !disabledBtn && window.open('https://app.questn.com/quest/825937186727813605', '_blank')
           }}
         >
           To QuestN
