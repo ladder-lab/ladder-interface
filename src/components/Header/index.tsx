@@ -44,13 +44,13 @@ interface Tab extends TabContent {
 
 export const Tabs: Tab[] = [
   {
+    title: 'Airdrop',
+    route: routes.airdrop
+  },
+  {
     title: 'Event',
     route: routes.testnet
   },
-  // {
-  //   title: 'Airdop',
-  //   route: routes.airdrop
-  // },
   { title: 'Swap', route: routes.swap },
   { title: 'Pool', route: routes.pool },
   { title: 'Explore', route: routes.explorer },
@@ -238,7 +238,7 @@ export default function Header() {
                         : pathname.includes('account') && route.includes('account')
                         ? 'active'
                         : (pathname.includes('/round') ||
-                            pathname.includes('/airdrop') ||
+                            // pathname.includes('/airdrop') ||
                             pathname.includes('/monopoly')) &&
                           title.includes('Event')
                         ? 'active'

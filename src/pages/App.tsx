@@ -30,6 +30,7 @@ import BecomePartnerNew from './Earn/Sbt/BecomePartnerNew'
 import MyAccount from './MyAccount'
 import OrigAccount from './MyAccount/OrigAccount'
 import Footer from '../components/Footer'
+import Airdrop from './Airdrop'
 
 const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
   ({ theme, isDarkMode }) => ({
@@ -91,7 +92,7 @@ export default function App() {
               {/* <WarningModal /> */}
               <Web3ReactManager>
                 <Routes>
-                  {/* <Route path={routes.airdrop} element={<Airdrop />} /> */}
+                  <Route path={routes.airdrop} element={<Airdrop />} />
                   <Route path={routes.testnet} element={<Testnet />} />
                   <Route path={routes.winners} element={<ListOfWinners />} />
                   <Route path={routes.explorer} element={<Explorer />} />
