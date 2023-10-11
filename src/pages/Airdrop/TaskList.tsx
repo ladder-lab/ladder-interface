@@ -13,7 +13,7 @@ import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
 import QuestionHelper from 'components/essential/QuestionHelper'
 
-const disabledBtn = true
+const disabledBtn = false
 
 export enum TYPE {
   box,

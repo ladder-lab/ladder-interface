@@ -14,7 +14,7 @@ import { useIsDarkMode } from 'state/user/hooks'
 import { useNavigate } from 'react-router-dom'
 import { routes } from 'constants/routes'
 
-const disabledBtn = true
+const disabledBtn = false
 
 export default function Mua() {
   const { taskState } = useMuaTasks()
@@ -137,7 +137,7 @@ export default function Mua() {
               completed: false,
               id: 'fansiNft',
               action: () => {
-                window.open('https://ladder-dogewalk3.netlify.app/swap', '_blank')
+                window.open('https://dogewalk.ladder.top/swap', '_blank')
               },
               icon: <Dogewalk />,
               count: taskState.sftSwapCount,
