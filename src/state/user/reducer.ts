@@ -197,7 +197,7 @@ export default createReducer(initialState, builder =>
     })
     .addCase(addSerializedToken721, (state, { payload: { serializedToken } }) => {
       if (!state.token721s) {
-        state.tokens = {}
+        state.token721s = {}
       }
       state.token721s[serializedToken.chainId] = state.token721s[serializedToken.chainId] || {}
       state.token721s[serializedToken.chainId][serializedToken.address] = serializedToken
