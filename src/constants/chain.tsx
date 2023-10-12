@@ -80,8 +80,8 @@ export const AllChainList = [
   {
     icon: <MATIC />,
     logo: MATICUrl,
-    symbol: 'MATIC',
-    name: 'Matic',
+    symbol: 'Polygon',
+    name: 'Polygon',
     id: ChainId.MATIC,
     hex: '0xA86A'
   }
