@@ -44,7 +44,7 @@ const [currency0, currency1] = [
   new Token(137, '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', 6, 'USDC', 'USDC'),
   // new Token(137, '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063', 18, 'DAI', 'DAI'),
   // new Token721(137, '0x2871e92209D9B0936FbbB178483877f51C7c9321', undefined)
-  new Token721(137, '0x7227e371540cf7b8e512544ba6871472031f3335', undefined)
+  new Token721(137, '0x2871e92209D9B0936FbbB178483877f51C7c9321', undefined)
 ]
 
 export default function Swap() {

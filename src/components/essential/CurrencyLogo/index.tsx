@@ -46,6 +46,10 @@ export default function CurrencyLogo({
       return [tUSDCImg]
     }
 
+    if (currency?.symbol === 'USDC' || currencySymbol === 'USDC') {
+      return [tUSDCImg]
+    }
+
     if (currency?.symbol === 'tWETH' || currencySymbol === 'tWETH') {
       return [tWETHImg]
     }
