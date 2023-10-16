@@ -202,7 +202,15 @@ export default function Mua() {
           ]}
         />
       </Box>
-      <MuaLadder />
+      <Box
+        sx={{
+          svg: {
+            width: '100%'
+          }
+        }}
+      >
+        <MuaLadder />
+      </Box>
     </Box>
   )
 }
