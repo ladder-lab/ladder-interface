@@ -39,7 +39,7 @@ interface CardProp {
   expired?: boolean
   route?: string
   tooltip?: string
-  desc?: string
+  desc?: string | JSX.Element
   plus1Icon?: React.ReactNode
   chainTag?: React.ReactNode
   count?: number
