@@ -196,13 +196,15 @@ export function useMuaTasks() {
       axiosAirdropInstance.get('/mua/nftBuyCount', {
         params: { address: account, chainId: 137 }
       }),
-      axiosAirdropInstance.get('/mua/nftSellCount', {
+      // axiosAirdropInstance.get('/mua/nftSellCount', {
+      axiosAirdropInstance.get('/mua/nftSwapCount', {
         params: { address: account, chainId: 137 }
       }),
       axiosAirdropInstance.get('/mua/sftBuyCount', {
         params: { address: account, chainId: 56 }
       }),
-      axiosAirdropInstance.get('/mua/sftSellCount', {
+      // axiosAirdropInstance.get('/mua/sftSellCount', {
+      axiosAirdropInstance.get('/mua/sftSwapCount', {
         params: { address: account, chainId: 56 }
       }),
       axiosAirdropInstance.get('/mua/test3Task', {
@@ -215,12 +217,16 @@ export function useMuaTasks() {
           if (r.data.code === 200) {
             switch (idx) {
               case 0:
+                break
               case 1:
-                res.nftSwapCount += r.data.data.count
+                // res.nftSwapCount += r.data.data.count
+                res.nftSwapCount = r.data.data
                 break
               case 2:
+                break
               case 3:
-                res.sftSwapCount += r.data.data.count
+                // res.sftSwapCount += r.data.data.count
+                res.sftSwapCount = r.data.data
                 break
               case 4:
                 res.task3 = r.data.data
