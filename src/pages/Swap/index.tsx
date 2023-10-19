@@ -1,6 +1,6 @@
 import { useCallback, useState, ChangeEvent, useMemo, useEffect } from 'react'
 import { Typography, Box, Button } from '@mui/material'
-import { CurrencyAmount, ETHER, JSBI, Pair, Token, Trade } from '@ladder/sdk'
+import { CurrencyAmount, ETHER, JSBI, Pair, Trade } from '@ladder/sdk'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
 import { ReactComponent as SwitchCircle } from 'assets/svg/switch_circle.svg'
@@ -30,22 +30,10 @@ import { Token721 } from 'constants/token/token721'
 import { useSwap721State } from 'state/swap/useSwap721State'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
 import usePriceCorrection from 'hooks/usePriceCorrection'
-import { useNavigate } from 'react-router-dom'
-import { liquidityParamBuilder, routes } from 'constants/routes'
-// import { useCurrency } from 'hooks/Tokens'
+import { useNavigate, useParams } from 'react-router-dom'
+import { liquidityParamBuilder, liquidityParamSplitter, routes } from 'constants/routes'
+import { useCurrency } from 'hooks/Tokens'
 import { replaceErrorMessage } from 'utils'
-import dogewalkUrl from 'assets/images/dogewalk.png'
-import laddarLogo from 'assets/images/logo_white_mark.png'
-import { ExternalLink } from 'theme/components'
-import Image from 'components/Image'
-import useBreakpoint from 'hooks/useBreakpoint'
-
-const [currency0, currency1] = [
-  new Token(137, '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', 6, 'USDC', 'USDC'),
-  // new Token(137, '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063', 18, 'DAI', 'DAI'),
-  // new Token721(137, '0x2871e92209D9B0936FbbB178483877f51C7c9321', undefined)
-  new Token721(137, '0x2871e92209D9B0936FbbB178483877f51C7c9321', undefined)
-]
 
 export default function Swap() {
   // const theme = useTheme()
@@ -68,16 +56,16 @@ export default function Swap() {
     txHash: undefined
   })
 
-  // const { currencyIdA, currencyIdB, tokenIds } = useParams()
-  // const [tokenIdA, tokenIdB] = tokenIds?.split(liquidityParamSplitter) ?? ['', '']
-  // const [currency0, currency1] = [
-  //   useCurrency(currencyIdA, tokenIdA) ?? undefined,
-  //   useCurrency(currencyIdB, tokenIdB) ?? undefined
-  // ]
+  const { currencyIdA, currencyIdB, tokenIds } = useParams()
+  const [tokenIdA, tokenIdB] = tokenIds?.split(liquidityParamSplitter) ?? ['', '']
+  const [currency0, currency1] = [
+    useCurrency(currencyIdA, tokenIdA) ?? undefined,
+    useCurrency(currencyIdB, tokenIdB) ?? undefined
+  ]
 
   const { showModal, hideModal } = useModal()
   const toggleWallet = useWalletModalToggle()
-  const isDownSm = useBreakpoint('sm')
+
   // get custom setting values for user
   const [allowedSlippage] = useUserSlippageTolerance()
   const [isExpertMode] = useExpertModeManager()
@@ -338,7 +326,7 @@ export default function Swap() {
       }
     }
     return
-  }, [onCurrencySelection])
+  }, [currency0, currency1, onCurrencySelection])
 
   return (
     <>
@@ -356,224 +344,174 @@ export default function Swap() {
         slippageAdjustedAmounts={slippageAdjustedAmounts}
         tokenIds={selectedTokenIds}
       />
-      <Box display={{ xs: 'grid', md: 'flex' }} gap={{ xs: 20, md: 60 }} maxWidth={isDownSm ? '90vw' : 'auto'}>
-        <Box width={isDownSm ? '90vw' : 'auto'}>
-          <AppBody width={isDownSm ? '90vw' : '100%'} maxWidth={'680px'}>
-            <Box
-              sx={{
-                padding: { xs: '24px 20px 20px', md: '33px 32px 30px' },
-                position: 'relative'
-              }}
-            >
-              <Typography
-                variant="h5"
-                sx={{
-                  fontSize: {
-                    xs: 20,
-                    md: 28
-                  },
-                  mb: {
-                    xs: 32,
-                    md: 45
-                  }
-                }}
-              >
-                SWAP
-              </Typography>
+      <AppBody width={'100%'} maxWidth={'680px'}>
+        <Box
+          sx={{
+            padding: { xs: '24px 20px 20px', md: '33px 32px 30px' },
+            position: 'relative'
+          }}
+        >
+          <Typography
+            variant="h5"
+            sx={{
+              fontSize: {
+                xs: 20,
+                md: 28
+              },
+              mb: {
+                xs: 32,
+                md: 45
+              }
+            }}
+          >
+            SWAP
+          </Typography>
 
-              <Settings />
-              <Box mb={fromAsset ? 16 : 0}>
-                <>
-                  <CurrencyInputPanel
-                    value={formattedAmounts[Field.INPUT]}
-                    onChange={handleFromVal}
-                    onSelectCurrency={handleFromAsset}
-                    currency={fromAsset}
-                    onMax={handleMaxInput}
-                    disabled={!account}
-                    disableCurrencySelect
-                    onSelectSubTokens={handleFromSubAssets}
-                  />
-                  {PriceCorrectInput}
-                </>
-              </Box>
-              <Box
-                sx={{
-                  paddingBottom: 12,
-                  margin: '16px auto 32px',
-                  width: 'max-content',
-                  '&:hover': {
-                    opacity: 0.8
-                  },
-                  display: 'flex',
-                  justifyContent: {
-                    xs: 'center',
-                    md: 'flex-start'
-                  }
-                }}
-              >
-                <SwitchCircle onClick={onSwitch} style={{ cursor: account ? 'pointer' : 'auto' }} />
-              </Box>
-              <Box mb={toAsset ? 16 : 0}>
-                <>
-                  <CurrencyInputPanel
-                    disableCurrencySelect
-                    value={formattedAmounts[Field.OUTPUT]}
-                    onChange={handleToVal}
-                    onSelectCurrency={handleToAsset}
-                    currency={toAsset}
-                    disabled={!account}
-                    onSelectSubTokens={handleToSubAssets}
-                    enableAuto={true}
-                    pairAddress={pair721Address}
-                  />
-                  {PriceCorrectOutput}
-                </>
-              </Box>
-              {/* {toAsset && <AssetAccordion token={toAsset} />} */}
-              {isValid && !swapCallbackError && (
-                <SwapSummary
-                  fromAsset={fromAsset ?? undefined}
-                  toAsset={toAsset ?? undefined}
-                  toVal={formattedAmounts[Field.OUTPUT]}
-                  price={v2Trade?.executionPrice?.toFixed(6) ?? '-'}
-                  expanded={summaryExpanded}
-                  onChange={() => setSummaryExpanded(!summaryExpanded)}
-                  margin="20px 0 0"
-                  gasFee="0"
-                  slippage={+(priceImpactWithoutFee?.toFixed(2) ?? 0)}
-                  minReceiveQty={slippageAdjustedAmounts.OUTPUT?.toFixed(6) ?? '-'}
-                  routerTokens={trade?.route.path.slice(1, -1)}
-                />
-              )}
-              <Box mt={40}>
-                {!account ? (
-                  <Button onClick={toggleWallet}>Connect Wallet</Button>
-                ) : // : showWrap ? (
-                // <Button disabled={Boolean(wrapInputError)} onClick={onWrap}>
-                //   {wrapInputError ??
-                //     (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
-                // </Button>
-                // )
-                noRoute && userHasSpecifiedInputOutput ? (
-                  <Button disabled style={{ textAlign: 'center' }}>
-                    <Typography mb="4px">
-                      Insufficient liquidity for this trade. {singleHopOnly && 'Try enabling multi-hop trades.'}
-                    </Typography>
-                  </Button>
-                ) : (
-                  <Box display="grid" gap="16px">
-                    {showApproveFlow && (
-                      <ActionButton
-                        onAction={handleApprove}
-                        actionText={
-                          approvalSubmitted && approval === ApprovalState.APPROVED
-                            ? 'Approved'
-                            : `Allow the Ladder to use your ${currencies[Field.INPUT]?.symbol}`
-                        }
-                        error={error}
-                        disableAction={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
-                        pending={approval === ApprovalState.PENDING}
-                        pendingText="Approving"
-                      />
-                    )}
-                    <ActionButton
-                      actionText={`Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
-                      onAction={() => {
-                        if (isExpertMode) {
-                          handleSwap()
-                        } else {
-                          setSwapState({
-                            tradeToConfirm: trade,
-                            attemptingTxn: false,
-                            showConfirm: true,
-                            txHash: undefined
-                          })
-                        }
-                      }}
-                      disableAction={
-                        !isValid ||
-                        // (priceImpactSeverity > 3 && !isExpertMode) ||
-                        !!swapCallbackError ||
-                        (showApproveFlow && approval !== ApprovalState.APPROVED)
-                      }
-                      error={
-                        swapInputError
-                          ? swapInputError
-                          : // : priceImpactSeverity > 3 && !isExpertMode
-                            // ? `Price Impact Too High`
-                            undefined
-                      }
-                    />
-                    <Typography
-                      textAlign={'right'}
-                      fontSize={12}
-                      sx={{
-                        mt: -10,
-                        color: theme => theme.palette.text.secondary
-                      }}
-                    >
-                      Click the button on the right top to modify transaction settings.
-                    </Typography>
-                  </Box>
-                )}
-              </Box>
-            </Box>
-          </AppBody>
-          {(fromAsset || toAsset) && (
-            <TokenInfo
-              fromAsset={fromAsset}
-              toAsset={toAsset}
-              fromErc721SubTokens={fromErc721SubTokens}
-              toErc721SubTokens={toErc721SubTokens}
+          <Settings />
+          <Box mb={fromAsset ? 16 : 0}>
+            <>
+              <CurrencyInputPanel
+                value={formattedAmounts[Field.INPUT]}
+                onChange={handleFromVal}
+                onSelectCurrency={handleFromAsset}
+                currency={fromAsset}
+                onMax={handleMaxInput}
+                disabled={!account}
+                onSelectSubTokens={handleFromSubAssets}
+              />
+              {PriceCorrectInput}
+            </>
+          </Box>
+          <Box
+            sx={{
+              paddingBottom: 12,
+              margin: '16px auto 32px',
+              width: 'max-content',
+              '&:hover': {
+                opacity: 0.8
+              },
+              display: 'flex',
+              justifyContent: {
+                xs: 'center',
+                md: 'flex-start'
+              }
+            }}
+          >
+            <SwitchCircle onClick={onSwitch} style={{ cursor: account ? 'pointer' : 'auto' }} />
+          </Box>
+          <Box mb={toAsset ? 16 : 0}>
+            <>
+              <CurrencyInputPanel
+                value={formattedAmounts[Field.OUTPUT]}
+                onChange={handleToVal}
+                onSelectCurrency={handleToAsset}
+                currency={toAsset}
+                disabled={!account}
+                onSelectSubTokens={handleToSubAssets}
+                enableAuto={true}
+                pairAddress={pair721Address}
+              />
+              {PriceCorrectOutput}
+            </>
+          </Box>
+          {/* {toAsset && <AssetAccordion token={toAsset} />} */}
+          {isValid && !swapCallbackError && (
+            <SwapSummary
+              fromAsset={fromAsset ?? undefined}
+              toAsset={toAsset ?? undefined}
+              toVal={formattedAmounts[Field.OUTPUT]}
+              price={v2Trade?.executionPrice?.toFixed(6) ?? '-'}
+              expanded={summaryExpanded}
+              onChange={() => setSummaryExpanded(!summaryExpanded)}
+              margin="20px 0 0"
+              gasFee="8.23"
+              slippage={+(priceImpactWithoutFee?.toFixed(2) ?? 0)}
+              minReceiveQty={slippageAdjustedAmounts.OUTPUT?.toFixed(6) ?? '-'}
+              routerTokens={trade?.route.path.slice(1, -1)}
             />
           )}
-        </Box>
-        <Box maxWidth={isDownSm ? '90vw' : 470} margin={`${isDownSm ? '0 0 40px ' : '100px 0 0'} `}>
-          <Typography fontSize={34} fontWeight={700}>
-            Welcome to ‘Equipment of PFP-DAO’ NFT AMM trading platform, powered by Ladder.
-          </Typography>
-          <Box sx={{ margin: '20px 0' }} display={'flex'} alignItems={'center'}>
-            <Image src={laddarLogo} style={{ width: 40 }} />
-            <Typography ml={15} fontSize={18}>
-              X
-            </Typography>
-            <Image src={dogewalkUrl} style={{ marginLeft: 15, width: 40 }} />
+          <Box mt={40}>
+            {!account ? (
+              <Button onClick={toggleWallet}>Connect Wallet</Button>
+            ) : // : showWrap ? (
+            // <Button disabled={Boolean(wrapInputError)} onClick={onWrap}>
+            //   {wrapInputError ??
+            //     (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
+            // </Button>
+            // )
+            noRoute && userHasSpecifiedInputOutput ? (
+              <Button disabled style={{ textAlign: 'center' }}>
+                <Typography mb="4px">
+                  Insufficient liquidity for this trade. {singleHopOnly && 'Try enabling multi-hop trades.'}
+                </Typography>
+              </Button>
+            ) : (
+              <Box display="grid" gap="16px">
+                {showApproveFlow && (
+                  <ActionButton
+                    onAction={handleApprove}
+                    actionText={
+                      approvalSubmitted && approval === ApprovalState.APPROVED
+                        ? 'Approved'
+                        : `Allow the Ladder to use your ${currencies[Field.INPUT]?.symbol}`
+                    }
+                    error={error}
+                    disableAction={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
+                    pending={approval === ApprovalState.PENDING}
+                    pendingText="Approving"
+                  />
+                )}
+                <ActionButton
+                  actionText={`Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
+                  onAction={() => {
+                    if (isExpertMode) {
+                      handleSwap()
+                    } else {
+                      setSwapState({
+                        tradeToConfirm: trade,
+                        attemptingTxn: false,
+                        showConfirm: true,
+                        txHash: undefined
+                      })
+                    }
+                  }}
+                  disableAction={
+                    !isValid ||
+                    // (priceImpactSeverity > 3 && !isExpertMode) ||
+                    !!swapCallbackError ||
+                    (showApproveFlow && approval !== ApprovalState.APPROVED)
+                  }
+                  error={
+                    swapInputError
+                      ? swapInputError
+                      : // : priceImpactSeverity > 3 && !isExpertMode
+                        // ? `Price Impact Too High`
+                        undefined
+                  }
+                />
+                <Typography
+                  textAlign={'right'}
+                  fontSize={12}
+                  sx={{
+                    mt: -10,
+                    color: theme => theme.palette.text.secondary
+                  }}
+                >
+                  Click the button on the right top to modify transaction settings.
+                </Typography>
+              </Box>
+            )}
           </Box>
-          <Box>
-            <Typography>
-              PFP-DAO is poised to become a highly sought-after metaverse IP brand, offering full-chain gaming NFTs
-              through a business model centred on card looting. We provide a sustainable revenue stream for creators who
-              work collaboratively, motivating them to generate even more valuable IP content and realize the principles
-              of co-creation, co-ownership, and share wealth. Even Loot2n card players can reap financial rewards.
-            </Typography>
-            <br />
-            <Typography component={'div'}>
-              Equipment is utilised to grant XP experience points for levelling up PFP-DAO characters, thereby unlocking
-              utility for those character NFTs and boosting the proportion of reward reception. For further information,
-              please visit <ExternalLink href="https://www.pfp-dao.io/">🔗 PFP-DAO.IO</ExternalLink>
-            </Typography>
-            <br />
-            <Typography>
-              {`Ladder is a decentralized Automated Market Maker protocol that provides instant liquidity for NFT's
-              including ERC-20, ERC-721, ERC-1155. Ladder empowers users, NFT holders, and projects to establish their
-              own markets on our platform, creating an expansive ecosystem for NFT liquidity solutions. We enable users
-              to effortlessly transition in and out of NFT trades without the necessity for a purchase order from
-              another user.`}
-            </Typography>
-            <br />
-            <Typography>
-              To learn more about Ladder, visit:{' '}
-              <ExternalLink href="https://ladder.top">🔗 https://ladder.top</ExternalLink>
-            </Typography>
-            {/* <Typography>
-              ⚠️Please note: Ladder only supports the standard DWD-SFT, which means the SFT containing exactly 250 $DWD.
-              You can either hold the SFT and unlock the $DWD on or after August 7th, 2024, or you can trade the SFTs
-              right here immediately.
-            </Typography> */}
-          </Box>
         </Box>
-      </Box>
+      </AppBody>
+      {(fromAsset || toAsset) && (
+        <TokenInfo
+          fromAsset={fromAsset}
+          toAsset={toAsset}
+          fromErc721SubTokens={fromErc721SubTokens}
+          toErc721SubTokens={toErc721SubTokens}
+        />
+      )}
     </>
   )
 }

@@ -37,7 +37,6 @@ const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMo
     alignItems: 'flex-start',
     position: 'relative',
     minWidth: theme.width.minContent,
-    background: 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7))',
     '&:after': {
       content: '""',
       width: '100%',
@@ -48,14 +47,10 @@ const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMo
       backgroundImage: `url(${isDarkMode ? darkBg : lightBg})`,
       backgroundRepeat: 'no-repeat',
       backgroundPosition: isDarkMode ? 'bottom' : 'top',
-      backgroundSize: isDarkMode ? 'cover' : '100% 100%'
+      backgroundSize: isDarkMode ? '100% auto' : '100% 100%'
     },
     [theme.breakpoints.down('md')]: {
-      flexDirection: 'column',
-      '&:after': {
-        backgroundSize: isDarkMode ? 'auto 50%' : '100% 100%',
-        backgroundPosition: isDarkMode ? 'right bottom' : 'top'
-      }
+      flexDirection: 'column'
     }
   })
 )
@@ -122,7 +117,7 @@ export default function App() {
                   <Route path={routes.becomePartner} element={<BecomePartnerNew />} />
                   <Route path={routes.myAccount} element={<MyAccount />} />
                   <Route path={routes.origAccount} element={<OrigAccount />} />
-                  <Route path="*" element={<Navigate to={routes.swap} replace />} />
+                  <Route path="*" element={<Navigate to={routes.testnet} replace />} />
                 </Routes>
               </Web3ReactManager>
             </BodyWrapper>

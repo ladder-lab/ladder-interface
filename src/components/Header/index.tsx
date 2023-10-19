@@ -21,7 +21,7 @@ import NetworkSelect from './NetworkSelect'
 // import SwitchToggle from 'components/SwitchToggle'
 import { useDarkModeManager } from 'state/user/hooks'
 import MainLogo from 'components/MainLogo'
-// import useBreakpoint from 'hooks/useBreakpoint'
+import useBreakpoint from 'hooks/useBreakpoint'
 import { ReactComponent as AboutIcon } from 'assets/svg/menu/about.svg'
 // import { ReactComponent as HelpCenterIcon } from 'assets/svg/menu/help_center.svg'
 // import { ReactComponent as RequestFeatureIcon } from 'assets/svg/menu/request_feature.svg'
@@ -43,11 +43,11 @@ interface Tab extends TabContent {
 }
 
 export const Tabs: Tab[] = [
-  // { title: 'Testnet', route: routes.testnet },
-  // { title: 'Swap', route: routes.swap },
-  // { title: 'Pool', route: routes.pool },
-  // { title: 'Explore', route: routes.explorer },
-  // { title: 'Statistics', route: routes.statistics }
+  { title: 'Testnet', route: routes.testnet },
+  { title: 'Swap', route: routes.swap },
+  { title: 'Pool', route: routes.pool },
+  { title: 'Explore', route: routes.explorer },
+  { title: 'Statistics', route: routes.statistics }
 ]
 
 const navLinkSX = ({ theme }: any) => ({
@@ -114,10 +114,10 @@ const LinksWrapper = muiStyled('div')(({ theme }) => ({
 }))
 
 export default function Header() {
-  // const [menuOpen, setMenuOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { pathname } = useLocation()
-  // const isDownMd = useBreakpoint('md')
+  const isDownMd = useBreakpoint('md')
   const navigate = useNavigate()
 
   const [darkMode] = useDarkModeManager()
@@ -245,21 +245,21 @@ export default function Header() {
         <Box display="flex" alignItems="center" gap={{ xs: '8px', sm: '20px' }}>
           <NetworkSelect />
           <Web3Status />
-          {/* <Box sx={{ position: 'relative' }}>
+          <Box sx={{ position: 'relative' }}>
             <MenuButton
               onClick={() => {
                 isDownMd ? setMobileMenuOpen(open => !open) : setMenuOpen(open => !open)
               }}
             />
             {menuOpen && !isDownMd && <DesktopMenu />}
-          </Box> */}
+          </Box>
         </Box>
       </StyledAppBar>
     </>
   )
 }
 
-export function MenuButton({ onClick }: { onClick: () => void }) {
+function MenuButton({ onClick }: { onClick: () => void }) {
   const theme = useTheme()
 
   return (
