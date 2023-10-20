@@ -50,7 +50,9 @@ export default function Mua() {
             cursor: disabledBtn ? 'not-allowed' : 'pointer',
             opacity: disabledBtn ? 0.6 : 1,
             padding: '6px 24px',
-            background: isDarkMode ? '#99F7F4' : '#99F7F4',
+            background: isDarkMode
+              ? 'linear-gradient(90deg, #FFB3F3 0%, #D7C6FF 106.67%)'
+              : 'linear-gradient(90deg, #FFB3F3 0%, #D7C6FF 106.67%)',
             color: '#333',
             borderRadius: 6,
             fontWeight: 500,
@@ -93,11 +95,37 @@ export default function Mua() {
             !disabledBtn && window.open('https://app.questn.com/quest/825937186727813605', '_blank')
           }}
         >
-          Complete the Quest
+          Complete MUA Quest
           <QuestionHelper
             text="Earn extra by completing mini-tasks at QuestN"
             style={{ background: 'transparent', color: isDarkMode ? '#555555' : undefined }}
           />
+        </Box>
+        <Box
+          sx={{
+            cursor: disabledBtn ? 'not-allowed' : 'pointer',
+            opacity: disabledBtn ? 0.6 : 1,
+            padding: '6px 24px',
+            background: isDarkMode ? '#ffffff50' : '#ffffff70',
+            borderRadius: 6,
+            fontWeight: 500,
+            border: '1px solid transparent',
+            '&:hover': {
+              border: '1px solid #FFB3F3'
+            }
+          }}
+          display={'flex'}
+          alignItems={'center'}
+          gap={5}
+          onClick={() => {
+            !disabledBtn && window.open('https://app.questn.com/quest/827279623466156047', '_blank')
+          }}
+        >
+          Complete PFP DAO Quest
+          {/* <QuestionHelper
+            text="Earn extra by completing mini-tasks at QuestN"
+            style={{ background: 'transparent', color: isDarkMode ? '#555555' : undefined }}
+          /> */}
         </Box>
       </Box>
       <Box display={'flex'} justifyContent={'center'} mb={20}>
