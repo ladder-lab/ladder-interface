@@ -122,10 +122,10 @@ export default function Mua() {
           }}
         >
           Complete PFP DAO Quest
-          {/* <QuestionHelper
+          <QuestionHelper
             text="Earn extra by completing mini-tasks at QuestN"
             style={{ background: 'transparent', color: isDarkMode ? '#555555' : undefined }}
-          /> */}
+          />
         </Box>
       </Box>
       <Box display={'flex'} justifyContent={'center'} mb={20}>
