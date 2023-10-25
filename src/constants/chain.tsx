@@ -198,3 +198,17 @@ export const SUPPORTED_NETWORKS: {
     blockExplorerUrls: ['https://polygonscan.com']
   }
 }
+
+export function getChainCurrencySymbol(chainId: ChainId) {
+  const chainInfo = SUPPORTED_NETWORKS[chainId]
+  if (chainInfo) {
+    return {
+      symbol: chainInfo.nativeCurrency.symbol,
+      wrappedSymbol: 'W' + chainInfo.nativeCurrency.symbol
+    }
+  }
+  return {
+    symbol: '-',
+    wrappedSymbol: '-'
+  }
+}

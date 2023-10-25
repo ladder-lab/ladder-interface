@@ -33,6 +33,7 @@ import { wrappedCurrency } from 'utils/wrappedCurrency'
 import { useIsDarkMode } from 'state/user/hooks'
 import { getSymbol } from 'utils/getSymbol'
 import { replaceErrorMessage } from 'utils'
+import { getChainCurrencySymbol } from 'constants/chain'
 
 enum Mode {
   SIMPLE,
@@ -243,7 +244,7 @@ export default function RemoveLiquidity() {
                   )
                 }}
               >
-                Receive WETH
+                Receive {getChainCurrencySymbol(chainId).wrappedSymbol}
               </Button>
             ) : oneCurrencyIsWETH ? (
               <Button
@@ -256,7 +257,7 @@ export default function RemoveLiquidity() {
                   )
                 }}
               >
-                Receive ETH
+                Receive {getChainCurrencySymbol(chainId).symbol}
               </Button>
             ) : null}
           </Box>
