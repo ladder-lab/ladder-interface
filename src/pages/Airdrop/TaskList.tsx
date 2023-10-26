@@ -274,6 +274,7 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                         type === TYPE.swap ? 'linear-gradient(90deg, #D7C6FF 0%, #FFB3F3 106.67%)!important' : undefined
                     }
                   }}
+                  disabled
                   onClick={toggleWalletModal}
                 >
                   Connect Wallet

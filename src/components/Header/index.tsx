@@ -44,7 +44,7 @@ interface Tab extends TabContent {
 
 export const Tabs: Tab[] = [
   {
-    title: 'Airdop',
+    title: 'Airdrop',
     route: routes.airdrop
   },
   {
