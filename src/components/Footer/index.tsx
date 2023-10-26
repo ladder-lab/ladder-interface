@@ -36,12 +36,12 @@ export default function Footer() {
           </Box>
           <Stack direction={'row'}>
             <Button variant="text">
-              <ExternalLink href="https://twitter.com/Laddertop_NFT">
+              <ExternalLink href="https://twitter.com/Ladder_NFT">
                 <Twitter />
               </ExternalLink>
             </Button>
             <Button variant="text">
-              <ExternalLink href="https://t.me/+CQuxqoqD7GIxZTY1">
+              <ExternalLink href="https://t.me/LadderAMM">
                 <Telegram />
               </ExternalLink>
             </Button>
