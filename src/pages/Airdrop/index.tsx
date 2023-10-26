@@ -133,7 +133,7 @@ export default function Airdrop() {
             >
               Current Participants:{' '}
               <Typography component="span" fontWeight={700} fontSize={20}>
-                {airdropData ? airdropData.totalBoxs : '--'}
+                {airdropData ? airdropData.currentParticipants ?? '--' : '--'}
               </Typography>
             </Box>
           </Box>
