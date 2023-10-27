@@ -4,6 +4,7 @@ import { useActiveWeb3React } from 'hooks'
 import { useCallback, useEffect, useState } from 'react'
 import useModal from './useModal'
 import { useSignLogin } from './useSignIn'
+import { useIsWindowFocus } from './useIsWindowVisible'
 
 export function useLuckTasks(refreshCb: () => void) {
   const { account, chainId } = useActiveWeb3React()
@@ -140,7 +141,16 @@ export function useAirdropData() {
 }
 
 export function useVerifyEmail() {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const { account } = useActiveWeb3React()
+  const isWindowVisible = useIsWindowFocus()
+  useEffect(() => {
+    if (isWindowVisible) {
+      setTimeout(() => {
+        setIsLoading(false)
+      })
+    }
+  }, [isWindowVisible])
   const jump = useCallback(async () => {
     try {
       if (!account) return
@@ -153,6 +163,7 @@ export function useVerifyEmail() {
       if (!data) {
         return
       }
+      setIsLoading(true)
       const google = window.open(
         data,
         'intent',
@@ -164,6 +175,7 @@ export function useVerifyEmail() {
       })
       return
     } catch (error) {
+      setIsLoading(false)
       console.error('useGoogleOauth', error)
     }
   }, [account])
@@ -177,7 +189,8 @@ export function useVerifyEmail() {
     }
   }, [jump, sign, token])
   return {
-    openVerify
+    openVerify,
+    isLoading
   }
 }
 

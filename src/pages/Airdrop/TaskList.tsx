@@ -1,4 +1,4 @@
-import { Box, Tab, Typography, useTheme, Tabs as MuiTabs, Button, SxProps } from '@mui/material'
+import { Box, Tab, Typography, useTheme, Tabs as MuiTabs, Button, SxProps, CircularProgress } from '@mui/material'
 import Card from 'components/Card'
 import { SUPPORTED_NETWORKS } from 'constants/chain'
 import React, { useCallback } from 'react'
@@ -43,6 +43,8 @@ interface CardProp {
   plus1Icon?: React.ReactNode
   chainTag?: React.ReactNode
   count?: number
+  statusText?: string | undefined
+  isLoading?: boolean
 }
 
 export interface TaskListData {
@@ -319,6 +321,35 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                         Expired
                       </Typography>
                     </Box>
+                  ) : data.id === 'googleOauth' || data.id === 'twitterOauth' ? (
+                    data.isLoading ? (
+                      <Button
+                        sx={{
+                          maxWidth: '130px',
+                          padding: '10px 50px',
+                          minHeight: 'unset',
+                          height: '40px',
+                          whiteSpace: 'nowrap'
+                        }}
+                        disabled
+                      >
+                        <CircularProgress size={24} color="inherit" />
+                      </Button>
+                    ) : (
+                      <Button
+                        sx={{
+                          maxWidth: '130px',
+                          padding: '10px 50px',
+                          minHeight: 'unset',
+                          height: '40px',
+                          whiteSpace: 'nowrap'
+                        }}
+                        disabled={disabledBtn}
+                        onClick={data.action}
+                      >
+                        {data.statusText}
+                      </Button>
+                    )
                   ) : (
                     <Button
                       sx={{

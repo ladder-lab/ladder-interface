@@ -8,6 +8,7 @@ import { ReactComponent as Monopoly } from 'assets/svg/airdrop/monopoly.svg'
 import { ReactComponent as Social } from 'assets/svg/airdrop/social.svg'
 import { ReactComponent as Sbt } from 'assets/svg/airdrop/sbt.svg'
 import { useVerifyTwitter } from 'hooks/useVerifyTwitter'
+import { useSignLogin } from 'hooks/useSignIn'
 
 const expiredList = ['monopolyRank', 'eventSbt', 'partneredSbt', 'dcRole']
 
@@ -48,8 +49,10 @@ const tasks = [
 export default function TaskListLuck({ refreshCb }: { refreshCb: () => void }) {
   const { showModal } = useModal()
   const { getLuck, taskState: state } = useLuckTasks(refreshCb)
-  const { openVerify } = useVerifyTwitter(true)
-  const { openVerify: openVerifyEmail } = useVerifyEmail()
+  const { token, sign } = useSignLogin()
+
+  const { openVerify, isLoading: twitterIsLoading } = useVerifyTwitter(true)
+  const { openVerify: openVerifyEmail, isLoading: emailIsLoading } = useVerifyEmail()
 
   const sorted: TaskListData = useMemo(
     () =>
@@ -75,8 +78,26 @@ export default function TaskListLuck({ refreshCb }: { refreshCb: () => void }) {
                 ...item,
                 completed: itemState.completed,
                 claimed: itemState.claimed,
+                statusText:
+                  item.id === 'twitterOauth'
+                    ? !token
+                      ? 'Sign'
+                      : !itemState.completed
+                      ? 'Connect'
+                      : 'Boost'
+                    : item.id === 'googleOauth'
+                    ? !token
+                      ? 'Sign'
+                      : !itemState.completed
+                      ? 'Connect'
+                      : 'Boost'
+                    : undefined,
+                isLoading:
+                  item.id === 'twitterOauth' ? twitterIsLoading : item.id === 'googleOauth' ? emailIsLoading : false,
                 action: () => {
-                  itemState.completed
+                  !token
+                    ? sign()
+                    : itemState.completed
                     ? showModal(<LuckModal getLuck={getLuck({ luckType: itemState.luckType, luck: itemState.luck })} />)
                     : showModal(
                         <IncompleteModal
@@ -104,7 +125,7 @@ export default function TaskListLuck({ refreshCb }: { refreshCb: () => void }) {
         },
         { canBeDone: [], completed: [], cannotComplete: [] } as TaskListData
       ),
-    [getLuck, openVerify, openVerifyEmail, showModal, state]
+    [emailIsLoading, getLuck, openVerify, openVerifyEmail, showModal, sign, state, token, twitterIsLoading]
   )
 
   return <TaskList type={TYPE.luck} data={sorted} />
