@@ -1,7 +1,8 @@
 import axios, { AxiosResponse, AxiosPromise, AxiosRequestConfig } from 'axios'
 import qs from 'qs'
 
-export const StatBaseURL = 'https://dualinvest-testapi.antimatter.finance/web/'
+// export const StatBaseURL = 'https://dualinvest-testapi.antimatter.finance/web/'
+export const StatBaseURL = 'https://v1-test.ladder.top/web/'
 export const baseURL = 'https://test-nftapi.antimatter.finance:8443/web/'
 // export const baseURL = 'https://dualinvest-testapi.antimatter.finance/web/'
 export const testURL = 'https://testapi.settle3.com/web/'
