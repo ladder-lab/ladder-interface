@@ -679,15 +679,27 @@ export function ShowTopPoolsCurrencyBox({
         logoUrl={token1Info.logo}
         currencySymbol={token1Info.symbol}
       />
-      <Typography fontSize={fontSize} fontWeight={fontWeight} color={color || theme.palette.text.primary} ml={8}>
-        {token0Info.symbol}
-      </Typography>
+      {token0Info.symbol.length > 4 ? (
+        <Typography
+          noWrap
+          fontSize={fontSize}
+          fontWeight={fontWeight}
+          color={color || theme.palette.text.primary}
+          ml={8}
+        >
+          {token0Info.symbol}
+        </Typography>
+      ) : (
+        <Typography fontSize={fontSize} fontWeight={fontWeight} color={color || theme.palette.text.primary} ml={8}>
+          {token0Info.symbol}
+        </Typography>
+      )}
       {token0Info.type === Mode.ERC1155 && (
         <Typography fontSize={fontSize} fontWeight={fontWeight} color={color || theme.palette.text.primary} ml={8}>
           #{token0Info.tokenId}
         </Typography>
       )}
-      <Typography fontSize={fontSize} fontWeight={fontWeight} color={color || theme.palette.text.primary}>
+      <Typography noWrap fontSize={fontSize} fontWeight={fontWeight} color={color || theme.palette.text.primary}>
         /{token1Info.symbol}
       </Typography>
       {token1Info.type === Mode.ERC1155 && (
