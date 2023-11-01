@@ -23,11 +23,11 @@ import Close from '@mui/icons-material/Close'
 import SwitchToggle from 'components/SwitchToggle'
 import { useCurrencyModalListHeight } from 'hooks/useScreenSize'
 import Pagination from 'components/Pagination'
-import { useContract } from 'hooks/useContract'
-import ERC3525_ABI from 'constants/abis/erc3525.json'
-import { useSingleCallResult } from 'state/multicall/hooks'
-import { Token, TokenAmount } from '@ladder/sdk'
-import { ZERO_ADDRESS } from 'constants/index'
+// import { useContract } from 'hooks/useContract'
+// import ERC3525_ABI from 'constants/abis/erc3525.json'
+// import { useSingleCallResult } from 'state/multicall/hooks'
+// import { Token, TokenAmount } from '@ladder/sdk'
+// import { ZERO_ADDRESS } from 'constants/index'
 
 export default function Erc721IdSelectionModal({
   // isOpen,
@@ -348,23 +348,23 @@ function NftCard({
 }) {
   const theme = useTheme()
   const isDarkMode = useIsDarkMode()
-  const [insufficientAmount, setInsufficientAmount] = useState(true)
+  const [insufficientAmount] = useState(false)
 
-  const arg = useMemo(() => [token.tokenId], [token])
+  // const arg = useMemo(() => [token.tokenId], [token])
 
-  const contract = useContract(token.address, ERC3525_ABI)
-  const result = useSingleCallResult(contract, 'assets', arg)
+  // const contract = useContract(token.address, ERC3525_ABI)
+  // const result = useSingleCallResult(contract, 'assets', arg)
 
-  const amount = useMemo(() => {
-    const res = result.result?.[1]?.toString() ?? '0'
-    const amountInString = new TokenAmount(new Token(1, ZERO_ADDRESS, 18), res).toExact()
+  // const amount = useMemo(() => {
+  //   const res = result.result?.[1]?.toString() ?? '0'
+  //   const amountInString = new TokenAmount(new Token(1, ZERO_ADDRESS, 18), res).toExact()
 
-    if (Number(amountInString) >= 250) {
-      setInsufficientAmount(false)
-    }
+  //   if (Number(amountInString) >= 250) {
+  //     setInsufficientAmount(false)
+  //   }
 
-    return amountInString
-  }, [result.result])
+  //   return amountInString
+  // }, [result.result])
 
   useEffect(() => {
     if (token.tokenId !== undefined) {
@@ -439,9 +439,9 @@ function NftCard({
       <Typography sx={{ color: theme.palette.text.secondary, fontSize: 10, fontWeight: 400, mb: 4 }}>
         {shortenAddress(token.address) ?? ''}
       </Typography>
-      <Typography sx={{ fontSize: 10, fontWeight: 600 }}>
+      {/* <Typography sx={{ fontSize: 10, fontWeight: 600 }}>
         <span style={{ color: theme.palette.text.secondary }}>amount: </span> {amount}
-      </Typography>
+      </Typography> */}
     </Box>
   )
 }

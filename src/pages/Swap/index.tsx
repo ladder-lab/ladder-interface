@@ -43,7 +43,7 @@ import useBreakpoint from 'hooks/useBreakpoint'
 // 0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56
 const [currency0, currency1] = [
   new Token(56, '0x55d398326f99059fF775485246999027B3197955', 18, 'BUSD', 'BUSD'),
-  new Token721(56, '0xf4F7139b1FcC5Cac2f573Cc4B684Cc75367A9cfD', undefined)
+  new Token721(56, '0x61621E12d79DDC0b271F151A1Dbf10D3a68058ab', undefined)
 ]
 
 export default function Swap() {
