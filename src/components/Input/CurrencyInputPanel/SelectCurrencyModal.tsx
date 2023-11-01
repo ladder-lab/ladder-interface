@@ -23,6 +23,7 @@ import { useAddUserToken, useIsDarkMode, useTrackedToken1155List } from 'state/u
 import { Token1155 } from 'constants/token/token1155'
 import ERC721List from './ERC721List'
 import { useCurrencyModalListHeight } from 'hooks/useScreenSize'
+import { useIsTokenTypeCallback } from 'hooks/useTokenType'
 
 export enum Mode {
   ERC20 = 'erc20',
@@ -51,15 +52,18 @@ export default function SelectCurrencyModal({
   const isDownMd = useBreakpoint('md')
   const [isImportOpen, setIsInportOpen] = useState(false)
   const theme = useTheme()
-  const [mode, setMode] = useState(selectedTokenType === 'erc20' ? Mode.ERC1155 : Mode.ERC20)
+  const [mode, setMode] = useState<'erc20' | 'erc721' | 'erc1155'>(Mode.ERC721)
   const [searchQuery, setSearchQuery] = useState<string>('')
-  const [searchQueryNFT, setSearchQueryNFT] = useState<string>('')
+  // const [searchQueryNFT, setSearchQueryNFT] = useState<string>('')
   const [invertSearchOrder] = useState<boolean>(false)
+  const tokenType = useIsTokenTypeCallback(searchQuery)
+  console.log('tokenType=>', tokenType)
 
   const fixedList = useRef<FixedSizeList>()
 
   const debouncedQuery = useDebounce(searchQuery, 200)
-  const debouncedQueryNFT = useDebounce(searchQueryNFT, 200)
+  const debouncedQueryNFT1155 = useDebounce(searchQuery, 200)
+
   const { hideModal } = useModal()
 
   const allTokens = useAllTokens()
@@ -70,8 +74,8 @@ export default function SelectCurrencyModal({
   const searchToken = useToken(debouncedQuery)
   const searchTokenIsAdded = useIsUserAddedToken(searchToken)
   const addUserToken = useAddUserToken()
-  const searchTokenNFT = useToken1155(debouncedQueryNFT)
-  const searchTokenIsAddedNFT = useIsUserAddedToken1155(searchTokenNFT)
+  const searchTokenNFT1155 = useToken1155(debouncedQuery)
+  const searchTokenIsAddedNFT1155 = useIsUserAddedToken1155(searchTokenNFT1155)
 
   const handleImport = useCallback(
     (nft: NFT) => {
@@ -94,8 +98,8 @@ export default function SelectCurrencyModal({
   }, [allTokens, debouncedQuery])
 
   const filteredTokens1155: Token[] | Token1155[] = useMemo(() => {
-    return filterTokens(Object.values(allToken1155), debouncedQueryNFT)
-  }, [allToken1155, debouncedQueryNFT])
+    return filterTokens(Object.values(allToken1155), debouncedQueryNFT1155)
+  }, [allToken1155, debouncedQueryNFT1155])
 
   const sortedTokens: Token[] = useMemo(() => {
     return filteredTokens.sort(tokenComparator)
@@ -125,47 +129,64 @@ export default function SelectCurrencyModal({
     fixedList.current?.scrollTo(0)
   }, [])
 
-  const handleNFTInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    const input = event.target.value
-    const checksummedInput = isAddress(input)
-    setSearchQueryNFT(checksummedInput || input)
-    fixedList.current?.scrollTo(0)
-  }, [])
+  // const handleNFTInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+  //   const input = event.target.value
+  //   const checksummedInput = isAddress(input)
+  //   setSearchQueryNFT(checksummedInput || input)
+  //   fixedList.current?.scrollTo(0)
+  // }, [])
 
   const handleEnter = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {
-        const s = debouncedQuery.toLowerCase().trim()
-        if (s === 'eth') {
-          onSelectCurrency && onSelectCurrency(ETHER)
-        } else if (filteredSortedTokens.length > 0) {
-          if (
-            filteredSortedTokens[0].symbol?.toLowerCase() === debouncedQuery.trim().toLowerCase() ||
-            filteredSortedTokens.length === 1
-          ) {
-            onSelectCurrency && onSelectCurrency(filteredSortedTokens[0])
+        if (mode === Mode.ERC20) {
+          const s = debouncedQuery.toLowerCase().trim()
+          if (s === 'eth') {
+            onSelectCurrency && onSelectCurrency(ETHER)
+          } else if (filteredSortedTokens.length > 0) {
+            if (
+              filteredSortedTokens[0].symbol?.toLowerCase() === debouncedQuery.trim().toLowerCase() ||
+              filteredSortedTokens.length === 1
+            ) {
+              onSelectCurrency && onSelectCurrency(filteredSortedTokens[0])
+            }
           }
+        }
+
+        if (mode === Mode.ERC1155) {
+          if (filteredSortedTokens.length > 0) {
+            if (
+              filteredSortedTokens[0].symbol?.toLowerCase() === debouncedQuery.trim().toLowerCase() ||
+              filteredSortedTokens.length === 1
+            ) {
+              onSelectCurrency && onSelectCurrency(filteredSortedTokens[0])
+            }
+          }
+        }
+
+        if (mode === Mode.ERC721) {
+          setMode(Mode.ERC721)
         }
       }
     },
-    [filteredSortedTokens, onSelectCurrency, debouncedQuery]
+    [mode, debouncedQuery, filteredSortedTokens, onSelectCurrency]
   )
 
-  const handleEnter1155 = useCallback(
-    (e: KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter') {
-        if (filteredSortedTokens.length > 0) {
-          if (
-            filteredSortedTokens[0].symbol?.toLowerCase() === debouncedQuery.trim().toLowerCase() ||
-            filteredSortedTokens.length === 1
-          ) {
-            onSelectCurrency && onSelectCurrency(filteredSortedTokens[0])
-          }
-        }
-      }
-    },
-    [filteredSortedTokens, onSelectCurrency, debouncedQuery]
-  )
+  // const handleEnter1155 = useCallback(
+  //   (e: KeyboardEvent<HTMLInputElement>) => {
+  //     if (e.key === 'Enter') {
+  //       if (filteredSortedTokens.length > 0) {
+  //         if (
+  //           filteredSortedTokens[0].symbol?.toLowerCase() === debouncedQuery.trim().toLowerCase() ||
+  //           filteredSortedTokens.length === 1
+  //         ) {
+  //           onSelectCurrency && onSelectCurrency(filteredSortedTokens[0])
+  //         }
+  //       }
+  //     }
+  //   },
+  //   [filteredSortedTokens, onSelectCurrency, debouncedQuery]
+  // )
 
   // const onInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
   //   setInput(e.target.value)
@@ -174,9 +195,22 @@ export default function SelectCurrencyModal({
     if (selectedTokenType === 'erc20') {
       setMode(Mode.ERC1155)
     } else {
-      setMode(Mode.ERC20)
+      // setMode(Mode.ERC20)
+      setMode(Mode.ERC721)
     }
   }, [selectedTokenType])
+
+  useEffect(() => {
+    if (tokenType === Mode.ERC1155) {
+      setMode(Mode.ERC1155)
+    }
+    if (tokenType === Mode.ERC20) {
+      setMode(Mode.ERC20)
+    }
+    if (tokenType === Mode.ERC721) {
+      setMode(Mode.ERC721)
+    }
+  }, [tokenType])
 
   const onImport = useCallback(() => {
     setIsInportOpen(true)
@@ -218,41 +252,54 @@ export default function SelectCurrencyModal({
             style={{ color: theme.palette.text.secondary }}
           /> */}
         </Box>
-        <Box display="flex" gap={20} padding="31px 0 30px" alignItems="center">
-          <ModeButton
-            selected={mode === Mode.ERC20}
-            onClick={() => {
-              setMode(Mode.ERC20)
-              setSearchQuery('')
-              setSearchQueryNFT('')
-            }}
-            disabled={selectedTokenType === 'erc20'}
-          >
-            ERC20
-          </ModeButton>
-          <ModeButton
-            selected={mode === Mode.ERC1155}
-            onClick={() => {
-              setMode(Mode.ERC1155)
-              setSearchQuery('')
-              setSearchQueryNFT('')
-            }}
-            disabled={selectedTokenType === 'erc1155'}
-          >
-            ERC1155
-          </ModeButton>
-          <ModeButton
-            selected={mode === Mode.ERC721}
-            onClick={() => {
-              setMode(Mode.ERC721)
-              setSearchQuery('')
-              setSearchQueryNFT('')
-            }}
-            disabled={selectedTokenType === 'erc721'}
-          >
-            ERC721
-          </ModeButton>
+        <Box paddingTop={'30px'}>
+          <Input
+            value={searchQuery}
+            onChange={handleInput}
+            placeholder="Search name or paste address"
+            startAdornment={<SearchIcon />}
+            onKeyDown={handleEnter}
+            height={isDownMd ? 48 : 60}
+          />
         </Box>
+
+        {!searchQuery && (
+          <Box display="flex" gap={20} paddingTop="10px" alignItems="center">
+            <ModeButton
+              selected={mode === Mode.ERC721}
+              onClick={() => {
+                setMode(Mode.ERC721)
+                setSearchQuery('')
+                // setSearchQueryNFT('')
+              }}
+              disabled={selectedTokenType === 'erc721'}
+            >
+              ERC721
+            </ModeButton>
+            <ModeButton
+              selected={mode === Mode.ERC1155}
+              onClick={() => {
+                setMode(Mode.ERC1155)
+                setSearchQuery('')
+                // setSearchQueryNFT('')
+              }}
+              disabled={selectedTokenType === 'erc1155'}
+            >
+              ERC1155
+            </ModeButton>
+            <ModeButton
+              selected={mode === Mode.ERC20}
+              onClick={() => {
+                setMode(Mode.ERC20)
+                setSearchQuery('')
+                // setSearchQueryNFT('')
+              }}
+              disabled={selectedTokenType === 'erc20'}
+            >
+              ERC20
+            </ModeButton>
+          </Box>
+        )}
 
         <Box paddingTop={'24px'} position="relative">
           {mode === Mode.ERC20 && (
@@ -265,14 +312,14 @@ export default function SelectCurrencyModal({
               searchTokenIsAdded={searchTokenIsAdded}
               commonCurlist={commonCur}
             >
-              <Input
+              {/* <Input
                 value={searchQuery}
                 onChange={handleInput}
                 placeholder="Search name or paste address"
                 startAdornment={<SearchIcon />}
                 onKeyDown={handleEnter}
                 height={isDownMd ? 48 : 60}
-              />
+              /> */}
             </CurrencyList>
           )}
 
@@ -280,8 +327,8 @@ export default function SelectCurrencyModal({
             <NftList
               currencyOptions={filteredTokens1155 as Token1155[]}
               onSelectCurrency={onSelectCurrency}
-              searchToken={searchTokenNFT}
-              searchTokenIsAdded={searchTokenIsAddedNFT}
+              searchToken={searchTokenNFT1155}
+              searchTokenIsAdded={searchTokenIsAddedNFT1155}
               onClick={onSelectCurrency}
               importToken={onImport}
             >
@@ -306,7 +353,7 @@ export default function SelectCurrencyModal({
                   </ButtonBase>
                 </Box>
 
-                <Input
+                {/* <Input
                   value={searchQueryNFT}
                   onChange={handleNFTInput}
                   placeholder="Search name or paste address"
@@ -314,13 +361,14 @@ export default function SelectCurrencyModal({
                   startAdornment={<SearchIcon />}
                   onKeyDown={handleEnter1155}
                   height={isDownMd ? 48 : 60}
-                />
+                /> */}
               </>
             </NftList>
           )}
 
           {mode === Mode.ERC721 && (
             <ERC721List
+              searchQueryNFT={searchQuery}
               // searchToken={searchTokenNFT}
               // searchTokenIsAdded={searchTokenIsAddedNFT}
               onSelectCurrency={onSelectCurrency}
