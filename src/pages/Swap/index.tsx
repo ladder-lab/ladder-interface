@@ -137,7 +137,7 @@ export default function Swap() {
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
 
-  const { onSubTokenSelection, resetSubTokenSelection } = useSwap721State()
+  const { onSubTokenSelection, resetSubTokenSelection, tokenIds: tokenIds721 } = useSwap721State()
   // the callback to execute the swap
   const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(
     trade,
@@ -327,6 +327,32 @@ export default function Swap() {
     }
     return
   }, [currency0, currency1, onCurrencySelection])
+
+  useEffect(() => {
+    if (checkIs721(toAsset) && !formattedAmounts[Field.OUTPUT]) {
+      onUserInput(Field.OUTPUT, '1')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [toAsset])
+  console.log(
+    'tokenIds721=>',
+    checkIs721(toAsset),
+    checkIs721(fromAsset),
+    tokenIds721,
+    formattedAmounts[Field.INPUT],
+    typedValue
+  )
+
+  useEffect(() => {
+    if (checkIs721(fromAsset) && !tokenIds721[Field.INPUT]?.length) {
+      onUserInput(Field.INPUT, '')
+    }
+    if (checkIs721(fromAsset) && tokenIds721[Field.INPUT]?.length) {
+      const num = `${tokenIds721[Field.INPUT]?.length ?? ''}`
+      onUserInput(Field.INPUT, num)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fromAsset, typedValue])
 
   return (
     <>
