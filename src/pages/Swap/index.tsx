@@ -334,14 +334,6 @@ export default function Swap() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toAsset])
-  console.log(
-    'tokenIds721=>',
-    checkIs721(toAsset),
-    checkIs721(fromAsset),
-    tokenIds721,
-    formattedAmounts[Field.INPUT],
-    typedValue
-  )
 
   useEffect(() => {
     if (checkIs721(fromAsset) && !tokenIds721[Field.INPUT]?.length) {

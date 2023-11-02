@@ -57,7 +57,6 @@ export default function SelectCurrencyModal({
   // const [searchQueryNFT, setSearchQueryNFT] = useState<string>('')
   const [invertSearchOrder] = useState<boolean>(false)
   const tokenType = useIsTokenTypeCallback(searchQuery)
-  console.log('tokenType=>', tokenType)
 
   const fixedList = useRef<FixedSizeList>()
 
