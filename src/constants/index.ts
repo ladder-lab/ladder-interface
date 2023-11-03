@@ -99,7 +99,12 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
     ...WETH_ONLY[ChainId.RINKEBY],
     new Token(ChainId.RINKEBY, '0xD64b11169B87030EB5647Add8265d2F1D30cF2e6', 18, 'TEST', 'Test Coin')
   ],
-  [ChainId.GÖRLI]: [...WETH_ONLY[ChainId.GÖRLI]]
+  [ChainId.GÖRLI]: [...WETH_ONLY[ChainId.GÖRLI]],
+  [ChainId.MATIC]: [
+    ...WETH_ONLY[ChainId.MATIC],
+    new Token(ChainId.MATIC, '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', 6, 'USDC', 'USD Coin'),
+    new Token(ChainId.MATIC, '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', 6, 'USDT', 'Tether USD')
+  ]
 }
 
 export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } = {
