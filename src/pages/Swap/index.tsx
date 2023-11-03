@@ -396,6 +396,8 @@ export default function Swap() {
                 onMax={handleMaxInput}
                 disabled={!account}
                 onSelectSubTokens={handleFromSubAssets}
+                currencyA={fromAsset}
+                currencyB={toAsset}
               />
               {PriceCorrectInput}
             </>
@@ -428,6 +430,8 @@ export default function Swap() {
                 onSelectSubTokens={handleToSubAssets}
                 enableAuto={true}
                 pairAddress={pair721Address}
+                currencyA={fromAsset}
+                currencyB={toAsset}
               />
               {PriceCorrectOutput}
             </>

@@ -124,6 +124,8 @@ export default function ImportPool() {
               onChange={() => {}}
               onSelectCurrency={handleAssetA}
               currency={assetA}
+              currencyA={assetA}
+              currencyB={assetB}
               disableInput
             />
           </Box>
@@ -138,6 +140,8 @@ export default function ImportPool() {
               onChange={() => {}}
               onSelectCurrency={handleAssetB}
               currency={assetB}
+              currencyA={assetA}
+              currencyB={assetB}
               disableInput
             />
           </Box>

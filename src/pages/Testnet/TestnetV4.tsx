@@ -565,7 +565,7 @@ export function Step2({
           onClick={() => {
             if (step < 2) return
             window.open(
-              `https://twitter.com/intent/tweet?text=Something's%20stirring%20in%20the%20world%20of%20NFTs.%20%0A%0A%20Are%20you%20ready%20to%20explore?%20%F0%9F%8C%AA%EF%B8%8F%20@Laddertop_NFT%20%0A%0A%20`,
+              `https://twitter.com/intent/tweet?text=Something's%20stirring%20in%20the%20world%20of%20NFTs.%20%0A%0A%20Are%20you%20ready%20to%20explore?%20%F0%9F%8C%AA%EF%B8%8F%20@Ladder_NFT%20%0A%0A%20`,
               'intent',
               'scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=500,height=500,left=0,top=0'
             )

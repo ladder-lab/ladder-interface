@@ -3,7 +3,7 @@ import { useTokenContract, use1155Contract, use721Contract } from './useContract
 import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
 import { isAddress } from 'utils'
 
-export function useIsTokenTypeCallback(tokenContract: string) {
+export function useTokenTypeCallback(tokenContract: string | undefined, IsDisplay?: boolean) {
   const Erc20Contract = useTokenContract(isAddress(tokenContract) ? tokenContract : undefined)
   const Erc1155Contract = use1155Contract(isAddress(tokenContract) ? tokenContract : undefined)
   const Erc721Contract = use721Contract(isAddress(tokenContract) ? tokenContract : undefined)
@@ -12,7 +12,7 @@ export function useIsTokenTypeCallback(tokenContract: string) {
   const [isEr1155, setIsErc1155] = useState<boolean>(false)
 
   useEffect(() => {
-    if (!isAddress(tokenContract)) return
+    if (!isAddress(tokenContract) && IsDisplay) return
 
     const fetchTokenErc20 = async () => {
       try {
@@ -47,12 +47,12 @@ export function useIsTokenTypeCallback(tokenContract: string) {
       }
     }
     Promise.all([fetchTokenErc20(), fetchErc1155(), fetchErc721()])
-  }, [Erc20Contract, Erc1155Contract, Erc721Contract, tokenContract])
+  }, [Erc20Contract, Erc1155Contract, Erc721Contract, tokenContract, IsDisplay])
 
   return useMemo(() => {
-    if (isErc20 && isAddress(tokenContract)) return Mode.ERC20
+    if ((isErc20 && isAddress(tokenContract)) || IsDisplay) return Mode.ERC20
     if (isErc721 && isAddress(tokenContract)) return Mode.ERC721
     if (isEr1155 && isAddress(tokenContract)) return Mode.ERC1155
     return undefined
-  }, [isEr1155, isErc20, isErc721, tokenContract])
+  }, [IsDisplay, isEr1155, isErc20, isErc721, tokenContract])
 }

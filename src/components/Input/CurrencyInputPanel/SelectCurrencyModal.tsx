@@ -23,7 +23,7 @@ import { useAddUserToken, useIsDarkMode, useTrackedToken1155List } from 'state/u
 import { Token1155 } from 'constants/token/token1155'
 import ERC721List from './ERC721List'
 import { useCurrencyModalListHeight } from 'hooks/useScreenSize'
-import { useIsTokenTypeCallback } from 'hooks/useTokenType'
+import { useTokenTypeCallback } from 'hooks/useTokenType'
 
 export enum Mode {
   ERC20 = 'erc20',
@@ -42,11 +42,13 @@ export const SwapContext = React.createContext<SwapContextType>({
 
 export default function SelectCurrencyModal({
   onSelectCurrency,
-  selectedTokenType
+  selectedTokenType,
+  IsDisplay
 }: // onSelectSubTokens
 {
   onSelectCurrency?: (currency: AllTokens) => void
   selectedTokenType?: TokenType
+  IsDisplay?: boolean
   // onSelectSubTokens?: (tokens: Token721[]) => void
 }) {
   const isDownMd = useBreakpoint('md')
@@ -56,7 +58,7 @@ export default function SelectCurrencyModal({
   const [searchQuery, setSearchQuery] = useState<string>('')
   // const [searchQueryNFT, setSearchQueryNFT] = useState<string>('')
   const [invertSearchOrder] = useState<boolean>(false)
-  const tokenType = useIsTokenTypeCallback(searchQuery)
+  const tokenType = useTokenTypeCallback(searchQuery, IsDisplay)
 
   const fixedList = useRef<FixedSizeList>()
 
@@ -264,28 +266,33 @@ export default function SelectCurrencyModal({
 
         {!searchQuery && (
           <Box display="flex" gap={20} paddingTop="10px" alignItems="center">
-            <ModeButton
-              selected={mode === Mode.ERC721}
-              onClick={() => {
-                setMode(Mode.ERC721)
-                setSearchQuery('')
-                // setSearchQueryNFT('')
-              }}
-              disabled={selectedTokenType === 'erc721'}
-            >
-              ERC721
-            </ModeButton>
-            <ModeButton
-              selected={mode === Mode.ERC1155}
-              onClick={() => {
-                setMode(Mode.ERC1155)
-                setSearchQuery('')
-                // setSearchQueryNFT('')
-              }}
-              disabled={selectedTokenType === 'erc1155'}
-            >
-              ERC1155
-            </ModeButton>
+            {!IsDisplay && (
+              <>
+                <ModeButton
+                  selected={mode === Mode.ERC721}
+                  onClick={() => {
+                    setMode(Mode.ERC721)
+                    setSearchQuery('')
+                    // setSearchQueryNFT('')
+                  }}
+                  disabled={selectedTokenType === 'erc721'}
+                >
+                  ERC721
+                </ModeButton>
+                <ModeButton
+                  selected={mode === Mode.ERC1155}
+                  onClick={() => {
+                    setMode(Mode.ERC1155)
+                    setSearchQuery('')
+                    // setSearchQueryNFT('')
+                  }}
+                  disabled={selectedTokenType === 'erc1155'}
+                >
+                  ERC1155
+                </ModeButton>
+              </>
+            )}
+
             <ModeButton
               selected={mode === Mode.ERC20}
               onClick={() => {
