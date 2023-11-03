@@ -104,41 +104,45 @@ export default function TestnetV4() {
 
   const { makeTwitter, checkMakeTwitter } = useCheckMakeTwitter()
   const [isMakeTwitter, setIsMakeTwitter] = useState<boolean>(false)
-  console.log('step=>', step, oauth, submitted, complete)
+  console.log('step=>', step, oauth, submitted, complete, signToken)
 
   useEffect(() => {
     if (submitted || complete || !account) {
       setStep(-1)
+      return
     }
-
-    if (!submitted && !complete && account) {
+    if (account) {
       if (!signToken) {
         setStep(0)
+        return
       }
       if (signToken && !oauth) {
         verifyAll()
+        return
       }
-      if ((oauth && step < 2) || (oauth && !isMakeTwitter)) {
+      if (oauth && step < 2) {
         setStep(2)
+        return
       }
       if (makeTwitter && isMakeTwitter) {
         setStep(3)
+        return
       }
       checkMakeTwitter()
       verifyOauth()
     }
   }, [
-    submitted,
-    complete,
-    oauth,
     account,
+    checkMakeTwitter,
+    complete,
+    isMakeTwitter,
+    makeTwitter,
+    oauth,
     signToken,
     step,
-    makeTwitter,
+    submitted,
     verifyAll,
-    isMakeTwitter,
-    verifyOauth,
-    checkMakeTwitter
+    verifyOauth
   ])
 
   useEffect(() => {
