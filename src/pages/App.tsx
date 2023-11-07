@@ -12,7 +12,7 @@ import Swap from './Swap'
 import Pool from './Pool'
 import AddLiquidity from './Pool/AddLiquidity'
 // import ImportPool from './Pool/ImportPool'
-import darkBg from 'assets/images/dark_bg.png'
+import darkBg from 'assets/images/dark_bg1.png'
 import lightBg from 'assets/images/light_bg.png'
 import { useIsDarkMode } from 'state/user/hooks'
 import RemoveLiquidity from './Pool/RemoveLiquidity'
@@ -40,11 +40,12 @@ const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMo
     '&:after': {
       content: '""',
       width: '100%',
-      height: isDarkMode ? '80%' : '100%',
+      height: '100%',
       bottom: 0,
       zIndex: -1,
       position: 'absolute',
       backgroundImage: `url(${isDarkMode ? darkBg : lightBg})`,
+      opacity: 0.6,
       backgroundRepeat: 'no-repeat',
       backgroundPosition: isDarkMode ? 'bottom' : 'top',
       backgroundSize: isDarkMode ? 'cover' : '100% 100%'
@@ -53,7 +54,7 @@ const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMo
       flexDirection: 'column',
       '&:after': {
         backgroundSize: isDarkMode ? 'auto 50%' : '100% 100%',
-        backgroundPosition: isDarkMode ? 'right bottom' : 'top'
+        backgroundPosition: isDarkMode ? 'center bottom' : 'top'
       }
     }
   })

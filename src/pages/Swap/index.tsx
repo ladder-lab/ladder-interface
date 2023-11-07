@@ -528,7 +528,7 @@ export default function Swap() {
             />
           )}
         </Box>
-        <Box maxWidth={isDownSm ? '90vw' : 470} margin={`${isDownSm ? '0 0 40px ' : '100px 0 0'} `}>
+        <Box maxWidth={isDownSm ? '90vw' : 470} margin={`${isDownSm ? '0 0 200px ' : '100px 0 0'} `}>
           <Typography fontSize={34} fontWeight={700}>
             Welcome to DogeWalk’s SFT AMM trading platform, powered by Ladder.
           </Typography>
@@ -536,7 +536,7 @@ export default function Swap() {
           <Box>
             <Typography>
               <Typography component={'span'} fontWeight={700}>
-                🐶 This is a designated platform to support DogeWalk users in trading DogeWalk SFTs,
+                🐶 This is a designated platform to support DogeWalk users in trading DogeWalk DWD Token Vouchers,
               </Typography>
               <br />
               which are received as a reward by holding Genesis DogeWalk NFTs.{' '}

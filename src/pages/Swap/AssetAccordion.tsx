@@ -87,7 +87,7 @@ export function AssetAccordion({
           )}
         </Box>
 
-        <Tag sx={{ position: 'absolute', right: 0, top: 0 }}>{is1155 ? 'ERC1155' : is721 ? 'ERC3525' : 'ERC20'}</Tag>
+        <Tag sx={{ position: 'absolute', right: 0, top: 0 }}>{is1155 ? 'ERC1155' : is721 ? 'ERC721' : 'ERC20'}</Tag>
       </Box>
     )
   }, [token, theme.palette.text.secondary, _token?.address, is1155, is721])
