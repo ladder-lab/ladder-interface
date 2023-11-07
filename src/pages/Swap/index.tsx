@@ -530,7 +530,7 @@ export default function Swap() {
         </Box>
         <Box maxWidth={isDownSm ? '90vw' : 470} margin={`${isDownSm ? '0 0 200px ' : '100px 0 0'} `}>
           <Typography fontSize={34} fontWeight={700}>
-            Welcome to DogeWalk’s SFT AMM trading platform, powered by Ladder.
+            Welcome to DogeWalk’s DWD Token Voucher AMM trading platform, powered by Ladder.
           </Typography>
           <Image src={dogewalkUrl} style={{ margin: '20px 0' }} />
           <Box>
@@ -551,9 +551,9 @@ export default function Swap() {
             </Typography>
             <br />
             <Typography>
-              ⚠️Please note: Ladder only supports the standard DWD-SFT, which means the SFT containing exactly 250 $DWD.
-              You can either hold the SFT and unlock the $DWD on or after August 7th, 2024, or you can trade the SFTs
-              right here immediately.
+              ⚠️ Please note: Ladder only supports the standard DWD Token Voucher, which means the DWD Token Voucher
+              containing exactly 250 $DWD. You can either hold the DWD Token Voucher and unlock the $DWD on or after
+              August 7th, 2024, or you can trade the DWD Token Voucher right here immediately.
             </Typography>
           </Box>
         </Box>
