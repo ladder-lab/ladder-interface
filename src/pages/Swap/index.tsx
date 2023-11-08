@@ -25,7 +25,7 @@ import useModal from 'hooks/useModal'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import { Currency } from 'constants/token'
-import { checkIs721 } from 'utils/checkIs1155'
+import { checkIs1155, checkIs721 } from 'utils/checkIs1155'
 import { Token721 } from 'constants/token/token721'
 import { useSwap721State } from 'state/swap/useSwap721State'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
@@ -332,8 +332,14 @@ export default function Swap() {
     if (checkIs721(toAsset) && !formattedAmounts[Field.OUTPUT]) {
       onUserInput(Field.OUTPUT, '1')
     }
+    if (checkIs1155(toAsset) && !formattedAmounts[Field.OUTPUT]) {
+      onUserInput(Field.OUTPUT, '1')
+    }
+    if (checkIs1155(fromAsset) && !formattedAmounts[Field.INPUT]) {
+      onUserInput(Field.INPUT, '1')
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toAsset])
+  }, [toAsset, fromAsset])
 
   useEffect(() => {
     if (checkIs721(fromAsset) && !tokenIds721[Field.INPUT]?.length) {
