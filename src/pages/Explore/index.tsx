@@ -175,8 +175,8 @@ export default function Explore() {
         </Box>
         <CollectionHighLight collections={ERC721Collection.slice(0, 3)} />
       </Box>
-      <CollectionListing collections={ERC721Collection} title="Popular ERC721 Collection" dark />
-      <CollectionListing collections={ERC1155Collection} title="Popular ERC1155 Collection" />
+      <CollectionListing collections={ERC721Collection} title="Popular ERC-721 Collection" dark />
+      <CollectionListing collections={ERC1155Collection} title="Popular ERC-1155 Collection" />
       <CollectionListing collections={pool721Collection} title="Top ERC-721 Liquidity Pool" dark />
       <CollectionListing collections={pool1155Collection} title="Top ERC-1155 Liquidity Pool" />
     </Box>
