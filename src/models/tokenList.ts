@@ -35,6 +35,7 @@ export interface TokenInfo {
   readonly name: string
   readonly decimals: number
   readonly symbol: string
+  readonly price?: string
   readonly logoURI?: string
   readonly tags?: string[]
 }

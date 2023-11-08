@@ -56,3 +56,48 @@ export function useTokenTypeCallback(tokenContract: string | undefined, IsDispla
     return undefined
   }, [IsDisplay, isEr1155, isErc20, isErc721, tokenContract])
 }
+
+export function Erc20Token(tokenContract: string | undefined) {
+  const Erc20Contract = useTokenContract(isAddress(tokenContract) ? tokenContract : undefined)
+  const [decimals, setDecimals] = useState<number>()
+  const [symbol, setSymbol] = useState<string>()
+  const [name, setName] = useState<string>()
+
+  useEffect(() => {
+    if (!isAddress(tokenContract)) return
+
+    const TokenErc20Decimals = async () => {
+      try {
+        const decimals = await Erc20Contract?.decimals()
+        setDecimals(decimals)
+      } catch (error) {
+        console.error('Erc20-error', error)
+      }
+    }
+
+    const TokenErc20Symbol = async () => {
+      try {
+        const symbol = await Erc20Contract?.symbol()
+        setSymbol(symbol)
+      } catch (error) {
+        console.error('Erc1155-error', error)
+      }
+    }
+
+    const TokenErc20Name = async () => {
+      try {
+        const name = await Erc20Contract?.name()
+        setName(name)
+      } catch (error) {
+        console.error('Erc1721-error', error)
+      }
+    }
+    Promise.all([TokenErc20Decimals(), TokenErc20Symbol(), TokenErc20Name()])
+  }, [Erc20Contract, tokenContract])
+
+  return {
+    decimals,
+    symbol,
+    name
+  }
+}
