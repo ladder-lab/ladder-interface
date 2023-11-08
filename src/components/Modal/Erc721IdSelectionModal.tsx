@@ -284,11 +284,12 @@ export default function Erc721IdSelectionModal({
                 paddingBottom: 20,
                 background: theme => theme.palette.background.paper,
                 zIndex: 1200,
-                width: '100%'
+                width: '100%',
+                overflowY: 'auto'
               }}
             >
               {tokens.length > 0 && (
-                <Box width="100%" mt={{ xs: 0, md: 28 }}>
+                <Box width="100%" mt={{ xs: 0, md: 16 }}>
                   {tokens.map((token, idx) => (
                     <Box
                       key={`${token.symbol}-${idx}`}
