@@ -22,14 +22,14 @@ import NetworkSelect from './NetworkSelect'
 import { useDarkModeManager } from 'state/user/hooks'
 import MainLogo from 'components/MainLogo'
 import useBreakpoint from 'hooks/useBreakpoint'
-import { ReactComponent as AboutIcon } from 'assets/svg/menu/about.svg'
+// import { ReactComponent as AboutIcon } from 'assets/svg/menu/about.svg'
 // import { ReactComponent as HelpCenterIcon } from 'assets/svg/menu/help_center.svg'
 // import { ReactComponent as RequestFeatureIcon } from 'assets/svg/menu/request_feature.svg'
 import { ReactComponent as DiscordIcon } from 'assets/svg/menu/discord.svg'
 // import { ReactComponent as LanguageIcon } from 'assets/svg/menu/language.svg'
 import { ReactComponent as DarkThemeIcon } from 'assets/svg/menu/dark_theme.svg'
 // import { ReactComponent as DocsIcon } from 'assets/svg/menu/docs.svg'
-import { ReactComponent as LegalPrivacyIcon } from 'assets/svg/menu/legal_privacy.svg'
+// import { ReactComponent as LegalPrivacyIcon } from 'assets/svg/menu/legal_privacy.svg'
 
 interface TabContent {
   title: string
@@ -43,7 +43,14 @@ interface Tab extends TabContent {
 }
 
 export const Tabs: Tab[] = [
-  { title: 'Testnet', route: routes.testnet },
+  {
+    title: 'Airdrop',
+    route: routes.airdrop
+  },
+  {
+    title: 'Event',
+    route: routes.testnet
+  },
   { title: 'Swap', route: routes.swap },
   { title: 'Pool', route: routes.pool },
   { title: 'Explore', route: routes.explorer },
@@ -119,7 +126,6 @@ export default function Header() {
   const { pathname } = useLocation()
   const isDownMd = useBreakpoint('md')
   const navigate = useNavigate()
-
   const [darkMode] = useDarkModeManager()
 
   const handleMobileMenueDismiss = useCallback(() => {
@@ -153,8 +159,8 @@ export default function Header() {
 
         <HideOnMobile breakpoint="md">
           <LinksWrapper>
-            {Tabs.map(({ title, route, subTab, link, titleContent }, idx) =>
-              subTab ? (
+            {Tabs.map(({ title, route, subTab, link, titleContent }, idx) => {
+              return subTab ? (
                 <Box
                   sx={{
                     marginRight: {
@@ -184,6 +190,7 @@ export default function Header() {
                     {subTab.map((sub, idx) =>
                       sub.link ? (
                         <MenuItem
+                          onClick={() => setMenuOpen(false)}
                           key={sub.link + idx}
                           sx={{ backgroundColor: 'transparent!important', background: 'transparent!important' }}
                           selected={false}
@@ -202,7 +209,7 @@ export default function Header() {
                           </ExternalLink>
                         </MenuItem>
                       ) : (
-                        <MenuItem key={sub.title + idx}>
+                        <MenuItem key={sub.title + idx} onClick={() => setMenuOpen(false)}>
                           <StyledNavLink to={sub.route ?? ''}>{sub.titleContent ?? sub.title}</StyledNavLink>
                         </MenuItem>
                       )
@@ -220,6 +227,7 @@ export default function Header() {
                 </ExternalLink>
               ) : (
                 <Link
+                  onClick={() => setMenuOpen(false)}
                   key={title + idx}
                   id={`${route}-nav-link`}
                   to={route ?? ''}
@@ -227,10 +235,13 @@ export default function Header() {
                     (route
                       ? pathname.includes(route)
                         ? 'active'
-                        : pathname.includes('account')
-                        ? route.includes('account')
-                          ? 'active'
-                          : ''
+                        : pathname.includes('account') && route.includes('account')
+                        ? 'active'
+                        : (pathname.includes('/round') ||
+                            // pathname.includes('/airdrop') ||
+                            pathname.includes('/monopoly')) &&
+                          title.includes('Event')
+                        ? 'active'
                         : ''
                       : '') + ' link'
                   }
@@ -238,7 +249,7 @@ export default function Header() {
                   {titleContent ?? title}
                 </Link>
               )
-            )}
+            })}
           </LinksWrapper>
         </HideOnMobile>
 
@@ -313,14 +324,14 @@ export function DesktopMenu() {
 
   const options = useMemo(() => {
     return [
-      { title: 'About', link: 'https://www.ladder.top/about', icon: <AboutIcon /> },
+      // { title: 'About', link: 'https://www.ladder.top/about', icon: <AboutIcon /> },
       // { title: 'Help Center', link: '#', icon: <HelpCenterIcon /> },
       // { title: 'Request Features', link: '#', icon: <RequestFeatureIcon /> },
       { title: 'Discord', link: 'https://discord.gg/KWgkFMt9qZ', icon: <DiscordIcon /> },
       // { title: 'Language', link: '#', icon: <LanguageIcon /> },
-      { title: darkMode ? 'LightMode' : 'Dark Theme', action: toggleDarkMode, icon: <DarkThemeIcon /> },
+      { title: darkMode ? 'LightMode' : 'Dark Theme', action: toggleDarkMode, icon: <DarkThemeIcon /> }
       // { title: 'Docs', link: '#', icon: <DocsIcon /> },
-      { title: 'Legal&Privacy', link: 'https://github.com/ladder-lab/core', icon: <LegalPrivacyIcon /> }
+      // { title: 'Legal & Privacy', link: 'https://github.com/ladder-lab/core', icon: <LegalPrivacyIcon /> }
     ]
   }, [darkMode, toggleDarkMode])
 

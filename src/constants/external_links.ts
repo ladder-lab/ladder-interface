@@ -1,5 +1,5 @@
 export const ExternalLinks = {
-  twitter: 'https://www.ruanyifeng.com/blog/2019/03/grid-layout-tutorial.html',
+  twitter: 'https://twitter.com/Laddertop_NFT',
   discord: 'https://discord.gg/sabGRPhwUM',
   website: 'https://link3.to/ladder'
 }

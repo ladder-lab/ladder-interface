@@ -7,7 +7,6 @@ import {
   Stack,
   Tooltip,
   Link,
-  MenuItem,
   Popper,
   ClickAwayListener,
   Divider
@@ -16,10 +15,7 @@ import AreaChart from 'components/Chart'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 // import { StyledPollingDot } from 'components/essential/Polling'
 import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
-import LogoText from 'components/LogoText'
-import { ChainList } from 'constants/chain'
 import { routes } from 'constants/routes'
-import useBreakpoint from 'hooks/useBreakpoint'
 import {
   useTopTokensList,
   useTopPoolsList,
@@ -36,8 +32,6 @@ import { useNavigate } from 'react-router-dom'
 import { useIsDarkMode } from 'state/user/hooks'
 import { formatMillion, getEtherscanLink, isAddress, scrollToElement, shortenAddress } from 'utils'
 import StatTable, { TableHeadCellsProp, TableRowCellsProp } from './StatTable'
-import Image from 'components/Image'
-import Select from 'components/Select/Select'
 import Input from 'components/Input'
 import { Loader } from 'components/AnimatedSvg/Loader'
 import { useActiveWeb3React } from 'hooks'
@@ -85,7 +79,6 @@ export enum PoolPairType {
 export default function Statistics() {
   const { chainId } = useActiveWeb3React()
   const curChainId = useMemo(() => chainId || ChainId.SEPOLIA, [chainId])
-  const isDownSm = useBreakpoint('sm')
   const isDarkMode = useIsDarkMode()
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -142,7 +135,7 @@ export default function Statistics() {
               <Typography ml={16}>ETH Price: $1.18k</Typography>
             </Box>
           </RowBetween> */}
-          <RowBetween padding="20px 0">
+          <RowBetween padding="20px 24px">
             <RowBetween width={'100%'} flexWrap={'wrap'}>
               <Stack direction={'row'} spacing={24} alignItems="center">
                 <StyledTabText className="active" onClick={() => scrollToElement('Overview')}>
@@ -167,7 +160,7 @@ export default function Statistics() {
                 ></Box>
               )}
               <Box display={'flex'} alignItems="center" sx={{ mt: { sm: 0, xs: 15 } }}>
-                <Select defaultValue={curChainId} value={curChainId} width="max-content" height={'40px'}>
+                {/* <Select defaultValue={curChainId} value={curChainId} width="max-content" height={'40px'}>
                   {ChainList.map(option => (
                     <MenuItem value={option.id} key={option.id} selected={curChainId === option.id}>
                       {isDownSm ? (
@@ -177,7 +170,7 @@ export default function Statistics() {
                       )}
                     </MenuItem>
                   ))}
-                </Select>
+                </Select> */}
                 <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
                   <Box ml={10}>
                     <Input
@@ -686,15 +679,27 @@ export function ShowTopPoolsCurrencyBox({
         logoUrl={token1Info.logo}
         currencySymbol={token1Info.symbol}
       />
-      <Typography fontSize={fontSize} fontWeight={fontWeight} color={color || theme.palette.text.primary} ml={8}>
-        {token0Info.symbol}
-      </Typography>
+      {token0Info.symbol.length > 4 ? (
+        <Typography
+          noWrap
+          fontSize={fontSize}
+          fontWeight={fontWeight}
+          color={color || theme.palette.text.primary}
+          ml={8}
+        >
+          {token0Info.symbol}
+        </Typography>
+      ) : (
+        <Typography fontSize={fontSize} fontWeight={fontWeight} color={color || theme.palette.text.primary} ml={8}>
+          {token0Info.symbol}
+        </Typography>
+      )}
       {token0Info.type === Mode.ERC1155 && (
         <Typography fontSize={fontSize} fontWeight={fontWeight} color={color || theme.palette.text.primary} ml={8}>
           #{token0Info.tokenId}
         </Typography>
       )}
-      <Typography fontSize={fontSize} fontWeight={fontWeight} color={color || theme.palette.text.primary}>
+      <Typography noWrap fontSize={fontSize} fontWeight={fontWeight} color={color || theme.palette.text.primary}>
         /{token1Info.symbol}
       </Typography>
       {token1Info.type === Mode.ERC1155 && (

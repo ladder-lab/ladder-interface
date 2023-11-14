@@ -59,7 +59,7 @@
     "workbox-strategies": "^6.5.3"
   },
   "scripts": {
-    "start": "react-scripts start PORT=3001",
+    "start": "react-scripts start",
     "start:service-worker": "yarn build && yarn serve -s build",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
@@ -96,6 +96,7 @@
     "dayjs": "^1.11.3",
     "decimal.js-light": "^2.5.1",
     "jsbi": "^4.3.0",
+    "ladder-sdk-beta": "^0.0.10",
     "lightweight-charts": "^3.7.0",
     "lottie-web": "^5.9.6",
     "moment": "^2.29.4",

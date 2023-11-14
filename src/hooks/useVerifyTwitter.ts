@@ -1,7 +1,8 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Axios, testURL, v4Url } from '../utils/axios'
 import { useActiveWeb3React } from './index'
 import { useSignLogin } from './useSignIn'
+import { useIsWindowFocus } from './useIsWindowVisible'
 
 export function useVerifyTwitterAll(sbt: string) {
   const { account, chainId } = useActiveWeb3React()
@@ -186,6 +187,16 @@ export function useVerifyLadderOauth() {
 
 export function useVerifyTwitter(isV4 = false) {
   const { account } = useActiveWeb3React()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const isWindowVisible = useIsWindowFocus()
+
+  useEffect(() => {
+    if (isWindowVisible) {
+      setTimeout(() => {
+        setIsLoading(false)
+      })
+    }
+  }, [isWindowVisible])
   const jump = useCallback(async () => {
     try {
       if (!account) return
@@ -196,6 +207,7 @@ export function useVerifyTwitter(isV4 = false) {
       if (!data) {
         return
       }
+      setIsLoading(true)
       const twitter = window.open(
         data,
         'intent',
@@ -207,6 +219,7 @@ export function useVerifyTwitter(isV4 = false) {
       })
       return
     } catch (error) {
+      setIsLoading(false)
       console.error('useAccountTestInfo', error)
     }
   }, [account, isV4])
@@ -219,7 +232,8 @@ export function useVerifyTwitter(isV4 = false) {
     }
   }, [jump, sign, token])
   return {
-    openVerify
+    openVerify,
+    isLoading
   }
 }
 

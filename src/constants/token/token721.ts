@@ -53,8 +53,8 @@ export class Token721 extends Token {
           this.uri = metadata.image
           if (tokenId !== undefined && tokenId !== '') this.name = metadata.name
         })
-        .catch(e => {
-          console.error(e)
+        .catch(() => {
+          // console.error(e)
         })
     }
   }

@@ -48,7 +48,7 @@ export default function NftList({
         container
         spacing={20}
         sx={{ overflow: 'auto', height: listHeight }}
-        paddingTop={'24px'}
+        // paddingTop={'24px'}
         position="relative"
       >
         {searchToken && !searchTokenIsAdded ? (

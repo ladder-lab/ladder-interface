@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useEffect, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { Box, useTheme, Typography, Button, ButtonBase } from '@mui/material'
 import InputNumerical from 'components/Input/InputNumerical'
 import SelectButton from 'components/Button/SelectButton'
@@ -33,6 +33,8 @@ interface Props {
   onSelectSubTokens?: (tokens: Token721[]) => void
   enableAuto?: boolean
   pairAddress?: string | undefined
+  currencyA?: AllTokens | null
+  currencyB?: AllTokens | null
 }
 
 enum SwapType {
@@ -95,7 +97,9 @@ export default function CurrencyInputPanel({
   hideBalance,
   onSelectSubTokens,
   enableAuto,
-  pairAddress
+  pairAddress,
+  currencyA,
+  currencyB
 }: Props) {
   // const [isOpen, setIsOpen] = useState(false)
   const { account, chainId } = useActiveWeb3React()
@@ -108,17 +112,26 @@ export default function CurrencyInputPanel({
   const theme = useTheme()
   const isDownMd = useBreakpoint('md')
 
+  const IsDisplay = useMemo(() => {
+    if ((!currencyA && !currencyB) || is1155 || is721) return false
+    if (checkIs1155(currencyA) || checkIs1155(currencyB) || filter721(currencyA) || filter721(currencyB)) {
+      return true
+    }
+    return false
+  }, [currencyA, currencyB, is1155, is721])
+
   const showCurrencySearch = useCallback(() => {
     if (!disableCurrencySelect) {
       showModal(
         <SelectCurrencyModal
           onSelectCurrency={onSelectCurrency}
           selectedTokenType={selectedTokenType}
+          IsDisplay={IsDisplay}
           // onSelectSubTokens={onSelectSubTokens}
         />
       )
     }
-  }, [disableCurrencySelect, showModal, onSelectCurrency, selectedTokenType])
+  }, [IsDisplay, disableCurrencySelect, showModal, onSelectCurrency, selectedTokenType])
 
   const subTokenSelection = useCallback(() => {
     if (onSelectSubTokens) {

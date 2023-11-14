@@ -278,6 +278,8 @@ export default function AddLiquidy() {
                 currency={currencyA}
                 onMax={handleMaxInputA}
                 onSelectSubTokens={handleTokenIds}
+                currencyA={currencyA}
+                currencyB={currencyB}
               />
               {PriceCorrectA}
             </>
@@ -286,7 +288,6 @@ export default function AddLiquidy() {
           <Box sx={{ height: 76, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <AddCircle />
           </Box>
-
           <Box mb={currencyB ? 16 : 0} mt={16}>
             <>
               <CurrencyInputPanel
@@ -297,12 +298,13 @@ export default function AddLiquidy() {
                 currency={currencyB}
                 onMax={handleMaxInputB}
                 onSelectSubTokens={handleTokenIds}
+                currencyA={currencyA}
+                currencyB={currencyB}
               />
               {PriceCorrectB}
             </>
           </Box>
           {currencyB && <AssetAccordion token={currencyB} />}
-
           {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
             <>
               <PriceAndPoolShare

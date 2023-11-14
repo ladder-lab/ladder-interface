@@ -150,8 +150,10 @@ export default function Testnet() {
         return 2
       case 'round3':
         return 3
+      case 'airdrop':
+        return 4
       default:
-        return 3
+        return 4
     }
   })()
 
@@ -246,6 +248,7 @@ export default function Testnet() {
       >
         <Stack
           direction={'row'}
+          flexWrap="wrap"
           spacing={20}
           sx={{
             width: '100%',
@@ -260,13 +263,13 @@ export default function Testnet() {
                 height: isDownMD ? 36 : 52,
                 fontSize: { xs: 13, sm: 16 },
                 fontWeight: isDownMD ? '500' : 'inherit',
-                color: roundIndex === item ? (item === 3 ? 'white' : '#343739') : '#878D92',
+                color: roundIndex === item ? (item > 2 ? 'white' : '#343739') : '#878D92',
                 borderRadius: '12px',
-                background: roundIndex === item ? (item === 3 ? '#1F9898 !important' : '#E4E4E4') : 'inherit',
+                background: roundIndex === item ? (item > 2 ? '#1F9898 !important' : '#E4E4E4') : 'inherit',
                 position: isDownMD ? 'relative' : 'inherit',
                 '&:hover': {
                   boxShadow: 'unset',
-                  background: item === 3 ? '#1F9898' : '#F6F6F6'
+                  background: item > 2 ? '#1F9898' : '#F6F6F6'
                 }
               }}
               key={item}
@@ -284,15 +287,18 @@ export default function Testnet() {
                   case 3:
                     navigator('/round3')
                     break
+                  case 4:
+                    navigator('/airdrop')
+                    break
                 }
               }}
               variant={roundIndex === item ? 'contained' : 'text'}
             >
-              {item === 2 ? 'Monopoly' : item === 3 ? `ROUND ${item}` : `ROUND ${item + 1}`}
+              {item === 4 ? 'AIRDROP' : item === 2 ? 'Monopoly' : item === 3 ? `ROUND ${item}` : `ROUND ${item + 1}`}
               <Box
                 sx={{
                   background:
-                    item === 3
+                    item > 2
                       ? 'linear-gradient(96.44deg, #D8FF20 5.94%, #99F7F4 97.57%)'
                       : isDarkMode
                       ? '#828282'
@@ -307,38 +313,41 @@ export default function Testnet() {
                   ml: 5
                 }}
               >
-                {item === 3 ? 'live' : 'closed'}
+                {item > 2 ? 'live' : 'closed'}
               </Box>
             </Button>
           ))}
         </Stack>
       </Box>
-      <Box
-        sx={{
-          width: '100%',
-          height: '100%',
-          // background: theme.palette.background.paper,
-          minHeight: `calc(100vh - ${isDownMD ? theme.height.mobileHeader : theme.height.header})`,
-          padding: {
-            xs: '20px 16px 114px',
-            md: '20px 45px 40px'
-          }
-        }}
-      >
+      {/* {roundIndex === 4 && <Airdrop />} */}
+      {roundIndex !== 4 && (
         <Box
           sx={{
             width: '100%',
-            maxWidth: '1350px',
-            margin: '0 auto',
-            position: 'relative'
+            height: '100%',
+            // background: theme.palette.background.paper,
+            minHeight: `calc(100vh - ${isDownMD ? theme.height.mobileHeader : theme.height.header})`,
+            padding: {
+              xs: '20px 16px 114px',
+              md: '20px 45px 40px'
+            }
           }}
         >
-          {roundIndex === 0 && <TestnetV1 round={1} />}
-          {roundIndex === 1 && <TestnetV1 round={2} />}
-          {roundIndex === 2 && <TestnetV3 />}
-          {roundIndex === 3 && <TestnetV4 />}
+          <Box
+            sx={{
+              width: '100%',
+              maxWidth: '1350px',
+              margin: '0 auto',
+              position: 'relative'
+            }}
+          >
+            {roundIndex === 0 && <TestnetV1 round={1} />}
+            {roundIndex === 1 && <TestnetV1 round={2} />}
+            {roundIndex === 2 && <TestnetV3 />}
+            {roundIndex === 3 && <TestnetV4 />}
+          </Box>
         </Box>
-      </Box>
+      )}
     </Box>
   )
 }

@@ -30,6 +30,9 @@ import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { routes } from 'constants/routes'
 import { ArrowBack } from '@mui/icons-material'
 import TestnetV3Mark from 'components/TestnetV3Mark'
+import { useToken721PairTradePrice } from 'hooks/useToken721PairTrade'
+import { useErc721Price } from 'utils/ercTokenSwapPrice'
+import { useTokenErc20Price } from 'hooks/useTokenErc20Price'
 
 export default function Collection() {
   const isDownMd = useBreakpoint('md')
@@ -98,7 +101,7 @@ export default function Collection() {
         </Grid>
         {topPoolsList.map(item => (
           <Grid key={`collection -${item.no}`} item xs={12} md={4}>
-            <PairCard item={item} />
+            <PairCard item={item} type={type} token={tokenDetailData?.token} chainId={curChainId} />
           </Grid>
         ))}
       </Grid>
@@ -293,9 +296,38 @@ function NumericalCard({ title, value }: { title: string; value: string; percent
   )
 }
 
-function PairCard({ item }: { item: StatTopPoolsProp & { no: number; curPoolPairType: PoolPairType } }) {
+function PairCard({
+  item,
+  chainId,
+  type,
+  token
+}: {
+  item: StatTopPoolsProp & { no: number; curPoolPairType: PoolPairType }
+  chainId: number
+  type?: string
+  token?: StatTokenInfo | undefined
+}) {
   const theme = useTheme()
   const navigate = useNavigate()
+  const isErc721 = useMemo(() => {
+    if (type === Mode.ERC721) return true
+    return false
+  }, [type])
+
+  const erc20 = useMemo(() => {
+    if (token?.address.toLocaleUpperCase() === item.token0.address?.toLocaleUpperCase()) return item.token1
+    return item.token0
+  }, [item.token0, item.token1, token?.address])
+
+  const nftToken = useMemo(() => {
+    if (token?.address.toLocaleUpperCase() === item.token0.address?.toLocaleUpperCase()) return item.token0
+    return item.token1
+  }, [item.token0, item.token1, token?.address])
+
+  const { swapNumber } = useToken721PairTradePrice(isErc721, token?.address, erc20.address, chainId)
+  const erc20TokenPrice = useTokenErc20Price(erc20.address, chainId)
+  const erc721Price = useErc721Price(swapNumber, erc20TokenPrice, 2)
+
   return (
     <Card padding="20px 17px" color={theme.palette.background.paper}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 12 }}>
@@ -306,6 +338,7 @@ function PairCard({ item }: { item: StatTopPoolsProp & { no: number; curPoolPair
         <Typography sx={{ fontSize: 16, fontWeight: 500, color: theme.palette.info.main }}>
           {item.curPoolPairType}
         </Typography>
+        {isErc721 && <Typography sx={{ fontSize: 16, fontWeight: 500 }}> ${erc721Price || 0}</Typography>}
       </Box>
       <Card light padding="20px 34px 24px">
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -421,18 +454,8 @@ function PairCard({ item }: { item: StatTopPoolsProp & { no: number; curPoolPair
           onClick={() =>
             navigate(
               routes.swap +
-                `/${item.token0.address}/${item.token1.address}/${
-                  item.token0.type === Mode.ERC20
-                    ? ''
-                    : item.token0.type === Mode.ERC721
-                    ? Mode.ERC721
-                    : item.token0.tokenId
-                }&${
-                  item.token1.type === Mode.ERC20
-                    ? ''
-                    : item.token1.type === Mode.ERC721
-                    ? Mode.ERC721
-                    : item.token1.tokenId
+                `/${erc20.address}/${nftToken.address}/${''}&${
+                  nftToken.type === Mode.ERC20 ? '' : nftToken.type === Mode.ERC721 ? Mode.ERC721 : nftToken.tokenId
                 }`
             )
           }

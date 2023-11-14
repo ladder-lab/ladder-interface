@@ -1,14 +1,14 @@
-import { ChangeEvent, useCallback, useState, KeyboardEvent, useMemo, useEffect } from 'react'
+import { useCallback, useMemo, useEffect } from 'react'
 import { Box, Typography } from '@mui/material'
-import { isAddress } from 'utils'
+// import { isAddress } from 'utils'
 import { useAddUserToken, useTrackedToken721List } from 'state/user/hooks'
-import useBreakpoint from 'hooks/useBreakpoint'
+// import useBreakpoint from 'hooks/useBreakpoint'
 import { CollectionListComponent } from './ListComponent'
-import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
+// import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
 
 // TOOD: Update to ERC721
 import { Token721 } from 'constants/token/token721'
-import Input from '..'
+// import Input from '..'
 import { useIsUserAddedToken721, useToken721WithLoadingIndicator } from 'hooks/Tokens'
 import useDebounce from 'hooks/useDebounce'
 import { filterTokens } from 'utils/swap/filtering'
@@ -19,14 +19,16 @@ import { Loader } from 'components/AnimatedSvg/Loader'
 import { useCurrencyModalListHeight } from 'hooks/useScreenSize'
 
 export default function ERC721List({
+  searchQueryNFT,
   onSelectCurrency
 }: {
+  searchQueryNFT: string
   onSelectCurrency: ((currency: AllTokens) => void) | undefined
 }) {
-  const [searchQueryNFT, setSearchQueryNFT] = useState<string>('')
+  // const [searchQueryNFT, setSearchQueryNFT] = useState<string>('')
   const tokenOptions = useTrackedToken721List()
 
-  const isDownMd = useBreakpoint('md')
+  // const isDownMd = useBreakpoint('md')
   const { hideModal } = useModal()
 
   const debouncedQueryNFT = useDebounce(searchQueryNFT, 200)
@@ -38,11 +40,11 @@ export default function ERC721List({
     return filterTokens(Object.values(tokenOptions), debouncedQueryNFT)
   }, [debouncedQueryNFT, tokenOptions])
 
-  const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    const input = event.target.value
-    const checksummedInput = isAddress(input)
-    setSearchQueryNFT(checksummedInput || input)
-  }, [])
+  // const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+  //   const input = event.target.value
+  //   const checksummedInput = isAddress(input)
+  //   setSearchQueryNFT(checksummedInput || input)
+  // }, [])
 
   const onSelectCollection = useCallback(
     (collection: Token721) => {
@@ -53,15 +55,15 @@ export default function ERC721List({
     [hideModal, onSelectCurrency]
   )
 
-  const handleEnter721 = useCallback(
-    (e: KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter') {
-        if (filteredTokens.length > 0) {
-        }
-      }
-    },
-    [filteredTokens.length]
-  )
+  // const handleEnter721 = useCallback(
+  //   (e: KeyboardEvent<HTMLInputElement>) => {
+  //     if (e.key === 'Enter') {
+  //       if (filteredTokens.length > 0) {
+  //       }
+  //     }
+  //   },
+  //   [filteredTokens.length]
+  // )
 
   useEffect(() => {
     if (!searchTokenIsAddedNFT && searchTokenNFT) {
@@ -73,7 +75,7 @@ export default function ERC721List({
 
   return (
     <>
-      <Typography fontSize={16} fontWeight={500} mb={16}>
+      {/* <Typography fontSize={16} fontWeight={500} mb={16}>
         Don&apos;t see your NFT ? Search address
       </Typography>
       <Input
@@ -84,7 +86,7 @@ export default function ERC721List({
         startAdornment={<SearchIcon />}
         onKeyDown={handleEnter721}
         height={isDownMd ? 48 : 60}
-      />
+      /> */}
 
       <Box sx={{ overflow: 'auto', height: listHeight }}>
         <Box paddingTop={'24px'} position="relative">

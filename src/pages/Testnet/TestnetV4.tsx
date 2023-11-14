@@ -5,7 +5,7 @@ import { useActiveWeb3React } from 'hooks'
 import { useTestnetClaim } from 'hooks/useTestnetClaim'
 import ActionButton from 'components/Button/ActionButton'
 import { formatMillion, getUTC0MondayMidnightTimestamp, shortenAddress } from 'utils'
-import { useEffect, useMemo, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import { ChainId } from 'constants/chain'
 import { ReactComponent as Explore } from 'assets/svg/explore.svg'
 // import prizepool_icon from 'assets/images/prizepool.jpeg'
@@ -38,6 +38,7 @@ import {
 } from '../../hooks/useVerifyTwitter'
 import { useSignLogin } from '../../hooks/useSignIn'
 import { useUserTokenCallback } from '../../state/userToken/hooks'
+import { useIsWindowFocus } from 'hooks/useIsWindowVisible'
 
 const StyledButtonWrapper = styled(Box)<{ isDownMD?: boolean }>(({ theme, isDownMD }) => ({
   maxWidth: 400,
@@ -86,6 +87,72 @@ export default function TestnetV4() {
   const isDownMD = useBreakpoint('md')
   const [step, setStep] = useState(0)
   const { token } = useUserTokenCallback()
+  const { account } = useActiveWeb3React()
+  const { submitted, complete } = useUserHasSubmitted(`${account}_claim4`)
+  const { verifyAll, remoteStep } = useGetRemoteStep()
+  const { sign, token: signToken } = useSignLogin(verifyAll)
+
+  const { verifyOauth, oauth } = useVerifyLadderOauth()
+  const isWindowVisible = useIsWindowFocus()
+
+  useEffect(() => {
+    if (isWindowVisible) {
+      setTimeout(verifyOauth, 1000)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isWindowVisible])
+
+  const { makeTwitter, checkMakeTwitter } = useCheckMakeTwitter()
+  const [isMakeTwitter, setIsMakeTwitter] = useState<boolean>(false)
+  console.log('step=>', step, oauth, submitted, complete, signToken)
+
+  useEffect(() => {
+    if (submitted || complete || !account) {
+      setStep(-1)
+      return
+    }
+    if (account) {
+      if (!signToken) {
+        setStep(0)
+        return
+      }
+      if (signToken && !oauth) {
+        verifyAll()
+        return
+      }
+      if (oauth && step < 2) {
+        setStep(2)
+        return
+      }
+      if (makeTwitter && isMakeTwitter) {
+        setStep(3)
+        return
+      }
+      checkMakeTwitter()
+      verifyOauth()
+    }
+  }, [
+    account,
+    checkMakeTwitter,
+    complete,
+    isMakeTwitter,
+    makeTwitter,
+    oauth,
+    signToken,
+    step,
+    submitted,
+    verifyAll,
+    verifyOauth
+  ])
+
+  useEffect(() => {
+    setIsMakeTwitter(false)
+    verifyOauth()
+  }, [account, verifyOauth])
+
+  useEffect(() => {
+    setStep(remoteStep)
+  }, [remoteStep])
 
   useEffect(() => {
     axiosInstance.defaults.headers.common['token'] = token
@@ -122,9 +189,15 @@ export default function TestnetV4() {
               borderRadius: '12px'
             }}
           >
-            <Step0 step={step} setStep={setStep} />
-            <Step1 step={step} setStep={setStep} />
-            <Step2 step={step} setStep={setStep} />
+            <Step0 step={step} sign={sign} />
+            <Step1 step={step} setStep={setStep} oauth={oauth} verifyOauth={verifyOauth} />
+            <Step2
+              step={step}
+              setStep={setStep}
+              makeTwitter={makeTwitter}
+              checkMakeTwitter={checkMakeTwitter}
+              setIsMakeTwitter={setIsMakeTwitter}
+            />
             <Step3 step={step} />
           </Box>
         </CollapseWhite>
@@ -327,32 +400,27 @@ const StepBtn = styled(GreenBtn)`
   }
 `
 
-function Step0({ step, setStep }: { step: number; setStep: (step: number) => void }) {
+function Step0({ step, sign }: { step: number; sign: () => void }) {
   const { account } = useActiveWeb3React()
   const toggleWalletModal = useWalletModalToggle()
-  const { verifyAll, remoteStep } = useGetRemoteStep()
-  const { sign, token } = useSignLogin(verifyAll)
   const isDownMD = useBreakpoint('md')
-
-  useEffect(() => {
-    if (account && token) {
-      verifyAll()
-    }
-  }, [account, token, verifyAll])
-
-  useEffect(() => {
-    setStep(remoteStep)
-  }, [remoteStep, setStep])
 
   return (
     <>
       {account ? (
-        <Box width={'100%'} flex={1} position={'relative'}>
+        <Box
+          width={'100%'}
+          flex={1}
+          position={'relative'}
+          style={{
+            opacity: step === 0 ? 1 : 0.4
+          }}
+        >
           <StepText>Step 1</StepText>
           <StepNameText>Sign</StepNameText>
           <StepDescText>Please click this button to sign.</StepDescText>
           <StyledButtonWrapper mt={46} isDownMD={isDownMD}>
-            <Button onClick={sign} disabled={step > 0}>
+            <Button onClick={sign} disabled={step !== 0}>
               Sign to get token
             </Button>
           </StyledButtonWrapper>
@@ -373,19 +441,19 @@ function Step0({ step, setStep }: { step: number; setStep: (step: number) => voi
   )
 }
 
-export function Step1({ step, setStep }: { step: number; setStep: (step: number) => void }) {
+export function Step1({
+  step,
+  setStep,
+  oauth,
+  verifyOauth
+}: {
+  step: number
+  setStep: (step: number) => void
+  oauth: boolean
+  verifyOauth: () => void
+}) {
   const { openVerify } = useVerifyTwitter(true)
-  const { verifyOauth, oauth } = useVerifyLadderOauth()
   const isDownMD = useBreakpoint('md')
-  useEffect(() => {
-    if (oauth && step < 2) {
-      setStep(2)
-    }
-  }, [oauth, setStep, step])
-
-  useEffect(() => {
-    verifyOauth()
-  }, [verifyOauth])
 
   return (
     <Box
@@ -395,7 +463,7 @@ export function Step1({ step, setStep }: { step: number; setStep: (step: number)
         flexDirection: 'column',
         justifyContent: 'space-between',
         minHeight: '200px',
-        opacity: step > 0 ? 1 : 0.4
+        opacity: step === 1 ? 1 : 0.4
       }}
     >
       <StepText>Step 2</StepText>
@@ -404,7 +472,7 @@ export function Step1({ step, setStep }: { step: number; setStep: (step: number)
       <Box display={'flex'} mt={23} gap={isDownMD ? 12 : 20} flexDirection={isDownMD ? 'column' : 'row'}>
         <StepBtn
           sx={{
-            pointerEvents: step < 1 ? 'none' : 'auto',
+            pointerEvents: step !== 1 ? 'none' : 'auto',
             '& svg': {
               fill: 'white',
               opacity: 1
@@ -414,7 +482,7 @@ export function Step1({ step, setStep }: { step: number; setStep: (step: number)
             if (step < 1) return
             openVerify()
             setTimeout(() => {
-              if (step < 2) {
+              if (step < 2 && oauth) {
                 setStep(2)
               }
             }, 5000)
@@ -456,19 +524,20 @@ export function Step1({ step, setStep }: { step: number; setStep: (step: number)
   )
 }
 
-export function Step2({ step, setStep }: { step: number; setStep: (step: number) => void }) {
-  const { makeTwitter, checkMakeTwitter } = useCheckMakeTwitter()
+export function Step2({
+  step,
+  setStep,
+  makeTwitter,
+  checkMakeTwitter,
+  setIsMakeTwitter
+}: {
+  step: number
+  setStep: (step: number) => void
+  makeTwitter: boolean
+  checkMakeTwitter: () => void
+  setIsMakeTwitter: Dispatch<SetStateAction<boolean>>
+}) {
   const isDownMD = useBreakpoint('md')
-
-  useEffect(() => {
-    if (makeTwitter) {
-      setStep(3)
-    }
-  }, [makeTwitter, setStep])
-
-  useEffect(() => {
-    checkMakeTwitter()
-  }, [checkMakeTwitter])
 
   return (
     <Box
@@ -478,7 +547,7 @@ export function Step2({ step, setStep }: { step: number; setStep: (step: number)
         flexDirection: 'column',
         justifyContent: 'space-between',
         minHeight: '200px',
-        opacity: step > 1 ? 1 : 0.4
+        opacity: step === 2 ? 1 : 0.4
         // opacity: step > 0 ? 1 : 0.4
       }}
     >
@@ -491,7 +560,7 @@ export function Step2({ step, setStep }: { step: number; setStep: (step: number)
       <Box display={'flex'} mt={23} gap={isDownMD ? 12 : 20} flexDirection={isDownMD ? 'column' : 'row'}>
         <StepBtn
           sx={{
-            pointerEvents: step < 2 ? 'none' : 'auto',
+            pointerEvents: step !== 2 ? 'none' : 'auto',
             '& svg': {
               fill: 'white',
               opacity: 1
@@ -506,6 +575,7 @@ export function Step2({ step, setStep }: { step: number; setStep: (step: number)
             )
             setTimeout(() => {
               if (step < 3) {
+                setIsMakeTwitter(true)
                 setStep(3)
               }
             }, 5000)

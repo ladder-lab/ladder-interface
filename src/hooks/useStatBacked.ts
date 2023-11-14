@@ -11,6 +11,7 @@ export interface StatTokenInfo {
   logo: string
   address: string
   type: Mode
+  token?: string
   price?: string
   tokenId?: number
   balance?: string

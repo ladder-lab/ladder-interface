@@ -8,6 +8,7 @@ export const baseURL = 'https://test-nftapi.antimatter.finance:8443/web/'
 export const testURL = 'https://testapi.settle3.com/web/'
 export const testAssetUrl = 'https://testapi.settle3.com'
 export const v4Url = 'https://v1-test.ladder.top/web/'
+export const testAirdropUrl = 'https://v1-test.ladder.top/'
 
 export const axiosInstance = axios.create({
   baseURL,
@@ -25,6 +26,13 @@ export const axiosNftScanInstance = axios.create({
   timeout: 10000,
   headers: { 'content-type': 'application/json', accept: 'application/json', 'X-API-KEY': 'T7tgR4brEfAf7sphqMz2MMJ8' }
 })
+
+export const axiosAirdropInstance = axios.create({
+  baseURL: testAirdropUrl,
+  timeout: 10000,
+  headers: { 'content-type': 'application/json', accept: 'application/json' }
+})
+
 export const Axios = {
   get<T = any>(url: string, params: { [key: string]: any } = {}): AxiosPromise<ResponseType<T>> {
     return axiosInstance.get(url, { params })
