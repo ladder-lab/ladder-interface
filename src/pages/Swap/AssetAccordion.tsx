@@ -15,6 +15,7 @@ import { getName } from 'utils/getSymbol'
 import { Token721 } from 'constants/token/token721'
 import TestnetV3Mark from 'components/TestnetV3Mark'
 import { useActiveWeb3React } from 'hooks'
+import useBreakpoint from 'hooks/useBreakpoint'
 
 export function AssetAccordion({
   token,
@@ -25,6 +26,7 @@ export function AssetAccordion({
   // disabled?: boolean
   subTokens?: Token721[] | null
 }) {
+  const isDownSm = useBreakpoint('sm')
   const _token: any = useMemo(() => token, [token])
   const [expanded, setExpanded] = useState(false)
   const theme = useTheme()
@@ -73,7 +75,9 @@ export function AssetAccordion({
             Contract:{' '}
             {token && 'address' in token ? (
               <>
-                <Typography sx={{ wordWrap: 'break-word', maxWidth: '100%' }}>{token?.address}</Typography>
+                <Typography sx={{ wordWrap: 'break-word', maxWidth: '100%' }}>
+                  {isDownSm ? (token?.address ? shortenAddress(token?.address) : token?.address) : token?.address}
+                </Typography>
                 <Copy toCopy={token?.address} />
               </>
             ) : (
@@ -90,7 +94,7 @@ export function AssetAccordion({
         <Tag sx={{ position: 'absolute', right: 0, top: 0 }}>{is1155 ? 'ERC1155' : is721 ? 'ERC721' : 'ERC20'}</Tag>
       </Box>
     )
-  }, [token, theme.palette.text.secondary, _token?.address, is1155, is721])
+  }, [token, theme.palette.text.secondary, _token?.address, isDownSm, is1155, is721])
 
   const details = useMemo(() => {
     return (

@@ -1,5 +1,5 @@
-import { Suspense } from 'react'
-import { Route, Routes, Navigate } from 'react-router-dom'
+import { Suspense, useMemo } from 'react'
+import { Route, Routes, Navigate, useLocation } from 'react-router-dom'
 import { styled } from '@mui/material'
 import Header from '../components/Header'
 import Polling from '../components/essential/Polling'
@@ -12,7 +12,9 @@ import Swap from './Swap'
 import Pool from './Pool'
 import AddLiquidity from './Pool/AddLiquidity'
 import ImportPool from './Pool/ImportPool'
-import darkBg from 'assets/images/dark_bg.png'
+// import darkBg from 'assets/images/dark_bg.png'
+import homeBg from 'assets/images/bg_home.png'
+import dogBg from 'assets/images/bg_dog.png'
 import lightBg from 'assets/images/light_bg.png'
 import { useIsDarkMode } from 'state/user/hooks'
 import RemoveLiquidity from './Pool/RemoveLiquidity'
@@ -31,34 +33,37 @@ import MyAccount from './MyAccount'
 import OrigAccount from './MyAccount/OrigAccount'
 import Footer from '../components/Footer'
 
-const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
-  ({ theme, isDarkMode }) => ({
-    display: 'flex',
-    alignItems: 'flex-start',
-    position: 'relative',
-    minWidth: theme.width.minContent,
-    background: 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7))',
+const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{
+  isDarkMode: boolean
+  isSwapPage: boolean
+}>(({ theme, isDarkMode, isSwapPage }) => ({
+  display: 'flex',
+  alignItems: 'flex-start',
+  position: 'relative',
+  minWidth: theme.width.minContent,
+  background: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5))',
+  '&:after': {
+    content: '""',
+    width: '100%',
+    height: '100%',
+    bottom: 0,
+    zIndex: -1,
+    position: 'absolute',
+    backgroundImage: `url(${isDarkMode ? homeBg : lightBg})`,
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: isDarkMode ? 'bottom' : 'top',
+    backgroundSize: isDarkMode ? 'cover' : '100% 100%'
+  },
+  [theme.breakpoints.down('md')]: {
+    background: `${isSwapPage ? 'transparent' : 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5))'}`,
+    flexDirection: 'column',
     '&:after': {
-      content: '""',
-      width: '100%',
-      height: '100%',
-      bottom: 0,
-      zIndex: -1,
-      position: 'absolute',
-      backgroundImage: `url(${isDarkMode ? darkBg : lightBg})`,
-      backgroundRepeat: 'no-repeat',
-      backgroundPosition: isDarkMode ? 'bottom' : 'top',
-      backgroundSize: isDarkMode ? 'cover' : '100% 100%'
-    },
-    [theme.breakpoints.down('md')]: {
-      flexDirection: 'column',
-      '&:after': {
-        backgroundSize: isDarkMode ? 'auto 50%' : '100% 100%',
-        backgroundPosition: isDarkMode ? 'right bottom' : 'top'
-      }
+      backgroundImage: `url(${isSwapPage && dogBg})`,
+      backgroundSize: isDarkMode ? `${isSwapPage ? 'auto 30%' : 'auto 100%'}` : '100% 100%',
+      backgroundPosition: isDarkMode ? 'right bottom' : 'top'
     }
-  })
-)
+  }
+}))
 
 const ContentWrapper = styled('div')({
   width: '100%',
@@ -83,10 +88,16 @@ const BodyWrapper = styled('div')(({ theme }) => ({
 
 export default function App() {
   const isDarkMode = useIsDarkMode()
+  const { pathname } = useLocation()
+  console.log('pathname=>', pathname, routes.swap)
+
+  const isSwapPage = useMemo(() => {
+    return pathname.toLocaleUpperCase() === routes.swap.toLocaleUpperCase()
+  }, [pathname])
   return (
     <Suspense fallback={null}>
       <ModalProvider>
-        <AppWrapper id="app" isDarkMode={isDarkMode}>
+        <AppWrapper id="app" isDarkMode={isDarkMode} isSwapPage={isSwapPage}>
           <ContentWrapper>
             <Header />
             <GoogleAnalyticsReporter />
@@ -122,7 +133,7 @@ export default function App() {
                   <Route path={routes.becomePartner} element={<BecomePartnerNew />} />
                   <Route path={routes.myAccount} element={<MyAccount />} />
                   <Route path={routes.origAccount} element={<OrigAccount />} />
-                  <Route path="*" element={<Navigate to={routes.swap} replace />} />
+                  <Route path="*" element={<Navigate to={routes.addLiquidity} replace />} />
                 </Routes>
               </Web3ReactManager>
             </BodyWrapper>

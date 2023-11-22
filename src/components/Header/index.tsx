@@ -30,6 +30,7 @@ import { ReactComponent as DiscordIcon } from 'assets/svg/menu/discord.svg'
 import { ReactComponent as DarkThemeIcon } from 'assets/svg/menu/dark_theme.svg'
 // import { ReactComponent as DocsIcon } from 'assets/svg/menu/docs.svg'
 import { ReactComponent as LegalPrivacyIcon } from 'assets/svg/menu/legal_privacy.svg'
+import useBreakpoint from 'hooks/useBreakpoint'
 
 interface TabContent {
   title: string
@@ -44,7 +45,8 @@ interface Tab extends TabContent {
 
 export const Tabs: Tab[] = [
   // { title: 'Testnet', route: routes.testnet },
-  // { title: 'Swap', route: routes.swap },
+  { title: 'Add Liquidity', route: routes.addLiquidity },
+  { title: 'Swap', route: routes.swap }
   // { title: 'Pool', route: routes.pool },
   // { title: 'Explore', route: routes.explorer },
   // { title: 'Statistics', route: routes.statistics }
@@ -65,7 +67,8 @@ const StyledNavLink = styled(Link)(navLinkSX)
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   position: 'fixed',
   height: theme.height.header,
-  backgroundColor: theme.palette.background.paper,
+  // backgroundColor: theme.palette.background.paper,
+  backgroundColor: '#0f1011',
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'space-between',
@@ -106,18 +109,13 @@ const Filler = styled('div')(({ theme }) => ({
   }
 }))
 
-const LinksWrapper = muiStyled('div')(({ theme }) => ({
-  marginLeft: 60,
-  [theme.breakpoints.down('lg')]: {
-    marginLeft: 0
-  }
-}))
+const LinksWrapper = muiStyled('div')(() => ({}))
 
 export default function Header() {
-  // const [menuOpen, setMenuOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { pathname } = useLocation()
-  // const isDownMd = useBreakpoint('md')
+  const isDownMd = useBreakpoint('md')
   const navigate = useNavigate()
 
   const [darkMode] = useDarkModeManager()
@@ -126,7 +124,7 @@ export default function Header() {
     setMobileMenuOpen(false)
   }, [])
 
-  const toHome = useCallback(() => navigate(routes.swap), [navigate])
+  const toHome = useCallback(() => navigate(routes.addLiquidity), [navigate])
 
   return (
     <>
@@ -134,125 +132,134 @@ export default function Header() {
       <Filler />
       <StyledAppBar>
         <Box
-          display="flex"
-          alignItems="center"
-          gap={30}
-          onClick={toHome}
           sx={{
-            ':hover': {
-              cursor: 'pointer'
-            }
+            display: 'flex',
+            gap: 180
           }}
         >
-          <MainLogo color={darkMode ? '#FFFFFF' : '#232859'} />
-          {/* <Box sx={{ display: { xs: 'none', md: 'block' } }}> */}
-          {/* <SwitchToggle checked={darkMode} onChange={toggleDarkMode} /> */}
-          {/* <Typography color="#cccccc">Dark mode</Typography> */}
-          {/* </Box> */}
-        </Box>
+          <Box
+            display="flex"
+            alignItems="center"
+            gap={30}
+            onClick={toHome}
+            sx={{
+              ':hover': {
+                cursor: 'pointer'
+              }
+            }}
+          >
+            <MainLogo color={darkMode ? '#FFFFFF' : '#232859'} />
+            {/* <Box sx={{ display: { xs: 'none', md: 'block' } }}> */}
+            {/* <SwitchToggle checked={darkMode} onChange={toggleDarkMode} /> */}
+            {/* <Typography color="#cccccc">Dark mode</Typography> */}
+            {/* </Box> */}
+          </Box>
 
-        <HideOnMobile breakpoint="md">
-          <LinksWrapper>
-            {Tabs.map(({ title, route, subTab, link, titleContent }, idx) =>
-              subTab ? (
-                <Box
-                  sx={{
-                    marginRight: {
-                      xs: 15,
-                      lg: 48
-                    },
-                    height: 'auto',
-                    paddingBottom: '30px',
-                    borderBottom: '2px solid transparent',
-                    borderColor: theme =>
-                      subTab.some(tab => tab.route && pathname.includes(tab.route))
-                        ? theme.palette.text.primary
-                        : 'transparnet',
-                    display: 'inline'
-                  }}
-                  key={title + idx}
-                >
-                  <PlainSelect
-                    key={title + idx}
-                    placeholder={title}
-                    autoFocus={false}
-                    width={title === 'Test' ? '70px' : undefined}
-                    style={{
-                      height: '16px'
+          <HideOnMobile breakpoint="md">
+            <LinksWrapper>
+              {Tabs.map(({ title, route, subTab, link, titleContent }, idx) =>
+                subTab ? (
+                  <Box
+                    sx={{
+                      marginRight: {
+                        xs: 15,
+                        lg: 64
+                      },
+                      height: 'auto',
+                      paddingBottom: '30px',
+                      borderBottom: '2px solid transparent',
+                      borderColor: theme =>
+                        subTab.some(tab => tab.route && pathname.includes(tab.route))
+                          ? theme.palette.text.primary
+                          : 'transparnet',
+                      display: 'inline'
                     }}
+                    key={title + idx}
                   >
-                    {subTab.map((sub, idx) =>
-                      sub.link ? (
-                        <MenuItem
-                          key={sub.link + idx}
-                          sx={{ backgroundColor: 'transparent!important', background: 'transparent!important' }}
-                          selected={false}
-                        >
-                          <ExternalLink
-                            href={sub.link}
-                            className={'link'}
-                            color="#00000050"
-                            sx={{
-                              '&:hover': {
-                                color: '#232323!important'
-                              }
-                            }}
+                    <PlainSelect
+                      key={title + idx}
+                      placeholder={title}
+                      autoFocus={false}
+                      width={title === 'Test' ? '70px' : undefined}
+                      style={{
+                        height: '16px'
+                      }}
+                    >
+                      {subTab.map((sub, idx) =>
+                        sub.link ? (
+                          <MenuItem
+                            key={sub.link + idx}
+                            sx={{ backgroundColor: 'transparent!important', background: 'transparent!important' }}
+                            selected={false}
                           >
-                            {sub.titleContent ?? sub.title}
-                          </ExternalLink>
-                        </MenuItem>
-                      ) : (
-                        <MenuItem key={sub.title + idx}>
-                          <StyledNavLink to={sub.route ?? ''}>{sub.titleContent ?? sub.title}</StyledNavLink>
-                        </MenuItem>
-                      )
-                    )}
-                  </PlainSelect>
-                </Box>
-              ) : link ? (
-                <ExternalLink
-                  href={link}
-                  className={'link'}
-                  key={link + idx}
-                  style={{ fontSize: 14, pointerEvents: 'none' }}
-                >
-                  {titleContent ?? title}
-                </ExternalLink>
-              ) : (
-                <Link
-                  key={title + idx}
-                  id={`${route}-nav-link`}
-                  to={route ?? ''}
-                  className={
-                    (route
-                      ? pathname.includes(route)
-                        ? 'active'
-                        : pathname.includes('account')
-                        ? route.includes('account')
+                            <ExternalLink
+                              href={sub.link}
+                              className={'link'}
+                              color="#00000050"
+                              sx={{
+                                '&:hover': {
+                                  color: '#232323!important'
+                                }
+                              }}
+                            >
+                              {sub.titleContent ?? sub.title}
+                            </ExternalLink>
+                          </MenuItem>
+                        ) : (
+                          <MenuItem key={sub.title + idx}>
+                            <StyledNavLink to={sub.route ?? ''}>{sub.titleContent ?? sub.title}</StyledNavLink>
+                          </MenuItem>
+                        )
+                      )}
+                    </PlainSelect>
+                  </Box>
+                ) : link ? (
+                  <ExternalLink
+                    href={link}
+                    className={'link'}
+                    key={link + idx}
+                    style={{ fontSize: 14, pointerEvents: 'none' }}
+                  >
+                    {titleContent ?? title}
+                  </ExternalLink>
+                ) : (
+                  <Link
+                    key={title + idx}
+                    id={`${route}-nav-link`}
+                    to={route ?? ''}
+                    className={
+                      (route
+                        ? pathname.includes(route)
                           ? 'active'
+                          : pathname.includes('account')
+                          ? route.includes('account')
+                            ? 'active'
+                            : ''
                           : ''
-                        : ''
-                      : '') + ' link'
-                  }
-                >
-                  {titleContent ?? title}
-                </Link>
-              )
-            )}
-          </LinksWrapper>
-        </HideOnMobile>
+                        : '') + ' link'
+                    }
+                  >
+                    {titleContent ?? title}
+                  </Link>
+                )
+              )}
+            </LinksWrapper>
+          </HideOnMobile>
+        </Box>
 
         <Box display="flex" alignItems="center" gap={{ xs: '8px', sm: '20px' }}>
           <NetworkSelect />
           <Web3Status />
-          {/* <Box sx={{ position: 'relative' }}>
-            <MenuButton
-              onClick={() => {
-                isDownMd ? setMobileMenuOpen(open => !open) : setMenuOpen(open => !open)
-              }}
-            />
-            {menuOpen && !isDownMd && <DesktopMenu />}
-          </Box> */}
+          {isDownMd && (
+            <Box sx={{ position: 'relative' }}>
+              <MenuButton
+                onClick={() => {
+                  isDownMd ? setMobileMenuOpen(open => !open) : setMenuOpen(open => !open)
+                }}
+              />
+              {menuOpen && !isDownMd && <DesktopMenu />}
+            </Box>
+          )}
         </Box>
       </StyledAppBar>
     </>
@@ -313,7 +320,7 @@ export function DesktopMenu() {
 
   const options = useMemo(() => {
     return [
-      { title: 'About', link: 'https://www.ladder.top/about', icon: <AboutIcon /> },
+      { title: 'About', link: 'https://ladder.top/', icon: <AboutIcon /> },
       // { title: 'Help Center', link: '#', icon: <HelpCenterIcon /> },
       // { title: 'Request Features', link: '#', icon: <RequestFeatureIcon /> },
       { title: 'Discord', link: 'https://discord.gg/KWgkFMt9qZ', icon: <DiscordIcon /> },

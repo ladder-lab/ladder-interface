@@ -35,16 +35,18 @@ import { liquidityParamBuilder, routes } from 'constants/routes'
 // import { useCurrency } from 'hooks/Tokens'
 import { replaceErrorMessage } from 'utils'
 import dogewalkUrl from 'assets/images/dogewalk.png'
-import laddarLogo from 'assets/images/logo_white_mark.png'
+// import laddarLogo from 'assets/images/logo_white_mark.png'
 import { ExternalLink } from 'theme/components'
 import Image from 'components/Image'
 import useBreakpoint from 'hooks/useBreakpoint'
 
 const [currency0, currency1] = [
-  new Token(137, '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', 6, 'USDC', 'USDC'),
+  // new Token(137, '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', 6, 'USDC', 'USDC'),
   // new Token(137, '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063', 18, 'DAI', 'DAI'),
   // new Token721(137, '0x2871e92209D9B0936FbbB178483877f51C7c9321', undefined)
-  new Token721(137, '0x2871e92209D9B0936FbbB178483877f51C7c9321', undefined)
+  // new Token721(137, '0x2871e92209D9B0936FbbB178483877f51C7c9321', undefined)
+  new Token(11155111, '0x55979784068d1BEf37B49F41cAC8040A4b79C4a7', 18, 'USDC', 'USDC'),
+  new Token721(11155111, '0x3ec2Bb9E04C8DB50fb77E170BF9116B330293209', undefined)
 ]
 
 export default function Swap() {
@@ -356,7 +358,7 @@ export default function Swap() {
         slippageAdjustedAmounts={slippageAdjustedAmounts}
         tokenIds={selectedTokenIds}
       />
-      <Box display={{ xs: 'grid', md: 'flex' }} gap={{ xs: 20, md: 60 }} maxWidth={isDownSm ? '90vw' : 'auto'}>
+      <Box display={{ xs: 'grid', md: 'flex' }} gap={{ xs: 20, md: 54 }} maxWidth={isDownSm ? '90vw' : 'auto'}>
         <Box width={isDownSm ? '90vw' : 'auto'}>
           <AppBody width={isDownSm ? '90vw' : '100%'} maxWidth={'680px'}>
             <Box
@@ -529,50 +531,7 @@ export default function Swap() {
             />
           )}
         </Box>
-        <Box maxWidth={isDownSm ? '90vw' : 470} margin={`${isDownSm ? '0 0 40px ' : '100px 0 0'} `}>
-          <Typography fontSize={34} fontWeight={700}>
-            Welcome to ‘Equipment of PFP-DAO’ NFT AMM trading platform, powered by Ladder.
-          </Typography>
-          <Box sx={{ margin: '20px 0' }} display={'flex'} alignItems={'center'}>
-            <Image src={laddarLogo} style={{ width: 40 }} />
-            <Typography ml={15} fontSize={18}>
-              X
-            </Typography>
-            <Image src={dogewalkUrl} style={{ marginLeft: 15, width: 40 }} />
-          </Box>
-          <Box>
-            <Typography>
-              PFP-DAO is poised to become a highly sought-after metaverse IP brand, offering full-chain gaming NFTs
-              through a business model centred on card looting. We provide a sustainable revenue stream for creators who
-              work collaboratively, motivating them to generate even more valuable IP content and realize the principles
-              of co-creation, co-ownership, and share wealth. Even Loot2n card players can reap financial rewards.
-            </Typography>
-            <br />
-            <Typography component={'div'}>
-              Equipment is utilised to grant XP experience points for levelling up PFP-DAO characters, thereby unlocking
-              utility for those character NFTs and boosting the proportion of reward reception. For further information,
-              please visit <ExternalLink href="https://www.pfp-dao.io/">🔗 PFP-DAO.IO</ExternalLink>
-            </Typography>
-            <br />
-            <Typography>
-              {`Ladder is a decentralized Automated Market Maker protocol that provides instant liquidity for NFT's
-              including ERC-20, ERC-721, ERC-1155. Ladder empowers users, NFT holders, and projects to establish their
-              own markets on our platform, creating an expansive ecosystem for NFT liquidity solutions. We enable users
-              to effortlessly transition in and out of NFT trades without the necessity for a purchase order from
-              another user.`}
-            </Typography>
-            <br />
-            <Typography>
-              To learn more about Ladder, visit:{' '}
-              <ExternalLink href="https://ladder.top">🔗 https://ladder.top</ExternalLink>
-            </Typography>
-            {/* <Typography>
-              ⚠️Please note: Ladder only supports the standard DWD-SFT, which means the SFT containing exactly 250 $DWD.
-              You can either hold the SFT and unlock the $DWD on or after August 7th, 2024, or you can trade the SFTs
-              right here immediately.
-            </Typography> */}
-          </Box>
-        </Box>
+        <ActivityInfo />
       </Box>
     </>
   )
@@ -606,5 +565,40 @@ function TokenInfo({
         </Box>
       </Box>
     </AppBody>
+  )
+}
+
+export function ActivityInfo() {
+  const isDownSm = useBreakpoint('sm')
+  return (
+    <Box maxWidth={isDownSm ? '100%' : 470} margin={`${isDownSm ? '0 10px 40px ' : '100px 0 0'} `}>
+      <Typography fontSize={{ xs: 20, md: 34 }} fontWeight={700} lineHeight={'125%'}>
+        Welcome to DogeWalk’s SFT AMM trading platform, powered by Ladder.
+      </Typography>
+      <Image src={dogewalkUrl} style={{ height: 40, margin: '20px 0' }} />
+      <Box>
+        <Typography lineHeight={'140%'}>
+          <Typography component={'span'} fontWeight={700}>
+            🐶 This is a designated platform to support DogeWalk users in trading DogeWalk SFTs,
+          </Typography>
+          <br />
+          which are received as a reward by holding Genesis DogeWalk NFTs.{' '}
+        </Typography>
+        <br />
+        <Typography component={'div'} lineHeight={'140%'}>
+          To find more information on DogeWalk, please visit:
+          <ExternalLink href="https://www.dogewalk.io/">🔗 www.dogewalk.io</ExternalLink>
+          <br />
+          To find more information on Ladder, please visit:
+          <ExternalLink href="https://ladder.top/">🔗 ladder.top</ExternalLink>
+        </Typography>
+        <br />
+        <Typography lineHeight={'140%'}>
+          ⚠️Please note: Ladder only supports the standard DWD-SFT, which means the SFT containing exactly 250 $DWD. You
+          can either hold the SFT and unlock the $DWD on or after August 7th, 2024, or you can trade the SFTs right here
+          immediately.
+        </Typography>
+      </Box>
+    </Box>
   )
 }

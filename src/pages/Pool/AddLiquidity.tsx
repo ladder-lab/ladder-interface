@@ -34,8 +34,11 @@ import { generateErc20 } from 'utils/getHashAddress'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
 import usePriceCorrection from 'hooks/usePriceCorrection'
 import { replaceErrorMessage } from 'utils'
+import useBreakpoint from 'hooks/useBreakpoint'
+import { ActivityInfo } from 'pages/Swap'
 
 export default function AddLiquidy() {
+  const isDownSm = useBreakpoint('sm')
   const [currencyA, setCurrencyA] = useState<undefined | AllTokens>(undefined)
   const [currencyB, setCurrencyB] = useState<undefined | AllTokens>(undefined)
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
@@ -258,119 +261,125 @@ export default function AddLiquidy() {
         onDismiss={handleDismissConfirmation}
         shareOfPool={shareOfPool}
       />
-
-      <AppBody
-        width={'100%'}
-        maxWidth={'680px'}
-        onReturnClick={() => navigate(routes.pool)}
-        title="Add Liquidity"
-        sx={{ padding: { xs: '20px', md: '24px 32px' } }}
-        setting
-      >
-        <Box mt={35}>
-          <Tips />
-          <Box mb={currencyA ? 16 : 0}>
-            <>
-              <CurrencyInputPanel
-                value={formattedAmounts[Field.CURRENCY_A]}
-                onChange={handleAssetAVal}
-                onSelectCurrency={handleAssetA}
-                currency={currencyA}
-                onMax={handleMaxInputA}
-                onSelectSubTokens={handleTokenIds}
-              />
-              {PriceCorrectA}
-            </>
-          </Box>
-          {currencyA && <AssetAccordion token={currencyA} />}
-          <Box sx={{ height: 76, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <AddCircle />
-          </Box>
-
-          <Box mb={currencyB ? 16 : 0} mt={16}>
-            <>
-              <CurrencyInputPanel
-                // selectedTokenType={currencyA ? (checkIs1155(currencyA) ? 'erc1155' : 'erc20') : undefined}
-                value={formattedAmounts[Field.CURRENCY_B]}
-                onChange={handleAssetBVal}
-                onSelectCurrency={handleAssetB}
-                currency={currencyB}
-                onMax={handleMaxInputB}
-                onSelectSubTokens={handleTokenIds}
-              />
-              {PriceCorrectB}
-            </>
-          </Box>
-          {currencyB && <AssetAccordion token={currencyB} />}
-
-          {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
-            <>
-              <PriceAndPoolShare
-                data={{
-                  [`${assetsTexts.token2Text} per ${assetsTexts.token1Text}`]: priceA ?? '-',
-                  [`${assetsTexts.token1Text} per ${assetsTexts.token2Text}`]: priceB ?? '-',
-                  ['Share of pool']: `${shareOfPool}
-                      %`
-                }}
-              />
-            </>
-          )}
-          <Box mt={40}>
-            {!account ? (
-              <Button onClick={toggleWallet}>Connect Wallet</Button>
-            ) : (
-              <Box display="grid" gap={'16px'}>
-                {(approvalA === ApprovalState.NOT_APPROVED ||
-                  approvalA === ApprovalState.PENDING ||
-                  approvalB === ApprovalState.NOT_APPROVED ||
-                  approvalB === ApprovalState.PENDING) &&
-                  !error && (
-                    <Box display="flex" gap={16}>
-                      {approvalA !== ApprovalState.APPROVED && (
-                        <ActionButton
-                          onAction={approveACallback}
-                          disableAction={approvalA === ApprovalState.PENDING}
-                          pending={approvalA === ApprovalState.PENDING}
-                          pendingText={`Approving ${
-                            currencies[Field.CURRENCY_A]?.symbol ?? currencies[Field.CURRENCY_A]?.name
-                          }`}
-                          actionText={
-                            'Approve ' + (currencies[Field.CURRENCY_A]?.symbol ?? currencies[Field.CURRENCY_A]?.name)
-                          }
-                        />
-                      )}
-                      {approvalB !== ApprovalState.APPROVED && (
-                        <ActionButton
-                          onAction={approveBCallback}
-                          disableAction={approvalB === ApprovalState.PENDING}
-                          pending={approvalB === ApprovalState.PENDING}
-                          pendingText={`Approving ${
-                            currencies[Field.CURRENCY_B]?.symbol ?? currencies[Field.CURRENCY_B]?.name
-                          }`}
-                          actionText={
-                            'Approve ' + (currencies[Field.CURRENCY_B]?.symbol ?? currencies[Field.CURRENCY_B]?.name)
-                          }
-                        />
-                      )}
-                    </Box>
-                  )}
-                <Button
-                  onClick={handleAdd}
-                  disabled={!!error || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED}
-                >
-                  {error ?? 'Supply'}
-                </Button>
+      <Box display={{ xs: 'grid', md: 'flex' }} gap={{ xs: 20, md: 54 }} maxWidth={isDownSm ? '90vw' : 'auto'}>
+        <Box>
+          <AppBody
+            width={'100%'}
+            maxWidth={'680px'}
+            onReturnClick={() => navigate(routes.pool)}
+            title="Add Liquidity"
+            sx={{ padding: { xs: '20px', md: '24px 32px' } }}
+            setting
+          >
+            <Box mt={35}>
+              <Tips />
+              <Box mb={currencyA ? 16 : 0}>
+                <>
+                  <CurrencyInputPanel
+                    value={formattedAmounts[Field.CURRENCY_A]}
+                    onChange={handleAssetAVal}
+                    onSelectCurrency={handleAssetA}
+                    currency={currencyA}
+                    onMax={handleMaxInputA}
+                    onSelectSubTokens={handleTokenIds}
+                  />
+                  {PriceCorrectA}
+                </>
               </Box>
-            )}
-          </Box>
+              {currencyA && <AssetAccordion token={currencyA} />}
+              <Box sx={{ height: 76, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <AddCircle />
+              </Box>
+
+              <Box mb={currencyB ? 16 : 0} mt={16}>
+                <>
+                  <CurrencyInputPanel
+                    // selectedTokenType={currencyA ? (checkIs1155(currencyA) ? 'erc1155' : 'erc20') : undefined}
+                    value={formattedAmounts[Field.CURRENCY_B]}
+                    onChange={handleAssetBVal}
+                    onSelectCurrency={handleAssetB}
+                    currency={currencyB}
+                    onMax={handleMaxInputB}
+                    onSelectSubTokens={handleTokenIds}
+                  />
+                  {PriceCorrectB}
+                </>
+              </Box>
+              {currencyB && <AssetAccordion token={currencyB} />}
+
+              {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
+                <>
+                  <PriceAndPoolShare
+                    data={{
+                      [`${assetsTexts.token2Text} per ${assetsTexts.token1Text}`]: priceA ?? '-',
+                      [`${assetsTexts.token1Text} per ${assetsTexts.token2Text}`]: priceB ?? '-',
+                      ['Share of pool']: `${shareOfPool}
+                      %`
+                    }}
+                  />
+                </>
+              )}
+              <Box mt={40}>
+                {!account ? (
+                  <Button onClick={toggleWallet}>Connect Wallet</Button>
+                ) : (
+                  <Box display="grid" gap={'16px'}>
+                    {(approvalA === ApprovalState.NOT_APPROVED ||
+                      approvalA === ApprovalState.PENDING ||
+                      approvalB === ApprovalState.NOT_APPROVED ||
+                      approvalB === ApprovalState.PENDING) &&
+                      !error && (
+                        <Box display="flex" gap={16}>
+                          {approvalA !== ApprovalState.APPROVED && (
+                            <ActionButton
+                              onAction={approveACallback}
+                              disableAction={approvalA === ApprovalState.PENDING}
+                              pending={approvalA === ApprovalState.PENDING}
+                              pendingText={`Approving ${
+                                currencies[Field.CURRENCY_A]?.symbol ?? currencies[Field.CURRENCY_A]?.name
+                              }`}
+                              actionText={
+                                'Approve ' +
+                                (currencies[Field.CURRENCY_A]?.symbol ?? currencies[Field.CURRENCY_A]?.name)
+                              }
+                            />
+                          )}
+                          {approvalB !== ApprovalState.APPROVED && (
+                            <ActionButton
+                              onAction={approveBCallback}
+                              disableAction={approvalB === ApprovalState.PENDING}
+                              pending={approvalB === ApprovalState.PENDING}
+                              pendingText={`Approving ${
+                                currencies[Field.CURRENCY_B]?.symbol ?? currencies[Field.CURRENCY_B]?.name
+                              }`}
+                              actionText={
+                                'Approve ' +
+                                (currencies[Field.CURRENCY_B]?.symbol ?? currencies[Field.CURRENCY_B]?.name)
+                              }
+                            />
+                          )}
+                        </Box>
+                      )}
+                    <Button
+                      onClick={handleAdd}
+                      disabled={!!error || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED}
+                    >
+                      {error ?? 'Supply'}
+                    </Button>
+                  </Box>
+                )}
+              </Box>
+            </Box>
+          </AppBody>
+          {currencyA && currencyB && (
+            <Box maxWidth={'550px'} textAlign="center" mb={100} padding={'0 20px'}>
+              By adding liquidity you&apos;ll earn 0.3% of all trades on this pair proportional to your share of the
+              pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.
+            </Box>
+          )}
         </Box>
-      </AppBody>
-      {currencyA && currencyB && (
-        <Box maxWidth={'550px'} textAlign="center" mb={100} padding={'0 20px'}>
-          By adding liquidity you&apos;ll earn 0.3% of all trades on this pair proportional to your share of the pool.
-          Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.
-        </Box>
-      )}
+        <ActivityInfo />
+      </Box>
     </>
   )
 }

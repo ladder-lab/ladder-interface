@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Box, Typography, useTheme, Button, ButtonBase, Grid } from '@mui/material'
+import { Box, Typography, useTheme, Button, ButtonBase, Grid, Stack } from '@mui/material'
 import { Percent, Token, TokenAmount } from '@ladder/sdk'
 import AppBody from 'components/AppBody'
 import { liquidityParamBuilder, routes } from 'constants/routes'
@@ -19,6 +19,8 @@ import { checkIs1155, checkIs721, getTokenText } from 'utils/checkIs1155'
 import { useWalletModalToggle } from 'state/application/hooks'
 import { generateErc20 } from 'utils/getHashAddress'
 import { trimNumberString } from 'utils/trimNumberString'
+import dottedLine from 'assets/images/dotted-line.png'
+import { ReactComponent as LockSvg } from 'assets/svg/lock_icon.svg'
 
 export default function Pool() {
   const theme = useTheme()
@@ -257,68 +259,95 @@ function PoolCard({
   return (
     <Card
       gray
-      padding="32px 24px 24px"
+      padding="32px 0"
       style={{ borderRadius: '20px', height: '100%', display: 'flex', flexDirection: 'column' }}
     >
-      <Box display="flex" justifyContent="space-between">
-        <DoubleCurrencyLogo currency0={currency0} currency1={currency1} size={28} />
-        <Box display="flex" gap={16}>
-          <Tag>ERC20</Tag>
-          {!has721 && !has1155 && <Tag>ERC20</Tag>}
-          {has721 && <Tag>ERC721</Tag>}
-          {has1155 && <Tag>ERC1155</Tag>}
-        </Box>
-      </Box>
-      <Typography fontSize={18} fontWeight={600} mt={16} mb={16}>
-        {title}
-      </Typography>
-      <Box display="flex" flexDirection="column" gap={8}>
-        <PoolAssetCard currency={currency0} value={reserve0} />
-        <PoolAssetCard currency={currency1} value={reserve1} />
-      </Box>
-      <Box display="grid" gap={12} mt={16} mb={16}>
+      <Box padding="0 24px 24px">
         <Box display="flex" justifyContent="space-between">
-          <Typography sx={{ color: theme.palette.text.secondary, fontSize: 16, mr: 5 }} whiteSpace="nowrap">
-            Your LP
-          </Typography>
-          <Typography
-            fontSize={16}
-            style={{
-              textAlign: 'right',
-              whiteSpace: 'normal',
-              wordBreak: 'break-all'
-            }}
-          >
-            {tokenAmount}
-          </Typography>
+          <DoubleCurrencyLogo currency0={currency0} currency1={currency1} size={28} />
+          <Box display="flex" gap={16}>
+            <Tag>ERC20</Tag>
+            {!has721 && !has1155 && <Tag>ERC20</Tag>}
+            {has721 && <Tag>ERC721</Tag>}
+            {has1155 && <Tag>ERC1155</Tag>}
+          </Box>
         </Box>
-        <Box display="flex" justifyContent="space-between">
-          <Typography sx={{ color: theme.palette.text.secondary, fontSize: 16 }}>Your share</Typography>
-          <Typography fontSize={16}>{shareAmount}</Typography>
+        <Typography fontSize={18} fontWeight={600} mt={16} mb={16}>
+          {title}
+        </Typography>
+        <Box display="flex" flexDirection="column" gap={8}>
+          <PoolAssetCard currency={currency0} value={reserve0} />
+          <PoolAssetCard currency={currency1} value={reserve1} />
         </Box>
-      </Box>
-      {/* <ExternalLink href="#" showIcon style={{ marginBottom: 28, display: 'block' }}>
+        <Box display="grid" gap={12} mt={16} mb={16}>
+          <Box display="flex" justifyContent="space-between">
+            <Typography sx={{ color: theme.palette.text.secondary, fontSize: 16, mr: 5 }} whiteSpace="nowrap">
+              Your LP
+            </Typography>
+            <Typography
+              fontSize={16}
+              style={{
+                textAlign: 'right',
+                whiteSpace: 'normal',
+                wordBreak: 'break-all'
+              }}
+            >
+              {tokenAmount}
+            </Typography>
+          </Box>
+          <Box display="flex" justifyContent="space-between">
+            <Typography sx={{ color: theme.palette.text.secondary, fontSize: 16 }}>Your share</Typography>
+            <Typography fontSize={16}>{shareAmount}</Typography>
+          </Box>
+        </Box>
+        {/* <ExternalLink href="#" showIcon style={{ marginBottom: 28, display: 'block' }}>
         View accrued fees and analytics
       </ExternalLink> */}
-      <Box display="flex" gap={8} mt={'auto'}>
-        <Button sx={{ borderRadius: '16px', height: 44 }} onClick={onAdd}>
-          Add
-        </Button>
-        <Button
-          sx={{
-            borderRadius: '16px',
-            height: 44,
-            background: isDarkMode ? '#282B2E' : '#DADADA',
-            color: '#828282',
-            '&:hover': {
-              background: isDarkMode ? '#25282B' : '#CACACA'
-            }
-          }}
-          onClick={onRemove}
-        >
-          Remove
-        </Button>
+        <Box display="flex" gap={8} mt={'auto'}>
+          <Button sx={{ borderRadius: '16px', height: 44 }} onClick={onAdd}>
+            Add
+          </Button>
+          <Button
+            sx={{
+              borderRadius: '16px',
+              height: 44,
+              background: isDarkMode ? '#282B2E' : '#DADADA',
+              color: '#828282',
+              '&:hover': {
+                background: isDarkMode ? '#25282B' : '#CACACA'
+              }
+            }}
+            onClick={onRemove}
+          >
+            Remove
+          </Button>
+        </Box>
       </Box>
+      <Box
+        sx={{
+          width: '100%',
+          background: `url(${dottedLine})`,
+          padding: '1px 0'
+        }}
+      />
+      <Stack
+        spacing={20}
+        sx={{
+          padding: '16px 24px 0'
+        }}
+      >
+        <Typography sx={{ color: theme.palette.text.secondary, fontSize: 16 }}>
+          Adipisicing quis consequat non enim duis voluptate ex sint. Dolor officia labore cu
+        </Typography>
+        <Button
+          sx={{ borderRadius: '16px', height: 44, display: 'flex', gap: 8, alignItems: 'center' }}
+          onClick={() => {
+            console.log('7 Day Lock')
+          }}
+        >
+          <LockSvg /> 7-Day Lock
+        </Button>
+      </Stack>
     </Card>
   )
 }

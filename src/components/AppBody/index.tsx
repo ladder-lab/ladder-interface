@@ -15,7 +15,8 @@ const Root = styled('div')(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     width: '100%!important',
     maxWidth: 'unset',
-    paddingTop: 20
+    paddingTop: 20,
+    margin: '54px 0 24px'
   },
   margin: '54px 0 80px'
 }))
