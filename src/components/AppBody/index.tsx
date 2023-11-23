@@ -51,7 +51,7 @@ export default function AppBody(props: Props) {
               variant="h5"
               sx={{
                 fontSize: {
-                  xs: 14,
+                  xs: 20,
                   md: 28
                 }
               }}

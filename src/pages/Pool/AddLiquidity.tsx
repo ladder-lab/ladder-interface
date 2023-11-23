@@ -383,7 +383,7 @@ export default function AddLiquidy() {
             </Box>
           </AppBody>
           {currencyA && currencyB && (
-            <Box maxWidth={'550px'} textAlign="center" mb={100} padding={'0 20px'}>
+            <Box maxWidth={'550px'} textAlign="center" mb={{ xs: 50, md: 100 }} padding={'0 20px'}>
               By adding liquidity you&apos;ll earn 0.3% of all trades on this pair proportional to your share of the
               pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.
             </Box>

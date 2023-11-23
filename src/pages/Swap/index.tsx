@@ -594,9 +594,9 @@ export function ActivityInfo() {
         </Typography>
         <br />
         <Typography lineHeight={'140%'}>
-          ⚠️Please note: Ladder only supports the standard DWD-SFT, which means the SFT containing exactly 250 $DWD. You
-          can either hold the SFT and unlock the $DWD on or after August 7th, 2024, or you can trade the SFTs right here
-          immediately.
+          ⚠️ Please note: Ladder only supports the standard DWD-SFT, which means the SFT containing exactly 250 $DWD.
+          You can either hold the SFT and unlock the $DWD on or after August 7th, 2024, or you can trade the SFTs right
+          here immediately.
         </Typography>
       </Box>
     </Box>

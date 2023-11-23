@@ -107,7 +107,7 @@ export default function Pool() {
               gap: 24
             }}
           >
-            <Typography sx={{ fontSize: { xs: 14, md: 24 } }}>Your Liquidity</Typography>
+            <Typography sx={{ fontSize: { xs: 16, md: 24 } }}>Your Liquidity</Typography>
             <Box display={'flex'} gap={20} sx={{ width: { xs: '100%', md: 'fit-content' } }}>
               {/* <Button
                 onClick={() => navigate(routes.addLiquidity)}
@@ -124,7 +124,7 @@ export default function Pool() {
               </Button> */}
               <Button
                 onClick={() => navigate(routes.addLiquidity)}
-                sx={{ fontSize: 12, height: 44, whiteSpace: 'nowrap', minWidth: 'auto' }}
+                sx={{ fontSize: 12, height: 44, width: { xs: 138 }, whiteSpace: 'nowrap', minWidth: 'auto' }}
               >
                 Add Liquidity
               </Button>
