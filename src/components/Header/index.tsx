@@ -45,7 +45,7 @@ interface Tab extends TabContent {
 
 export const Tabs: Tab[] = [
   // { title: 'Testnet', route: routes.testnet },
-  { title: 'Add Liquidity', route: routes.addLiquidity },
+  { title: 'Add Liquidity', route: routes.pool },
   { title: 'Swap', route: routes.swap }
   // { title: 'Pool', route: routes.pool },
   // { title: 'Explore', route: routes.explorer },
@@ -124,7 +124,7 @@ export default function Header() {
     setMobileMenuOpen(false)
   }, [])
 
-  const toHome = useCallback(() => navigate(routes.addLiquidity), [navigate])
+  const toHome = useCallback(() => navigate(routes.pool), [navigate])
 
   return (
     <>

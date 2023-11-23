@@ -1,8 +1,8 @@
 import { useCallback, useState, ChangeEvent, useEffect, useMemo } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { liquidityParamSplitter, routes } from 'constants/routes'
+import { useNavigate } from 'react-router-dom'
+import { routes } from 'constants/routes'
 import { Typography, Box, useTheme, Button } from '@mui/material'
-import { ETHER, TokenAmount } from '@ladder/sdk'
+import { Token, TokenAmount } from '@ladder/sdk'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
 import { ReactComponent as AddCircle } from 'assets/svg/add_circle.svg'
@@ -10,7 +10,7 @@ import { AssetAccordion } from '../Swap/AssetAccordion'
 import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
 import CurrencyInputPanel from 'components/Input/CurrencyInputPanel'
-import { AllTokens } from 'models/allTokens'
+// import { AllTokens } from 'models/allTokens'
 import { useIsExpertMode } from 'state/user/hooks'
 import { Field } from 'state/mint/actions'
 import { ApprovalState, useAllTokenApproveCallback } from 'hooks/useApproveCallback'
@@ -26,7 +26,7 @@ import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import { useTransactionAdder } from 'state/transactions/hooks'
-import { useCurrency } from 'hooks/Tokens'
+// import { useCurrency } from 'hooks/Tokens'
 import { getSymbol } from 'utils/getSymbol'
 import { checkIs721, getTokenText } from 'utils/checkIs1155'
 import { Token721 } from 'constants/token/token721'
@@ -37,18 +37,29 @@ import { replaceErrorMessage } from 'utils'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { ActivityInfo } from 'pages/Swap'
 
+export const [currencyA, currencyB] = [
+  new Token(11155111, '0x55979784068d1BEf37B49F41cAC8040A4b79C4a7', 18, 'USDC', 'USDC'),
+  new Token721(11155111, '0x3ec2Bb9E04C8DB50fb77E170BF9116B330293209', undefined, {
+    name: 'MetaBoom',
+    tokenUri: 'https://api.fansi.me/NFT/biopunk/',
+    symbol: 'MMU',
+    uri: 'https://fansi-static.s3.ap-southeast-1.amazonaws.com/MetaBoom/NFT/GENI/MetaBoom-KEE91AGA7C.png'
+  })
+]
+
 export default function AddLiquidy() {
   const isDownSm = useBreakpoint('sm')
-  const [currencyA, setCurrencyA] = useState<undefined | AllTokens>(undefined)
-  const [currencyB, setCurrencyB] = useState<undefined | AllTokens>(undefined)
+  // const [currencyA, setCurrencyA] = useState<undefined | AllTokens>(undefined)
+  // const [currencyB, setCurrencyB] = useState<undefined | AllTokens>(undefined)
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
 
-  const { currencyIdA, currencyIdB, tokenIds } = useParams()
-  const [tokenIdA, tokenIdB] = tokenIds?.split(liquidityParamSplitter) ?? ['', '']
-  const [currency0, currency1] = [
-    useCurrency(currencyIdA, tokenIdA) ?? undefined,
-    useCurrency(currencyIdB, tokenIdB) ?? undefined
-  ]
+  // const { currencyIdA, currencyIdB, tokenIds } = useParams()
+  // const [tokenIdA, tokenIdB] = tokenIds?.split(liquidityParamSplitter) ?? ['', '']
+  // const [currency0, currency1] = [
+  //   useCurrency(currencyIdA, tokenIdA) ?? undefined,
+  //   useCurrency(currencyIdB, tokenIdB) ?? undefined
+  // ]
+
   const { account, chainId } = useActiveWeb3React()
   const navigate = useNavigate()
   const { showModal, hideModal } = useModal()
@@ -178,35 +189,35 @@ export default function AddLiquidy() {
     [onFieldBInput]
   )
 
-  const handleAssetA = useCallback((currency: AllTokens) => {
-    setCurrencyA(currency)
-  }, [])
+  // const handleAssetA = useCallback((currency: AllTokens) => {
+  //   setCurrencyA(currency)
+  // }, [])
 
-  const handleAssetB = useCallback((currency: AllTokens) => {
-    setCurrencyB(currency)
-  }, [])
+  // const handleAssetB = useCallback((currency: AllTokens) => {
+  //   setCurrencyB(currency)
+  // }, [])
 
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false)
   }, [])
 
-  useEffect(() => {
-    if (currency0) {
-      if (currency0.symbol === 'WETH' || currency0.symbol === 'WBNB' || currency0.symbol === 'WMATIC') {
-        setCurrencyA(ETHER)
-      } else {
-        setCurrencyA(currency0)
-      }
-    }
-    if (currency1) {
-      if (currency1.symbol === 'WETH' || currency1.symbol === 'WBNB' || currency1.symbol === 'WMATIC') {
-        setCurrencyB(ETHER)
-      } else {
-        setCurrencyB(currency1)
-      }
-    }
-    return
-  }, [currency0, currency1])
+  // useEffect(() => {
+  //   if (currency0) {
+  //     if (currency0.symbol === 'WETH' || currency0.symbol === 'WBNB' || currency0.symbol === 'WMATIC') {
+  //       setCurrencyA(ETHER)
+  //     } else {
+  //       setCurrencyA(currency0)
+  //     }
+  //   }
+  //   if (currency1) {
+  //     if (currency1.symbol === 'WETH' || currency1.symbol === 'WBNB' || currency1.symbol === 'WMATIC') {
+  //       setCurrencyB(ETHER)
+  //     } else {
+  //       setCurrencyB(currency1)
+  //     }
+  //   }
+  //   return
+  // }, [currency0, currency1])
 
   useEffect(() => {
     return onResetMintState
@@ -224,7 +235,7 @@ export default function AddLiquidy() {
 
   const assets = useMemo(() => {
     return flipOrder ? [currencyA, currencyB] : [currencyB, currencyA]
-  }, [flipOrder, currencyA, currencyB])
+  }, [flipOrder])
 
   const assetsTexts = getTokenText(assets[0], assets[1])
 
@@ -276,9 +287,9 @@ export default function AddLiquidy() {
               <Box mb={currencyA ? 16 : 0}>
                 <>
                   <CurrencyInputPanel
+                    disableCurrencySelect
                     value={formattedAmounts[Field.CURRENCY_A]}
                     onChange={handleAssetAVal}
-                    onSelectCurrency={handleAssetA}
                     currency={currencyA}
                     onMax={handleMaxInputA}
                     onSelectSubTokens={handleTokenIds}
@@ -294,10 +305,10 @@ export default function AddLiquidy() {
               <Box mb={currencyB ? 16 : 0} mt={16}>
                 <>
                   <CurrencyInputPanel
+                    disableCurrencySelect
                     // selectedTokenType={currencyA ? (checkIs1155(currencyA) ? 'erc1155' : 'erc20') : undefined}
                     value={formattedAmounts[Field.CURRENCY_B]}
                     onChange={handleAssetBVal}
-                    onSelectCurrency={handleAssetB}
                     currency={currencyB}
                     onMax={handleMaxInputB}
                     onSelectSubTokens={handleTokenIds}

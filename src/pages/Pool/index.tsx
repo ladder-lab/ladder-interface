@@ -1,6 +1,6 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Box, Typography, useTheme, Button, ButtonBase, Grid, Stack } from '@mui/material'
+import { Box, Typography, useTheme, Button, Grid, Stack } from '@mui/material'
 import { Percent, Token, TokenAmount } from '@ladder/sdk'
 import AppBody from 'components/AppBody'
 import { liquidityParamBuilder, routes } from 'constants/routes'
@@ -21,23 +21,32 @@ import { generateErc20 } from 'utils/getHashAddress'
 import { trimNumberString } from 'utils/trimNumberString'
 import dottedLine from 'assets/images/dotted-line.png'
 import { ReactComponent as LockSvg } from 'assets/svg/lock_icon.svg'
+import { currencyA, currencyB } from './AddLiquidity'
 
 export default function Pool() {
   const theme = useTheme()
   const navigate = useNavigate()
   const { account } = useActiveWeb3React()
   const toggleWallet = useWalletModalToggle()
-
+  const [lpTokenAddress, setLpTokenAddress] = useState<string>('')
+  console.log('🚀 ~ lpTokenAddress:', lpTokenAddress)
   // fetch the user's balances of all tracked V2 LP tokens
   const trackedTokenPairs = useTrackedTokenPairs()
 
   const [tokenPairsWithLiquidityTokens, trackedTokenPairMap] = useMemo(() => {
     const tokensMap: { [key: string]: Token[] } = {}
-    const lpTokens = trackedTokenPairs.map(tokens => {
-      const lpToken = toV2LiquidityToken(tokens)
-      tokensMap[lpToken.address] = tokens
-      return { liquidityToken: lpToken, tokens }
-    })
+    const lpTokens = trackedTokenPairs
+      .filter(
+        ([token0, token1]) =>
+          (token0.address === currencyA.address && token1.address === currencyB.address) ||
+          (token1.address === currencyA.address && token0.address === currencyB.address)
+      )
+      .map(tokens => {
+        const lpToken = toV2LiquidityToken(tokens)
+        setLpTokenAddress(lpToken.address)
+        tokensMap[lpToken.address] = tokens
+        return { liquidityToken: lpToken, tokens }
+      })
 
     return [lpTokens, tokensMap]
   }, [trackedTokenPairs])
@@ -98,7 +107,7 @@ export default function Pool() {
           >
             <Typography sx={{ fontSize: { xs: 14, md: 24 } }}>Your Liquidity</Typography>
             <Box display={'flex'} gap={20} sx={{ width: { xs: '100%', md: 'fit-content' } }}>
-              <Button
+              {/* <Button
                 onClick={() => navigate(routes.addLiquidity)}
                 sx={{
                   fontSize: 12,
@@ -110,7 +119,7 @@ export default function Pool() {
                 }}
               >
                 Create a pair
-              </Button>
+              </Button> */}
               <Button
                 onClick={() => navigate(routes.addLiquidity)}
                 sx={{ fontSize: 12, height: 44, whiteSpace: 'nowrap', minWidth: 'auto' }}
@@ -186,7 +195,10 @@ export default function Pool() {
                       reserve1={amountB.toFixed(6, undefined, 2).trimTrailingZero()}
                       shareAmount={poolTokenPercentage}
                       tokenAmount={balance ? balance?.toExact() : '-'}
-                      onAdd={() => navigate(routes.addLiquidity + liquidityParamBuilder(amountA.token, amountB.token))}
+                      onAdd={() => {
+                        navigate(routes.addLiquidity)
+                        // navigate(routes.addLiquidity + liquidityParamBuilder(amountA.token, amountB.token))
+                      }}
                       onRemove={() =>
                         navigate(routes.removeLiquidity + liquidityParamBuilder(amountA.token, amountB.token))
                       }
@@ -209,7 +221,7 @@ export default function Pool() {
           )}
         </Box>
       </AppBody>
-      <Box
+      {/* <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
@@ -225,7 +237,7 @@ export default function Pool() {
         >
           Import it
         </ButtonBase>
-      </Box>
+      </Box> */}
     </>
   )
 }
