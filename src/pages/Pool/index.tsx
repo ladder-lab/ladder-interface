@@ -21,6 +21,8 @@ import { generateErc20 } from 'utils/getHashAddress'
 import { trimNumberString } from 'utils/trimNumberString'
 import dottedLine from 'assets/images/dotted-line.png'
 import { ReactComponent as LockSvg } from 'assets/svg/lock_icon.svg'
+import { ReactComponent as LockGreySvg } from 'assets/svg/lock_grey.svg'
+import { ReactComponent as ClockIcon } from 'assets/svg/clockIcon.svg'
 import { currencyA, currencyB } from './AddLiquidity'
 
 export default function Pool() {
@@ -342,24 +344,7 @@ function PoolCard({
           padding: '1px 0'
         }}
       />
-      <Stack
-        spacing={20}
-        sx={{
-          padding: '16px 24px 0'
-        }}
-      >
-        <Typography sx={{ color: theme.palette.text.secondary, fontSize: 16 }}>
-          Adipisicing quis consequat non enim duis voluptate ex sint. Dolor officia labore cu
-        </Typography>
-        <Button
-          sx={{ borderRadius: '16px', height: 44, display: 'flex', gap: 8, alignItems: 'center' }}
-          onClick={() => {
-            console.log('7 Day Lock')
-          }}
-        >
-          <LockSvg /> 7-Day Lock
-        </Button>
-      </Stack>
+      <LockToken />
     </Card>
   )
 }
@@ -381,5 +366,112 @@ function PoolAssetCard({ currency, value }: { currency: AllTokens; value: string
         <CurrencyLogo currency={currency} size={'36px'} style={{ flexShrink: 0 }} />
       </Box>
     </Card>
+  )
+}
+
+function LockToken() {
+  const theme = useTheme()
+  const [isLock, setIsLock] = useState<boolean>(false)
+
+  if (isLock)
+    return (
+      <Box
+        sx={{
+          padding: '30px 24px 0',
+          position: 'relative'
+        }}
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            left: '50%',
+            transform: 'translateX(-20px) translateY(-50px)'
+          }}
+        >
+          <LockGreySvg />
+        </Box>
+        <Box display={'flex'} justifyContent={'space-between'}>
+          <Typography
+            sx={{
+              fontFamily: 'Lato',
+              fontSize: '18px',
+              fontWeight: '600',
+              display: 'flex',
+              gap: 6,
+              alignItems: 'center',
+              background: 'linear-gradient(90deg, #D6FF2A 5.08%, #A1F9DD 104.8%)',
+              backgroundClip: 'text',
+              '-webkit-background-clip': 'text',
+              '-webkit-text-fill-color': 'transparent'
+            }}
+          >
+            <ClockIcon /> 3 Day left
+          </Typography>
+          <Button
+            sx={{
+              borderRadius: '16px',
+              width: 145,
+              height: 44,
+              padding: 1,
+              ':hover': {
+                opacity: 0.7
+              }
+            }}
+            onClick={() => {
+              console.log('Claim')
+            }}
+          >
+            <Typography
+              sx={{
+                width: '100%',
+                height: '100%',
+                background: '#060606',
+                color: '#fff',
+                fontFamily: 'Lato',
+                fontSize: '16px',
+                fontWeight: '600',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: '16px'
+              }}
+            >
+              Claim
+            </Typography>
+          </Button>
+        </Box>
+      </Box>
+    )
+
+  return (
+    <Stack
+      spacing={20}
+      sx={{
+        padding: '16px 24px 0',
+        position: 'relative'
+      }}
+    >
+      <Box
+        sx={{
+          position: 'absolute',
+          left: '50%',
+          transform: 'translateX(-20px) translateY(-36px)'
+        }}
+      >
+        <LockGreySvg />
+      </Box>
+      <Typography sx={{ color: theme.palette.text.secondary, fontSize: 16 }}>
+        Adipisicing quis consequat non enim duis voluptate ex sint. Dolor officia labore cu
+      </Typography>
+      <Button
+        sx={{ borderRadius: '16px', height: 44, display: 'flex', gap: 8, alignItems: 'center' }}
+        onClick={() => {
+          console.log('7 Day Lock')
+          setIsLock(true)
+        }}
+      >
+        <LockSvg /> 7-Day Lock
+      </Button>
+    </Stack>
   )
 }
