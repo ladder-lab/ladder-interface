@@ -368,6 +368,7 @@ function PoolCard({
                   background: isDarkMode ? '#25282B' : '#CACACA'
                 }
               }}
+              disabled={!Number(tokenAmount)}
               onClick={onRemove}
             >
               Remove
@@ -455,7 +456,7 @@ function LockToken({ tokenAmount }: { tokenAmount: string }) {
       {approval === ApprovalState.PENDING ? (
         <ApprovalButton disabled>
           <Spinner marginRight={16} />
-          approve
+          Approve
         </ApprovalButton>
       ) : (
         !isApproval && (
@@ -465,7 +466,7 @@ function LockToken({ tokenAmount }: { tokenAmount: string }) {
               approveCallback()
             }}
           >
-            approve
+            Approve
           </ApprovalButton>
         )
       )}
@@ -537,7 +538,7 @@ function WithdrawLockLPToken({ leftDate }: { leftDate: any }) {
         >
           {!isEndTime && (
             <>
-              <ClockIcon /> {DateTxt}
+              <ClockIcon /> {DateTxt} {!isEndTime && <QuestionHelper text="It is not yet claim time" />}
             </>
           )}
         </Typography>
@@ -545,7 +546,7 @@ function WithdrawLockLPToken({ leftDate }: { leftDate: any }) {
           disabled={!isEndTime || claimLoading}
           sx={{
             borderRadius: '16px',
-            width: 145,
+            width: 100,
             height: 44,
             padding: 1,
             ':hover': {
@@ -556,7 +557,7 @@ function WithdrawLockLPToken({ leftDate }: { leftDate: any }) {
         >
           <Typography
             sx={{
-              width: '100%',
+              width: '100px',
               height: '100%',
               background: '#060606',
               color: '#fff',
@@ -571,7 +572,6 @@ function WithdrawLockLPToken({ leftDate }: { leftDate: any }) {
             }}
           >
             {claimLoading && <Spinner marginRight={16} />} Claim
-            {!isEndTime && <QuestionHelper text="It is not yet claim time" />}
           </Typography>
         </Button>
       </Box>

@@ -58,7 +58,7 @@ export function useIsLockLPTokenCallback() {
   const contract = useLockContract()
   const { account } = useActiveWeb3React()
 
-  const LockTokenInfoRes = useSingleCallResult(contract, 'lockInfos', [account || ''], undefined)
+  const LockTokenInfoRes = useSingleCallResult(contract, 'lockInfos', [account || undefined], undefined)
 
   const isLock = useMemo(
     () => (LockTokenInfoRes.result?.[0] ? Number(LockTokenInfoRes.result?.[0]) : undefined),
