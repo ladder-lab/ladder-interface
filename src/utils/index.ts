@@ -218,3 +218,5 @@ export function getUTC0MondayMidnightTimestamp(): number {
 
 const utc0MondayMidnightTimestamp = getUTC0MondayMidnightTimestamp()
 console.log(utc0MondayMidnightTimestamp)
+
+// export function

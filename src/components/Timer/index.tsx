@@ -59,3 +59,21 @@ function pad0(num: number | string) {
   }
   return num
 }
+
+export function getTimeDifference(endTime: number) {
+  const currentTime = Date.now()
+
+  const timeDiff = endTime - currentTime
+
+  const days = Math.floor(timeDiff / (24 * 60 * 60 * 1000))
+  const hours = Math.floor((timeDiff % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000))
+  const minutes = Math.floor((timeDiff % (60 * 60 * 1000)) / (60 * 1000))
+  const seconds = Math.floor((timeDiff % (60 * 1000)) / 1000)
+
+  return {
+    days,
+    hours,
+    minutes,
+    seconds
+  }
+}

@@ -20,8 +20,14 @@ import {
   ARGENT_WALLET_DETECTOR_ABI,
   ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS
 } from '../constants/abis/argent-wallet-detector'
-import { MERKLE_TREE_ADDRESS, SBT_URI_ADDRESS, TEST_NFT_URI_ADDRESS } from '../constants'
+import {
+  MERKLE_TREE_ADDRESS,
+  SBT_URI_ADDRESS,
+  TEST_NFT_URI_ADDRESS,
+  LOCK_LIQUIDITY_CONTRACT_ADDRESS
+} from '../constants'
 import SbtAbi from 'constants/abis/SbtFactory.json'
+import LockAbi from 'constants/abis/Lock.json'
 
 // returns null on errors
 export function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -120,4 +126,8 @@ export function useTestNftUriContract(): Contract | null {
 
 export function useSbtContract(): Contract | null {
   return useContract(SBT_URI_ADDRESS, SbtAbi, true)
+}
+
+export function useLockContract(): Contract | null {
+  return useContract(LOCK_LIQUIDITY_CONTRACT_ADDRESS, LockAbi, true)
 }

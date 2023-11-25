@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Box, Typography, useTheme, Button, Grid, Stack } from '@mui/material'
+import { Box, Typography, useTheme, Button, Grid, Stack, styled } from '@mui/material'
 import { Percent, Token, TokenAmount } from '@ladder/sdk'
 import AppBody from 'components/AppBody'
 import { liquidityParamBuilder, routes } from 'constants/routes'
@@ -24,6 +24,29 @@ import { ReactComponent as LockSvg } from 'assets/svg/lock_icon.svg'
 import { ReactComponent as LockGreySvg } from 'assets/svg/lock_grey.svg'
 import { ReactComponent as ClockIcon } from 'assets/svg/clockIcon.svg'
 import { currencyA, currencyB } from './AddLiquidity'
+import { useClaimLockLPTokenCallback, useIsLockLPTokenCallback, useLockLPToken } from 'hooks/useLockLPTokenCallback'
+import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
+import { LOCK_LP_TOKEN, LOCK_LIQUIDITY_CONTRACT_ADDRESS } from '../../constants'
+import { tryParseAmount } from 'utils/parseAmount'
+import QuestionHelper from 'components/essential/QuestionHelper'
+import Spinner from 'components/Spinner'
+import { parseUnits } from 'ethers/lib/utils'
+import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
+
+const ApprovalButton = styled(Button)(() => ({
+  borderRadius: '16px',
+  height: 44,
+  display: 'flex',
+  alignItems: 'center'
+}))
+
+const LockButton = styled(Button)(() => ({
+  borderRadius: '16px',
+  height: 44,
+  display: 'flex',
+  gap: 8,
+  alignItems: 'center'
+}))
 
 export default function Pool() {
   const theme = useTheme()
@@ -31,6 +54,7 @@ export default function Pool() {
   const { account } = useActiveWeb3React()
   const toggleWallet = useWalletModalToggle()
   const [lpTokenAddress, setLpTokenAddress] = useState<string>('')
+  const { leftDate, isLock } = useIsLockLPTokenCallback()
   console.log('🚀 ~ lpTokenAddress:', lpTokenAddress)
   // fetch the user's balances of all tracked V2 LP tokens
   const trackedTokenPairs = useTrackedTokenPairs()
@@ -40,8 +64,10 @@ export default function Pool() {
     const lpTokens = trackedTokenPairs
       .filter(
         ([token0, token1]) =>
-          (token0.address === currencyA.address && token1.address === currencyB.address) ||
-          (token1.address === currencyA.address && token0.address === currencyB.address)
+          (token0.address.toLocaleLowerCase() === currencyA.address.toLocaleLowerCase() &&
+            token1.address.toLocaleLowerCase() === currencyB.address.toLocaleLowerCase()) ||
+          (token1.address.toLocaleLowerCase() === currencyA.address.toLocaleLowerCase() &&
+            token0.address.toLocaleLowerCase() === currencyB.address.toLocaleLowerCase())
       )
       .map(tokens => {
         const lpToken = toV2LiquidityToken(tokens)
@@ -68,9 +94,11 @@ export default function Pool() {
   const liquidityTokensWithBalances = useMemo(
     () =>
       tokenPairsWithLiquidityTokens.reduce((acc, { liquidityToken }, idx) => {
-        if (v2PairsBalances[liquidityToken.address]?.greaterThan('0')) {
-          acc.push({ liquidityToken: liquidityToken, tokens: trackedTokenPairs[idx] })
-        }
+        console.log('liquidityTokensWithBalances=>', v2PairsBalances[liquidityToken.address]?.greaterThan('0'))
+
+        // if (v2PairsBalances[liquidityToken.address]?.greaterThan('0')) {
+        acc.push({ liquidityToken: liquidityToken, tokens: trackedTokenPairs[idx] })
+        // }
         return acc
       }, [] as { liquidityToken: Token; tokens: [Token, Token] }[]),
     [tokenPairsWithLiquidityTokens, trackedTokenPairs, v2PairsBalances]
@@ -122,12 +150,14 @@ export default function Pool() {
               >
                 Create a pair
               </Button> */}
-              <Button
-                onClick={() => navigate(routes.addLiquidity)}
-                sx={{ fontSize: 12, height: 44, width: { xs: 138 }, whiteSpace: 'nowrap', minWidth: 'auto' }}
-              >
-                Add Liquidity
-              </Button>
+              {!isLock && (
+                <Button
+                  onClick={() => navigate(routes.addLiquidity)}
+                  sx={{ fontSize: 12, height: 44, width: { xs: 138 }, whiteSpace: 'nowrap', minWidth: 'auto' }}
+                >
+                  Add Liquidity
+                </Button>
+              )}
             </Box>
           </Box>
 
@@ -204,6 +234,8 @@ export default function Pool() {
                       onRemove={() =>
                         navigate(routes.removeLiquidity + liquidityParamBuilder(amountA.token, amountB.token))
                       }
+                      leftDate={leftDate}
+                      isLock={isLock}
                     />
                   </Grid>
                 )
@@ -253,7 +285,9 @@ function PoolCard({
   shareAmount,
   tokenAmount,
   onAdd,
-  onRemove
+  onRemove,
+  leftDate,
+  isLock
 }: {
   currency0: AllTokens
   currency1: AllTokens
@@ -264,6 +298,8 @@ function PoolCard({
   tokenAmount: string
   onAdd: () => void
   onRemove: () => void
+  leftDate: any
+  isLock: boolean
 }) {
   const theme = useTheme()
   const isDarkMode = useIsDarkMode()
@@ -317,25 +353,27 @@ function PoolCard({
         {/* <ExternalLink href="#" showIcon style={{ marginBottom: 28, display: 'block' }}>
         View accrued fees and analytics
       </ExternalLink> */}
-        <Box display="flex" gap={8} mt={'auto'}>
-          <Button sx={{ borderRadius: '16px', height: 44 }} onClick={onAdd}>
-            Add
-          </Button>
-          <Button
-            sx={{
-              borderRadius: '16px',
-              height: 44,
-              background: isDarkMode ? '#282B2E' : '#DADADA',
-              color: '#828282',
-              '&:hover': {
-                background: isDarkMode ? '#25282B' : '#CACACA'
-              }
-            }}
-            onClick={onRemove}
-          >
-            Remove
-          </Button>
-        </Box>
+        {!isLock && (
+          <Box display="flex" gap={8} mt={'auto'}>
+            <Button sx={{ borderRadius: '16px', height: 44 }} onClick={onAdd}>
+              Add
+            </Button>
+            <Button
+              sx={{
+                borderRadius: '16px',
+                height: 44,
+                background: isDarkMode ? '#282B2E' : '#DADADA',
+                color: '#828282',
+                '&:hover': {
+                  background: isDarkMode ? '#25282B' : '#CACACA'
+                }
+              }}
+              onClick={onRemove}
+            >
+              Remove
+            </Button>
+          </Box>
+        )}
       </Box>
       <Box
         sx={{
@@ -344,7 +382,7 @@ function PoolCard({
           padding: '1px 0'
         }}
       />
-      <LockToken />
+      {!isLock ? <LockToken tokenAmount={tokenAmount} /> : <WithdrawLockLPToken leftDate={leftDate} />}
     </Card>
   )
 }
@@ -369,86 +407,35 @@ function PoolAssetCard({ currency, value }: { currency: AllTokens; value: string
   )
 }
 
-function LockToken() {
+function LockToken({ tokenAmount }: { tokenAmount: string }) {
   const theme = useTheme()
-  const [isLock, setIsLock] = useState<boolean>(false)
+  const { account } = useActiveWeb3React()
+  const { LockLPCallback, loading: lockLoading } = useLockLPToken()
+  const amount = tryParseAmount(tokenAmount, LOCK_LP_TOKEN)
+  const [approval, approveCallback] = useApproveCallback(amount, LOCK_LIQUIDITY_CONTRACT_ADDRESS)
 
-  if (isLock)
-    return (
-      <Box
-        sx={{
-          padding: '30px 24px 0',
-          position: 'relative'
-        }}
-      >
-        <Box
-          sx={{
-            position: 'absolute',
-            left: '50%',
-            transform: 'translateX(-20px) translateY(-50px)'
-          }}
-        >
-          <LockGreySvg />
-        </Box>
-        <Box display={'flex'} justifyContent={'space-between'}>
-          <Typography
-            sx={{
-              fontFamily: 'Lato',
-              fontSize: '18px',
-              fontWeight: '600',
-              display: 'flex',
-              gap: 6,
-              alignItems: 'center',
-              background: 'linear-gradient(90deg, #D6FF2A 5.08%, #A1F9DD 104.8%)',
-              backgroundClip: 'text',
-              '-webkit-background-clip': 'text',
-              '-webkit-text-fill-color': 'transparent'
-            }}
-          >
-            <ClockIcon /> 3 Day left
-          </Typography>
-          <Button
-            sx={{
-              borderRadius: '16px',
-              width: 145,
-              height: 44,
-              padding: 1,
-              ':hover': {
-                opacity: 0.7
-              }
-            }}
-            onClick={() => {
-              console.log('Claim')
-            }}
-          >
-            <Typography
-              sx={{
-                width: '100%',
-                height: '100%',
-                background: '#060606',
-                color: '#fff',
-                fontFamily: 'Lato',
-                fontSize: '16px',
-                fontWeight: '600',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: '16px'
-              }}
-            >
-              Claim
-            </Typography>
-          </Button>
-        </Box>
-      </Box>
-    )
+  const { claimSubmitted: isLockLPing } = useUserHasSubmittedClaim(`${account}_lock_lp`)
+
+  const LockAmount = useMemo(() => +parseUnits(tokenAmount, LOCK_LP_TOKEN.decimals).toString(), [tokenAmount])
+  const isApproval = useMemo(() => {
+    if (approval === ApprovalState.APPROVED) return true
+    if (approval === ApprovalState.NOT_APPROVED) return false
+    return false
+  }, [approval])
+  console.log('🚀 ~ isLockLPing:', isLockLPing)
+  console.log('LockAmount=>', LockAmount, tokenAmount)
+  console.log('🚀 ~ approval:', approval)
 
   return (
     <Stack
       spacing={20}
       sx={{
         padding: '16px 24px 0',
-        position: 'relative'
+        position: 'relative',
+        '.Mui-disabled': {
+          background: '#282B2E !important',
+          color: '#878D92 !important'
+        }
       }}
     >
       <Box
@@ -463,15 +450,129 @@ function LockToken() {
       <Typography sx={{ color: theme.palette.text.secondary, fontSize: 16 }}>
         Adipisicing quis consequat non enim duis voluptate ex sint. Dolor officia labore cu
       </Typography>
-      <Button
-        sx={{ borderRadius: '16px', height: 44, display: 'flex', gap: 8, alignItems: 'center' }}
+
+      {approval === ApprovalState.PENDING ? (
+        <ApprovalButton disabled>
+          <Spinner marginRight={16} />
+          approve
+        </ApprovalButton>
+      ) : (
+        !isApproval && (
+          <ApprovalButton
+            onClick={() => {
+              approveCallback()
+            }}
+          >
+            approve
+          </ApprovalButton>
+        )
+      )}
+
+      <LockButton
+        disabled={!isApproval || lockLoading}
         onClick={() => {
-          console.log('7 Day Lock')
-          setIsLock(true)
+          LockLPCallback(LockAmount)
         }}
       >
-        <LockSvg /> 7-Day Lock
-      </Button>
+        {lockLoading ? <Spinner marginRight={16} /> : <LockSvg />} 7-Day Lock
+      </LockButton>
     </Stack>
+  )
+}
+
+function WithdrawLockLPToken({ leftDate }: { leftDate: any }) {
+  const { account } = useActiveWeb3React()
+
+  const { ClaimLockLPCallback, loading: claimLoading } = useClaimLockLPTokenCallback()
+
+  const { claimSubmitted: isClaiming } = useUserHasSubmittedClaim(`${account}_withdraw_lp`)
+
+  const isEndTime = useMemo(() => {
+    if (leftDate.seconds <= 0) return true
+    return false
+  }, [leftDate.seconds])
+
+  const DateTxt = useMemo(() => {
+    if (leftDate.days > 0) return leftDate.days + ' Day left'
+    if (leftDate.hours > 0) return leftDate.hours + ' Hours left'
+    if (leftDate.minutes >= 0) return leftDate.minutes + ' Minutes left'
+    return '--'
+  }, [leftDate.days, leftDate.hours, leftDate.minutes])
+
+  console.log('🚀 ~ leftDate:', leftDate)
+  console.log('🚀 ~ isClaiming:', isClaiming)
+
+  return (
+    <Box
+      sx={{
+        padding: '30px 24px 0',
+        position: 'relative'
+      }}
+    >
+      <Box
+        sx={{
+          position: 'absolute',
+          left: '50%',
+          transform: 'translateX(-20px) translateY(-50px)'
+        }}
+      >
+        <LockGreySvg />
+      </Box>
+      <Box display={'flex'} justifyContent={'space-between'}>
+        <Typography
+          sx={{
+            fontFamily: 'Lato',
+            fontSize: '18px',
+            fontWeight: '600',
+            display: 'flex',
+            gap: 6,
+            alignItems: 'center',
+            background: 'linear-gradient(90deg, #D6FF2A 5.08%, #A1F9DD 104.8%)',
+            backgroundClip: 'text',
+            '-webkit-background-clip': 'text',
+            '-webkit-text-fill-color': 'transparent'
+          }}
+        >
+          {!isEndTime && (
+            <>
+              <ClockIcon /> {DateTxt}
+            </>
+          )}
+        </Typography>
+        <Button
+          disabled={!isEndTime || claimLoading}
+          sx={{
+            borderRadius: '16px',
+            width: 145,
+            height: 44,
+            padding: 1,
+            ':hover': {
+              opacity: 0.7
+            }
+          }}
+          onClick={ClaimLockLPCallback}
+        >
+          <Typography
+            sx={{
+              width: '100%',
+              height: '100%',
+              background: '#060606',
+              color: '#fff',
+              fontFamily: 'Lato',
+              fontSize: '16px',
+              fontWeight: '600',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: '16px',
+              gap: 8
+            }}
+          >
+            {claimLoading && <Spinner marginRight={16} />} Claim
+            {!isEndTime && <QuestionHelper text="It is not yet claim time" />}
+          </Typography>
+        </Button>
+      </Box>
+    </Box>
   )
 }
