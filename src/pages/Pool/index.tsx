@@ -408,6 +408,7 @@ function PoolAssetCard({ currency, value }: { currency: AllTokens; value: string
 }
 
 function LockToken({ tokenAmount }: { tokenAmount: string }) {
+  console.log('🚀 ~ file: index.tsx:411 ~ LockToken ~ tokenAmount:', tokenAmount)
   const theme = useTheme()
   const { account } = useActiveWeb3React()
   const { LockLPCallback, loading: lockLoading } = useLockLPToken()
@@ -459,6 +460,7 @@ function LockToken({ tokenAmount }: { tokenAmount: string }) {
       ) : (
         !isApproval && (
           <ApprovalButton
+            disabled={!LockAmount}
             onClick={() => {
               approveCallback()
             }}
