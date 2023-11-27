@@ -133,7 +133,7 @@ export default function App() {
                   <Route path={routes.becomePartner} element={<BecomePartnerNew />} />
                   <Route path={routes.myAccount} element={<MyAccount />} />
                   <Route path={routes.origAccount} element={<OrigAccount />} />
-                  <Route path="*" element={<Navigate to={routes.swap} replace />} />
+                  <Route path="*" element={<Navigate to={routes.pool} replace />} />
                 </Routes>
               </Web3ReactManager>
             </BodyWrapper>

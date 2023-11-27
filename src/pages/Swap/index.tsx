@@ -1,5 +1,5 @@
 import { useCallback, useState, ChangeEvent, useMemo, useEffect } from 'react'
-import { Typography, Box, Button } from '@mui/material'
+import { Typography, Box, Button, styled } from '@mui/material'
 import { CurrencyAmount, ETHER, JSBI, Pair, Token, Trade } from '@ladder/sdk'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
@@ -39,6 +39,13 @@ import dogewalkUrl from 'assets/images/dogewalk.png'
 import { ExternalLink } from 'theme/components'
 import Image from 'components/Image'
 import useBreakpoint from 'hooks/useBreakpoint'
+
+const TitleStyle = styled(Typography)(() => ({
+  color: '#FFF',
+  fontFamily: 'Lato',
+  fontSize: '26px',
+  fontWeight: '700'
+}))
 
 const [currency0, currency1] = [
   // new Token(137, '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', 6, 'USDC', 'USDC'),
@@ -571,32 +578,48 @@ function TokenInfo({
 export function ActivityInfo() {
   const isDownSm = useBreakpoint('sm')
   return (
-    <Box maxWidth={isDownSm ? '100%' : 470} margin={`${isDownSm ? '0 10px 40px ' : '100px 0 0'} `}>
-      <Typography fontSize={{ xs: 20, md: 34 }} fontWeight={700} lineHeight={'125%'}>
+    <Box maxWidth={isDownSm ? '100%' : 497} margin={`${isDownSm ? '0 10px 40px ' : '100px 0 0'} `}>
+      {/* <Typography fontSize={{ xs: 20, md: 34 }} fontWeight={700} lineHeight={'125%'}>
         Welcome to DogeWalk’s SFT AMM trading platform, powered by Ladder.
-      </Typography>
-      <Image src={dogewalkUrl} style={{ height: 40, margin: '20px 0' }} />
+      </Typography> */}
+      <Image src={dogewalkUrl} style={{ height: 53, margin: '20px 0' }} />
       <Box>
+        <TitleStyle>Dew it with League of Kingdoms on Ladder</TitleStyle>
+        <br />
         <Typography lineHeight={'140%'}>
-          <Typography component={'span'} fontWeight={700}>
-            🐶 This is a designated platform to support DogeWalk users in trading DogeWalk SFTs,
+          <Typography lineHeight={'140%'}>
+            Add liquidity (1 Drago + corresponding value in MATIC), lock it for 7 days, and win a Mystery Box, as well
+            as get Ladder Boxes. Mystery Boxes contain 1 of 4 types of Dragon Egg NFTs. Collect all 4 to receive a Dew
+            Token Airdrop Box as well.
           </Typography>
           <br />
-          which are received as a reward by holding Genesis DogeWalk NFTs.{' '}
+          To track your progress and for more tasks visit: 🔗{' '}
+          <ExternalLink sx={{ color: '#1F9898' }} href="https://galxe.com/dewgg/campaign/GCoHXUnvTW">
+            https://galxe.com/dewgg/campaign/GCoHXUnvTW
+          </ExternalLink>
+        </Typography>
+
+        <br />
+
+        <TitleStyle>About League of Kingdoms</TitleStyle>
+
+        <Typography lineHeight={'140%'} mt={10}>
+          League of Kingdoms is an MMO Strategy game where players forge kingdoms and fight for dominion. Dragos are
+          dragon-like creatures that dwell in the continents of the League of Kingdoms and have historically been tamed
+          by royal courts.
         </Typography>
         <br />
-        <Typography component={'div'} lineHeight={'140%'}>
-          To find more information on DogeWalk, please visit:
-          <ExternalLink href="https://www.dogewalk.io/">🔗 www.dogewalk.io</ExternalLink>
+        <TitleStyle>About Ladder</TitleStyle>
+        <Typography lineHeight={'140%'} mt={10}>
+          Ladder is a decentralized Automated Market Maker (AMM) protocol that provides instant liquidity for NFTs
+          through liquidity pools. Through Ladder, users can permisionlessly create their own markets that offer NFT
+          holders new revenue streams.
           <br />
-          To find more information on Ladder, please visit:
-          <ExternalLink href="https://ladder.top/">🔗 ladder.top</ExternalLink>
-        </Typography>
-        <br />
-        <Typography lineHeight={'140%'}>
-          ⚠️ Please note: Ladder only supports the standard DWD-SFT, which means the SFT containing exactly 250 $DWD.
-          You can either hold the SFT and unlock the $DWD on or after August 7th, 2024, or you can trade the SFTs right
-          here immediately.
+          Go to 🔗{' '}
+          <ExternalLink sx={{ color: '#1F9898' }} href="https://test.ladder.top/airdrop">
+            [ladder airdrop]
+          </ExternalLink>{' '}
+          to find more tasks to get Ladder Boxes.
         </Typography>
       </Box>
     </Box>
