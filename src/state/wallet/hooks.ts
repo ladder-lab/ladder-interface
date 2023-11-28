@@ -140,7 +140,6 @@ export function useCurrencyBalance(account?: string, currency?: Currency): Curre
   const token721Balance = useToken721Balance(is721 ? (currency as Token721) : undefined)
 
   const balances = useCurrencyBalances(is1155 || is721 ? undefined : account, [currency])[0]
-  console.log('is--->', currency, is721, is1155)
   return is721 ? token721Balance : is1155 ? token1155Balance : balances
 }
 
