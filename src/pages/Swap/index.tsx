@@ -578,7 +578,7 @@ function TokenInfo({
 export function ActivityInfo() {
   const isDownSm = useBreakpoint('sm')
   return (
-    <Box maxWidth={isDownSm ? '100%' : 497} margin={`${isDownSm ? '0 10px 40px ' : '50px 0 0'} `}>
+    <Box maxWidth={isDownSm ? '100%' : 497} margin={`${isDownSm ? '0 10px 40px ' : '54px 0 0'} `}>
       {/* <Typography fontSize={{ xs: 20, md: 34 }} fontWeight={700} lineHeight={'125%'}>
         Welcome to DogeWalk’s SFT AMM trading platform, powered by Ladder.
       </Typography> */}
