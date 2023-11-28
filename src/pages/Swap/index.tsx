@@ -53,11 +53,11 @@ const [currency0, currency1] = [
   // new Token721(137, '0x2871e92209D9B0936FbbB178483877f51C7c9321', undefined)
   // new Token721(137, '0x2871e92209D9B0936FbbB178483877f51C7c9321', undefined)
   ETHER,
-  new Token721(137, '0x01FFb9127D78c9F668e414D0aa633a05C505fA67', undefined, {
+  new Token721(137, '0x9E8Ea82e76262E957D4cC24e04857A34B0D8f062', undefined, {
     name: 'Drago',
-    tokenUri: 'https://api.fansi.me/NFT/biopunk/',
+    tokenUri: 'https://lok-nft.leagueofkingdoms.com/api/drago/',
     symbol: 'DRG',
-    uri: 'https://fansi-static.s3.ap-southeast-1.amazonaws.com/MetaBoom/NFT/GENI/MetaBoom-KEE91AGA7C.png'
+    uri: 'https://polygonscan.com/token/images/lokdrago_32.png'
   })
 ]
 
