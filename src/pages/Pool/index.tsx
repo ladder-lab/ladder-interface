@@ -32,6 +32,7 @@ import QuestionHelper from 'components/essential/QuestionHelper'
 import Spinner from 'components/Spinner'
 import { parseUnits } from 'ethers/lib/utils'
 import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
+import { ActivityInfo } from 'pages/Swap'
 
 const ApprovalButton = styled(Button)(() => ({
   borderRadius: '16px',
@@ -110,34 +111,41 @@ export default function Pool() {
 
   return (
     <>
-      <AppBody width={'100%'} maxWidth={'1140px'}>
-        <Box sx={{ padding: { xs: '20px', md: '30px 32px' } }}>
-          <Box sx={{ padding: '16px 20px', background: theme.palette.background.default, borderRadius: '8px' }}>
-            <Typography sx={{ fontSize: { xs: 18, md: 28 }, fontWeight: 500, mb: 12 }}>
-              Liquid provider rewards
-            </Typography>
-            <Typography sx={{ fontSize: { xs: 14, md: 18 }, fontWeight: 500, color: theme.palette.text.secondary }}>
-              Liquidity providers earn a 0.3% fee on all trades proportional to their share of the pool. Fees are added
-              to the pool, accrue in real time and can be claimed by withdrawing your liquidity. Read more about
-              providing liquidity
-            </Typography>
-          </Box>
-          <Box
-            mt={40}
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-              flexDirection: {
-                xs: 'column',
-                md: 'row'
-              },
-              gap: 24
-            }}
-          >
-            <Typography sx={{ fontSize: { xs: 16, md: 24 } }}>Your Liquidity</Typography>
-            <Box display={'flex'} gap={20} sx={{ width: { xs: '100%', md: 'fit-content' } }}>
-              {/* <Button
+      <Box
+        sx={{
+          display: { xs: 'grid', md: 'flex' },
+          gap: { xs: 20, md: 54 },
+          padding: { xs: 16, md: 0 }
+        }}
+      >
+        <AppBody width={'100%'} maxWidth={'680px'}>
+          <Box sx={{ padding: { xs: '20px', md: '30px 32px' } }}>
+            <Box sx={{ padding: '16px 20px', background: theme.palette.background.default, borderRadius: '8px' }}>
+              <Typography sx={{ fontSize: { xs: 18, md: 28 }, fontWeight: 500, mb: 12 }}>
+                Liquid provider rewards
+              </Typography>
+              <Typography sx={{ fontSize: { xs: 14, md: 18 }, fontWeight: 500, color: theme.palette.text.secondary }}>
+                Liquidity providers earn a 0.3% fee on all trades proportional to their share of the pool. Fees are
+                added to the pool, accrue in real time and can be claimed by withdrawing your liquidity. Read more about
+                providing liquidity
+              </Typography>
+            </Box>
+            <Box
+              mt={40}
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                flexDirection: {
+                  xs: 'column',
+                  md: 'row'
+                },
+                gap: 24
+              }}
+            >
+              <Typography sx={{ fontSize: { xs: 16, md: 24 } }}>Your Liquidity</Typography>
+              <Box display={'flex'} gap={20} sx={{ width: { xs: '100%', md: 'fit-content' } }}>
+                {/* <Button
                 onClick={() => navigate(routes.addLiquidity)}
                 sx={{
                   fontSize: 12,
@@ -150,111 +158,119 @@ export default function Pool() {
               >
                 Create a pair
               </Button> */}
-              {!isLock && (
-                <Button
-                  onClick={() => navigate(routes.addLiquidity)}
-                  sx={{ fontSize: 12, height: 44, width: { xs: 138 }, whiteSpace: 'nowrap', minWidth: 'auto' }}
-                >
-                  Add Liquidity
-                </Button>
-              )}
+                {!isLock && (
+                  <Button
+                    onClick={() => navigate(routes.addLiquidity)}
+                    sx={{ fontSize: 12, height: 44, width: { xs: 138 }, whiteSpace: 'nowrap', minWidth: 'auto' }}
+                  >
+                    Add Liquidity
+                  </Button>
+                )}
+              </Box>
             </Box>
-          </Box>
 
-          {v2IsLoading ? (
-            <Box minHeight={332} display="flex" justifyContent="center" alignItems="center">
-              <Loader size={90} />
-            </Box>
-          ) : account ? (
-            <Grid container mt={20} spacing={20} alignItems="stretch" minHeight={332}>
-              {v2Pairs.length === 0 && (
-                <Grid item xs={12} justifyContent="center" alignItems={'center'}>
-                  <Typography textAlign={'center'} paddingTop={100} color={theme.palette.text.secondary} fontSize={16}>
-                    No Liquidity found
-                  </Typography>
-                </Grid>
-              )}
-              {v2Pairs.map(([, pair], idx) => {
-                if (!pair) return null
-
-                const tokens = trackedTokenPairMap[liquidityTokensWithBalances[idx].liquidityToken.address]
-
-                const [token0, token1] =
-                  pair?.token0.address === ((generateErc20(tokens[0]) as any)?.address ?? '')
-                    ? [tokens[0], tokens[1]]
-                    : [tokens[1], tokens[0]]
-
-                const balance = v2PairsBalances?.[liquidityTokensWithBalances[idx].liquidityToken.address]
-                const totalSupply = totalSupplies?.[liquidityTokensWithBalances[idx].liquidityToken.address]
-                pair.reserveOf
-                const poolTokenPercentage =
-                  totalSupply && balance
-                    ? new Percent(balance.raw, totalSupply.raw).toFixed(2, undefined, 2).trimTrailingZero() + '%'
-                    : '-'
-
-                // const hashedToken0 = generateErc20(token0)
-                // const hashedToken1 = generateErc20(token1)
-
-                // const reserveA =
-                //   totalSupply && balance && hashedToken0
-                //     ? new TokenAmount(token0, pair.getLiquidityValue(hashedToken0, totalSupply, balance, false).raw)
-                //     : new TokenAmount(token0, '0')
-
-                // const reserveB =
-                //   totalSupply && balance && hashedToken1
-                //     ? new TokenAmount(token1, pair.getLiquidityValue(hashedToken1, totalSupply, balance, false).raw)
-                //     : new TokenAmount(token1, '0')
-
-                const [reserveA, reserveB] = [
-                  new TokenAmount(token0, pair.reserve0.raw),
-                  new TokenAmount(token1, pair.reserve1.raw)
-                ]
-
-                const [amountA, amountB] =
-                  checkIs1155(token0) || checkIs721(token0) || token0.symbol === 'WETH' || token0.symbol === 'ETH'
-                    ? [reserveB, reserveA]
-                    : [reserveA, reserveB]
-                const { token1Text, token2Text } = getTokenText(amountA.token, amountB.token)
-
-                return (
-                  <Grid item xs={12} md={6} lg={4} key={pair.liquidityToken.address}>
-                    <PoolCard
-                      currency0={amountA.token}
-                      currency1={amountB.token}
-                      title={`${token1Text} / ${token2Text}
-                      `}
-                      reserve0={amountA.toFixed(6, undefined, 2).trimTrailingZero()}
-                      reserve1={amountB.toFixed(6, undefined, 2).trimTrailingZero()}
-                      shareAmount={poolTokenPercentage}
-                      tokenAmount={balance ? balance?.toExact() : '-'}
-                      onAdd={() => {
-                        navigate(routes.addLiquidity)
-                        // navigate(routes.addLiquidity + liquidityParamBuilder(amountA.token, amountB.token))
-                      }}
-                      onRemove={() =>
-                        navigate(routes.removeLiquidity + liquidityParamBuilder(amountA.token, amountB.token))
-                      }
-                      leftDate={leftDate}
-                      isLock={isLock}
-                    />
+            {v2IsLoading ? (
+              <Box minHeight={332} display="flex" justifyContent="center" alignItems="center">
+                <Loader size={90} />
+              </Box>
+            ) : account ? (
+              <Grid container mt={20} spacing={20} alignItems="stretch" minHeight={332}>
+                {v2Pairs.length === 0 && (
+                  <Grid item xs={12} justifyContent="center" alignItems={'center'}>
+                    <Typography
+                      textAlign={'center'}
+                      paddingTop={100}
+                      color={theme.palette.text.secondary}
+                      fontSize={16}
+                    >
+                      No Liquidity found
+                    </Typography>
                   </Grid>
-                )
-              })}
-            </Grid>
-          ) : (
-            <Box minHeight={332} display="flex" alignItems="center" justifyContent="center">
-              <Button
-                onClick={() => toggleWallet()}
-                style={{
-                  maxWidth: '400px'
-                }}
-              >
-                Connect Wallet
-              </Button>
-            </Box>
-          )}
-        </Box>
-      </AppBody>
+                )}
+                {v2Pairs.map(([, pair], idx) => {
+                  if (!pair) return null
+
+                  const tokens = trackedTokenPairMap[liquidityTokensWithBalances[idx].liquidityToken.address]
+
+                  const [token0, token1] =
+                    pair?.token0.address === ((generateErc20(tokens[0]) as any)?.address ?? '')
+                      ? [tokens[0], tokens[1]]
+                      : [tokens[1], tokens[0]]
+
+                  const balance = v2PairsBalances?.[liquidityTokensWithBalances[idx].liquidityToken.address]
+                  const totalSupply = totalSupplies?.[liquidityTokensWithBalances[idx].liquidityToken.address]
+                  pair.reserveOf
+                  const poolTokenPercentage =
+                    totalSupply && balance
+                      ? new Percent(balance.raw, totalSupply.raw).toFixed(2, undefined, 2).trimTrailingZero() + '%'
+                      : '-'
+
+                  // const hashedToken0 = generateErc20(token0)
+                  // const hashedToken1 = generateErc20(token1)
+
+                  // const reserveA =
+                  //   totalSupply && balance && hashedToken0
+                  //     ? new TokenAmount(token0, pair.getLiquidityValue(hashedToken0, totalSupply, balance, false).raw)
+                  //     : new TokenAmount(token0, '0')
+
+                  // const reserveB =
+                  //   totalSupply && balance && hashedToken1
+                  //     ? new TokenAmount(token1, pair.getLiquidityValue(hashedToken1, totalSupply, balance, false).raw)
+                  //     : new TokenAmount(token1, '0')
+
+                  const [reserveA, reserveB] = [
+                    new TokenAmount(token0, pair.reserve0.raw),
+                    new TokenAmount(token1, pair.reserve1.raw)
+                  ]
+
+                  const [amountA, amountB] =
+                    checkIs1155(token0) || checkIs721(token0) || token0.symbol === 'WETH' || token0.symbol === 'ETH'
+                      ? [reserveB, reserveA]
+                      : [reserveA, reserveB]
+                  const { token1Text, token2Text } = getTokenText(amountA.token, amountB.token)
+
+                  return (
+                    <Grid item xs={12} md={6} lg={8} key={pair.liquidityToken.address}>
+                      <PoolCard
+                        currency0={amountA.token}
+                        currency1={amountB.token}
+                        title={`${token1Text} / ${token2Text}
+                      `}
+                        reserve0={amountA.toFixed(6, undefined, 2).trimTrailingZero()}
+                        reserve1={amountB.toFixed(6, undefined, 2).trimTrailingZero()}
+                        shareAmount={poolTokenPercentage}
+                        tokenAmount={balance ? balance?.toExact() : '-'}
+                        onAdd={() => {
+                          navigate(routes.addLiquidity)
+                          // navigate(routes.addLiquidity + liquidityParamBuilder(amountA.token, amountB.token))
+                        }}
+                        onRemove={() =>
+                          navigate(routes.removeLiquidity + liquidityParamBuilder(amountA.token, amountB.token))
+                        }
+                        leftDate={leftDate}
+                        isLock={isLock}
+                      />
+                    </Grid>
+                  )
+                })}
+              </Grid>
+            ) : (
+              <Box minHeight={332} display="flex" alignItems="center" justifyContent="center">
+                <Button
+                  onClick={() => toggleWallet()}
+                  style={{
+                    maxWidth: '400px'
+                  }}
+                >
+                  Connect Wallet
+                </Button>
+              </Box>
+            )}
+          </Box>
+        </AppBody>
+        <ActivityInfo />
+      </Box>
+
       {/* <Box
         sx={{
           display: 'flex',
@@ -409,7 +425,6 @@ function PoolAssetCard({ currency, value }: { currency: AllTokens; value: string
 }
 
 function LockToken({ tokenAmount }: { tokenAmount: string }) {
-  console.log('🚀 ~ file: index.tsx:411 ~ LockToken ~ tokenAmount:', tokenAmount)
   const theme = useTheme()
   const { account } = useActiveWeb3React()
   const { LockLPCallback, loading: lockLoading } = useLockLPToken()
@@ -538,27 +553,16 @@ function WithdrawLockLPToken({ leftDate }: { leftDate: any }) {
         >
           {!isEndTime && (
             <>
-              <ClockIcon /> {DateTxt} {!isEndTime && <QuestionHelper text="It is not yet claim time" />}
+              <ClockIcon /> {DateTxt}
             </>
           )}
         </Typography>
-        <Button
-          disabled={!isEndTime || claimLoading}
-          sx={{
-            borderRadius: '16px',
-            width: 100,
-            height: 44,
-            padding: 1,
-            ':hover': {
-              opacity: 0.7
-            }
-          }}
-          onClick={ClaimLockLPCallback}
-        >
+
+        {!isEndTime ? (
           <Typography
             sx={{
-              width: '100px',
-              height: '100%',
+              width: '145px',
+              height: 44,
               background: '#060606',
               color: '#fff',
               fontFamily: 'Lato',
@@ -571,9 +575,42 @@ function WithdrawLockLPToken({ leftDate }: { leftDate: any }) {
               gap: 8
             }}
           >
-            {claimLoading && <Spinner marginRight={16} />} Claim
+            Claim <QuestionHelper text="It is not yet claim time" />
           </Typography>
-        </Button>
+        ) : (
+          <Button
+            disabled={!isEndTime || claimLoading}
+            sx={{
+              borderRadius: '16px',
+              width: 145,
+              height: 44,
+              padding: 1,
+              ':hover': {
+                opacity: 0.7
+              }
+            }}
+            onClick={ClaimLockLPCallback}
+          >
+            <Typography
+              sx={{
+                width: '145px',
+                height: '100%',
+                background: '#060606',
+                color: '#fff',
+                fontFamily: 'Lato',
+                fontSize: '16px',
+                fontWeight: '600',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: '16px',
+                gap: 8
+              }}
+            >
+              {claimLoading && <Spinner />} Claim
+            </Typography>
+          </Button>
+        )}
       </Box>
     </Box>
   )

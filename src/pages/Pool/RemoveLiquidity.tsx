@@ -299,6 +299,7 @@ export default function RemoveLiquidity() {
                 onAction={burnApproveCallback}
                 disableAction={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
                 pending={approval === ApprovalState.PENDING}
+                height="60px"
                 success={approval === ApprovalState.APPROVED || signatureData !== null}
                 pendingText={'Approving'}
                 successText="Approved"
