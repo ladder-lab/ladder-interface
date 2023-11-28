@@ -12,6 +12,13 @@ import { useSingleCallResult } from 'state/multicall/hooks'
 import { getTimeDifference } from 'components/Timer'
 import { calculateGasMargin } from '../utils'
 
+export interface LeftDateProps {
+  days: number
+  hours: number
+  minutes: number
+  seconds: number
+}
+
 export function useLockLPToken() {
   const contract = useLockContract()
   const getGasPrice = useGasPriceInfo()
@@ -68,7 +75,7 @@ export function useIsLockLPTokenCallback() {
 
   const LockTokenInfo = useMemo(() => LockTokenInfoRes.result, [LockTokenInfoRes.result])
 
-  const leftDate = useMemo(() => {
+  const leftDate: LeftDateProps = useMemo(() => {
     const time = LockTokenInfo?.unlockTime ? Number(LockTokenInfo?.unlockTime.toString()) * 1000 : 0
     const endTime = getTimeDifference(time)
 

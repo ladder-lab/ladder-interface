@@ -24,7 +24,12 @@ import { ReactComponent as LockSvg } from 'assets/svg/lock_icon.svg'
 import { ReactComponent as LockGreySvg } from 'assets/svg/lock_grey.svg'
 import { ReactComponent as ClockIcon } from 'assets/svg/clockIcon.svg'
 import { currencyA, currencyB } from './AddLiquidity'
-import { useClaimLockLPTokenCallback, useIsLockLPTokenCallback, useLockLPToken } from 'hooks/useLockLPTokenCallback'
+import {
+  LeftDateProps,
+  useClaimLockLPTokenCallback,
+  useIsLockLPTokenCallback,
+  useLockLPToken
+} from 'hooks/useLockLPTokenCallback'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { LOCK_LP_TOKEN, LOCK_LIQUIDITY_CONTRACT_ADDRESS } from '../../constants'
 import { tryParseAmount } from 'utils/parseAmount'
@@ -314,7 +319,7 @@ function PoolCard({
   tokenAmount: string
   onAdd: () => void
   onRemove: () => void
-  leftDate: any
+  leftDate: LeftDateProps
   isLock: boolean
 }) {
   const theme = useTheme()
@@ -487,21 +492,22 @@ function LockToken({ tokenAmount }: { tokenAmount: string }) {
       )}
 
       <LockButton
-        disabled={!isApproval || lockLoading}
+        disabled={!isApproval || lockLoading || isLockLPing}
         onClick={() => {
           LockLPCallback(LockAmount)
         }}
       >
-        {lockLoading ? <Spinner marginRight={16} /> : <LockSvg />} 7-Day Lock
+        {lockLoading || isLockLPing ? <Spinner marginRight={16} /> : <LockSvg />} 7-Day Lock
       </LockButton>
     </Stack>
   )
 }
 
-function WithdrawLockLPToken({ leftDate }: { leftDate: any }) {
+function WithdrawLockLPToken({ leftDate }: { leftDate: LeftDateProps }) {
   const { account } = useActiveWeb3React()
 
   const { ClaimLockLPCallback, loading: claimLoading } = useClaimLockLPTokenCallback()
+  console.log('🚀 ~ file: index.tsx:510 ~ WithdrawLockLPToken ~ claimLoading:', claimLoading)
 
   const { claimSubmitted: isClaiming } = useUserHasSubmittedClaim(`${account}_withdraw_lp`)
 
@@ -572,6 +578,7 @@ function WithdrawLockLPToken({ leftDate }: { leftDate: any }) {
               justifyContent: 'center',
               alignItems: 'center',
               borderRadius: '16px',
+              userSelect: 'none',
               gap: 8
             }}
           >
@@ -579,7 +586,7 @@ function WithdrawLockLPToken({ leftDate }: { leftDate: any }) {
           </Typography>
         ) : (
           <Button
-            disabled={!isEndTime || claimLoading}
+            disabled={!isEndTime || claimLoading || isClaiming}
             sx={{
               borderRadius: '16px',
               width: 145,
@@ -607,7 +614,7 @@ function WithdrawLockLPToken({ leftDate }: { leftDate: any }) {
                 gap: 8
               }}
             >
-              {claimLoading && <Spinner />} Claim
+              {(claimLoading || isClaiming) && <Spinner />} Claim
             </Typography>
           </Button>
         )}

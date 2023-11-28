@@ -89,6 +89,8 @@ export function useHasPendingApproval(tokenAddress: string | undefined, spender:
 export function useUserHasSubmittedClaim(account?: string): {
   claimSubmitted: boolean
   claimTxn: TransactionDetails | undefined
+  claimedSubmitSuccess: boolean
+  claimedSuccess: TransactionDetails | undefined
 } {
   const allTransactions = useAllTransactions()
 
@@ -96,12 +98,30 @@ export function useUserHasSubmittedClaim(account?: string): {
   const claimTxn = useMemo(() => {
     const txnIndex = Object.keys(allTransactions).find(hash => {
       const tx = allTransactions[hash]
-      return tx.claim && tx.claim.recipient === account
+      return (
+        tx.claim &&
+        tx.claim.recipient.toLowerCase() === account?.toLowerCase() &&
+        !tx.receipt &&
+        isTransactionRecent(tx)
+      )
     })
     return txnIndex && allTransactions[txnIndex] ? allTransactions[txnIndex] : undefined
   }, [account, allTransactions])
 
-  return { claimSubmitted: Boolean(claimTxn), claimTxn }
+  const claimedSuccess = useMemo(() => {
+    const txnIndex = Object.keys(allTransactions).find(hash => {
+      const tx = allTransactions[hash]
+      return tx.claim && tx.claim.recipient.toLowerCase() === account?.toLowerCase() && isTransactionRecent(tx)
+    })
+    return txnIndex && allTransactions[txnIndex] ? allTransactions[txnIndex] : undefined
+  }, [account, allTransactions])
+
+  return {
+    claimSubmitted: Boolean(claimTxn),
+    claimTxn,
+    claimedSubmitSuccess: Boolean(claimedSuccess),
+    claimedSuccess
+  }
 }
 
 export function useUserHasSubmitted(account?: string): {
