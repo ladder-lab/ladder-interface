@@ -39,7 +39,7 @@ import { ActivityInfo } from 'pages/Swap'
 
 export const [currencyA, currencyB] = [
   new Token(137, '0x0000000000000000000000000000000000001010', 18, 'MATIC', 'Matic Token'),
-  new Token721(137, '0x9E8Ea82e76262E957D4cC24e04857A34B0D8f062', undefined, {
+  new Token721(137, '0x01FFb9127D78c9F668e414D0aa633a05C505fA67', undefined, {
     name: 'Drago',
     tokenUri: 'https://api.fansi.me/NFT/biopunk/',
     symbol: 'DRG',
