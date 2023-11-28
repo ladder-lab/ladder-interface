@@ -60,8 +60,8 @@ export function useMintCallback(currencyA: AllTokens | undefined, currencyB: All
     const isA1155 = checkIs1155(currencyA) || checkIs721(currencyA)
     const isB1155 = checkIs1155(currencyB) || checkIs721(currencyB)
 
-    if (currencyA === ETHER || currencyB === ETHER) {
-      const tokenBIsETH = currencyB === ETHER
+    if (currencyA.symbol === 'ETH' || currencyB.symbol === 'ETH') {
+      const tokenBIsETH = currencyB.symbol === 'ETH'
       const noNft = !isA1155 && !isB1155
       const methodName = noNft ? 'addLiquidityETH' : is721Pair ? 'addLiquidityETH721' : 'addLiquidityETH1155'
       estimate = router.estimateGas[methodName]
