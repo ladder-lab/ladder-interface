@@ -35,9 +35,9 @@ export default function CurrencyLogo({
       return []
     }
 
-    if (currency?.symbol === 'ETH') {
+    if (currency?.symbol === 'MATIC') {
       const uri = (tokenLogoUriList as any)[
-        SUPPORTED_NETWORKS[chainId ?? NETWORK_CHAIN_ID]?.nativeCurrency.symbol ?? 'ETH'
+        SUPPORTED_NETWORKS[chainId ?? NETWORK_CHAIN_ID]?.nativeCurrency.symbol ?? 'MATIC'
       ]
       if (uri) return [uri]
     }
