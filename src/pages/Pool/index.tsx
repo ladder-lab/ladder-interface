@@ -24,6 +24,7 @@ import { ReactComponent as LockSvg } from 'assets/svg/lock_icon.svg'
 import { ReactComponent as LockGreySvg } from 'assets/svg/lock_grey.svg'
 import { ReactComponent as ClockIcon } from 'assets/svg/clockIcon.svg'
 import { currencyB } from './AddLiquidity'
+
 import {
   LeftDateProps,
   useClaimLockLPTokenCallback,
