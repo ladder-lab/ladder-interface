@@ -1,6 +1,6 @@
 import { useCallback, useState, ChangeEvent, useMemo, useEffect } from 'react'
 import { Typography, Box, Button, styled } from '@mui/material'
-import { CurrencyAmount, ETHER, JSBI, Pair, Token, Trade } from '@ladder/sdk'
+import { CurrencyAmount, ETHER, JSBI, Pair, Trade } from '@ladder/sdk'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
 import { ReactComponent as SwitchCircle } from 'assets/svg/switch_circle.svg'
@@ -52,8 +52,13 @@ const [currency0, currency1] = [
   // new Token(137, '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063', 18, 'DAI', 'DAI'),
   // new Token721(137, '0x2871e92209D9B0936FbbB178483877f51C7c9321', undefined)
   // new Token721(137, '0x2871e92209D9B0936FbbB178483877f51C7c9321', undefined)
-  new Token(11155111, '0x55979784068d1BEf37B49F41cAC8040A4b79C4a7', 18, 'USDC', 'USDC'),
-  new Token721(11155111, '0x3ec2Bb9E04C8DB50fb77E170BF9116B330293209', undefined)
+  ETHER,
+  new Token721(137, '0x01FFb9127D78c9F668e414D0aa633a05C505fA67', undefined, {
+    name: 'Drago',
+    tokenUri: 'https://api.fansi.me/NFT/biopunk/',
+    symbol: 'DRG',
+    uri: 'https://fansi-static.s3.ap-southeast-1.amazonaws.com/MetaBoom/NFT/GENI/MetaBoom-KEE91AGA7C.png'
+  })
 ]
 
 export default function Swap() {
