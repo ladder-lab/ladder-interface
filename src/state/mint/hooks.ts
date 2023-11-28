@@ -76,7 +76,6 @@ export function useDerivedMintInfo(
   error?: string
 } {
   const { account, chainId } = useActiveWeb3React()
-
   const { independentField, typedValue, otherTypedValue } = useMintState()
 
   const dependentField = independentField === Field.CURRENCY_A ? Field.CURRENCY_B : Field.CURRENCY_A
@@ -90,11 +89,11 @@ export function useDerivedMintInfo(
     }),
     [currencyA, currencyB, chainId]
   )
-
+  console.log('tag--->', wrappedCurrency(currencyA, chainId))
   const currenciesRaw = useMemo(() => {
     return {
-      [Field.CURRENCY_A]: currencyA === ETHER ? ETHER : generateErc20(wrappedCurrency(currencyA, chainId)),
-      [Field.CURRENCY_B]: currencyB === ETHER ? ETHER : generateErc20(wrappedCurrency(currencyB, chainId))
+      [Field.CURRENCY_A]: currencyA?.symbol === 'ETH' ? ETHER : generateErc20(wrappedCurrency(currencyA, chainId)),
+      [Field.CURRENCY_B]: currencyB?.symbol === 'ETH' ? ETHER : generateErc20(wrappedCurrency(currencyB, chainId))
     }
   }, [chainId, currencyA, currencyB])
 
@@ -111,6 +110,7 @@ export function useDerivedMintInfo(
   // balances
 
   const balanceA = useCurrencyBalance(account ?? undefined, currencyA ?? undefined)
+  console.log('balanceA', balanceA)
   const balanceB = useCurrencyBalance(account ?? undefined, currencyB ?? undefined)
 
   const currencyBalances: { [field in Field]?: CurrencyAmount } = useMemo(

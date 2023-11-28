@@ -70,9 +70,9 @@ export default function Pool() {
     const lpTokens = trackedTokenPairs
       .filter(
         ([token0, token1]) =>
-          (token0.address.toLocaleLowerCase() === currencyA.address.toLocaleLowerCase() &&
+          (token0.address.toLocaleLowerCase() === currencyA?.address?.toLocaleLowerCase() &&
             token1.address.toLocaleLowerCase() === currencyB.address.toLocaleLowerCase()) ||
-          (token1.address.toLocaleLowerCase() === currencyA.address.toLocaleLowerCase() &&
+          (token1.address.toLocaleLowerCase() === currencyA?.address?.toLocaleLowerCase() &&
             token0.address.toLocaleLowerCase() === currencyB.address.toLocaleLowerCase())
       )
       .map(tokens => {

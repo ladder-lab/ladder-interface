@@ -5,7 +5,7 @@ import ERC2721_ABI from 'constants/abis/erc721.json'
 import { use1155Contract, use721Contract, useMulticallContract } from '../../hooks/useContract'
 import { getContract, isAddress } from '../../utils'
 import { useSingleContractMultipleData, useMultipleContractSingleData, useSingleCallResult } from '../multicall/hooks'
-import { Currency, ETHER, Token, JSBI, CurrencyAmount, TokenAmount, ChainId } from '@ladder/sdk'
+import { Currency, Token, JSBI, CurrencyAmount, TokenAmount, ChainId } from '@ladder/sdk'
 import { useActiveWeb3React } from 'hooks'
 import { useAllTokens } from 'hooks/Tokens'
 import { Token1155 } from 'constants/token/token1155'
@@ -114,7 +114,10 @@ export function useCurrencyBalances(
   )
 
   const tokenBalances = useTokenBalances(account, tokens)
-  const containsETH: boolean = useMemo(() => currencies?.some(currency => currency === ETHER) ?? false, [currencies])
+  const containsETH: boolean = useMemo(
+    () => currencies?.some(currency => currency?.symbol === 'ETH') ?? false,
+    [currencies]
+  )
   const ethBalance = useETHBalances(containsETH ? [account] : [])
 
   return useMemo(
@@ -122,7 +125,7 @@ export function useCurrencyBalances(
       currencies?.map(currency => {
         if (!account || !currency) return undefined
         if (currency instanceof Token) return tokenBalances[currency.address]
-        if (currency === ETHER) return ethBalance[account]
+        if (currency.symbol === 'ETH') return ethBalance[account]
         return undefined
       }) ?? [],
     [account, currencies, ethBalance, tokenBalances]
@@ -137,7 +140,7 @@ export function useCurrencyBalance(account?: string, currency?: Currency): Curre
   const token721Balance = useToken721Balance(is721 ? (currency as Token721) : undefined)
 
   const balances = useCurrencyBalances(is1155 || is721 ? undefined : account, [currency])[0]
-
+  console.log('is--->', currency, is721, is1155)
   return is721 ? token721Balance : is1155 ? token1155Balance : balances
 }
 

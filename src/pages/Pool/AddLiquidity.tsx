@@ -2,7 +2,7 @@ import { useCallback, useState, ChangeEvent, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { routes } from 'constants/routes'
 import { Typography, Box, useTheme, Button } from '@mui/material'
-import { Token, TokenAmount } from '@ladder/sdk'
+import { TokenAmount } from '@ladder/sdk'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
 import { ReactComponent as AddCircle } from 'assets/svg/add_circle.svg'
@@ -36,9 +36,10 @@ import usePriceCorrection from 'hooks/usePriceCorrection'
 import { replaceErrorMessage } from 'utils'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { ActivityInfo } from 'pages/Swap'
+import { ETHER } from '../../constants/token'
 
 export const [currencyA, currencyB] = [
-  new Token(137, '0x0000000000000000000000000000000000001010', 18, 'MATIC', 'Matic Token'),
+  ETHER,
   new Token721(137, '0x01FFb9127D78c9F668e414D0aa633a05C505fA67', undefined, {
     name: 'Drago',
     tokenUri: 'https://api.fansi.me/NFT/biopunk/',
