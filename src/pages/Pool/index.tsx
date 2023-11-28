@@ -235,7 +235,8 @@ export default function Pool() {
                   const { token1Text, token2Text } = getTokenText(amountA.token, amountB.token)
 
                   return (
-                    <Grid item xs={12} md={6} lg={8} key={pair.liquidityToken.address}>
+                    // <Grid item xs={4} md={6} lg={8} key={pair.liquidityToken.address}>
+                    <Grid item lg={8} key={pair.liquidityToken.address}>
                       <PoolCard
                         currency0={amountA.token}
                         currency1={amountB.token}

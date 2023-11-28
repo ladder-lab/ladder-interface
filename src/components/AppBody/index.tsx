@@ -11,7 +11,7 @@ const Root = styled('div')(({ theme }) => ({
   justifyContent: 'center',
   border: '1px solid rgba(255, 255, 255, 0.2)',
   boxSizing: 'border-box',
-  overflow: 'auto',
+  // overflow: 'auto',
   [theme.breakpoints.down('md')]: {
     width: '100%!important',
     maxWidth: 'unset',
