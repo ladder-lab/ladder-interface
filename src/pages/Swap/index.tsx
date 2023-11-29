@@ -598,7 +598,7 @@ export function ActivityInfo() {
             Token Airdrop Box as well.
           </Typography>
           <br />
-          To track your progress and for more tasks visit: 🔗{' '}
+          To track your progress and for more tasks visit: 🔗
           <ExternalLink sx={{ color: '#1F9898' }} href="https://galxe.com/dewgg/campaign/GCoHXUnvTW">
             https://galxe.com/dewgg/campaign/GCoHXUnvTW
           </ExternalLink>
@@ -609,9 +609,10 @@ export function ActivityInfo() {
         <TitleStyle>About League of Kingdoms</TitleStyle>
 
         <Typography lineHeight={'140%'} mt={10}>
-          League of Kingdoms is an MMO Strategy game where players forge kingdoms and fight for dominion. Dragos are
-          dragon-like creatures that dwell in the continents of the League of Kingdoms and have historically been tamed
-          by royal courts.
+          League of Kingdoms is an MMO Strategy game where players forge kingdoms and fight for dominion.
+          <br />
+          Dragos are dragon-like creatures that dwell in the continents of the League of Kingdoms and have historically
+          been tamed by royal courts.
         </Typography>
         <br />
         <TitleStyle>About Ladder</TitleStyle>
