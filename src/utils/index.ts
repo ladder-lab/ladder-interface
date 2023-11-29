@@ -219,4 +219,9 @@ export function getUTC0MondayMidnightTimestamp(): number {
 const utc0MondayMidnightTimestamp = getUTC0MondayMidnightTimestamp()
 console.log(utc0MondayMidnightTimestamp)
 
-// export function
+export function replaceNativeTokenName(name: string | undefined, chainId?: number) {
+  if (name === 'ETH' && chainId === ChainId.MATIC) {
+    return 'MATIC'
+  }
+  return name
+}

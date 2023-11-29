@@ -32,7 +32,8 @@ import { generateErc20 } from 'utils/getHashAddress'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
 import { useIsDarkMode } from 'state/user/hooks'
 import { getSymbol } from 'utils/getSymbol'
-import { replaceErrorMessage } from 'utils'
+import { replaceErrorMessage, replaceNativeTokenName } from 'utils'
+import { ChainId } from 'constants/chain'
 
 enum Mode {
   SIMPLE,
@@ -164,7 +165,7 @@ export default function RemoveLiquidity() {
       : [currencyB, currencyA]
   }, [currencyA, currencyB, pair?.token0.address, chainId])
 
-  const { Token1Text, Token2Text } = getTokenText(assets[0], assets[1])
+  const { Token1Text, Token2Text, token1Text, token2Text } = getTokenText(assets[0], assets[1])
 
   const priceA = pair?.token0Price.equalTo('0')
     ? '0'
@@ -172,6 +173,13 @@ export default function RemoveLiquidity() {
   const priceB = pair?.token1Price.equalTo('0')
     ? '0'
     : pair?.token1Price?.toFixed(6, undefined, 2).trimTrailingZero() ?? '-'
+
+  const IsMATIC = useMemo(() => {
+    if (chainId === ChainId.MATIC) {
+      return true
+    }
+    return false
+  }, [chainId])
   return (
     <>
       <ConfirmRemoveModal
@@ -275,10 +283,14 @@ export default function RemoveLiquidity() {
             <Typography sx={{ fontSize: 18 }}>Price</Typography>
             <Box display="grid" gap={12}>
               <Typography sx={{ color: theme.palette.text.secondary, fontSize: 18 }}>
-                1 <Token1Text fontSize={18} /> = {priceA} <Token2Text fontSize={18} />
+                1{IsMATIC ? replaceNativeTokenName(token1Text, chainId) : <Token1Text fontSize={18} />}= {priceA}
+                {IsMATIC ? replaceNativeTokenName(token2Text, chainId) : <Token2Text fontSize={18} />}
+                {/* 1 <Token1Text fontSize={18} /> = {priceA} <Token1Text fontSize={18} /> */}
               </Typography>
               <Typography sx={{ color: theme.palette.text.secondary, fontSize: 18 }}>
-                1 <Token2Text fontSize={18} /> = {priceB} <Token1Text fontSize={18} />
+                1{IsMATIC ? replaceNativeTokenName(token2Text, chainId) : <Token2Text fontSize={18} />}= {priceB}
+                {IsMATIC ? replaceNativeTokenName(token1Text, chainId) : <Token1Text fontSize={18} />}
+                {/* 1 <Token2Text fontSize={18} /> = {priceB} <Token1Text fontSize={18} /> */}
               </Typography>
             </Box>
           </Box>
@@ -440,8 +452,16 @@ function InputCard({
   currency0: AllTokens | undefined
   currency1: AllTokens | undefined
 }) {
+  const { chainId } = useActiveWeb3React()
   const theme = useTheme()
-  const { Token1Text, Token2Text } = getTokenText(currency0, currency1)
+  const { Token1Text, Token2Text, toke1Text, token2Text } = getTokenText(currency0, currency1)
+
+  const IsMATIC = useMemo(() => {
+    if (chainId === ChainId.MATIC) {
+      return true
+    }
+    return false
+  }, [chainId])
 
   return (
     <Card color={theme.palette.background.default} padding="24px" style={{ marginTop: 16 }}>
@@ -455,12 +475,11 @@ function InputCard({
           <Box display="flex" gap={11} alignItems="center">
             <DoubleCurrencyLogo currency0={currency0} currency1={currency1} />
             <Typography>
-              <Token1Text />
+              {IsMATIC ? replaceNativeTokenName(toke1Text, chainId) : <Token1Text />}
               {/* <Typography component="span" color={token1Is1155 ? 'primary' : undefined}>
                 {token1Text}
               </Typography> */}
-              :
-              <Token2Text />
+              :{IsMATIC ? replaceNativeTokenName(token2Text, chainId) : <Token2Text />}
               {/* <Typography component="span" color={token1Is1155 ? undefined : 'primary'}>
                 {token2Text}
               </Typography> */}
@@ -474,6 +493,7 @@ function InputCard({
 
 function OutputCard({ value, currency }: { value: string; currency: AllTokens | undefined }) {
   const theme = useTheme()
+  const { chainId } = useActiveWeb3React()
 
   const { token1Text } = getTokenText(currency)
 
@@ -486,7 +506,7 @@ function OutputCard({ value, currency }: { value: string; currency: AllTokens | 
         </Box>
         <Box display="flex" gap={12} alignItems="center">
           {currency && <CurrencyLogo currency={currency} />}
-          <Typography>{token1Text}</Typography>
+          <Typography>{replaceNativeTokenName(token1Text, chainId)}</Typography>
         </Box>
       </Box>
     </Card>

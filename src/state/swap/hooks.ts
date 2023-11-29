@@ -6,7 +6,7 @@ import useENS from '../../hooks/useENS'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import { useTradeExactIn, useTradeExactOut } from 'hooks/Trades'
-import { isAddress } from '../../utils'
+import { isAddress, replaceNativeTokenName } from '../../utils'
 import { AppDispatch, AppState } from '../index'
 import { useCurrencyBalance } from '../wallet/hooks'
 import { Field, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
@@ -224,7 +224,7 @@ export function useDerivedSwapInfo(): {
   const [balanceIn, amountIn] = [inputBalance, slippageAdjustedAmounts ? slippageAdjustedAmounts[Field.INPUT] : null]
 
   if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
-    inputError = 'Insufficient ' + amountIn.currency.symbol + ' balance'
+    inputError = 'Insufficient ' + replaceNativeTokenName(amountIn.currency.symbol, chainId) + ' balance'
   }
   if (
     (is721Input && is721Output) ||

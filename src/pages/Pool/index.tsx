@@ -39,6 +39,7 @@ import Spinner from 'components/Spinner'
 import { parseUnits } from 'ethers/lib/utils'
 import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
 import { ActivityInfo } from 'pages/Swap'
+import { replaceNativeTokenName } from 'utils'
 
 const ApprovalButton = styled(Button)(() => ({
   borderRadius: '16px',
@@ -58,7 +59,7 @@ const LockButton = styled(Button)(() => ({
 export default function Pool() {
   const theme = useTheme()
   const navigate = useNavigate()
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const toggleWallet = useWalletModalToggle()
   const [lpTokenAddress, setLpTokenAddress] = useState<string>('')
   const { leftDate, isLock } = useIsLockLPTokenCallback()
@@ -239,7 +240,10 @@ export default function Pool() {
                       <PoolCard
                         currency0={amountA.token}
                         currency1={amountB.token}
-                        title={`${token1Text} / ${token2Text}
+                        title={`${replaceNativeTokenName(token1Text, chainId)} / ${replaceNativeTokenName(
+                          token2Text,
+                          chainId
+                        )}
                       `}
                         reserve0={amountA.toFixed(6, undefined, 2).trimTrailingZero()}
                         reserve1={amountB.toFixed(6, undefined, 2).trimTrailingZero()}

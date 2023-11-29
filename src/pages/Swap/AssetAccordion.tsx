@@ -10,7 +10,7 @@ import Copy from 'components/essential/Copy'
 // import SampleNftImg from 'assets/images/sample-nft.png'
 import LogoText from 'components/LogoText'
 import { ExternalLink } from 'theme/components'
-import { shortenAddress } from 'utils'
+import { replaceNativeTokenName, shortenAddress } from 'utils'
 import { getName } from 'utils/getSymbol'
 import { Token721 } from 'constants/token/token721'
 import TestnetV3Mark from 'components/TestnetV3Mark'
@@ -65,7 +65,8 @@ export function AssetAccordion({
         <CurrencyLogo currency={token} style={{ width: 36 }} />
         <Box display="flex" flexDirection="column" gap={8} width="100%">
           <Typography color={theme.palette.text.secondary} display="flex" alignItems="center" component="div">
-            Name: {getTokenText(token).token1Text ?? '-'} <TestnetV3Mark addresss={[_token?.address]} />
+            Name: {replaceNativeTokenName(getTokenText(token).token1Text, chainId) ?? '-'}
+            <TestnetV3Mark addresss={[_token?.address]} />
           </Typography>
           <Typography
             color={theme.palette.text.secondary}
@@ -94,7 +95,7 @@ export function AssetAccordion({
         <Tag sx={{ position: 'absolute', right: 0, top: 0 }}>{is1155 ? 'ERC1155' : is721 ? 'ERC721' : 'ERC20'}</Tag>
       </Box>
     )
-  }, [token, theme.palette.text.secondary, _token?.address, isDownSm, is1155, is721])
+  }, [token, theme.palette.text.secondary, chainId, _token?.address, isDownSm, is1155, is721])
 
   const details = useMemo(() => {
     return (

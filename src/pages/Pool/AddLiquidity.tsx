@@ -33,7 +33,7 @@ import { Token721 } from 'constants/token/token721'
 import { generateErc20 } from 'utils/getHashAddress'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
 import usePriceCorrection from 'hooks/usePriceCorrection'
-import { replaceErrorMessage } from 'utils'
+import { replaceErrorMessage, replaceNativeTokenName } from 'utils'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { ActivityInfo } from 'pages/Swap'
 import { ETHER } from '../../constants/token'
@@ -323,8 +323,14 @@ export default function AddLiquidy() {
                 <>
                   <PriceAndPoolShare
                     data={{
-                      [`${assetsTexts.token2Text} per ${assetsTexts.token1Text}`]: priceA ?? '-',
-                      [`${assetsTexts.token1Text} per ${assetsTexts.token2Text}`]: priceB ?? '-',
+                      [`${replaceNativeTokenName(assetsTexts.token2Text, chainId)} per ${replaceNativeTokenName(
+                        assetsTexts.token1Text,
+                        chainId
+                      )}`]: priceA ?? '-',
+                      [`${replaceNativeTokenName(assetsTexts.token1Text, chainId)} per ${replaceNativeTokenName(
+                        assetsTexts.token2Text,
+                        chainId
+                      )}`]: priceB ?? '-',
                       ['Share of pool']: `${shareOfPool}
                       %`
                     }}

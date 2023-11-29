@@ -4,6 +4,8 @@ import Card from 'components/Card'
 import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
 import Tag from 'components/Tag'
 import { checkTokenType, getTokenText } from 'utils/checkIs1155'
+import { replaceNativeTokenName } from 'utils'
+import { useActiveWeb3React } from 'hooks'
 
 export default function PositionCard({
   assetA,
@@ -24,12 +26,13 @@ export default function PositionCard({
   liquidityA?: string
   liquidityB?: string
 }) {
+  const { chainId } = useActiveWeb3React()
   const theme = useTheme()
   const { token1Text, token2Text } = getTokenText(assetA ?? undefined, assetB ?? undefined)
   const data = {
     ['Your pool share']: poolShare ?? '-' + ' %',
-    [`${token1Text ?? '-'} in pool`]: liquidityA ?? '-',
-    [`${token2Text ?? ''} in pool`]: liquidityB ?? '-'
+    [`${replaceNativeTokenName(token1Text, chainId) ?? '-'} in pool`]: liquidityA ?? '-',
+    [`${replaceNativeTokenName(token2Text, chainId) ?? ''} in pool`]: liquidityB ?? '-'
   }
   return (
     <>
@@ -75,7 +78,7 @@ export default function PositionCard({
               <Box display={{ xs: 'grid', sm: 'flex' }} gap={15} alignItems="center">
                 <DoubleCurrencyLogo currency0={assetA ?? undefined} currency1={assetB ?? undefined} size={24} />
                 <Typography fontWeight={500} fontSize={16}>
-                  {token1Text + '/' + token2Text}
+                  {replaceNativeTokenName(token1Text, chainId) + '/' + replaceNativeTokenName(token2Text, chainId)}
                 </Typography>
               </Box>
               <Typography fontSize={16} fontWeight={700}>
