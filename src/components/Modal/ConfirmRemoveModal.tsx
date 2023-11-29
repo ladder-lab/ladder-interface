@@ -6,6 +6,10 @@ import AddIcon from '@mui/icons-material/Add'
 import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
 import Tag from 'components/Tag'
 import { checkIs1155, checkIs721, getTokenText } from 'utils/checkIs1155'
+import { useActiveWeb3React } from 'hooks'
+import { replaceNativeTokenName } from 'utils'
+import { useMemo } from 'react'
+import { ChainId } from 'constants/chain'
 
 export default function ConfirmRemoveModal({
   onConfirm,
@@ -32,6 +36,7 @@ export default function ConfirmRemoveModal({
 }) {
   const theme = useTheme()
   const { token1Text, token2Text } = getTokenText(tokenA, tokenB)
+  const { chainId } = useActiveWeb3React()
 
   return (
     <Modal closeIcon customIsOpen={isOpen} customOnDismiss={onDismiss}>
@@ -57,7 +62,7 @@ export default function ConfirmRemoveModal({
             {valA}
           </Typography>
           <Typography fontSize={{ xs: 18, md: 20 }} fontWeight={400}>
-            {token1Text}
+            {replaceNativeTokenName(token1Text, chainId)}
           </Typography>
         </Box>
         <AddIcon sx={{ color: theme.palette.text.secondary, ml: 8 }} />
@@ -66,7 +71,7 @@ export default function ConfirmRemoveModal({
             {valB}
           </Typography>
           <Typography fontSize={{ xs: 18, md: 20 }} fontWeight={400}>
-            {token2Text}
+            {replaceNativeTokenName(token2Text, chainId)}
           </Typography>
         </Box>
 
@@ -100,8 +105,15 @@ function RemoveLiquidityDetails({
   rateToken2Token1: string
 }) {
   const theme = useTheme()
-  const { Token1Text, Token2Text } = getTokenText(token1, token2)
+  const { Token1Text, Token2Text, token1Text, token2Text } = getTokenText(token1, token2)
+  const { chainId } = useActiveWeb3React()
 
+  const IsMATIC = useMemo(() => {
+    if (chainId === ChainId.MATIC) {
+      return true
+    }
+    return false
+  }, [chainId])
   return (
     <Box
       sx={{
@@ -135,10 +147,12 @@ function RemoveLiquidityDetails({
         </Typography>
         <Box display="grid" gap={8} justifyItems={'flex-end'}>
           <Typography fontSize={16} fontWeight={400}>
-            1 <Token1Text fontSize={16} /> = {rateToken1Token2} <Token2Text fontSize={16} />
+            1{IsMATIC ? replaceNativeTokenName(token1Text, chainId) : <Token1Text fontSize={16} />} = {rateToken1Token2}{' '}
+            {IsMATIC ? replaceNativeTokenName(token2Text, chainId) : <Token2Text fontSize={16} />}
           </Typography>
           <Typography fontSize={16} fontWeight={400}>
-            1 <Token2Text fontSize={16} />= {rateToken2Token1} <Token1Text fontSize={16} />
+            1 {IsMATIC ? replaceNativeTokenName(token2Text, chainId) : <Token2Text fontSize={16} />}= {rateToken2Token1}{' '}
+            {IsMATIC ? replaceNativeTokenName(token1Text, chainId) : <Token1Text fontSize={16} />}
           </Typography>
         </Box>
       </Box>

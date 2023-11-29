@@ -11,6 +11,9 @@ import { HelperText } from 'constants/helperText'
 import { AllTokens } from 'models/allTokens'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { getTokenText } from 'utils/checkIs1155'
+import { ChainId } from 'constants/chain'
+import { useActiveWeb3React } from 'hooks'
+import { replaceNativeTokenName } from 'utils'
 
 export function SwapSummary({
   fromAsset,
@@ -37,9 +40,18 @@ export function SwapSummary({
   toVal?: string
   price?: string
 }) {
+  const { chainId } = useActiveWeb3React()
+
+  const IsMATIC = useMemo(() => {
+    if (chainId === ChainId.MATIC) {
+      return true
+    }
+    return false
+  }, [chainId])
+
   const theme = useTheme()
   const isDownMd = useBreakpoint('md')
-  const { Token1Text, Token2Text, token2Text } = getTokenText(fromAsset, toAsset)
+  const { Token1Text, Token2Text, token2Text, token1Text } = getTokenText(fromAsset, toAsset)
 
   const summary = useMemo(() => {
     return (
@@ -47,7 +59,8 @@ export function SwapSummary({
         <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 10, md: 13 } }}>
           <InfoIcon color={theme.palette.text.primary} />
           <Typography color={theme.palette.text.secondary}>
-            1 <Token1Text /> = {price} <Token2Text />
+            1{IsMATIC ? replaceNativeTokenName(token1Text, chainId) : <Token1Text />} = {price}
+            {IsMATIC ? replaceNativeTokenName(token2Text, chainId) : <Token2Text />}
             {/* (${currencyRate}) */}
           </Typography>
         </Box>
@@ -58,7 +71,18 @@ export function SwapSummary({
         </Box>
       </Box>
     )
-  }, [theme.palette.text.primary, theme.palette.text.secondary, Token1Text, price, Token2Text, gasFee])
+  }, [
+    theme.palette.text.primary,
+    theme.palette.text.secondary,
+    IsMATIC,
+    token1Text,
+    chainId,
+    Token1Text,
+    price,
+    token2Text,
+    Token2Text,
+    gasFee
+  ])
 
   const details = useMemo(() => {
     return (

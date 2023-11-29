@@ -6,6 +6,10 @@ import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
 import { getTokenText } from 'utils/checkIs1155'
 import { TokenAmount } from '@ladder/sdk'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
+import { useActiveWeb3React } from 'hooks'
+import { useMemo } from 'react'
+import { ChainId } from 'constants/chain'
+import { replaceNativeTokenName } from 'utils'
 
 export default function ConfirmSupplyModal({
   onConfirm,
@@ -32,9 +36,17 @@ export default function ConfirmSupplyModal({
   priceB: string
   shareOfPool: string
 }) {
+  const { chainId } = useActiveWeb3React()
+
+  const IsMATIC = useMemo(() => {
+    if (chainId === ChainId.MATIC) {
+      return true
+    }
+    return false
+  }, [chainId])
   const theme = useTheme()
 
-  const { Token1Text, Token2Text } = getTokenText(tokenA, tokenB)
+  const { Token1Text, Token2Text, token1Text, token2Text } = getTokenText(tokenA, tokenB)
 
   return (
     <Modal closeIcon customIsOpen={isOpen} customOnDismiss={onDismiss}>
@@ -57,7 +69,8 @@ export default function ConfirmSupplyModal({
         </Box>
 
         <Typography fontSize={16} mt={4} mb={12}>
-          <Token1Text fontSize={16} /> /<Token2Text fontSize={16} />
+          {IsMATIC ? replaceNativeTokenName(token1Text, chainId) : <Token1Text fontSize={16} />} /
+          {IsMATIC ? replaceNativeTokenName(token2Text, chainId) : <Token2Text fontSize={16} />}
         </Typography>
         <Typography sx={{ fontSize: 16, color: theme.palette.text.secondary, mb: 24 }}>
           Output is estimated.If the price changes by more than 5% your transaction will revert.
@@ -95,7 +108,15 @@ function AddLiquidityDetails({
   shareOfPool: string
 }) {
   const theme = useTheme()
-  const { Token2Text, Token1Text } = getTokenText(token1, token2)
+  const { Token2Text, Token1Text, token1Text, token2Text } = getTokenText(token1, token2)
+  const { chainId } = useActiveWeb3React()
+
+  const IsMATIC = useMemo(() => {
+    if (chainId === ChainId.MATIC) {
+      return true
+    }
+    return false
+  }, [chainId])
 
   return (
     <Box
@@ -111,7 +132,8 @@ function AddLiquidityDetails({
       <Box display={{ xs: 'grid', md: 'flex' }} justifyContent="space-between" alignItems="center" gap={8}>
         <Box display="flex" alignItems="center" gap={9}>
           <Typography>
-            <Token1Text /> <span style={{ color: theme.palette.text.primary }}> Deposited</span>
+            {IsMATIC ? replaceNativeTokenName(token1Text, chainId) : <Token1Text />}
+            <span style={{ color: theme.palette.text.primary }}> Deposited</span>
           </Typography>
         </Box>
 
@@ -123,7 +145,8 @@ function AddLiquidityDetails({
       <Box display={{ xs: 'grid', md: 'flex' }} justifyContent="space-between" alignItems="center" gap={8}>
         <Box display="flex" alignItems="center" gap={9}>
           <Typography>
-            <Token2Text /> <span style={{ color: theme.palette.text.primary }}>Deposited</span>
+            {IsMATIC ? replaceNativeTokenName(token2Text, chainId) : <Token2Text />}
+            <span style={{ color: theme.palette.text.primary }}>Deposited</span>
           </Typography>
         </Box>
 
@@ -145,10 +168,12 @@ function AddLiquidityDetails({
           </Box>
           <Box display="grid" gap={8}>
             <Typography>
-              1 <Token1Text /> = {rateToken1Token2} <Token2Text />
+              1 {IsMATIC ? replaceNativeTokenName(token1Text, chainId) : <Token1Text />} = {rateToken1Token2}{' '}
+              {IsMATIC ? replaceNativeTokenName(token2Text, chainId) : <Token2Text />}
             </Typography>
             <Typography>
-              1 <Token2Text /> = {rateToken2Token1} <Token1Text />
+              1{IsMATIC ? replaceNativeTokenName(token2Text, chainId) : <Token2Text />} = {rateToken2Token1}
+              {IsMATIC ? replaceNativeTokenName(token1Text, chainId) : <Token1Text />}
             </Typography>
           </Box>
         </Box>

@@ -12,6 +12,8 @@ import { CurrencyAmount, currencyEquals, Trade } from '@ladder/sdk'
 import { Field } from 'state/swap/actions'
 import Tag from 'components/Tag'
 import { checkTokenType, filter1155, getTokenText } from 'utils/checkIs1155'
+import { useActiveWeb3React } from 'hooks'
+import { replaceNativeTokenName } from 'utils'
 
 /**
  * Returns true if the trade requires a confirmation of details before we can submit it
@@ -59,7 +61,7 @@ export default function ConfirmSwapModal({
   tokenIds?: Array<string | number>
 }) {
   const theme = useTheme()
-
+  const { chainId } = useActiveWeb3React()
   const showAcceptChanges = useMemo(
     () => Boolean(trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade)),
     [originalTrade, trade]
@@ -81,8 +83,8 @@ export default function ConfirmSwapModal({
           tokenIds={tokenIds}
         />
         <Typography fontSize={16} mt={16} mb={24}>
-          {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {token1Text ?? '-'} ={' '}
-          {trade?.inputAmount.toFixed(6)} {token2Text}
+          {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {replaceNativeTokenName(token1Text, chainId) ?? '-'}{' '}
+          = {trade?.inputAmount.toFixed(6)} {replaceNativeTokenName(token2Text, chainId)}
         </Typography>
         {showAcceptChanges && <PriceUpdateNotification onDismiss={onAcceptChanges} />}
         <Typography sx={{ fontSize: 16, color: theme.palette.text.secondary, mt: 24, mb: 24 }}>
@@ -214,6 +216,7 @@ function SwapDetails({
 }) {
   const theme = useTheme()
   const { token1Text } = getTokenText(toAsset)
+  const { chainId } = useActiveWeb3React()
 
   return (
     <Box
@@ -234,7 +237,9 @@ function SwapDetails({
 
         <Typography sx={{ wordBreak: 'break-all' }}>
           {ExpectedQty} {ExpectedQty.length > 22 && <br />}{' '}
-          <span style={{ color: theme.palette.text.secondary }}>{token1Text ?? '-'}</span>
+          <span style={{ color: theme.palette.text.secondary }}>
+            {replaceNativeTokenName(token1Text, chainId) ?? '-'}
+          </span>
         </Typography>
       </Box>
       <Box display={{ xs: 'grid', md: 'flex' }} justifyContent="space-between" alignItems="center" gap={3}>
@@ -257,7 +262,9 @@ function SwapDetails({
         <Typography>
           {MinReceiveQty}
           {MinReceiveQty.length > 22 && <br />}{' '}
-          <span style={{ color: theme.palette.text.secondary }}>{token1Text ?? '-'}</span>
+          <span style={{ color: theme.palette.text.secondary }}>
+            {replaceNativeTokenName(token1Text, chainId) ?? '-'}
+          </span>
         </Typography>
       </Box>
       <Box display={{ xs: 'grid', md: 'flex' }} justifyContent="space-between" alignItems="center" gap={3}>
