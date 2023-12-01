@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Box, Typography, useTheme, Button, Grid, Stack, styled } from '@mui/material'
-import { Percent, Token, TokenAmount } from '@ladder/sdk'
+import { Percent, Token, TokenAmount, WETH } from '@ladder/sdk'
 import AppBody from 'components/AppBody'
 import { liquidityParamBuilder, routes } from 'constants/routes'
 import Card from 'components/Card'
@@ -11,19 +11,17 @@ import Tag from 'components/Tag'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { Loader } from 'components/AnimatedSvg/Loader'
 // import { ExternalLink } from 'theme/components'
-import { toV2LiquidityToken, useIsDarkMode, useTrackedTokenPairs } from 'state/user/hooks'
+import { useIsDarkMode } from 'state/user/hooks'
 import { useTokenBalancesWithLoadingIndicator, useTokenTotalSupplies } from 'state/wallet/hooks'
 import { usePairs } from 'data/Reserves'
 import { useActiveWeb3React } from 'hooks'
 import { checkIs1155, checkIs721, getTokenText } from 'utils/checkIs1155'
 import { useWalletModalToggle } from 'state/application/hooks'
-import { generateErc20 } from 'utils/getHashAddress'
 import { trimNumberString } from 'utils/trimNumberString'
 import dottedLine from 'assets/images/dotted-line.png'
 import { ReactComponent as LockSvg } from 'assets/svg/lock_icon.svg'
 import { ReactComponent as LockGreySvg } from 'assets/svg/lock_grey.svg'
 import { ReactComponent as ClockIcon } from 'assets/svg/clockIcon.svg'
-import { currencyB } from './AddLiquidity'
 
 import {
   LeftDateProps,
@@ -32,7 +30,7 @@ import {
   useLockLPToken
 } from 'hooks/useLockLPTokenCallback'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
-import { LOCK_LP_TOKEN, LOCK_LIQUIDITY_CONTRACT_ADDRESS } from '../../constants'
+import { LOCK_LP_TOKEN, LOCK_LIQUIDITY_CONTRACT_ADDRESS, LOCK_LIQUIDITY_ADDRESS } from '../../constants'
 import { tryParseAmount } from 'utils/parseAmount'
 import QuestionHelper from 'components/essential/QuestionHelper'
 import Spinner from 'components/Spinner'
@@ -40,6 +38,18 @@ import { parseUnits } from 'ethers/lib/utils'
 import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
 import { ActivityInfo } from 'pages/Swap'
 import { replaceNativeTokenName } from 'utils'
+import { ChainId } from 'constants/chain'
+import { Token721 } from 'constants/token/token721'
+
+const [currencyA, currencyB] = [
+  WETH[ChainId.MATIC],
+  new Token721(137, '0x9E8Ea82e76262E957D4cC24e04857A34B0D8f062', undefined, {
+    name: 'Drago',
+    tokenUri: 'https://lok-nft.leagueofkingdoms.com/api/drago/',
+    symbol: 'DRG',
+    uri: 'https://polygonscan.com/token/images/lokdrago_32.png'
+  })
+]
 
 const ApprovalButton = styled(Button)(() => ({
   borderRadius: '16px',
@@ -61,29 +71,38 @@ export default function Pool() {
   const navigate = useNavigate()
   const { account, chainId } = useActiveWeb3React()
   const toggleWallet = useWalletModalToggle()
-  const [lpTokenAddress, setLpTokenAddress] = useState<string>('')
+  // const [lpTokenAddress, setLpTokenAddress] = useState<string>('')
   const { leftDate, isLock } = useIsLockLPTokenCallback()
-  console.log('🚀 ~ lpTokenAddress:', lpTokenAddress)
+  // console.log('🚀 ~ lpTokenAddress:', lpTokenAddress)
   // fetch the user's balances of all tracked V2 LP tokens
-  const trackedTokenPairs = useTrackedTokenPairs()
+  // const trackedTokenPairs = useTrackedTokenPairs()
 
-  const [tokenPairsWithLiquidityTokens, trackedTokenPairMap] = useMemo(() => {
+  const [tokenPairsWithLiquidityTokens] = useMemo(() => {
     const tokensMap: { [key: string]: Token[] } = {}
-    const lpTokens = trackedTokenPairs
-      .filter(
-        ([token0, token1]) =>
-          token1.address.toLocaleLowerCase() === currencyB.address.toLocaleLowerCase() ||
-          token0.address.toLocaleLowerCase() === currencyB.address.toLocaleLowerCase()
-      )
-      .map(tokens => {
-        const lpToken = toV2LiquidityToken(tokens)
-        setLpTokenAddress(lpToken.address)
-        tokensMap[lpToken.address] = tokens
-        return { liquidityToken: lpToken, tokens }
-      })
+    // const lpTokens = trackedTokenPairs
+    //   .filter(
+    //     ([token0, token1]) =>
+    //       token1.address.toLocaleLowerCase() === currencyB.address.toLocaleLowerCase() ||
+    //       token0.address.toLocaleLowerCase() === currencyB.address.toLocaleLowerCase()
+    //   )
+    //   .map(tokens => {
+    //     const lpToken = toV2LiquidityToken(tokens)
+    //     setLpTokenAddress(lpToken.address)
+    //     tokensMap[lpToken.address] = tokens
+    //     return { liquidityToken: lpToken, tokens }
+    //   })
+
+    tokensMap[LOCK_LIQUIDITY_ADDRESS] = [currencyA, currencyB]
+
+    const lpTokens = [
+      {
+        liquidityToken: LOCK_LP_TOKEN,
+        tokens: [currencyA, currencyB]
+      }
+    ]
 
     return [lpTokens, tokensMap]
-  }, [trackedTokenPairs])
+  }, [])
 
   const liquidityTokens = useMemo(
     () => tokenPairsWithLiquidityTokens.map(tpwlt => tpwlt.liquidityToken),
@@ -99,16 +118,15 @@ export default function Pool() {
   // fetch the reserves for all V2 pools in which the user has a balance
   const liquidityTokensWithBalances = useMemo(
     () =>
-      tokenPairsWithLiquidityTokens.reduce((acc, { liquidityToken }, idx) => {
-        console.log('liquidityTokensWithBalances=>', v2PairsBalances[liquidityToken.address]?.greaterThan('0'))
-
+      tokenPairsWithLiquidityTokens.reduce((acc, { liquidityToken }) => {
         // if (v2PairsBalances[liquidityToken.address]?.greaterThan('0')) {
-        acc.push({ liquidityToken: liquidityToken, tokens: trackedTokenPairs[idx] })
+        acc.push({ liquidityToken: liquidityToken, tokens: [currencyA, currencyB] })
         // }
         return acc
       }, [] as { liquidityToken: Token; tokens: [Token, Token] }[]),
-    [tokenPairsWithLiquidityTokens, trackedTokenPairs, v2PairsBalances]
+    [tokenPairsWithLiquidityTokens]
   )
+  console.log('currencyA=>', currencyA)
 
   const v2Pairs = usePairs(liquidityTokensWithBalances.map(({ tokens }) => tokens))
   const v2IsLoading =
@@ -195,12 +213,7 @@ export default function Pool() {
                 {v2Pairs.map(([, pair], idx) => {
                   if (!pair) return null
 
-                  const tokens = trackedTokenPairMap[liquidityTokensWithBalances[idx].liquidityToken.address]
-
-                  const [token0, token1] =
-                    pair?.token0.address === ((generateErc20(tokens[0]) as any)?.address ?? '')
-                      ? [tokens[0], tokens[1]]
-                      : [tokens[1], tokens[0]]
+                  const [token0, token1] = [currencyA, currencyB]
 
                   const balance = v2PairsBalances?.[liquidityTokensWithBalances[idx].liquidityToken.address]
                   const totalSupply = totalSupplies?.[liquidityTokensWithBalances[idx].liquidityToken.address]
@@ -209,19 +222,6 @@ export default function Pool() {
                     totalSupply && balance
                       ? new Percent(balance.raw, totalSupply.raw).toFixed(2, undefined, 2).trimTrailingZero() + '%'
                       : '-'
-
-                  // const hashedToken0 = generateErc20(token0)
-                  // const hashedToken1 = generateErc20(token1)
-
-                  // const reserveA =
-                  //   totalSupply && balance && hashedToken0
-                  //     ? new TokenAmount(token0, pair.getLiquidityValue(hashedToken0, totalSupply, balance, false).raw)
-                  //     : new TokenAmount(token0, '0')
-
-                  // const reserveB =
-                  //   totalSupply && balance && hashedToken1
-                  //     ? new TokenAmount(token1, pair.getLiquidityValue(hashedToken1, totalSupply, balance, false).raw)
-                  //     : new TokenAmount(token1, '0')
 
                   const [reserveA, reserveB] = [
                     new TokenAmount(token0, pair.reserve0.raw),

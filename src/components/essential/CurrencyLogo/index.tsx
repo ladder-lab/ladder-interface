@@ -11,6 +11,8 @@ import { Token721 } from 'constants/token/token721'
 import tUSDCImg from 'assets/images/tUSDC.jpg'
 import tWETHImg from 'assets/images/tWETH.jpg'
 
+export const MaticIcon = 'https://polygonscan.com/token/images/polygonmatic_new_32.png'
+
 export const getTokenLogoURL = (address: string) =>
   `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`
 
@@ -52,6 +54,12 @@ export default function CurrencyLogo({
 
     if (currency?.symbol === 'tWETH' || currencySymbol === 'tWETH') {
       return [tWETHImg]
+    }
+    if (currency?.symbol === 'WMATIC' || currencySymbol === 'WMATIC') {
+      return [MaticIcon]
+    }
+    if (currency?.symbol === 'MATIC' || currencySymbol === 'MATIC') {
+      return [MaticIcon]
     }
 
     if (currencySymbol) {
