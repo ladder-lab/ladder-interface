@@ -112,7 +112,12 @@ export default function TaskListLuck({ refreshCb }: { refreshCb: () => void }) {
                 claimed: itemState.claimed,
                 action: () => {
                   itemState.finished
-                    ? showModal(<BoxModal getBox={getBox({ boxType: itemState.boxType, boxs: itemState.boxs })} />)
+                    ? showModal(
+                        <BoxModal
+                          getBox={getBox({ boxType: itemState.boxType, boxs: itemState.boxs })}
+                          BoxId={item.id}
+                        />
+                      )
                     : showModal(<IncompleteModal route={item.route} link={item.link} />)
                 }
               })
