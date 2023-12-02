@@ -73,6 +73,13 @@ const tasks = [
     icon: <Trading />,
     tooltip:
       'A snapshot will be taken on a random date. All wallets with more than 4 DW SFTs will qualify for the reward.						'
+  },
+  {
+    title: 'Provide LP for LOK/ MATIC pool to earn Ladder Box',
+    id: 'lockLP',
+    chain: ChainId.MATIC,
+    link: 'https://lok.ladder.top',
+    icon: <Trading />
   }
 ]
 

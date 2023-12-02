@@ -1,10 +1,17 @@
-import { axiosAirdropInstance } from 'utils/axios'
+import { axiosAirdropInstance, axiosAirdropInstanceLockLP } from 'utils/axios'
 import useInterval from './useInterval'
 import { useActiveWeb3React } from 'hooks'
 import { useCallback, useEffect, useState } from 'react'
 import useModal from './useModal'
 import { useSignLogin } from './useSignIn'
 import { useIsWindowFocus } from './useIsWindowVisible'
+
+interface AirdropProps {
+  boxType: number
+  boxs: number
+  claimed: boolean
+  finished: boolean
+}
 
 export function useLuckTasks(refreshCb: () => void) {
   const { account, chainId } = useActiveWeb3React()
@@ -59,8 +66,39 @@ export function useLuckTasks(refreshCb: () => void) {
 export function useBoxTasks(refreshCb: () => void) {
   const { account, chainId } = useActiveWeb3React()
   const [taskState, setTaskState] = useState<any>(null)
+  const [lockLPState, setLockLPState] = useState<AirdropProps>()
   const { hideModal } = useModal()
-
+  const offset = 0
+  const limit = 8
+  const LockLP = useCallback(() => {
+    if (!account) return
+    axiosAirdropInstanceLockLP
+      .get('/ladder/lock/list', {
+        params: { offset, limit, sender: account }
+      })
+      .then(r => {
+        if (r.data.code === 200) {
+          if (r.data.data.length > 0) {
+            setLockLPState({
+              boxType: 10,
+              boxs: 1,
+              claimed: false,
+              finished: true
+            })
+          } else {
+            setLockLPState({
+              boxType: 10,
+              boxs: 1,
+              claimed: false,
+              finished: false
+            })
+          }
+        }
+      })
+      .catch(e => {
+        console.error(e)
+      })
+  }, [account])
   const cb = useCallback(() => {
     if (!account || !chainId) return
     axiosAirdropInstance
@@ -85,6 +123,7 @@ export function useBoxTasks(refreshCb: () => void) {
           .get('/drop/saveCompleteBox', { params: { account, boxType, boxs, chainId } })
           .then(r => {
             if (r.data.code === 200) {
+              LockLP()
               refreshCb()
               cb()
               hideModal()
@@ -94,16 +133,17 @@ export function useBoxTasks(refreshCb: () => void) {
             console.error(e)
           })
       },
-    [account, cb, chainId, hideModal, refreshCb]
+    [LockLP, account, cb, chainId, hideModal, refreshCb]
   )
 
   useEffect(() => {
     cb()
-  }, [cb])
+    LockLP()
+  }, [LockLP, cb])
 
   useInterval(cb, account ? 60000 : null)
 
-  return { taskState, getBox }
+  return { taskState: { ...taskState, lockLP: lockLPState }, getBox }
 }
 
 export function useAirdropData() {
