@@ -77,22 +77,20 @@ export function useBoxTasks(refreshCb: () => void) {
         params: { offset, limit, sender: account }
       })
       .then(r => {
-        if (r.data.code === 200) {
-          if (r.data.data.length > 0) {
-            setLockLPState({
-              boxType: 10,
-              boxs: 1,
-              claimed: false,
-              finished: true
-            })
-          } else {
-            setLockLPState({
-              boxType: 10,
-              boxs: 1,
-              claimed: false,
-              finished: false
-            })
-          }
+        if (r.data.data.length > 0) {
+          setLockLPState({
+            boxType: 10,
+            boxs: 1,
+            claimed: false,
+            finished: true
+          })
+        } else {
+          setLockLPState({
+            boxType: 10,
+            boxs: 1,
+            claimed: false,
+            finished: false
+          })
         }
       })
       .catch(e => {
