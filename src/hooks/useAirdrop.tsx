@@ -68,16 +68,14 @@ export function useBoxTasks(refreshCb: () => void) {
   const [taskState, setTaskState] = useState<any>(null)
   const [lockLPState, setLockLPState] = useState<AirdropProps>()
   const { hideModal } = useModal()
-  const offset = 0
-  const limit = 8
   const LockLP = useCallback(() => {
     if (!account) return
     axiosAirdropInstanceLockLP
-      .get('/ladder/lock/list', {
-        params: { offset, limit, sender: account }
+      .get('/ladder/lock/check', {
+        params: { address: account }
       })
       .then(r => {
-        if (r.data.data.length > 0) {
+        if (r.data.data.is_ok) {
           setLockLPState({
             boxType: 10,
             boxs: 1,
