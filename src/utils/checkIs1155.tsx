@@ -1,4 +1,5 @@
 import { Typography } from '@mui/material'
+import { NETWORK_CHAIN_ID, SUPPORTED_NETWORKS, ChainId } from 'constants/chain'
 import { Token1155 } from 'constants/token/token1155'
 import { Token721 } from 'constants/token/token721'
 import { AllTokens } from 'models/allTokens'
@@ -25,7 +26,11 @@ export function filter1155(token: AllTokens | null | undefined) {
   return undefined
 }
 
-export function getTokenText(token1: AllTokens | undefined, token2?: AllTokens | undefined) {
+export function getTokenText(
+  chainId: ChainId | undefined,
+  token1: AllTokens | undefined,
+  token2?: AllTokens | undefined
+) {
   if (!token1) {
     return {
       Token1Text: () => null,
@@ -41,12 +46,13 @@ export function getTokenText(token1: AllTokens | undefined, token2?: AllTokens |
   const token1Is721 = checkIs721(token1)
   const tokenIsNFT = token1Is1155 || token1Is721
 
-  const token1Text =
-    (token1Is1155
-      ? token1?.name + ' #' + (token1 as Token1155).tokenId ?? '-'
-      : tokenIsNFT
-      ? token1?.name
-      : token1?.symbol) ?? ''
+  const token1Text = token1Is1155
+    ? token1?.name + ' #' + (token1 as Token1155).tokenId ?? '-'
+    : tokenIsNFT
+    ? token1?.name
+    : token1?.symbol === 'ETH'
+    ? SUPPORTED_NETWORKS[chainId ?? NETWORK_CHAIN_ID]?.nativeCurrency.symbol
+    : token1?.symbol
   const Token1Text = token1Is1155
     ? ({ fontSize, color }: { fontSize?: string | number; color?: string | undefined }) => (
         <Typography component="span" color={color ?? 'primary'} fontSize={fontSize}>
@@ -70,12 +76,13 @@ export function getTokenText(token1: AllTokens | undefined, token2?: AllTokens |
   const token2Is1155 = checkIs1155(token2)
   const token2Is721 = checkIs721(token2)
   const token2IsNFT = token2Is1155 || token2Is721
-  const token2Text =
-    (token2Is1155
-      ? token2?.name + ' #' + (token2 as Token1155).tokenId ?? '-'
-      : token2IsNFT
-      ? token2?.name
-      : token2?.symbol) ?? ''
+  const token2Text = token2Is1155
+    ? token2?.name + ' #' + (token2 as Token1155).tokenId ?? '-'
+    : token2IsNFT
+    ? token2?.name
+    : token2?.symbol === 'ETH'
+    ? SUPPORTED_NETWORKS[chainId ?? NETWORK_CHAIN_ID]?.nativeCurrency.symbol
+    : token2?.symbol
   const Token2Text = token2IsNFT
     ? ({ fontSize, color }: { fontSize?: string | number; color?: string | undefined }) => (
         <Typography component="span" color={color ?? 'primary'} fontSize={fontSize}>

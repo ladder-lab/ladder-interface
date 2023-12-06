@@ -12,6 +12,8 @@ import { CurrencyAmount, currencyEquals, Trade } from '@ladder/sdk'
 import { Field } from 'state/swap/actions'
 import Tag from 'components/Tag'
 import { checkTokenType, filter1155, getTokenText } from 'utils/checkIs1155'
+import { useActiveWeb3React } from 'hooks'
+import { NETWORK_CHAIN_ID, SUPPORTED_NETWORKS } from 'constants/chain'
 
 /**
  * Returns true if the trade requires a confirmation of details before we can submit it
@@ -59,13 +61,13 @@ export default function ConfirmSwapModal({
   tokenIds?: Array<string | number>
 }) {
   const theme = useTheme()
-
+  const { chainId } = useActiveWeb3React()
   const showAcceptChanges = useMemo(
     () => Boolean(trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade)),
     [originalTrade, trade]
   )
 
-  const { token1Text, token2Text } = getTokenText(to, from)
+  const { token1Text, token2Text } = getTokenText(chainId, to, from)
 
   return (
     <Modal closeIcon customIsOpen={isOpen} customOnDismiss={onDismiss}>
@@ -212,8 +214,9 @@ function SwapDetails({
   NetworkFee: string
   toAsset: AllTokens | undefined
 }) {
+  const { chainId } = useActiveWeb3React()
   const theme = useTheme()
-  const { token1Text } = getTokenText(toAsset)
+  const { token1Text } = getTokenText(chainId, toAsset)
 
   return (
     <Box
@@ -263,7 +266,11 @@ function SwapDetails({
       <Box display={{ xs: 'grid', md: 'flex' }} justifyContent="space-between" alignItems="center" gap={3}>
         <Box display="flex" alignItems="center" gap={9}>
           <Typography sx={{ color: theme.palette.text.secondary }}>Network Fee</Typography>
-          <QuestionHelper text={HelperText.networkFee} />
+          <QuestionHelper
+            text={`The fee paid to miners who process your transaction.This must be paid in ${
+              SUPPORTED_NETWORKS[chainId ?? NETWORK_CHAIN_ID]?.nativeCurrency.symbol
+            }.`}
+          />
         </Box>
 
         <Typography sx={{ color: theme.palette.text.secondary }}>~${NetworkFee}</Typography>

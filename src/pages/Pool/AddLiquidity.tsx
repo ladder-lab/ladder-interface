@@ -223,7 +223,7 @@ export default function AddLiquidy() {
     return flipOrder ? [currencyA, currencyB] : [currencyB, currencyA]
   }, [flipOrder, currencyA, currencyB])
 
-  const assetsTexts = getTokenText(assets[0], assets[1])
+  const assetsTexts = getTokenText(chainId, assets[0], assets[1])
 
   const priceA = pair?.token0Price.equalTo('0')
     ? '0'

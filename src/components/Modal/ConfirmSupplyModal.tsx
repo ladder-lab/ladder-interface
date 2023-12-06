@@ -6,6 +6,7 @@ import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
 import { getTokenText } from 'utils/checkIs1155'
 import { TokenAmount } from '@ladder/sdk'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
+import { useActiveWeb3React } from 'hooks'
 
 export default function ConfirmSupplyModal({
   onConfirm,
@@ -33,8 +34,8 @@ export default function ConfirmSupplyModal({
   shareOfPool: string
 }) {
   const theme = useTheme()
-
-  const { Token1Text, Token2Text } = getTokenText(tokenA, tokenB)
+  const { chainId } = useActiveWeb3React()
+  const { Token1Text, Token2Text } = getTokenText(chainId, tokenA, tokenB)
 
   return (
     <Modal closeIcon customIsOpen={isOpen} customOnDismiss={onDismiss}>
@@ -94,8 +95,9 @@ function AddLiquidityDetails({
   rateToken2Token1: string
   shareOfPool: string
 }) {
+  const { chainId } = useActiveWeb3React()
   const theme = useTheme()
-  const { Token2Text, Token1Text } = getTokenText(token1, token2)
+  const { Token2Text, Token1Text } = getTokenText(chainId, token1, token2)
 
   return (
     <Box

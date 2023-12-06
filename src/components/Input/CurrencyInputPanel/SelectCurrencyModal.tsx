@@ -121,6 +121,7 @@ export default function SelectCurrencyModal({
       .slice(0, 4)
     return curList
   }, [allTokens])
+  console.log('🚀 ~ file: SelectCurrencyModal.tsx:124 ~ commonCur ~ commonCur:', commonCur)
 
   // manage focus on modal show
   const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {

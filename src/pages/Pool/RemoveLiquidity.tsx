@@ -172,7 +172,7 @@ export default function RemoveLiquidity() {
       : [currencyB, currencyA]
   }, [currencyA, currencyB, pair?.token0.address, chainId])
 
-  const { Token1Text, Token2Text } = getTokenText(assets[0], assets[1])
+  const { Token1Text, Token2Text } = getTokenText(chainId, assets[0], assets[1])
 
   const priceA = pair?.token0Price.equalTo('0')
     ? '0'
@@ -279,7 +279,7 @@ export default function RemoveLiquidity() {
 
         <OutputCard value={formattedAmounts[Field.CURRENCY_B]} currency={currencyB} />
         {pair && (
-          <Box display={{ xs: 'grid', sm: 'flex' }} justifyContent="space-between" mt={36} mb={52} gap={8}>
+          <Box display={{ xs: 'grid', sm: 'flex' }} justifyContent="space-between" mt={36} gap={8}>
             <Typography sx={{ fontSize: 18 }}>Price</Typography>
             <Box display="grid" gap={12}>
               <Typography sx={{ color: theme.palette.text.secondary, fontSize: 18 }}>
@@ -291,12 +291,13 @@ export default function RemoveLiquidity() {
             </Box>
           </Box>
         )}
-        <Box display={{ xs: 'grid', sm: 'flex' }} gap={8}>
+        <Box display={{ xs: 'grid', sm: 'flex' }} gap={8} mt={52}>
           {!account ? (
             <Button onClick={toggleWalletModal}>Connect Wallet</Button>
           ) : (
             <>
               <ActionButton
+                height={'60px'}
                 onAction={burnApproveCallback}
                 disableAction={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
                 pending={approval === ApprovalState.PENDING}
@@ -447,8 +448,9 @@ function InputCard({
   currency0: AllTokens | undefined
   currency1: AllTokens | undefined
 }) {
+  const { chainId } = useActiveWeb3React()
   const theme = useTheme()
-  const { Token1Text, Token2Text } = getTokenText(currency0, currency1)
+  const { Token1Text, Token2Text } = getTokenText(chainId, currency0, currency1)
 
   return (
     <Card color={theme.palette.background.default} padding="24px" style={{ marginTop: 16 }}>
@@ -481,8 +483,8 @@ function InputCard({
 
 function OutputCard({ value, currency }: { value: string; currency: AllTokens | undefined }) {
   const theme = useTheme()
-
-  const { token1Text } = getTokenText(currency)
+  const { chainId } = useActiveWeb3React()
+  const { token1Text } = getTokenText(chainId, currency)
 
   return (
     <Card color={theme.palette.background.default} padding="24px">

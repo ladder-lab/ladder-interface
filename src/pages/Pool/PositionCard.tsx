@@ -4,6 +4,7 @@ import Card from 'components/Card'
 import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
 import Tag from 'components/Tag'
 import { checkTokenType, getTokenText } from 'utils/checkIs1155'
+import { useActiveWeb3React } from 'hooks'
 
 export default function PositionCard({
   assetA,
@@ -24,8 +25,9 @@ export default function PositionCard({
   liquidityA?: string
   liquidityB?: string
 }) {
+  const { chainId } = useActiveWeb3React()
   const theme = useTheme()
-  const { token1Text, token2Text } = getTokenText(assetA ?? undefined, assetB ?? undefined)
+  const { token1Text, token2Text } = getTokenText(chainId, assetA ?? undefined, assetB ?? undefined)
   const data = {
     ['Your pool share']: poolShare ?? '-' + ' %',
     [`${token1Text ?? '-'} in pool`]: liquidityA ?? '-',

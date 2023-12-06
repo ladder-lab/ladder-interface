@@ -6,6 +6,7 @@ import AddIcon from '@mui/icons-material/Add'
 import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
 import Tag from 'components/Tag'
 import { checkIs1155, checkIs721, getTokenText } from 'utils/checkIs1155'
+import { useActiveWeb3React } from 'hooks'
 
 export default function ConfirmRemoveModal({
   onConfirm,
@@ -30,8 +31,9 @@ export default function ConfirmRemoveModal({
   priceA: string
   priceB: string
 }) {
+  const { chainId } = useActiveWeb3React()
   const theme = useTheme()
-  const { token1Text, token2Text } = getTokenText(tokenA, tokenB)
+  const { token1Text, token2Text } = getTokenText(chainId, tokenA, tokenB)
 
   return (
     <Modal closeIcon customIsOpen={isOpen} customOnDismiss={onDismiss}>
@@ -99,8 +101,9 @@ function RemoveLiquidityDetails({
   rateToken1Token2: string
   rateToken2Token1: string
 }) {
+  const { chainId } = useActiveWeb3React()
   const theme = useTheme()
-  const { Token1Text, Token2Text } = getTokenText(token1, token2)
+  const { Token1Text, Token2Text } = getTokenText(chainId, token1, token2)
 
   return (
     <Box
@@ -135,10 +138,10 @@ function RemoveLiquidityDetails({
         </Typography>
         <Box display="grid" gap={8} justifyItems={'flex-end'}>
           <Typography fontSize={16} fontWeight={400}>
-            1 <Token1Text fontSize={16} /> = {rateToken1Token2} <Token2Text fontSize={16} />
+            1 <Token1Text fontSize={16} /> = {rateToken2Token1} <Token2Text fontSize={16} />
           </Typography>
           <Typography fontSize={16} fontWeight={400}>
-            1 <Token2Text fontSize={16} />= {rateToken2Token1} <Token1Text fontSize={16} />
+            1 <Token2Text fontSize={16} />= {rateToken1Token2} <Token1Text fontSize={16} />
           </Typography>
         </Box>
       </Box>

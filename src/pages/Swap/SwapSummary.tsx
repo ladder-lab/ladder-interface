@@ -11,6 +11,8 @@ import { HelperText } from 'constants/helperText'
 import { AllTokens } from 'models/allTokens'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { getTokenText } from 'utils/checkIs1155'
+import { useActiveWeb3React } from 'hooks'
+import { NETWORK_CHAIN_ID, SUPPORTED_NETWORKS } from 'constants/chain'
 
 export function SwapSummary({
   fromAsset,
@@ -37,9 +39,10 @@ export function SwapSummary({
   toVal?: string
   price?: string
 }) {
+  const { chainId } = useActiveWeb3React()
   const theme = useTheme()
   const isDownMd = useBreakpoint('md')
-  const { Token1Text, Token2Text, token2Text } = getTokenText(fromAsset, toAsset)
+  const { Token1Text, Token2Text, token2Text } = getTokenText(chainId, fromAsset, toAsset)
 
   const summary = useMemo(() => {
     return (
@@ -115,7 +118,9 @@ export function SwapSummary({
               <Typography>Network Fee</Typography>
               {!isDownMd && (
                 <QuestionHelper
-                  text={HelperText.networkFee}
+                  text={`The fee paid to miners who process your transaction.This must be paid in ${
+                    SUPPORTED_NETWORKS[chainId ?? NETWORK_CHAIN_ID]?.nativeCurrency.symbol
+                  }.`}
                   style={{ color: theme.palette.text.secondary, background: 'transparent' }}
                 />
               )}
@@ -145,6 +150,7 @@ export function SwapSummary({
     token2Text,
     slippage,
     minReceiveQty,
+    chainId,
     gasFee,
     routerTokens,
     fromAsset,

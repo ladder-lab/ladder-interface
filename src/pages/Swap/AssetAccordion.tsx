@@ -63,7 +63,7 @@ export function AssetAccordion({
         <CurrencyLogo currency={token} style={{ width: 36 }} />
         <Box display="flex" flexDirection="column" gap={8} width="100%">
           <Typography color={theme.palette.text.secondary} display="flex" alignItems="center" component="div">
-            Name: {getTokenText(token).token1Text ?? '-'} <TestnetV3Mark addresss={[_token?.address]} />
+            Name: {getTokenText(chainId, token).token1Text ?? '-'} <TestnetV3Mark addresss={[_token?.address]} />
           </Typography>
           <Typography
             color={theme.palette.text.secondary}

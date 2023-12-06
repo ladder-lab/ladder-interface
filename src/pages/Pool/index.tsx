@@ -23,7 +23,7 @@ import { trimNumberString } from 'utils/trimNumberString'
 export default function Pool() {
   const theme = useTheme()
   const navigate = useNavigate()
-  const { account } = useActiveWeb3React()
+  const { chainId, account } = useActiveWeb3React()
   const toggleWallet = useWalletModalToggle()
 
   // fetch the user's balances of all tracked V2 LP tokens
@@ -171,7 +171,7 @@ export default function Pool() {
                   checkIs1155(token0) || checkIs721(token0) || token0.symbol === 'WETH' || token0.symbol === 'ETH'
                     ? [reserveB, reserveA]
                     : [reserveA, reserveB]
-                const { token1Text, token2Text } = getTokenText(amountA.token, amountB.token)
+                const { token1Text, token2Text } = getTokenText(chainId, amountA.token, amountB.token)
 
                 return (
                   <Grid item xs={12} md={6} lg={4} key={pair.liquidityToken.address}>
