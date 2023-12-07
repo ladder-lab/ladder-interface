@@ -1,1 +1,1 @@
-export const COMMON_CURRENCIES = ['tWETH', 'ETHER', ' USDC', ' USDT', 'tUSDC', 'WETH']
+export const COMMON_CURRENCIES = ['tWETH', 'ETHER', ' USDC', ' USDT', 'tUSDC', 'WMATIC']
