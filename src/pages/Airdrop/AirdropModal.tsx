@@ -10,7 +10,7 @@ import { useIsDarkMode } from 'state/user/hooks'
 import { Link } from 'react-router-dom'
 import { ExternalLink } from 'theme/components'
 
-export default function BoxModal({ getBox }: { getBox: () => void }) {
+export default function BoxModal({ getBox, BoxId }: { getBox: () => void; BoxId?: string }) {
   const isDardMode = useIsDarkMode()
   return (
     <Modal maxWidth="360px">
@@ -22,7 +22,9 @@ export default function BoxModal({ getBox }: { getBox: () => void }) {
           <br />
           Congrats on your 1 box reward!
         </Typography>
-        <Button onClick={getBox}>GET IT NOW</Button>
+        <Button onClick={getBox} disabled={BoxId === 'lockLP'}>
+          GET IT NOW
+        </Button>
       </Box>
     </Modal>
   )

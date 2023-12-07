@@ -33,6 +33,12 @@ export const axiosAirdropInstance = axios.create({
   headers: { 'content-type': 'application/json', accept: 'application/json' }
 })
 
+export const axiosAirdropInstanceLockLP = axios.create({
+  baseURL: 'https://api-lokdev.ladder.top',
+  timeout: 10000,
+  headers: { 'content-type': 'application/json', accept: 'application/json' }
+})
+
 export const Axios = {
   get<T = any>(url: string, params: { [key: string]: any } = {}): AxiosPromise<ResponseType<T>> {
     return axiosInstance.get(url, { params })
