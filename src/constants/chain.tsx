@@ -188,7 +188,7 @@ export const SUPPORTED_NETWORKS: {
   },
   [ChainId.MATIC]: {
     chainId: '0x89',
-    chainName: 'Matic',
+    chainName: 'Polygon',
     nativeCurrency: {
       name: 'Matic Token',
       symbol: 'MATIC',

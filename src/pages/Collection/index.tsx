@@ -315,12 +315,12 @@ function PairCard({
   }, [type])
 
   const erc20 = useMemo(() => {
-    if (token?.address.toLocaleUpperCase() === item.token0.address?.toLocaleUpperCase()) return item.token1
+    if (token?.address.toUpperCase() === item.token0.address?.toUpperCase()) return item.token1
     return item.token0
   }, [item.token0, item.token1, token?.address])
 
   const nftToken = useMemo(() => {
-    if (token?.address.toLocaleUpperCase() === item.token0.address?.toLocaleUpperCase()) return item.token0
+    if (token?.address.toUpperCase() === item.token0.address?.toUpperCase()) return item.token0
     return item.token1
   }, [item.token0, item.token1, token?.address])
 

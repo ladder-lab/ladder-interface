@@ -122,6 +122,7 @@ function SwapPanelRow({
   type: string
   tokenIds?: Array<string | number>
 }) {
+  const { chainId } = useActiveWeb3React()
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
       <Box sx={{ display: 'flex', gap: 14, position: 'relative', width: '100%', alignItems: 'center' }}>
@@ -138,7 +139,11 @@ function SwapPanelRow({
       <Box display={'flex'} flexDirection="column" gap={8} alignItems="flex-end" width="50%">
         <Tag>{type}</Tag>
         <Typography fontSize={16} textAlign="right">
-          {type !== 'ERC20' ? asset?.name : asset?.symbol}
+          {type !== 'ERC20'
+            ? asset?.name
+            : asset?.symbol?.toUpperCase() === 'ETH'
+            ? SUPPORTED_NETWORKS[chainId ?? NETWORK_CHAIN_ID]?.nativeCurrency.symbol
+            : asset?.symbol}
           {type === 'ERC1155' ? `#${filter1155(asset)?.tokenId}` : ''}
         </Typography>
         {tokenIds && type === 'ERC721' && (
