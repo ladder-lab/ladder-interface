@@ -1,6 +1,6 @@
 import { parseBytes32String } from '@ethersproject/strings'
 import { Currency, ETHER, Token, ChainId, currencyEquals, WETH } from '@ladder/sdk'
-import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
+// import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list'
 import { useEffect, useMemo, useState } from 'react'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
 import { getContract, isAddress } from '../utils'
@@ -56,7 +56,7 @@ export type TokenAddressMap = Readonly<{
 }>
 
 export function useDefaultTokenList(): TokenAddressMap {
-  return listToTokenMap(DEFAULT_TOKEN_LIST)
+  return listToTokenMap(DEFAULT_TOKENS)
 }
 
 // reduce token map into standard address <-> Token mapping, optionally include user added tokens
@@ -167,7 +167,7 @@ export function useAllTokens(): { [address: string]: Token } {
   const allTokens = useDefaultTokenList()
   const { chainId } = useActiveWeb3React()
   //add user added tokens
-  const tokens = useTokensFromMap(allTokens, true)
+  const tokens = useTokensFromMap(allTokens, false)
   return useMemo(() => ({ ...tokens, ...(chainId === 11155111 ? testTokens[11155111] : {}) }), [tokens, chainId])
 }
 
@@ -432,4 +432,90 @@ async function checkTokenType(address: string, library: any) {
   } catch (e) {
     return 'erc20'
   }
+}
+
+export const DEFAULT_TOKENS = {
+  name: 'Uniswap Labs List',
+  timestamp: '2021-12-21T23:59:15.901Z',
+  version: {
+    major: 2,
+    minor: 3,
+    patch: 0
+  },
+  tags: {},
+  logoURI: 'ipfs://QmNa8mQkrNKp1WEEeGjFezDmDeodkWRevGFN8JCV7b4Xir',
+  keywords: ['uniswap', 'default'],
+  tokens: [
+    {
+      name: 'Dai Stablecoin',
+      address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+      symbol: 'DAI',
+      decimals: 18,
+      chainId: 1,
+      logoURI:
+        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png'
+    },
+    {
+      name: 'USDCoin',
+      address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      symbol: 'USDC',
+      decimals: 6,
+      chainId: 1,
+      logoURI:
+        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png'
+    },
+    {
+      name: 'Tether USD',
+      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+      symbol: 'USDT',
+      decimals: 6,
+      chainId: 1,
+      logoURI:
+        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png'
+    },
+    {
+      name: 'Wrapped Ether',
+      address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+      symbol: 'WETH',
+      decimals: 18,
+      chainId: 1,
+      logoURI:
+        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png'
+    },
+    {
+      name: 'Dai Stablecoin',
+      address: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
+      symbol: 'DAI',
+      decimals: 18,
+      chainId: 137,
+      logoURI:
+        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png'
+    },
+    {
+      name: 'USDCoin',
+      address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+      symbol: 'USDC',
+      decimals: 6,
+      chainId: 137,
+      logoURI:
+        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png'
+    },
+    {
+      name: 'Tether USD',
+      address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
+      symbol: 'USDT',
+      decimals: 6,
+      chainId: 137,
+      logoURI:
+        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png'
+    },
+    {
+      name: 'Wrapped Matic',
+      address: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
+      symbol: 'WMATIC',
+      decimals: 18,
+      chainId: 137,
+      logoURI: 'https://assets.coingecko.com/coins/images/4713/thumb/matic-token-icon.png?1624446912'
+    }
+  ]
 }
