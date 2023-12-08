@@ -48,6 +48,11 @@ export default function RemoveLiquidity() {
   const theme = useTheme()
   const { showModal, hideModal } = useModal()
   const { currencyIdA, currencyIdB, tokenIds } = useParams()
+  console.log(
+    '🚀 ~ file: RemoveLiquidity.tsx:51 ~ RemoveLiquidity ~ currencyIdA, currencyIdB,:',
+    currencyIdA,
+    currencyIdB
+  )
   const [tokenIdA, tokenIdB] = tokenIds?.split(liquidityParamSplitter) ?? ['', '']
 
   const { account, chainId } = useActiveWeb3React()
@@ -249,7 +254,7 @@ export default function RemoveLiquidity() {
             ) : oneCurrencyIsWETH ? (
               <Button
                 onClick={() => {
-                  const isCurAEther = currencyA?.symbol === 'WETH'
+                  const isCurAEther = currencyA?.symbol === 'WETH' || 'WMATIC'
 
                   navigate(
                     routes.removeLiquidity +
