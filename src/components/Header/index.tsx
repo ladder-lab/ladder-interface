@@ -17,7 +17,7 @@ import { HideOnMobile } from 'theme/index'
 import PlainSelect from 'components/Select/PlainSelect'
 import { routes } from 'constants/routes'
 import MobileMenu from './MobileMenu'
-import NetworkSelect from './NetworkSelect'
+// import NetworkSelect from './NetworkSelect'
 // import SwitchToggle from 'components/SwitchToggle'
 import { useDarkModeManager } from 'state/user/hooks'
 import MainLogo from 'components/MainLogo'
@@ -43,18 +43,18 @@ interface Tab extends TabContent {
 }
 
 export const Tabs: Tab[] = [
-  {
-    title: 'Airdrop',
-    route: routes.airdrop
-  },
-  {
-    title: 'Event',
-    route: routes.testnet
-  },
-  { title: 'Swap', route: routes.swap },
-  { title: 'Pool', route: routes.pool },
-  { title: 'Explore', route: routes.explorer },
-  { title: 'Statistics', route: routes.statistics }
+  // {
+  //   title: 'Airdrop',
+  //   route: routes.airdrop
+  // },
+  // {
+  //   title: 'Event',
+  //   route: routes.testnet
+  // },
+  // { title: 'Swap', route: routes.swap },
+  // { title: 'Pool', route: routes.pool },
+  // { title: 'Explore', route: routes.explorer },
+  // { title: 'Statistics', route: routes.statistics }
 ]
 
 const navLinkSX = ({ theme }: any) => ({
@@ -257,9 +257,9 @@ export default function Header() {
         </HideOnMobile>
 
         <Box display="flex" alignItems="center" gap={{ xs: '8px', sm: '20px' }}>
-          <NetworkSelect />
+          {/* <NetworkSelect /> */}
           <Web3Status />
-          <Box sx={{ position: 'relative' }}>
+          <Box sx={{ position: 'relative', display: 'none' }}>
             <MenuButton
               onClick={() => {
                 isDownMd ? setMobileMenuOpen(open => !open) : setMenuOpen(open => !open)

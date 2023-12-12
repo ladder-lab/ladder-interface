@@ -1,6 +1,6 @@
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { Box, Button, Typography } from '@mui/material'
-import { CurrencyAmount, ETHER, JSBI, Pair, Token, Trade } from '@ladder/sdk'
+import { CurrencyAmount, ETHER, JSBI, Pair, Trade } from '@ladder/sdk'
 import AppBody from 'components/AppBody'
 import ActionButton from 'components/Button/ActionButton'
 import { ReactComponent as SwitchCircle } from 'assets/svg/switch_circle.svg'
@@ -67,10 +67,7 @@ export default function SwapTemp() {
     dispatch(updateUserDarkMode())
   }, [dispatch])
 
-  const [currency0, currency1] = [
-    new Token(137, '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619', 18, 'Ether', 'Ether'),
-    new Token721(137, '0xeF6Cd149f15cc121D4B3e75bfEB3E0A5E0b7274A', undefined)
-  ]
+  const [currency0, currency1] = [ETHER, new Token721(137, '0xeF6Cd149f15cc121D4B3e75bfEB3E0A5E0b7274A', undefined)]
 
   const { showModal, hideModal } = useModal()
   const toggleWallet = useWalletModalToggle()
@@ -335,6 +332,7 @@ export default function SwapTemp() {
       }
     }
     return
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onCurrencySelection])
 
   useEffect(() => {
@@ -559,7 +557,7 @@ export default function SwapTemp() {
         </Box>
         <Box maxWidth={isDownSm ? '90vw' : 470} margin={`${isDownSm ? '0 0 200px ' : '100px 0 0'} `}>
           <Typography fontSize={34} fontWeight={700}>
-            Welcome to DogeWalk’s DWD Token Voucher AMM trading platform, powered by Ladder.
+            Hold 2 PUPS and complete at least 2 swaps of PUPS to receive Ladder Boxes and enter a raffle for 100 MATIC.
           </Typography>
           <Box display={'flex'} alignItems={'center'}>
             <img style={{ width: 41, height: 41 }} src={LadderLogo} />
