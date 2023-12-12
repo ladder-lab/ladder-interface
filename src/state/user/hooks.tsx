@@ -92,10 +92,10 @@ function deserializeToken(serializedToken: SerializedToken): Token | Token1155 {
 } */
 
 export function useIsDarkMode(): boolean {
-  const { userDarkMode } = useSelector<AppState, { userDarkMode: boolean | null }>(({ user: { userDarkMode } }) => ({
-    userDarkMode
-  }))
-  return userDarkMode ?? false
+  // const { userDarkMode } = useSelector<AppState, { userDarkMode: boolean | null }>(({ user: { userDarkMode } }) => ({
+  //   userDarkMode
+  // }))
+  return true
 }
 
 export function useDarkModeManager(): [boolean, () => void] {
@@ -274,6 +274,7 @@ export function useUserAddedTokens721(): Token[] {
     return Object.values(serializedTokensMap?.[chainId as ChainId] ?? {}).map(item => deserializeToken(item))
   }, [serializedTokensMap, chainId])
 }
+
 // function serializePair(pair: Pair): SerializedPair {
 //   return {
 //     token0: serializeToken(pair.token0),

@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { Route, Routes, Navigate } from 'react-router-dom'
+import { Route, Routes, Navigate, useLocation } from 'react-router-dom'
 import { styled } from '@mui/material'
 import Header from '../components/Header'
 import Polling from '../components/essential/Polling'
@@ -8,11 +8,12 @@ import Web3ReactManager from '../components/essential/Web3ReactManager'
 // import WarningModal from '../components/Modal/WarningModal'
 import { ModalProvider } from 'context/ModalContext'
 import { routes } from 'constants/routes'
-import Swap from './Swap'
+import SwapTemp from './Swap/SwapNew'
 import Pool from './Pool'
 import AddLiquidity from './Pool/AddLiquidity'
 import ImportPool from './Pool/ImportPool'
 import darkBg from 'assets/images/dark_bg.png'
+import swapDarkBg from 'assets/images/dark_bg_wolf.png'
 import lightBg from 'assets/images/light_bg.png'
 import { useIsDarkMode } from 'state/user/hooks'
 import RemoveLiquidity from './Pool/RemoveLiquidity'
@@ -32,29 +33,31 @@ import OrigAccount from './MyAccount/OrigAccount'
 import Footer from '../components/Footer'
 import Airdrop from './Airdrop'
 
-const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
-  ({ theme, isDarkMode }) => ({
-    display: 'flex',
-    alignItems: 'flex-start',
-    position: 'relative',
-    minWidth: theme.width.minContent,
-    '&:after': {
-      content: '""',
-      width: '100%',
-      height: '100%',
-      bottom: 0,
-      zIndex: -1,
-      position: 'absolute',
-      backgroundImage: `url(${isDarkMode ? darkBg : lightBg})`,
-      backgroundRepeat: 'no-repeat',
-      backgroundPosition: isDarkMode ? 'bottom' : 'top',
-      backgroundSize: isDarkMode ? '100% auto' : '100% 100%'
-    },
-    [theme.breakpoints.down('md')]: {
-      flexDirection: 'column'
-    }
-  })
-)
+const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{
+  isDarkMode: boolean
+  isSwap: boolean
+}>(({ theme, isDarkMode, isSwap }) => ({
+  display: 'flex',
+  alignItems: 'flex-start',
+  position: 'relative',
+  minWidth: theme.width.minContent,
+  '&:after': {
+    content: '""',
+    width: '100%',
+    height: '100%',
+    bottom: 0,
+    zIndex: -1,
+    position: 'absolute',
+    backgroundImage: `url(${isSwap ? swapDarkBg : isDarkMode ? darkBg : lightBg})`,
+    // boxShadow: isSwap ? 'inset 0 -200px 200px -100px rgba(0,0,0,.9)' : 1,
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: isDarkMode ? 'bottom' : 'top',
+    backgroundSize: isDarkMode ? '100% auto' : '100% 100%'
+  },
+  [theme.breakpoints.down('md')]: {
+    flexDirection: 'column'
+  }
+}))
 
 const ContentWrapper = styled('div')({
   width: '100%',
@@ -79,10 +82,12 @@ const BodyWrapper = styled('div')(({ theme }) => ({
 
 export default function App() {
   const isDarkMode = useIsDarkMode()
+  const { pathname } = useLocation()
+  const isSwap = pathname.toLowerCase() == routes.swap.toLowerCase()
   return (
     <Suspense fallback={null}>
       <ModalProvider>
-        <AppWrapper id="app" isDarkMode={isDarkMode}>
+        <AppWrapper id="app" isDarkMode={isDarkMode || isSwap} isSwap={isSwap}>
           <ContentWrapper>
             <Header />
             <GoogleAnalyticsReporter />
@@ -97,8 +102,8 @@ export default function App() {
                   <Route path={routes.winners} element={<ListOfWinners />} />
                   <Route path={routes.explorer} element={<Explorer />} />
                   <Route path={routes.explorer + routes.collectionParams} element={<Collection />} />
-                  <Route path={routes.swap} element={<Swap />}>
-                    <Route path={routes.removeLiquidityParams.slice(1)} element={<Swap />} />
+                  <Route path={routes.swap} element={<SwapTemp />}>
+                    <Route path={routes.removeLiquidityParams.slice(1)} element={<SwapTemp />} />
                   </Route>
                   <Route path={routes.pool} element={<Pool />} />
                   <Route path={routes.statistics} element={<Statistics />} />

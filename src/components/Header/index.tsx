@@ -127,6 +127,7 @@ export default function Header() {
   const isDownMd = useBreakpoint('md')
   const navigate = useNavigate()
   const [darkMode] = useDarkModeManager()
+  const isSwap = pathname.toLowerCase() == routes.swap.toLowerCase()
 
   const handleMobileMenueDismiss = useCallback(() => {
     setMobileMenuOpen(false)
@@ -158,99 +159,101 @@ export default function Header() {
         </Box>
 
         <HideOnMobile breakpoint="md">
-          <LinksWrapper>
-            {Tabs.map(({ title, route, subTab, link, titleContent }, idx) => {
-              return subTab ? (
-                <Box
-                  sx={{
-                    marginRight: {
-                      xs: 15,
-                      lg: 48
-                    },
-                    height: 'auto',
-                    paddingBottom: '30px',
-                    borderBottom: '2px solid transparent',
-                    borderColor: theme =>
-                      subTab.some(tab => tab.route && pathname.includes(tab.route))
-                        ? theme.palette.text.primary
-                        : 'transparnet',
-                    display: 'inline'
-                  }}
-                  key={title + idx}
-                >
-                  <PlainSelect
-                    key={title + idx}
-                    placeholder={title}
-                    autoFocus={false}
-                    width={title === 'Test' ? '70px' : undefined}
-                    style={{
-                      height: '16px'
+          {!isSwap && (
+            <LinksWrapper>
+              {Tabs.map(({ title, route, subTab, link, titleContent }, idx) => {
+                return subTab ? (
+                  <Box
+                    sx={{
+                      marginRight: {
+                        xs: 15,
+                        lg: 48
+                      },
+                      height: 'auto',
+                      paddingBottom: '30px',
+                      borderBottom: '2px solid transparent',
+                      borderColor: theme =>
+                        subTab.some(tab => tab.route && pathname.includes(tab.route))
+                          ? theme.palette.text.primary
+                          : 'transparnet',
+                      display: 'inline'
                     }}
+                    key={title + idx}
                   >
-                    {subTab.map((sub, idx) =>
-                      sub.link ? (
-                        <MenuItem
-                          onClick={() => setMenuOpen(false)}
-                          key={sub.link + idx}
-                          sx={{ backgroundColor: 'transparent!important', background: 'transparent!important' }}
-                          selected={false}
-                        >
-                          <ExternalLink
-                            href={sub.link}
-                            className={'link'}
-                            color="#00000050"
-                            sx={{
-                              '&:hover': {
-                                color: '#232323!important'
-                              }
-                            }}
+                    <PlainSelect
+                      key={title + idx}
+                      placeholder={title}
+                      autoFocus={false}
+                      width={title === 'Test' ? '70px' : undefined}
+                      style={{
+                        height: '16px'
+                      }}
+                    >
+                      {subTab.map((sub, idx) =>
+                        sub.link ? (
+                          <MenuItem
+                            onClick={() => setMenuOpen(false)}
+                            key={sub.link + idx}
+                            sx={{ backgroundColor: 'transparent!important', background: 'transparent!important' }}
+                            selected={false}
                           >
-                            {sub.titleContent ?? sub.title}
-                          </ExternalLink>
-                        </MenuItem>
-                      ) : (
-                        <MenuItem key={sub.title + idx} onClick={() => setMenuOpen(false)}>
-                          <StyledNavLink to={sub.route ?? ''}>{sub.titleContent ?? sub.title}</StyledNavLink>
-                        </MenuItem>
-                      )
-                    )}
-                  </PlainSelect>
-                </Box>
-              ) : link ? (
-                <ExternalLink
-                  href={link}
-                  className={'link'}
-                  key={link + idx}
-                  style={{ fontSize: 14, pointerEvents: 'none' }}
-                >
-                  {titleContent ?? title}
-                </ExternalLink>
-              ) : (
-                <Link
-                  onClick={() => setMenuOpen(false)}
-                  key={title + idx}
-                  id={`${route}-nav-link`}
-                  to={route ?? ''}
-                  className={
-                    (route
-                      ? pathname.includes(route)
-                        ? 'active'
-                        : pathname.includes('account') && route.includes('account')
-                        ? 'active'
-                        : (pathname.includes('/round') ||
-                            // pathname.includes('/airdrop') ||
-                            pathname.includes('/monopoly')) &&
-                          title.includes('Event')
-                        ? 'active'
-                        : ''
-                      : '') + ' link'
-                  }
-                >
-                  {titleContent ?? title}
-                </Link>
-              )
-            })}
-          </LinksWrapper>
+                            <ExternalLink
+                              href={sub.link}
+                              className={'link'}
+                              color="#00000050"
+                              sx={{
+                                '&:hover': {
+                                  color: '#232323!important'
+                                }
+                              }}
+                            >
+                              {sub.titleContent ?? sub.title}
+                            </ExternalLink>
+                          </MenuItem>
+                        ) : (
+                          <MenuItem key={sub.title + idx} onClick={() => setMenuOpen(false)}>
+                            <StyledNavLink to={sub.route ?? ''}>{sub.titleContent ?? sub.title}</StyledNavLink>
+                          </MenuItem>
+                        )
+                      )}
+                    </PlainSelect>
+                  </Box>
+                ) : link ? (
+                  <ExternalLink
+                    href={link}
+                    className={'link'}
+                    key={link + idx}
+                    style={{ fontSize: 14, pointerEvents: 'none' }}
+                  >
+                    {titleContent ?? title}
+                  </ExternalLink>
+                ) : (
+                  <Link
+                    onClick={() => setMenuOpen(false)}
+                    key={title + idx}
+                    id={`${route}-nav-link`}
+                    to={route ?? ''}
+                    className={
+                      (route
+                        ? pathname.includes(route)
+                          ? 'active'
+                          : pathname.includes('account') && route.includes('account')
+                          ? 'active'
+                          : (pathname.includes('/round') ||
+                              // pathname.includes('/airdrop') ||
+                              pathname.includes('/monopoly')) &&
+                            title.includes('Event')
+                          ? 'active'
+                          : ''
+                        : '') + ' link'
+                    }
+                  >
+                    {titleContent ?? title}
+                  </Link>
+                )
+              })}
+            </LinksWrapper>
+          )}
         </HideOnMobile>
 
         <Box display="flex" alignItems="center" gap={{ xs: '8px', sm: '20px' }}>
