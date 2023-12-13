@@ -13,7 +13,7 @@ import Pool from './Pool'
 import AddLiquidity from './Pool/AddLiquidity'
 import ImportPool from './Pool/ImportPool'
 import darkBg from 'assets/images/dark_bg.png'
-import swapDarkBg from 'assets/images/dark_bg_wolf.png'
+import swapDarkBg from 'assets/images/BannerPups.png'
 import lightBg from 'assets/images/light_bg.png'
 import { useIsDarkMode } from 'state/user/hooks'
 import RemoveLiquidity from './Pool/RemoveLiquidity'
@@ -46,13 +46,14 @@ const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMo
     width: '100%',
     height: '100%',
     bottom: 0,
+    top: isSwap ? 80 : 'inherit',
     zIndex: -1,
-    position: 'absolute',
+    position: isSwap ? 'fixed' : 'absolute',
     backgroundImage: `url(${isSwap ? swapDarkBg : isDarkMode ? darkBg : lightBg})`,
     // boxShadow: isSwap ? 'inset 0 -200px 200px -100px rgba(0,0,0,.9)' : 1,
     backgroundRepeat: 'no-repeat',
     backgroundPosition: isDarkMode ? 'bottom' : 'top',
-    backgroundSize: isDarkMode ? '100% auto' : '100% 100%'
+    backgroundSize: isSwap ? 'cover' : isDarkMode ? '100% auto' : '100% 100%'
   },
   [theme.breakpoints.down('md')]: {
     flexDirection: 'column'
@@ -80,6 +81,16 @@ const BodyWrapper = styled('div')(({ theme }) => ({
   }
 }))
 
+const DarkShadow = styled('div')`
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+`
+
 export default function App() {
   const isDarkMode = useIsDarkMode()
   const { pathname } = useLocation()
@@ -88,6 +99,7 @@ export default function App() {
     <Suspense fallback={null}>
       <ModalProvider>
         <AppWrapper id="app" isDarkMode={isDarkMode || isSwap} isSwap={isSwap}>
+          {isSwap && <DarkShadow />}
           <ContentWrapper>
             <Header />
             <GoogleAnalyticsReporter />
