@@ -80,6 +80,18 @@ const tasks = [
     chain: ChainId.MATIC,
     link: 'https://lok.ladder.top',
     icon: <Trading />
+  },
+  {
+    title: 'Make 2 swaps to Earn Ladder Box',
+    id: 'two',
+    chain: ChainId.MATIC,
+    icon: <Trading />
+  },
+  {
+    title: 'Hold at least 2 WolfPack Pups NFTs to Earn Ladder Box',
+    id: 'two',
+    chain: ChainId.MATIC,
+    icon: <Trading />
   }
 ]
 
