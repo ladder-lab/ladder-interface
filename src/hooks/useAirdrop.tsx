@@ -67,6 +67,8 @@ export function useBoxTasks(refreshCb: () => void) {
   const { account, chainId } = useActiveWeb3React()
   const [taskState, setTaskState] = useState<any>(null)
   const [lockLPState, setLockLPState] = useState<AirdropProps>()
+  const [swapCount1, setSwapCount1] = useState<AirdropProps>()
+  const [swapCount2, setSwapCount2] = useState<AirdropProps>()
   const { hideModal } = useModal()
   const LockLP = useCallback(() => {
     if (!account) return
@@ -95,6 +97,51 @@ export function useBoxTasks(refreshCb: () => void) {
         console.error(e)
       })
   }, [account])
+
+  const swapCount = useCallback(() => {
+    if (!account) return
+    axiosAirdropInstanceLockLP
+      .get('/ladder/swap/count', {
+        params: { address: account }
+      })
+      .then(r => {
+        const swapRes = r.data
+        if (swapRes.swapCount && swapRes.swapCount >= 2) {
+          setSwapCount1({
+            boxType: 11,
+            boxs: 1,
+            claimed: false,
+            finished: true
+          })
+        } else {
+          setSwapCount1({
+            boxType: 11,
+            boxs: 1,
+            claimed: false,
+            finished: false
+          })
+        }
+        if (swapRes.transferToCount && swapRes.transferToCount >= 2) {
+          setSwapCount2({
+            boxType: 12,
+            boxs: 1,
+            claimed: false,
+            finished: true
+          })
+        } else {
+          setSwapCount2({
+            boxType: 12,
+            boxs: 1,
+            claimed: false,
+            finished: false
+          })
+        }
+      })
+      .catch(e => {
+        console.error(e)
+      })
+  }, [account])
+
   const cb = useCallback(() => {
     if (!account || !chainId) return
     axiosAirdropInstance
@@ -120,6 +167,7 @@ export function useBoxTasks(refreshCb: () => void) {
           .then(r => {
             if (r.data.code === 200) {
               LockLP()
+              swapCount()
               refreshCb()
               cb()
               hideModal()
@@ -129,17 +177,18 @@ export function useBoxTasks(refreshCb: () => void) {
             console.error(e)
           })
       },
-    [LockLP, account, cb, chainId, hideModal, refreshCb]
+    [LockLP, account, cb, chainId, hideModal, refreshCb, swapCount]
   )
 
   useEffect(() => {
     cb()
     LockLP()
-  }, [LockLP, cb])
+    swapCount()
+  }, [LockLP, cb, swapCount])
 
   useInterval(cb, account ? 60000 : null)
 
-  return { taskState: { ...taskState, lockLP: lockLPState }, getBox }
+  return { taskState: { ...taskState, lockLP: lockLPState, 'swap-two': swapCount1, 'hold-two': swapCount2 }, getBox }
 }
 
 export function useAirdropData() {

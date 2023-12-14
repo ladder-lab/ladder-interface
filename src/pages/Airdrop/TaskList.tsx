@@ -359,7 +359,7 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                         height: '40px',
                         whiteSpace: 'nowrap'
                       }}
-                      disabled={disabledBtn || data.id === 'two'}
+                      disabled={disabledBtn}
                       onClick={data.action}
                     >
                       {type === TYPE.box ? 'Get Box' : 'Boost'}
