@@ -557,15 +557,25 @@ export default function SwapNew() {
         </Box>
         <Box maxWidth={isDownSm ? '90vw' : 470} margin={`${isDownSm ? '0 0 200px ' : '50px 0 0'} `}>
           <Typography fontSize={34} fontWeight={700}>
-            Hold 2 PUPS and complete at least 2 swaps of PUPS to receive Ladder Boxes and enter a raffle for 100 MATIC.
+            Ladder x Wolfpack
           </Typography>
-          <Box display={'flex'} alignItems={'center'}>
+          <Box display={'flex'} alignItems={'center'} mt={20}>
             <img style={{ width: 41, height: 41 }} src={LadderLogo} />
             <Typography color={'white'} fontSize={25} margin={'0 16px'}>
               X
             </Typography>
             <img style={{ width: 41, height: 41 }} src={WolfLogo} />
           </Box>
+          <Typography mt={20}>
+            Complete each of the following tasks on Ladder to receive Ladder Boxes for each task completed and enter a
+            raffle to win Metaland Wolfpack assets, Gen K, Soulsearchers and more! The tasks are:
+            <br />
+            <br />
+            1. Hold at least 2 PUPS
+            <br />
+            <br />
+            2. Complete at least 2 swaps of PUPS{' '}
+          </Typography>
           <Box mt={16}>
             <Typography>
               <Typography component={'span'} fontWeight={700}>
@@ -584,6 +594,10 @@ export default function SwapNew() {
               Ladder is a decentralized Automated Market Maker (AMM) protocol that provides instant liquidity for NFTs
               through liquidity pools. Through Ladder, users can permisionlessly create their own markets that offer NFT
               holders new revenue streams.
+              <br />
+              <br />
+              Ladder Boxes will contain the $LAD token, which is the cornerstone of our protocol, from governance to
+              incentivising liquidity providers.
             </Typography>
             <br />
             <Typography component={'div'}>
