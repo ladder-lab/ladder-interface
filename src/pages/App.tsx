@@ -8,7 +8,7 @@ import Web3ReactManager from '../components/essential/Web3ReactManager'
 // import WarningModal from '../components/Modal/WarningModal'
 import { ModalProvider } from 'context/ModalContext'
 import { routes } from 'constants/routes'
-import SwapTemp from './Swap/SwapNew'
+import SwapNew from './Swap/SwapNew'
 import Pool from './Pool'
 import AddLiquidity from './Pool/AddLiquidity'
 import ImportPool from './Pool/ImportPool'
@@ -114,8 +114,8 @@ export default function App() {
                   <Route path={routes.winners} element={<ListOfWinners />} />
                   <Route path={routes.explorer} element={<Explorer />} />
                   <Route path={routes.explorer + routes.collectionParams} element={<Collection />} />
-                  <Route path={routes.swap} element={<SwapTemp />}>
-                    <Route path={routes.removeLiquidityParams.slice(1)} element={<SwapTemp />} />
+                  <Route path={routes.swap} element={<SwapNew />}>
+                    <Route path={routes.removeLiquidityParams.slice(1)} element={<SwapNew />} />
                   </Route>
                   <Route path={routes.pool} element={<Pool />} />
                   <Route path={routes.statistics} element={<Statistics />} />

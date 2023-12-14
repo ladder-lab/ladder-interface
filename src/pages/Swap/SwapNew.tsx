@@ -42,7 +42,7 @@ import { useDispatch } from 'react-redux'
 import { AppDispatch } from '../../state'
 import { updateUserDarkMode } from '../../state/user/actions'
 
-export default function SwapTemp() {
+export default function SwapNew() {
   // const theme = useTheme()
 
   const { account, chainId } = useActiveWeb3React()
@@ -555,7 +555,7 @@ export default function SwapTemp() {
             />
           )}
         </Box>
-        <Box maxWidth={isDownSm ? '90vw' : 470} margin={`${isDownSm ? '0 0 200px ' : '100px 0 0'} `}>
+        <Box maxWidth={isDownSm ? '90vw' : 470} margin={`${isDownSm ? '0 0 200px ' : '50px 0 0'} `}>
           <Typography fontSize={34} fontWeight={700}>
             Hold 2 PUPS and complete at least 2 swaps of PUPS to receive Ladder Boxes and enter a raffle for 100 MATIC.
           </Typography>
