@@ -70,92 +70,46 @@ export function useBoxTasks(refreshCb: () => void) {
   const [swapCount1, setSwapCount1] = useState<AirdropProps>()
   const [swapCount2, setSwapCount2] = useState<AirdropProps>()
   const { hideModal } = useModal()
-  const LockLP = useCallback(() => {
-    if (!account) return
-    axiosAirdropInstanceLockLP
-      .get('/ladder/lock/check', {
-        params: { address: account }
-      })
-      .then(r => {
-        if (r.data.data.is_ok) {
-          setLockLPState({
-            boxType: 10,
-            boxs: 1,
-            claimed: false,
-            finished: true
-          })
-        } else {
-          setLockLPState({
-            boxType: 10,
-            boxs: 1,
-            claimed: false,
-            finished: false
-          })
-        }
-      })
-      .catch(e => {
-        console.error(e)
-      })
-  }, [account])
 
-  const swapCount = useCallback(() => {
-    if (!account) return
-    axiosAirdropInstanceLockLP
-      .get('/ladder/swap/count', {
-        params: { address: account }
-      })
-      .then(r => {
-        const swapRes = r.data
-        if (swapRes.swapCount && swapRes.swapCount >= 2) {
-          setSwapCount1({
-            boxType: 11,
-            boxs: 1,
-            claimed: false,
-            finished: true
-          })
-        } else {
-          setSwapCount1({
-            boxType: 11,
-            boxs: 1,
-            claimed: false,
-            finished: false
-          })
-        }
-        if (swapRes.transferToCount && swapRes.transferToCount >= 2) {
-          setSwapCount2({
-            boxType: 12,
-            boxs: 1,
-            claimed: false,
-            finished: true
-          })
-        } else {
-          setSwapCount2({
-            boxType: 12,
-            boxs: 1,
-            claimed: false,
-            finished: false
-          })
-        }
-      })
-      .catch(e => {
-        console.error(e)
-      })
-  }, [account])
+  const cb = useCallback(async () => {
+    try {
+      if (!account || !chainId) return
 
-  const cb = useCallback(() => {
-    if (!account || !chainId) return
-    axiosAirdropInstance
-      .get('/drop/getCompleteTaskStatus', {
-        params: { account, chainId }
-      })
-      .then(r => {
-        if (r.data.code === 200) {
-          setTaskState(r.data.data)
-        }
-      })
-      .catch(e => {
-        console.error(e)
-      })
+      const [res1, res2, res3] = await Promise.all([
+        axiosAirdropInstance.get('/drop/getCompleteTaskStatus', { params: { account, chainId } }),
+        axiosAirdropInstanceLockLP.get('/ladder/lock/check', { params: { address: account } }),
+        axiosAirdropInstanceLockLP.get('/ladder/swap/count', { params: { sender: account } })
+      ])
+
+      if (res1.data.code === 200) {
+        setTaskState(res1.data.data)
+      }
+
+      if (res2.data.data.is_ok) {
+        setLockLPState({ boxType: 10, boxs: 1, claimed: false, finished: true })
+      } else {
+        setLockLPState({ boxType: 10, boxs: 1, claimed: false, finished: false })
+      }
+
+      if (res3.data.code === 200) {
+        const swapRes = res3.data.data
+        setSwapCount1({
+          boxType: 11,
+          boxs: 1,
+          claimed: false,
+          finished: swapRes.swapCount && swapRes.swapCount >= 2
+        })
+
+        setSwapCount2({
+          boxType: 12,
+          boxs: 1,
+          claimed: false,
+          finished: swapRes.transferToCount && swapRes.transferToCount >= 2
+        })
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }, [account, chainId])
 
   const getBox = useCallback(
@@ -166,8 +120,6 @@ export function useBoxTasks(refreshCb: () => void) {
           .get('/drop/saveCompleteBox', { params: { account, boxType, boxs, chainId } })
           .then(r => {
             if (r.data.code === 200) {
-              LockLP()
-              swapCount()
               refreshCb()
               cb()
               hideModal()
@@ -177,14 +129,12 @@ export function useBoxTasks(refreshCb: () => void) {
             console.error(e)
           })
       },
-    [LockLP, account, cb, chainId, hideModal, refreshCb, swapCount]
+    [account, cb, chainId, hideModal, refreshCb]
   )
 
   useEffect(() => {
     cb()
-    LockLP()
-    swapCount()
-  }, [LockLP, cb, swapCount])
+  }, [cb])
 
   useInterval(cb, account ? 60000 : null)
 
