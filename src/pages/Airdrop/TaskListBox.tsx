@@ -80,11 +80,26 @@ const tasks = [
     chain: ChainId.MATIC,
     link: 'https://lok.ladder.top',
     icon: <Trading />
+  },
+  {
+    title: 'Make 2 swaps to Earn Ladder Box => Swap at least 2 WolfPack Pups NFTs',
+    id: 'swap-two',
+    chain: ChainId.MATIC,
+    link: 'https://wolfpack.ladder.top/swap',
+    icon: <Trading />
+  },
+  {
+    title: 'Hold at least 2 WolfPack Pups NFTs to Earn Ladder Box => Hold at least 2 WolfPack Pups NFTs',
+    id: 'hold-two',
+    chain: ChainId.MATIC,
+    link: 'https://wolfpack.ladder.top/swap',
+    icon: <Trading />
   }
 ]
 
 export default function TaskListLuck({ refreshCb }: { refreshCb: () => void }) {
   const { getBox, taskState: state } = useBoxTasks(refreshCb)
+  console.log('🚀 ~ file: TaskListBox.tsx:100 ~ TaskListLuck ~ state:', state)
   const { showModal } = useModal()
 
   const sorted: TaskListData = useMemo(

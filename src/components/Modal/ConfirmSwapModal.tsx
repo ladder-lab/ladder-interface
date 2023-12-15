@@ -96,7 +96,7 @@ export default function ConfirmSwapModal({
           priceImpact={priceImpact ?? ''}
           slippage={allowedSlippage / 100 + ''}
           MinReceiveQty={slippageAdjustedAmounts.OUTPUT?.toFixed(6) ?? ''}
-          NetworkFee="0"
+          NetworkFee="--"
           toAsset={to}
         />
         <ActionButton
