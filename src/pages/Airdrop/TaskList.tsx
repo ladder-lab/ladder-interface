@@ -12,13 +12,15 @@ import { ReactComponent as BoxIcon } from 'assets/svg/airdrop/box_icon.svg'
 import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
 import QuestionHelper from 'components/essential/QuestionHelper'
+import { ActivityProps } from './Activity'
 
 const disabledBtn = false
 
 export enum TYPE {
   box,
   luck,
-  swap
+  swap,
+  activity
 }
 
 interface Props {
@@ -45,6 +47,7 @@ interface CardProp {
   count?: number
   statusText?: string | undefined
   isLoading?: boolean
+  buttonText?: string
 }
 
 export interface TaskListData {
@@ -161,8 +164,8 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
 
   return (
     <Box
-      display={'grid'}
-      gridTemplateColumns={{ xs: '100%', md: '1fr 1fr 1fr', lg: '1fr 1fr 1fr 1fr' }}
+      display={{ md: 'grid', lg: type === TYPE.activity ? 'flex' : 'grid' }}
+      gridTemplateColumns={{ xs: '100%', md: '1fr 1fr 1fr', lg: type === TYPE.activity ? 'unset' : '1fr 1fr 1fr 1fr' }}
       gap={20}
       sx={sx}
     >
@@ -360,9 +363,18 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                         whiteSpace: 'nowrap'
                       }}
                       disabled={disabledBtn}
-                      onClick={data.action}
+                      onClick={() => {
+                        if (
+                          type === TYPE.activity &&
+                          (data.id === ActivityProps.MintNow || data.id === ActivityProps.GoToGalxe)
+                        ) {
+                          window.open(data.route, '_blank')
+                          return
+                        }
+                        data?.action && data?.action()
+                      }}
                     >
-                      {type === TYPE.box ? 'Get Box' : 'Boost'}
+                      {type === TYPE.box ? 'Get Box' : type === TYPE.activity ? data.buttonText || 'Boost' : 'Boost'}
                     </Button>
                   )}
                 </>

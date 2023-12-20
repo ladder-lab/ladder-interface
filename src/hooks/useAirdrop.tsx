@@ -175,6 +175,60 @@ export function useAirdropData() {
   return { airdropData, refreshCb }
 }
 
+export function useActivityList(refreshCb: () => void) {
+  const { account, chainId } = useActiveWeb3React()
+  const [taskState, setTaskState] = useState<any>(null)
+  const { hideModal } = useModal()
+  const [activity, setActivityState] = useState<AirdropProps>()
+
+  const cb = useCallback(() => {
+    if (!account) return
+    axiosAirdropInstanceLockLP
+      .get('ladder/mint/nft/complete', {
+        params: { account }
+      })
+      .then(r => {
+        console.log('🚀 ~ file: useAirdrop.tsx:198 ~ cb ~ r:', r)
+        setTaskState(null)
+        if (r.data.data.is_ok) {
+          setActivityState({ boxType: 1, boxs: 1, claimed: false, finished: true })
+        } else {
+          setActivityState({ boxType: 1, boxs: 1, claimed: false, finished: false })
+        }
+      })
+      .catch(e => {
+        console.error(e)
+      })
+  }, [account])
+
+  const getBox = useCallback(
+    ({ boxType, boxs }: { boxType: number; boxs: number }) =>
+      () => {
+        if (!account || !chainId) return
+        axiosAirdropInstance
+          .get('/drop/saveCompleteBox', { params: { account, boxType, boxs, chainId } })
+          .then(r => {
+            if (r.data.code === 200) {
+              refreshCb()
+              cb()
+              hideModal()
+            }
+          })
+          .catch(e => {
+            console.error(e)
+          })
+      },
+    [account, cb, chainId, hideModal, refreshCb]
+  )
+
+  useEffect(() => {
+    cb()
+  }, [cb])
+
+  useInterval(cb, account ? 60000 : null)
+
+  return { taskState: { ...taskState, mint: activity }, getBox }
+}
 export function useVerifyEmail() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const { account } = useActiveWeb3React()
