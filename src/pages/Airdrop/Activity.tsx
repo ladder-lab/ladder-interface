@@ -21,15 +21,14 @@ const tasks = [
     tooltip: 'You will be redirected to SophiaVerse minting page (chose BSC).',
     id: ActivityProps.MintNow,
     buttonText: 'Mint Now',
-    route: 'https://www.google.com/'
+    route: 'https://www.sophiaverse.ai/#pre-order'
   },
   {
     title: 'Obtain level 1 badge',
     chain: ChainId.MATIC,
     icon: <Badges />,
     tooltip: 'Get at least one 1st lvl badge on Ladder Testnet 3.',
-    route: '',
-    link: 'https://www.google.com/',
+    route: 'round3',
     id: ActivityProps.Mint
   },
   {
@@ -37,7 +36,7 @@ const tasks = [
     chain: ChainId.MATIC,
     icon: <Badges />,
     tooltip: 'You will be redirected to Galxe page.',
-    route: 'https://www.google.com/',
+    route: 'https://galxe.com/ladder/campaign/GCpC6ttemH',
     id: ActivityProps.GoToGalxe,
     buttonText: 'Go to Galxe'
   }
@@ -69,7 +68,7 @@ export default function ActivityBox({ refreshCb }: { refreshCb: () => void }) {
                           BoxId={item.id}
                         />
                       )
-                    : showModal(<IncompleteModal route={item.route} link={item.link} />)
+                    : showModal(<IncompleteModal route={item.route} />)
                 }
               })
               return acc
