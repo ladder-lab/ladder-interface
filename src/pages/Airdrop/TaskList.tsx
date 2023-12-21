@@ -261,9 +261,13 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                       : undefined
                   }
                 >
-                  {type === TYPE.box ? <BoxIcon width={28} /> : <LuckIcon width={28} />}
+                  {type === TYPE.box || data.id === ActivityProps.Mint ? (
+                    <BoxIcon width={28} />
+                  ) : (
+                    <LuckIcon width={28} />
+                  )}
                   <Typography fontSize={16} fontWeight={700}>
-                    {type === TYPE.box ? 'x 1' : '+ 10%'}
+                    {type === TYPE.box || data.id === ActivityProps.Mint ? 'x 1' : '+ 10%'}
                   </Typography>
                 </Box>
               )}
