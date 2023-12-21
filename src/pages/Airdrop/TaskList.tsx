@@ -374,7 +374,13 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                         data?.action && data?.action()
                       }}
                     >
-                      {type === TYPE.box ? 'Get Box' : type === TYPE.activity ? data.buttonText || 'Boost' : 'Boost'}
+                      {type === TYPE.box
+                        ? 'Get Box'
+                        : type === TYPE.activity
+                        ? data.id === ActivityProps.Mint
+                          ? 'Get Box'
+                          : data.buttonText || 'Boost'
+                        : 'Boost'}
                     </Button>
                   )}
                 </>

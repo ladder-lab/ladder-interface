@@ -190,11 +190,7 @@ export function useActivityList(refreshCb: () => void) {
       .then(r => {
         console.log('🚀 ~ file: useAirdrop.tsx:198 ~ cb ~ r:', r)
         setTaskState(null)
-        if (r.data.data.is_ok) {
-          setActivityState({ boxType: 1, boxs: 1, claimed: false, finished: true })
-        } else {
-          setActivityState({ boxType: 1, boxs: 1, claimed: false, finished: false })
-        }
+        setActivityState({ boxType: 1, boxs: 1, claimed: false, finished: r?.data?.data?.is_ok || false })
       })
       .catch(e => {
         console.error(e)
