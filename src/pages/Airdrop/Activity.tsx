@@ -99,7 +99,7 @@ export default function ActivityBox({ refreshCb }: { refreshCb: () => void }) {
           {'SophiaVerse Awakening'}
         </Typography>
         <Typography whiteSpace={'break-spaces'} maxWidth={700} textAlign={'center'}>
-          Campaign duration: December 21, 2023 - December 28, 2023 | Winners drawn: December 29, 2023{' '}
+          Campaign duration: December 22, 2023 - December 29, 2023 | Winners drawn: December 30, 2023{' '}
         </Typography>
         <Typography whiteSpace={'break-spaces'} maxWidth={800} textAlign={'center'}>
           Ladder enters SophiaVerse in search for Artificial general intelligence. Mint SophiaVerse Tier 1 Awakening NFT
