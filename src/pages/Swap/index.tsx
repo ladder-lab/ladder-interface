@@ -34,10 +34,12 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { liquidityParamBuilder, liquidityParamSplitter, routes } from 'constants/routes'
 import { useCurrency } from 'hooks/Tokens'
 import { replaceErrorMessage } from 'utils'
+// import StakeNftSelectModal from 'components/Modal/StakeNftSelectModal'
+import { useToken721BalanceTokens } from 'state/wallet/hooks'
 
 export default function Swap() {
   // const theme = useTheme()
-
+  useToken721BalanceTokens()
   const { account, chainId } = useActiveWeb3React()
   const navigate = useNavigate()
 
@@ -390,6 +392,13 @@ export default function Swap() {
           >
             SWAP
           </Typography>
+          {/* <Button
+            onClick={() => {
+              showModal(<StakeNftSelectModal />)
+            }}
+          >
+            Open Select Stake Nft Modal
+          </Button> */}
 
           <Settings />
           <Box mb={fromAsset ? 16 : 0}>

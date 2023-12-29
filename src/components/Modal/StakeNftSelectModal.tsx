@@ -5,7 +5,7 @@ import Modal from '.'
 import { Loader } from 'components/AnimatedSvg/Loader'
 import useBreakpoint from 'hooks/useBreakpoint'
 import LogoText from 'components/LogoText'
-import { CloseIcon, ExternalLink } from 'theme/components'
+import { ExternalLink } from 'theme/components'
 import { ReactComponent as Xcircle } from 'assets/svg/xcircle.svg'
 // import { ReactComponent as XcircleSm } from 'assets/svg/xcirclesm.svg'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
@@ -14,25 +14,21 @@ import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from '
 import { useToken721Balance, useToken721BalanceTokens } from 'state/wallet/hooks'
 import { shortenAddress } from 'utils'
 import { useERC721Tokens } from 'state/swap/useSwap721State'
-import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
 import { useToken721PoolIds } from 'hooks/useToken721PoolIds'
 
 import LogoBase from 'components/essential/CurrencyLogo/LogoBase'
-import InputNumerical from 'components/Input/InputNumerical'
 import Close from '@mui/icons-material/Close'
 import SwitchToggle from 'components/SwitchToggle'
 import { useCurrencyModalListHeight } from 'hooks/useScreenSize'
 import Pagination from 'components/Pagination'
 
-export default function Erc721IdSelectionModal({
-  // isOpen,
+export default function StakeNftSelectModal({
   onDismiss,
   collection,
   onSelectSubTokens,
   pairAddress,
   setAmount
 }: {
-  // isOpen: boolean
   onDismiss: () => void
   collection?: Token721
   onSelectSubTokens: (tokens: Token721[]) => void
@@ -49,7 +45,6 @@ export default function Erc721IdSelectionModal({
 
   const balance = useToken721Balance(pairAddress ? undefined : collection)
   const { loading, availableTokens } = useToken721BalanceTokens(balance)
-  console.log('🚀 ~ file: Erc721IdSelectionModal.tsx:53 ~ availableTokens:', availableTokens)
   const { loading: poolLoading, poolTokens, page } = useToken721PoolIds(pairAddress, collection)
 
   const [filteredAvailableTokens, setFilteredAvailableTokens] = useState(pairAddress ? poolTokens : availableTokens)
@@ -73,10 +68,6 @@ export default function Erc721IdSelectionModal({
     const res = filteredAvailableTokens.find((token: Token721) => (token.tokenId + '').includes(searchId))
     return res ? res : null
   }, [filteredAvailableTokens, searchId])
-
-  const handleSearchId = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setSearchId(e.target.value)
-  }, [])
 
   const resetSearchId = useCallback(() => {
     setSearchId('')
@@ -114,19 +105,9 @@ export default function Erc721IdSelectionModal({
             }
           }}
         >
-          Select a NFT
+          Select Stake a NFT
         </Typography>
       </Box>
-      <InputNumerical
-        integer
-        value={searchId}
-        onChange={handleSearchId}
-        placeholder="Search NFT token ID"
-        endAdornment={<CloseIcon onClick={resetSearchId} sx={{ position: 'static' }} />}
-        startAdornment={<SearchIcon />}
-        onKeyDown={handleSearchId}
-        height={isDownMd ? 48 : 60}
-      />
       <Box mt={20}>
         <Box sx={{ display: { xs: 'grid', md: 'flex' }, alignItems: 'center', gap: 12 }}>
           <Typography>Collection:</Typography>
@@ -250,18 +231,8 @@ export default function Erc721IdSelectionModal({
           }}
           ref={container}
         >
-          <Button
-            onClick={onConfirm}
-            sx={{ height: 60, width: 300 }}
-            disabled={tokens.length === 0}
-            // disabled={!!amount && tokens.length !== amount}
-          >
+          <Button onClick={onConfirm} sx={{ height: 60, width: 300 }} disabled={tokens.length === 0}>
             {tokens.length} NFTs has been chosen
-            {/* {tokens.length === amount
-                      ? `${tokens.length}/${amount} Confirm`
-                      : amount === 0
-                      ? `${tokens.length} NFTs has been chosen`
-                      : `${amount} NFTs should be chosen`} */}
           </Button>
           {tokens.length > 0 && (
             <Button

@@ -43,18 +43,22 @@ interface Tab extends TabContent {
 }
 
 export const Tabs: Tab[] = [
-  {
-    title: 'Airdrop',
-    route: routes.airdrop
-  },
+  // {
+  //   title: 'Airdrop',
+  //   route: routes.airdrop
+  // },
+  // {
+  //   title: 'Event',
+  //   route: routes.testnet
+  // },
   {
     title: 'Event',
     route: routes.testnet
   },
   { title: 'Swap', route: routes.swap },
-  { title: 'Pool', route: routes.pool },
-  { title: 'Explore', route: routes.explorer },
-  { title: 'Statistics', route: routes.statistics }
+  { title: 'Pool', route: routes.pool }
+  // { title: 'Explore', route: routes.explorer },
+  // { title: 'Statistics', route: routes.statistics }
 ]
 
 const navLinkSX = ({ theme }: any) => ({

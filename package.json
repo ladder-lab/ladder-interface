@@ -91,6 +91,7 @@
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.7",
     "@uniswap/default-token-list": "^2.0.0",
+    "alchemy-sdk": "^3.1.0",
     "axios": "^0.27.2",
     "big.js": "^6.2.0",
     "dayjs": "^1.11.3",

@@ -14,6 +14,30 @@ import { useBlockNumber } from 'state/application/hooks'
 import { Token721 } from 'constants/token/token721'
 import { getTest721uriWithIndex, isTest721 } from 'constants/default721List'
 import { axiosNftScanInstance, erc721CollectionResponseType, ResponseType } from 'utils/axios'
+import { getAlchemy } from 'utils/alchemy'
+
+export interface Token721Info {
+  address: string
+  contractDeployer: string
+  deployedBlockNumber: number
+  name: string
+  openSeaMetadata: {
+    bannerImageUrl: string
+    collectionName: string
+    collectionSlug: string
+    description: string
+    discordUrl: string
+    externalUrl: boolean
+    floorPrice: number
+    imageUrl: string
+    lastIngestedAt: string
+    safelistRequestStatus: string
+    twitterUsername: boolean
+  }
+  symbol: string
+  tokenType: string
+  totalSupply: string
+}
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -284,6 +308,21 @@ export function useToken721BalanceTokens(tokenAmount?: TokenAmount): {
     }
     ;(async () => {
       setLoading(true)
+
+      try {
+        // const res = await getAlchemy(chainId).nft.getNftMetadata('0xb2499f45cdb48321db025f6d83436f86e9b5f270', 2)
+        // const res = await getAlchemy(chainId).nft.getContractMetadata(tokenAmount?.token?.address)
+        // const res = await getAlchemy(chainId).nft.getNftsForOwner(account)
+        // const res = await getAlchemy(chainId).nft.getContractsForOwner(account)
+
+        const res = await getAlchemy(chainId).nft.getNftsForOwner(account, {
+          contractAddresses: [tokenAmount?.token?.address]
+        })
+        console.log('🚀 ~ file: hooks.ts:289 ~ ; ~ res:', res)
+      } catch (error) {
+        console.log('🚀 ~ file: hooks.ts:289 ~ ; ~ error:', error)
+      }
+
       try {
         const res = await axiosNftScanInstance.get<ResponseType<erc721CollectionResponseType>>(
           `account/own/${account}`,
