@@ -4,6 +4,7 @@ import { Token1155 } from './token/token1155'
 export const routes = {
   swap: '/swap',
   pool: '/pool',
+  testnet: '/testnet',
   importPool: '/import-pool',
   addLiquidity: '/add-liquidity',
   removeLiquidity: '/remove-liquidity',
