@@ -365,10 +365,12 @@ export function useTrackedTokenPairs(): [Token, Token][] {
     () => userPairs.concat(generatedPairs).concat(pinnedPairs),
     [generatedPairs, pinnedPairs, userPairs]
   )
+  console.log('🚀 ~ file: hooks.tsx:368 ~ useTrackedTokenPairs ~ combinedList:', combinedList)
   return useMemo(() => {
     // dedupes pairs of tokens in the combined list
     const keyed = combinedList.reduce<{ [key: string]: [Token | Token1155, Token | Token1155] }>(
       (memo, [tokenA, tokenB]) => {
+        console.log('🚀 ~ file: hooks.tsx:372 ~ returnuseMemo ~ tokenA, tokenB:', tokenA, tokenB)
         const sorted = tokenA.sortsBefore(tokenB)
         const key = sorted ? pairKeyToken(tokenA, tokenB) : pairKeyToken(tokenB, tokenA)
         if (memo[key]) return memo

@@ -4,7 +4,6 @@ import { checkIs1155, checkIs721 } from 'utils/checkIs1155'
 export const routes = {
   swap: '/swap',
   pool: '/pool',
-  testnet_farm: '/testnet_farm',
   importPool: '/import-pool',
   addLiquidity: '/add-liquidity',
   removeLiquidity: '/remove-liquidity',

@@ -34,7 +34,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { liquidityParamBuilder, liquidityParamSplitter, routes } from 'constants/routes'
 import { useCurrency } from 'hooks/Tokens'
 import { replaceErrorMessage } from 'utils'
-// import StakeNftSelectModal from 'components/Modal/StakeNftSelectModal'
 import { useToken721BalanceTokens } from 'state/wallet/hooks'
 
 export default function Swap() {
@@ -353,7 +352,6 @@ export default function Swap() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromAsset, typedValue])
-  // const is721 = filter721(fromAsset)
 
   return (
     <>
@@ -393,15 +391,6 @@ export default function Swap() {
           >
             SWAP
           </Typography>
-          {/* <Button
-            onClick={() => {
-              showModal(
-                <StakeNftSelectModal onDismiss={hideModal} collection={is721} onSelectSubTokens={handleFromSubAssets} />
-              )
-            }}
-          >
-            Open Select Stake Nft Modal
-          </Button> */}
 
           <Settings />
           <Box mb={fromAsset ? 16 : 0}>

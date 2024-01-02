@@ -30,7 +30,6 @@ export default function StakeNftSelectModal({
   const [selectAll, setSelectAll] = useState(false)
   const isDownMd = useBreakpoint('md')
   const container = useRef<any>(null)
-  console.log('🚀 ~ file: Erc721IdSelectionModal.tsx:42 ~ collection:', collection)
 
   const { onClearTokens, tokens, onToggleToken, setTokens } = useERC721Tokens()
 

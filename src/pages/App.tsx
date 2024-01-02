@@ -31,8 +31,7 @@ import MyAccount from './MyAccount'
 import OrigAccount from './MyAccount/OrigAccount'
 import Footer from '../components/Footer'
 import Airdrop from './Airdrop'
-import Farms from './Testnet/Farms'
-import TestnetFarm from './Testnet/TestNetFarm'
+import Farms from './Farm'
 
 const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
   ({ theme, isDarkMode }) => ({
@@ -98,7 +97,6 @@ export default function App() {
                   <Route path={routes.testnet} element={<Testnet />} />
                   <Route path={routes.winners} element={<ListOfWinners />} />
                   <Route path={routes.explorer} element={<Explorer />} />
-                  <Route path={routes.farms} element={<Farms />} />
                   <Route path={routes.explorer + routes.collectionParams} element={<Collection />} />
                   <Route path={routes.swap} element={<Swap />}>
                     <Route path={routes.removeLiquidityParams.slice(1)} element={<Swap />} />
@@ -110,7 +108,6 @@ export default function App() {
                     element={<StatisticsTokens />}
                   />
                   <Route path={routes.statisticsPools + routes.statisticsPoolsParams} element={<StatisticsPools />} />
-                  <Route path={routes.testnet_farm} element={<TestnetFarm />} />
                   <Route path={routes.importPool} element={<ImportPool />} />
                   <Route path={routes.addLiquidity} element={<AddLiquidity />}>
                     <Route path={routes.removeLiquidityParams.slice(1)} element={<AddLiquidity />} />
@@ -123,6 +120,7 @@ export default function App() {
                   <Route path={routes.becomePartner} element={<BecomePartnerNew />} />
                   <Route path={routes.myAccount} element={<MyAccount />} />
                   <Route path={routes.origAccount} element={<OrigAccount />} />
+                  <Route path={routes.farms} element={<Farms />} />
                   <Route path="*" element={<Navigate to={routes.airdrop} replace />} />
                 </Routes>
               </Web3ReactManager>

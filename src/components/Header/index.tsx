@@ -52,8 +52,8 @@ export const Tabs: Tab[] = [
   //   route: routes.testnet
   // },
   {
-    title: 'Event',
-    route: routes.testnet
+    title: 'Farms',
+    route: routes.farms
   },
   { title: 'Swap', route: routes.swap },
   { title: 'Pool', route: routes.pool }
