@@ -311,7 +311,7 @@ export function useTrackedTokenPairs(): [Token, Token][] {
   const { chainId } = useActiveWeb3React()
   const tokens = useAllTokens()
   const nfts = useTrackedToken1155List()
-  const erc721s = useTrackedToken721List()
+  const { data: erc721s } = useTrackedToken721List()
   const userTokens = useUserAddedTokens()
 
   // pinned pairs
