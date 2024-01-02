@@ -9,6 +9,9 @@ export const Row = styled(Box)`
 export const CenterRow = styled(Row)`
   align-items: center;
 `
+export const CenterBetweenRow = styled(CenterRow)`
+  justify-content: space-between;
+`
 const Tab = styled(Row)`
   background: white;
   width: 100%;
@@ -29,7 +32,7 @@ export default function TestnetFarm() {
   const [currentTab, setTab] = useState<number>(0)
   return (
     <>
-      <Tab marginTop={-54}>
+      <Tab>
         <TabItem onClick={() => setTab(0)} className={currentTab == 0 ? 'selected' : ''}>
           Farms
         </TabItem>
