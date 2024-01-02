@@ -44,6 +44,10 @@ interface Tab extends TabContent {
 
 export const Tabs: Tab[] = [
   {
+    title: 'Testnet',
+    route: routes.testnet_farm
+  },
+  {
     title: 'Airdrop',
     route: routes.airdrop
   },

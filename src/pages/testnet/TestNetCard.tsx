@@ -302,7 +302,7 @@ function RoiModal({ isOpen }: { isOpen: (arg: boolean) => void }) {
 export function TestNetCardList({ list }: { list: TestNetData[] }) {
   const [open, isOpen] = useState(false)
   const [modalData, setModalData] = useState<TestNetData>()
-  const showStack = true
+  const showStack = false
   return (
     <>
       <Modal open={open && modalData != null} onClose={() => isOpen(false)}>
@@ -330,6 +330,20 @@ export function TestNetCard({ data, onClick }: { data: TestNetData; onClick: (ar
       <CenterRow>
         <img src={data.avatar || DefaultAvatar} />
         <BlackText sx={{ fontSize: '18px' }}>{data.name}</BlackText>
+        <Box
+          sx={{
+            background: 'linear-gradient(96.44deg, #D8FF20 5.94%, #99F7F4 97.57%)',
+            color: '#333333',
+            padding: '0 5px',
+            top: '-14px',
+            right: '4px',
+            borderRadius: '4px',
+            fontSize: 12,
+            ml: 5
+          }}
+        >
+          live
+        </Box>
       </CenterRow>
       <BetweenRowBg>
         <Hint>APR</Hint>
