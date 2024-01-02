@@ -9,6 +9,7 @@ import useModal from 'hooks/useModal'
 import { useIsDarkMode } from 'state/user/hooks'
 import { Link } from 'react-router-dom'
 import { ExternalLink } from 'theme/components'
+import { ActivityProps } from './Activity'
 
 export default function BoxModal({ getBox, BoxId }: { getBox: () => void; BoxId?: string }) {
   const isDardMode = useIsDarkMode()
@@ -22,7 +23,7 @@ export default function BoxModal({ getBox, BoxId }: { getBox: () => void; BoxId?
           <br />
           Congrats on your 1 box reward!
         </Typography>
-        <Button onClick={getBox} disabled={BoxId === 'lockLP'}>
+        <Button onClick={getBox} disabled={BoxId === 'lockLP' || BoxId === ActivityProps.Mint}>
           GET IT NOW
         </Button>
       </Box>

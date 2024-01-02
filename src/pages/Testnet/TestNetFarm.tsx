@@ -1,12 +1,16 @@
 import { Box, styled, Typography } from '@mui/material'
 import { useState } from 'react'
-import { FakeData, TestNetCardList } from './TestNetCard'
+import Farms from './Farms'
+import NFTStaking from './NFTStaking'
 
 export const Row = styled(Box)`
   display: flex;
 `
 export const CenterRow = styled(Row)`
   align-items: center;
+`
+export const CenterBetweenRow = styled(CenterRow)`
+  justify-content: space-between;
 `
 const Tab = styled(Row)`
   background: white;
@@ -24,23 +28,11 @@ const TabItem = styled(Typography)`
     color: white;
   }
 `
-
-export const Container = styled(Box)`
-  width: 100%;
-  max-width: 1440px;
-  padding: 26px 45px;
-`
-export const Title = styled(Typography)`
-  font-size: 24px;
-  line-height: 36px;
-  font-family: 'Monument Extended';
-`
-
-export default function Testnet() {
+export default function TestnetFarm() {
   const [currentTab, setTab] = useState<number>(0)
   return (
     <>
-      <Tab marginTop={-54}>
+      <Tab>
         <TabItem onClick={() => setTab(0)} className={currentTab == 0 ? 'selected' : ''}>
           Farms
         </TabItem>
@@ -51,25 +43,5 @@ export default function Testnet() {
       {currentTab == 0 && <Farms />}
       {currentTab == 1 && <NFTStaking />}
     </>
-  )
-}
-
-function Farms() {
-  return (
-    <Container>
-      <Title>Farms</Title>
-      <Typography>Stake ERC20 and NFT Liquidity Pool (LP) tokens to earn LAD.</Typography>
-      <TestNetCardList list={FakeData} />
-    </Container>
-  )
-}
-
-function NFTStaking() {
-  return (
-    <Container>
-      <Title>NFT Staking</Title>
-      <Typography>Stake Token To Get LAD Rewards</Typography>
-      <TestNetCardList list={FakeData} />
-    </Container>
   )
 }

@@ -32,6 +32,7 @@ import OrigAccount from './MyAccount/OrigAccount'
 import Footer from '../components/Footer'
 import Airdrop from './Airdrop'
 import Farms from './Testnet/Farms'
+import TestnetFarm from './Testnet/TestNetFarm'
 
 const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
   ({ theme, isDarkMode }) => ({
@@ -109,6 +110,7 @@ export default function App() {
                     element={<StatisticsTokens />}
                   />
                   <Route path={routes.statisticsPools + routes.statisticsPoolsParams} element={<StatisticsPools />} />
+                  <Route path={routes.testnet_farm} element={<TestnetFarm />} />
                   <Route path={routes.importPool} element={<ImportPool />} />
                   <Route path={routes.addLiquidity} element={<AddLiquidity />}>
                     <Route path={routes.removeLiquidityParams.slice(1)} element={<AddLiquidity />} />

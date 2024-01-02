@@ -25,6 +25,7 @@ export interface InputProps {
   helperText?: string
   borderRadius?: string
   requiredLabel?: boolean
+  maxBtnStyle?: React.CSSProperties
 }
 
 export default function Input({
