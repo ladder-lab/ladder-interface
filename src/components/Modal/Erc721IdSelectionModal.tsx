@@ -320,7 +320,7 @@ export default function Erc721IdSelectionModal({
   )
 }
 
-function NftCard({
+export function NftCard({
   token,
   onClick,
   disabled,

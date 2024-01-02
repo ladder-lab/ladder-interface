@@ -1,26 +1,17 @@
-import { Box, Button, IconButton, Typography, useTheme, Grid } from '@mui/material'
+import { Box, Button, Typography, Grid } from '@mui/material'
 import { Token721 } from 'constants/token/token721'
-import { useIsDarkMode } from 'state/user/hooks'
 import Modal from '.'
 import { Loader } from 'components/AnimatedSvg/Loader'
 import useBreakpoint from 'hooks/useBreakpoint'
-import LogoText from 'components/LogoText'
-import { ExternalLink } from 'theme/components'
-import { ReactComponent as Xcircle } from 'assets/svg/xcircle.svg'
-// import { ReactComponent as XcircleSm } from 'assets/svg/xcirclesm.svg'
-import CurrencyLogo from 'components/essential/CurrencyLogo'
-import { ReactComponent as ExternalIcon } from 'assets/svg/external_arrow.svg'
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useToken721Balance, useToken721BalanceTokens } from 'state/wallet/hooks'
-import { shortenAddress } from 'utils'
 import { useERC721Tokens } from 'state/swap/useSwap721State'
 import { useToken721PoolIds } from 'hooks/useToken721PoolIds'
 
-import LogoBase from 'components/essential/CurrencyLogo/LogoBase'
-import Close from '@mui/icons-material/Close'
 import SwitchToggle from 'components/SwitchToggle'
-import { useCurrencyModalListHeight } from 'hooks/useScreenSize'
 import Pagination from 'components/Pagination'
+import { useCurrencyModalListHeight } from 'hooks/useScreenSize'
+import { NftCard } from './Erc721IdSelectionModal'
 
 export default function StakeNftSelectModal({
   onDismiss,
@@ -36,12 +27,12 @@ export default function StakeNftSelectModal({
   setAmount?: (e: ChangeEvent<HTMLInputElement>) => void
 }) {
   const [searchId, setSearchId] = useState('')
-  const [detailsOpen, setDetailsOpen] = useState(false)
   const [selectAll, setSelectAll] = useState(false)
   const isDownMd = useBreakpoint('md')
   const container = useRef<any>(null)
+  console.log('🚀 ~ file: Erc721IdSelectionModal.tsx:42 ~ collection:', collection)
 
-  const { onClearTokens, onRemoveToken, tokens, onToggleToken, setTokens } = useERC721Tokens()
+  const { onClearTokens, tokens, onToggleToken, setTokens } = useERC721Tokens()
 
   const balance = useToken721Balance(pairAddress ? undefined : collection)
   const { loading, availableTokens } = useToken721BalanceTokens(balance)
@@ -82,14 +73,13 @@ export default function StakeNftSelectModal({
     setFilteredAvailableTokens(pairAddress ? poolTokens : availableTokens)
   }, [availableTokens, pairAddress, poolTokens])
 
-  const listHeight = useCurrencyModalListHeight(isDownMd ? '400px' : '375px')
   const modalHeight = useCurrencyModalListHeight('0px')
 
   return (
     <Modal
       customOnDismiss={onDismiss}
       width="100%"
-      height={modalHeight}
+      height={isDownMd ? modalHeight : '60vh'}
       maxWidth="680px"
       closeIcon
       closeVariant="button"
@@ -110,24 +100,6 @@ export default function StakeNftSelectModal({
       </Box>
       <Box mt={20}>
         <Box sx={{ display: { xs: 'grid', md: 'flex' }, alignItems: 'center', gap: 12 }}>
-          <Typography>Collection:</Typography>
-          <Box
-            sx={{
-              borderRadius: '8px',
-              background: theme => theme.palette.background.default,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              height: 52,
-              padding: '0px 23px'
-            }}
-          >
-            {collection?.name}
-            <ExternalIcon />
-          </Box>
-          <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
-            {collection ? shortenAddress(collection.address) : ''}
-          </ExternalLink>
           <Box display="flex" alignItems="center" gap={5} marginLeft="auto">
             <Typography>Select all</Typography>
             <SwitchToggle
@@ -147,7 +119,14 @@ export default function StakeNftSelectModal({
           </Box>
         </Box>
       </Box>
-      <Box sx={{ overflow: 'auto', height: listHeight, margin: '20px 0' }}>
+      <Box
+        sx={{
+          overflow: 'auto',
+          margin: '20px 0',
+          height: '100%',
+          maxHeight: { xs: 'calc(100% - 180px)', md: '466px' }
+        }}
+      >
         <Box display="flex" flexDirection="column" gap={20}>
           <Box sx={{ minHeight: 290, width: '100%' }}>
             {loading || poolLoading ? (
@@ -234,183 +213,8 @@ export default function StakeNftSelectModal({
           <Button onClick={onConfirm} sx={{ height: 60, width: 300 }} disabled={tokens.length === 0}>
             {tokens.length} NFTs has been chosen
           </Button>
-          {tokens.length > 0 && (
-            <Button
-              variant="text"
-              sx={{ width: 85 }}
-              onClick={() => {
-                setDetailsOpen(state => !state)
-              }}
-            >
-              {detailsOpen ? <Close /> : 'Details'}
-            </Button>
-          )}
-          {detailsOpen && (
-            <Box
-              sx={{
-                position: 'absolute',
-                bottom: '100%',
-                boxShadow: 'none',
-                maxHeight: isDownMd ? 200 : 300,
-                height: 'max-content',
-                paddingBottom: 20,
-                background: theme => theme.palette.background.paper,
-                zIndex: 1200,
-                width: '100%',
-                overflowY: 'auto'
-              }}
-            >
-              {tokens.length > 0 && (
-                <Box width="100%" mt={{ xs: 0, md: 16 }}>
-                  {tokens.map((token, idx) => (
-                    <Box
-                      key={`${token.symbol}-${idx}`}
-                      sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}
-                    >
-                      <LogoText
-                        logo={<CurrencyLogo currency={token} />}
-                        text={token.name + `#${token.tokenId}`}
-                        fontSize={12}
-                      />
-                      <ExternalLink href={'#'} showIcon sx={{ fontSize: 12 }}>
-                        {shortenAddress(token.address)}
-                      </ExternalLink>
-                      <Typography sx={{ fontSize: 12 }}>Quantity: 1</Typography>
-                      <IconButton onClick={() => onRemoveToken(token)}>
-                        <Xcircle />
-                      </IconButton>
-                    </Box>
-                  ))}
-                </Box>
-              )}
-            </Box>
-          )}
         </Box>
       </Box>
     </Modal>
-  )
-}
-
-function NftCard({
-  token,
-  onClick,
-  disabled,
-  selected = false
-}: {
-  token: Token721
-  onClick: () => void
-  disabled: boolean
-  selected?: boolean
-}) {
-  const theme = useTheme()
-  const isDarkMode = useIsDarkMode()
-
-  return (
-    <Box
-      onClick={disabled ? undefined : onClick}
-      sx={{
-        border: '1px solid transparent',
-        borderColor: selected ? theme.palette.primary.main : 'transparnet',
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        padding: 8,
-        alignItems: 'center',
-        borderRadius: '8px',
-        background: isDarkMode ? '#15171A' : '#F6F6F6',
-        transition: '0.5s',
-        cursor: 'pointer',
-        opacity: disabled ? 0.8 : 1,
-        '&:hover': disabled
-          ? {}
-          : {
-              boxShadow: isDarkMode ? 'none' : '0px 3px 10px rgba(0, 0, 0, 0.15)',
-              background: isDarkMode ? '#2E3133' : '#FFFFFF',
-              cursor: 'pointer'
-            }
-      }}
-    >
-      <Box sx={{ width: '100%', height: 120, overflow: 'hidden' }}>
-        {token.tokenUri ? (
-          <MetaDataLogo token={token} />
-        ) : (
-          <LogoBase
-            srcs={token.uri ? [token.uri] : []}
-            alt={token.name ?? ''}
-            style={{
-              borderRadius: '8px',
-              overflow: 'hidden',
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain'
-            }}
-          />
-        )}
-      </Box>
-      <Typography
-        sx={{
-          color: theme.palette.text.secondary,
-          fontSize: 12,
-          fontWeight: 600,
-          mt: 8,
-
-          width: '100%',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          textAlign: 'center',
-          whiteSpace: 'nowrap'
-        }}
-      >
-        {token.name ?? ''}
-      </Typography>
-      <Typography
-        sx={{
-          color: theme.palette.text.secondary,
-          fontSize: 12,
-          fontWeight: 600,
-          mb: 8,
-          maxWidth: '100%',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap'
-        }}
-      >
-        #{token.tokenId ?? ''}
-      </Typography>
-      <Typography sx={{ color: theme.palette.text.secondary, fontSize: 10, fontWeight: 400, mb: 4 }}>
-        {shortenAddress(token.address) ?? ''}
-      </Typography>
-      <Typography sx={{ fontSize: 10, fontWeight: 600 }}>
-        <span style={{ color: theme.palette.text.secondary }}>balance: </span> 1
-      </Typography>
-    </Box>
-  )
-}
-
-function MetaDataLogo({ token }: { token: Token721 }) {
-  const [curUri, setCurUri] = useState(token.uri)
-  const [reload, setReload] = useState(0)
-
-  useEffect(() => {
-    if (token.uri || curUri) {
-      token.uri !== curUri && token.uri && setCurUri(token.uri)
-      return
-    } else {
-      setTimeout(() => setReload(Math.random()), 3000)
-    }
-  }, [reload, curUri, token.uri])
-
-  return (
-    <LogoBase
-      srcs={curUri ? [curUri] : []}
-      alt={token.name ?? ''}
-      style={{
-        borderRadius: '8px',
-        overflow: 'hidden',
-        width: '100%',
-        height: '100%',
-        objectFit: 'contain'
-      }}
-    />
   )
 }

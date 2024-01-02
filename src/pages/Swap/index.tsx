@@ -353,6 +353,7 @@ export default function Swap() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromAsset, typedValue])
+  // const is721 = filter721(fromAsset)
 
   return (
     <>
@@ -394,7 +395,9 @@ export default function Swap() {
           </Typography>
           {/* <Button
             onClick={() => {
-              showModal(<StakeNftSelectModal />)
+              showModal(
+                <StakeNftSelectModal onDismiss={hideModal} collection={is721} onSelectSubTokens={handleFromSubAssets} />
+              )
             }}
           >
             Open Select Stake Nft Modal
