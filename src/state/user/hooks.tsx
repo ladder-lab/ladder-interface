@@ -5,7 +5,7 @@ import { Token1155 } from 'constants/token/token1155'
 import { useActiveWeb3React } from 'hooks'
 import { useAllTokens } from 'hooks/Tokens'
 import flatMap from 'lodash.flatmap'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { filter1155, filter721 } from 'utils/checkIs1155'
 import { generateErc20 } from 'utils/getHashAddress'
@@ -31,6 +31,7 @@ import {
 import { NFT } from 'models/allTokens'
 import { DEFAULT_721_LIST } from 'constants/default721List'
 import { Token721 } from 'constants/token/token721'
+import { getAlchemy } from 'utils/alchemy'
 
 function serializeToken(token: Token | Token1155): SerializedToken {
   const is721 = filter721(token)
@@ -461,8 +462,10 @@ export function useTrackedToken1155List(): Token1155[] {
   }, [combinedList])
 }
 
-export function useTrackedToken721List(): Token721[] {
-  const { chainId } = useActiveWeb3React()
+export function useTrackedToken721List() {
+  const { chainId, account } = useActiveWeb3React()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [Nfts, setNfts] = useState<Token721[]>()
   const serializedTokensMap = useSelector<AppState, AppState['user']['token721s']>(
     ({ user: { token721s } }) => token721s
   )
@@ -482,7 +485,7 @@ export function useTrackedToken721List(): Token721[] {
     [userList, chainId]
   )
 
-  return useMemo(() => {
+  const testNfts = useMemo(() => {
     // dedupes pairs of tokens in the combined list
     const keyed = combinedList.reduce<{ [key: string]: Token721 }>((memo, token) => {
       const key = token.address
@@ -493,4 +496,40 @@ export function useTrackedToken721List(): Token721[] {
 
     return Object.keys(keyed).map(key => keyed[key])
   }, [combinedList])
+
+  useEffect(() => {
+    if (!chainId || !account) {
+      return
+    }
+    if (chainId !== ChainId.SEPOLIA) setLoading(true)
+    ;(async () => {
+      try {
+        const res = await getAlchemy(chainId).nft.getNftsForOwner(account)
+        const res1 = await getAlchemy(chainId).nft.getContractsForOwner(account)
+        const tokens = res1.contracts
+          .filter(item => item.tokenType === 'ERC721')
+          .map(
+            data =>
+              new Token721(chainId, data.address, data.displayNft.tokenId, {
+                name: data.name ?? data.openSeaMetadata.collectionName,
+                symbol: data.symbol ?? data.openSeaMetadata.collectionSlug,
+                tokenUri: res.ownedNfts.find(item => item.contract.address === data.address)?.tokenUri,
+                uri: data.openSeaMetadata.imageUrl ?? undefined
+              })
+          )
+        if (chainId !== ChainId.SEPOLIA) {
+          setNfts(tokens)
+        } else {
+          setNfts(testNfts)
+        }
+        setLoading(false)
+      } catch (error) {
+        setLoading(false)
+        console.error(error)
+      }
+    })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, chainId])
+
+  return { loading, data: chainId !== ChainId.SEPOLIA && Nfts ? Nfts : testNfts }
 }

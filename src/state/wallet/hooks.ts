@@ -13,7 +13,6 @@ import { checkIs1155, checkIs721, filter721 } from 'utils/checkIs1155'
 import { useBlockNumber } from 'state/application/hooks'
 import { Token721 } from 'constants/token/token721'
 import { getTest721uriWithIndex, isTest721 } from 'constants/default721List'
-import { axiosNftScanInstance, erc721CollectionResponseType, ResponseType } from 'utils/axios'
 import { getAlchemy } from 'utils/alchemy'
 
 export interface Token721Info {
@@ -310,38 +309,22 @@ export function useToken721BalanceTokens(tokenAmount?: TokenAmount): {
       setLoading(true)
 
       try {
-        // const res = await getAlchemy(chainId).nft.getNftMetadata('0xb2499f45cdb48321db025f6d83436f86e9b5f270', 2)
-        // const res = await getAlchemy(chainId).nft.getContractMetadata(tokenAmount?.token?.address)
-        // const res = await getAlchemy(chainId).nft.getNftsForOwner(account)
-        // const res = await getAlchemy(chainId).nft.getContractsForOwner(account)
-
         const res = await getAlchemy(chainId).nft.getNftsForOwner(account, {
-          contractAddresses: [tokenAmount?.token?.address]
+          contractAddresses: [tokenAmount.token.address]
         })
-        console.log('🚀 ~ file: hooks.ts:289 ~ ; ~ res:', res)
-      } catch (error) {
-        console.log('🚀 ~ file: hooks.ts:289 ~ ; ~ error:', error)
-      }
 
-      try {
-        const res = await axiosNftScanInstance.get<ResponseType<erc721CollectionResponseType>>(
-          `account/own/${account}`,
-          {
-            params: { erc_type: 'erc721', contract_address: tokenAmount?.token?.address }
-          }
-        )
-        if (res?.data?.data?.total > 0 && !isTest721(tokenAmount.token.address)) {
+        if (res.totalCount > 0 && !isTest721(tokenAmount.token.address)) {
           const token721 = filter721(tokenAmount.token)
-          const tokens = res.data.data.content.map(
+          const tokens = res.ownedNfts.map(
             data =>
-              new Token721(chainId, data.contract_address, data.token_id, {
-                name: tokenAmount?.token?.name ?? data.name ?? data.contract_name,
-                symbol: tokenAmount?.token?.symbol ?? data.contract_name,
+              new Token721(chainId, data.contract.address, data.tokenId, {
+                name: tokenAmount?.token?.name ?? data.name ?? data.collection?.name,
+                symbol: tokenAmount?.token?.symbol ?? data.collection?.slug,
                 tokenUri: token721?.tokenUri,
                 uri:
                   ChainId.SEPOLIA && isTest721(tokenAmount.token.address) && token721?.uri
-                    ? getTest721uriWithIndex(token721.uri, data.token_id ? parseInt(data.token_id) : 1)
-                    : data.image_uri ?? undefined
+                    ? getTest721uriWithIndex(token721.uri, data.tokenId ? parseInt(data.tokenId) : 1)
+                    : data.contract.openSeaMetadata.imageUrl ?? undefined
               })
           )
           setTokens(tokens)

@@ -26,7 +26,7 @@ export default function ERC721List({
   onSelectCurrency: ((currency: AllTokens) => void) | undefined
 }) {
   // const [searchQueryNFT, setSearchQueryNFT] = useState<string>('')
-  const tokenOptions = useTrackedToken721List()
+  const { loading: Token721Loading, data: tokenOptions } = useTrackedToken721List()
 
   // const isDownMd = useBreakpoint('md')
   const { hideModal } = useModal()
@@ -90,12 +90,12 @@ export default function ERC721List({
 
       <Box sx={{ overflow: 'auto', height: listHeight }}>
         <Box paddingTop={'24px'} position="relative">
-          {loading && (
+          {(loading || Token721Loading) && (
             <Box marginTop="40px" position="absolute" left="50%" sx={{ transform: 'translateX(-50%)' }}>
               <Loader />
             </Box>
           )}
-          {filteredTokens.length === 0 && !searchTokenNFT && !loading ? (
+          {filteredTokens.length === 0 && !searchTokenNFT && !loading && !Token721Loading ? (
             <Box width={'100%'} display="flex" alignItems="center" justifyContent="center" mt={100}>
               <Typography
                 textAlign="center"
