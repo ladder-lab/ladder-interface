@@ -31,6 +31,7 @@ import MyAccount from './MyAccount'
 import OrigAccount from './MyAccount/OrigAccount'
 import Footer from '../components/Footer'
 import Airdrop from './Airdrop'
+import Farms from './Testnet/Farms'
 
 const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
   ({ theme, isDarkMode }) => ({
@@ -96,6 +97,7 @@ export default function App() {
                   <Route path={routes.testnet} element={<Testnet />} />
                   <Route path={routes.winners} element={<ListOfWinners />} />
                   <Route path={routes.explorer} element={<Explorer />} />
+                  <Route path={routes.farms} element={<Farms />} />
                   <Route path={routes.explorer + routes.collectionParams} element={<Collection />} />
                   <Route path={routes.swap} element={<Swap />}>
                     <Route path={routes.removeLiquidityParams.slice(1)} element={<Swap />} />

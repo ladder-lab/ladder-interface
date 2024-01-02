@@ -22,7 +22,8 @@ export const routes = {
   myAccount: '/myAccount',
   origAccount: '/origAccount',
   feedback: '/feedback',
-  airdrop: '/airdrop'
+  airdrop: '/airdrop',
+  farms: '/farms'
 }
 
 export function liquidityParamBuilder(currencyA: Currency | undefined, currencyB: Currency | undefined) {
