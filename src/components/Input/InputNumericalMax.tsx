@@ -40,6 +40,7 @@ export default function NumericalInputMax({
     subStr?: string
     integer?: boolean
   }) {
+  console.log(endAdornment)
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       // replace commas with periods

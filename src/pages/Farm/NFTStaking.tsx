@@ -3,10 +3,11 @@ import { CardTYPE, Container, Title } from '.'
 import { useTrackedToken721List } from 'state/user/hooks'
 import { Grid, TestNetCard, TestNetData } from './Card'
 import { Loader } from 'components/AnimatedSvg/Loader'
+import { erc721contract } from 'hooks/useStakeCallback'
 
 export default function NFTStaking() {
   const { loading, data } = useTrackedToken721List()
-  console.log('🚀 ~ file: NFTStaking.tsx:8 ~ NFTStaking ~ data:', data, loading)
+
   return (
     <Container>
       <Title>NFT Staking</Title>
@@ -17,20 +18,37 @@ export default function NFTStaking() {
             <Loader size={90} />
           </Box>
         ) : (
-          <Grid>
-            {data.map((item, idx) => {
-              const showData: TestNetData = {
-                avatar: '',
-                name: item.name,
-                state: '123',
-                apr: '1',
-                earn: '2',
-                ladEarn: '4'
-              }
+          <>
+            {!!data.length ? (
+              <Grid>
+                {data
+                  .filter(v => v.address === erc721contract)
+                  .map((item, idx) => {
+                    const showData: TestNetData = {
+                      avatar: '',
+                      name: item.name,
+                      state: '123',
+                      apr: '1',
+                      earn: '2',
+                      ladEarn: '4'
+                    }
 
-              return <TestNetCard type={CardTYPE.nft} key={idx} data={showData} nft721={item} />
-            })}
-          </Grid>
+                    return <TestNetCard type={CardTYPE.nft} key={idx} data={showData} nft721={item} />
+                  })}
+              </Grid>
+            ) : (
+              <Box display={'flex'} justifyContent={'center'} alignItems={'center'} mt={50}>
+                <Typography
+                  sx={{
+                    fontSize: 18,
+                    color: '#999'
+                  }}
+                >
+                  No Data
+                </Typography>
+              </Box>
+            )}
+          </>
         )}
       </>
     </Container>

@@ -12,6 +12,7 @@ import ERC20_ABI from '../constants/abis/erc20.json'
 import ERC1155_ABI from '../constants/abis/erc1155.json'
 import ERC721_ABI from '../constants/abis/erc721.json'
 import MERKLE_TREE_ABI from '../constants/abis/merkleTree.json'
+import STAKE_ABI from '../constants/abis/stake.json'
 import UNISOCKS_ABI from '../constants/abis/unisocks.json'
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
 import { getContract } from '../utils'
@@ -20,7 +21,7 @@ import {
   ARGENT_WALLET_DETECTOR_ABI,
   ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS
 } from '../constants/abis/argent-wallet-detector'
-import { MERKLE_TREE_ADDRESS, SBT_URI_ADDRESS, TEST_NFT_URI_ADDRESS } from '../constants'
+import { MERKLE_TREE_ADDRESS, SBT_URI_ADDRESS, STAKE_NFT_TOKEN_ADDRESS, TEST_NFT_URI_ADDRESS } from '../constants'
 import SbtAbi from 'constants/abis/SbtFactory.json'
 
 // returns null on errors
@@ -120,4 +121,8 @@ export function useTestNftUriContract(): Contract | null {
 
 export function useSbtContract(): Contract | null {
   return useContract(SBT_URI_ADDRESS, SbtAbi, true)
+}
+
+export function useStakeContract(): Contract | null {
+  return useContract(STAKE_NFT_TOKEN_ADDRESS, STAKE_ABI, true)
 }

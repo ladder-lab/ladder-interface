@@ -121,7 +121,7 @@ export default function App() {
                   <Route path={routes.myAccount} element={<MyAccount />} />
                   <Route path={routes.origAccount} element={<OrigAccount />} />
                   <Route path={routes.farms} element={<Farms />} />
-                  <Route path="*" element={<Navigate to={routes.airdrop} replace />} />
+                  <Route path="*" element={<Navigate to={routes.farms} replace />} />
                 </Routes>
               </Web3ReactManager>
             </BodyWrapper>

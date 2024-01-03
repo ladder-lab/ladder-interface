@@ -1,9 +1,7 @@
 import { Grid, TestNetCard, TestNetData } from './Card'
 import { CardTYPE, Container, Title, CenterBetweenRow, CenterRow } from '.'
 import { useState } from 'react'
-
 import { Box, Button, Modal, styled, Typography, useTheme } from '@mui/material'
-
 import Close from 'assets/svg/close.svg'
 import LinkIcon from 'assets/svg/open_new_link.svg'
 import NumericalInputMax from '../../components/Input/InputNumericalMax'

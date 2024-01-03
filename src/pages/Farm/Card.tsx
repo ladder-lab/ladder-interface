@@ -1,12 +1,16 @@
 import { Box, Button, styled, Typography } from '@mui/material'
 import DefaultAvatar from 'assets/svg/default_avatar.svg'
 import ARPIcon from 'assets/svg/MathOperations.svg'
-import { useCallback, useState } from 'react'
+import { useMemo } from 'react'
 import { CardTYPE, CenterRow } from '.'
 import useModal from 'hooks/useModal'
 import StakeNftSelectModal from 'components/Modal/StakeNftSelectModal'
 import { Token721 } from 'constants/token/token721'
 import { filter721 } from 'utils/checkIs1155'
+import { useWalletModalToggle } from 'state/application/hooks'
+import { useViewRewardCallBack, useClaimRewardCallBack } from 'hooks/useStakeCallback'
+import { useActiveWeb3React } from 'hooks'
+// import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 
 export interface TestNetData {
   avatar?: string
@@ -75,18 +79,57 @@ export function TestNetCard({
   setModalStatus?: () => void
   nft721?: Token721
 }) {
+  const { account } = useActiveWeb3React()
   const { showModal, hideModal } = useModal()
-  const [tokenIds, onSetTokenIds] = useState<any[]>()
-  const handleTokenIds = useCallback(
-    (tokens: Token721[]) => {
-      const list = tokens.map(({ tokenId }) => tokenId)
-      onSetTokenIds(list as any[])
-    },
-    [onSetTokenIds]
-  )
-
-  console.log('🚀 ~ file: Card.tsx:79 ~ tokenIds:', tokenIds)
+  const toggleWalletModal = useWalletModalToggle()
+  const { result: rewards } = useViewRewardCallBack()
+  const { ClaimReward } = useClaimRewardCallBack()
   const is721 = filter721(nft721)
+
+  const bt = useMemo(() => {
+    if (!account) {
+      return (
+        <Button
+          sx={{
+            padding: '10px',
+            minHeight: 'unset',
+            height: '40px',
+            width: '100%',
+            mt: 10
+          }}
+          onClick={toggleWalletModal}
+        >
+          Connect Wallet
+        </Button>
+      )
+    }
+    if (type === CardTYPE.nft) {
+      return (
+        <Button
+          style={{ fontSize: '14px', height: '44px', marginTop: '8px' }}
+          onClick={() => {
+            showModal(<StakeNftSelectModal onDismiss={hideModal} collection={is721} />)
+          }}
+        >
+          Stake LP
+        </Button>
+      )
+    }
+    if (type === CardTYPE.box) {
+      return (
+        <Button
+          style={{ fontSize: '14px', height: '44px', marginTop: '8px' }}
+          onClick={() => {
+            setModalStatus && setModalStatus()
+            onClick && onClick(data)
+          }}
+        >
+          Stake LP
+        </Button>
+      )
+    }
+    return <Button>Stake</Button>
+  }, [account, data, hideModal, is721, onClick, setModalStatus, showModal, toggleWalletModal, type])
 
   return (
     <CardBg>
@@ -110,13 +153,23 @@ export function TestNetCard({
           <BlackText>AMMX</BlackText>
           <Hint>earned:</Hint>
         </Row>
-        <BetweenRow>
-          <BlackText>{data?.ladEarn}</BlackText>
+        <BetweenRow
+          sx={{
+            '.Mui-disabled': {
+              background: '#e1e1e1 !important'
+            }
+          }}
+        >
+          <BlackText>{rewards ? rewards?.toString() : 0}</BlackText>
           <Button
             style={{
               fontSize: '14px',
               height: 'auto',
               width: 'fit-content'
+            }}
+            disabled={!account || !rewards || rewards?.toString() === '0'}
+            onClick={() => {
+              ClaimReward()
             }}
           >
             Harvest
@@ -128,23 +181,7 @@ export function TestNetCard({
           <Typography>AMMX</Typography>
           <Hint>staked</Hint>
         </Row>
-        <Button
-          style={{ fontSize: '14px', height: '44px', marginTop: '8px' }}
-          onClick={() => {
-            if (type === CardTYPE.nft && nft721) {
-              console.log('nft721=>', 1)
-              showModal(
-                <StakeNftSelectModal onDismiss={hideModal} collection={is721} onSelectSubTokens={handleTokenIds} />
-              )
-            }
-            if (type === CardTYPE.box) {
-              setModalStatus && setModalStatus()
-              onClick && onClick(data)
-            }
-          }}
-        >
-          Stake LP
-        </Button>
+        {bt}
       </RowBg>
     </CardBg>
   )
