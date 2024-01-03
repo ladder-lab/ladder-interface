@@ -65,7 +65,6 @@ export function useNFTApproveAllCallback(
         gasLimit: calculateGasMargin(estimatedGas)
       })
       .then((response: TransactionResponse) => {
-        hideModal()
         addTransaction(response, {
           summary: 'Approve NFT',
           approval: { tokenAddress: contract.address, spender }

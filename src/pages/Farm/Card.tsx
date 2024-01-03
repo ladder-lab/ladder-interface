@@ -10,6 +10,7 @@ import { filter721 } from 'utils/checkIs1155'
 import { useWalletModalToggle } from 'state/application/hooks'
 import { useViewRewardCallBack, useClaimRewardCallBack } from 'hooks/useStakeCallback'
 import { useActiveWeb3React } from 'hooks'
+import { BigNumber } from 'ethers'
 // import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 
 export interface TestNetData {
@@ -83,6 +84,11 @@ export function TestNetCard({
   const { showModal, hideModal } = useModal()
   const toggleWalletModal = useWalletModalToggle()
   const { result: rewards } = useViewRewardCallBack()
+
+  const Reward = useMemo(() => {
+    return rewards?.div(BigNumber.from('10').pow(18)).toString()
+  }, [rewards])
+
   const { ClaimReward } = useClaimRewardCallBack()
   const is721 = filter721(nft721)
 
@@ -160,7 +166,7 @@ export function TestNetCard({
             }
           }}
         >
-          <BlackText>{rewards ? rewards?.toString() : 0}</BlackText>
+          <BlackText>{Reward || 0}</BlackText>
           <Button
             style={{
               fontSize: '14px',

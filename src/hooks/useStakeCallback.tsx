@@ -6,6 +6,7 @@ import { useTransactionAdder } from 'state/transactions/hooks'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import TransactiontionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
+import { BigNumber } from 'ethers'
 
 export const erc721contract = '0x3ec2Bb9E04C8DB50fb77E170BF9116B330293209'
 
@@ -28,7 +29,7 @@ export function useStakeErc721CallBack() {
 export function useViewRewardCallBack() {
   const { account } = useActiveWeb3React()
   const contract = useStakeContract()
-  const [result, SetResult] = useState<any>()
+  const [result, SetResult] = useState<BigNumber>()
 
   useEffect(() => {
     if (!contract) {
