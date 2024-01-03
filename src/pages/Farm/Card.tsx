@@ -144,10 +144,10 @@ export function TestNetCard({
           <img src={ARPIcon} />
         </Box>
       </BetweenRowBg>
-      <BetweenRowBg>
+      {/* <BetweenRowBg>
         <Hint>Earn</Hint>
         <BlackText>{data?.earn} AMMX</BlackText>
-      </BetweenRowBg>
+      </BetweenRowBg> */}
       <RowBg>
         <Row>
           <BlackText>AMMX</BlackText>
