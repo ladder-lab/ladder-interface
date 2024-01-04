@@ -6,6 +6,7 @@ import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
 import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
 import ERC721_PAIR_ABI from '../constants/abis/erc721Pair.json'
+import ERC721_PAIR_V2_ABI from '../constants/abis/UniswapV2Pair721.json'
 import TEST_NFT_URI_ABI from '../constants/abis/testNftUri.json'
 import WETH_ABI from '../constants/abis/weth.json'
 import ERC20_ABI from '../constants/abis/erc20.json'
@@ -125,4 +126,8 @@ export function useSbtContract(): Contract | null {
 
 export function useStakeContract(): Contract | null {
   return useContract(STAKE_NFT_TOKEN_ADDRESS, STAKE_ABI, true)
+}
+
+export function use721PairV2Contract(address: string | undefined, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(address, ERC721_PAIR_V2_ABI, withSignerIfPossible)
 }

@@ -12,6 +12,8 @@ import { tryParseAmount } from '../swap/hooks'
 import { useTokenBalances } from '../wallet/hooks'
 import { Field, typeInput } from './actions'
 import { checkIs1155, checkIs721 } from 'utils/checkIs1155'
+import { use721PairV2Contract } from 'hooks/useContract'
+import { useSingleCallResult } from 'state/multicall/hooks'
 
 export function useBurnState(): AppState['burn'] {
   return useSelector<AppState, AppState['burn']>(state => state.burn)
@@ -32,6 +34,13 @@ export function useDerivedBurnInfo(
   lpBalance: undefined | TokenAmount
   poolShare: string
   warning: undefined | [string, (() => void) | undefined]
+  preBurn721Data: {
+    erc20Amount: string | undefined
+    erc721Amount: string | undefined
+    change: string | undefined
+    erc721Fragment: string | undefined
+  }
+  is721Pair: boolean
 } {
   const { account, chainId } = useActiveWeb3React()
   const { onUserInput: onUserInput } = useBurnActionHandlers()
@@ -85,7 +94,7 @@ export function useDerivedBurnInfo(
     }
   }, [liquidityValueA, liquidityValueB])
 
-  let percentToRemove: Percent = new Percent('0', '100')
+  let percentToRemove: Percent = useMemo(() => new Percent('0', '100'), [])
   // user specified a %
   if ((independentField as Field) === Field.LIQUIDITY_PERCENT) {
     percentToRemove = new Percent(typedValue, '100')
@@ -113,26 +122,52 @@ export function useDerivedBurnInfo(
 
   const removeAll = typedValue === '100' && poolShare === '100.00'
 
+  const userPreRemoveLiquidity = useMemo(() => {
+    return userLiquidity && percentToRemove && percentToRemove.greaterThan('0')
+      ? new TokenAmount(userLiquidity.token, percentToRemove.multiply(userLiquidity.raw).quotient)
+      : undefined
+  }, [percentToRemove, userLiquidity])
+
+  const is721Pair = useMemo(() => checkIs721(tokenA) || checkIs721(tokenB), [tokenA, tokenB])
+  const pairV2Contract = use721PairV2Contract(pair?.liquidityToken.address)
+  const { result: preBurn721DataRes } = useSingleCallResult(is721Pair ? pairV2Contract : null, 'preBurn', [
+    userPreRemoveLiquidity?.raw.toString()
+  ])
+  const preBurn721Data: {
+    erc20Amount: string | undefined
+    erc721Amount: string | undefined
+    change: string | undefined
+    erc721Fragment: string | undefined
+  } = useMemo(
+    () => ({
+      erc20Amount: preBurn721DataRes?.erc20Amount.toString(),
+      erc721Amount: preBurn721DataRes?.erc721Amount.toString(),
+      change: preBurn721DataRes?.change.toString(),
+      erc721Fragment: CurrencyAmount.ether(preBurn721DataRes?.erc721Fragment.toString() || '0').toSignificant()
+    }),
+    [
+      preBurn721DataRes?.erc20Amount,
+      preBurn721DataRes?.erc721Amount,
+      preBurn721DataRes?.change,
+      preBurn721DataRes?.erc721Fragment
+    ]
+  )
+
   const parsedAmounts: {
     [Field.LIQUIDITY_PERCENT]: Percent
     [Field.LIQUIDITY]?: TokenAmount
     [Field.CURRENCY_A]?: TokenAmount
     [Field.CURRENCY_B]?: TokenAmount
-  } = {
-    [Field.LIQUIDITY_PERCENT]: percentToRemove,
-    [Field.LIQUIDITY]:
-      userLiquidity && percentToRemove && percentToRemove.greaterThan('0')
-        ? new TokenAmount(userLiquidity.token, percentToRemove.multiply(userLiquidity.raw).quotient)
-        : undefined,
-    [Field.CURRENCY_A]:
+  } = useMemo(() => {
+    const _ca =
       tokenA && percentToRemove && percentToRemove.greaterThan('0') && liquidityValueA
         ? removeAll
           ? pair?.token0.equals(tokenA)
             ? pair?.reserve0
             : pair?.reserve1
           : new TokenAmount(tokenA, percentToRemove.multiply(liquidityValueA.raw).quotient)
-        : undefined,
-    [Field.CURRENCY_B]:
+        : undefined
+    const _cb =
       tokenB && percentToRemove && percentToRemove.greaterThan('0') && liquidityValueB
         ? removeAll
           ? pair?.token0.equals(tokenB)
@@ -140,7 +175,44 @@ export function useDerivedBurnInfo(
             : pair?.reserve1
           : new TokenAmount(tokenB, percentToRemove.multiply(liquidityValueB.raw).quotient)
         : undefined
-  }
+    if (!is721Pair) {
+      return {
+        [Field.LIQUIDITY_PERCENT]: percentToRemove,
+        [Field.LIQUIDITY]: userPreRemoveLiquidity,
+        [Field.CURRENCY_A]: _ca,
+        [Field.CURRENCY_B]: _cb
+      }
+    }
+    const aIs721 = checkIs721(_ca?.token)
+    if (!preBurn721Data.change) {
+      return {
+        [Field.LIQUIDITY_PERCENT]: percentToRemove,
+        [Field.LIQUIDITY]: userPreRemoveLiquidity,
+        [Field.CURRENCY_A]: undefined,
+        [Field.CURRENCY_B]: undefined
+      }
+    }
+    const ret = {
+      [Field.LIQUIDITY_PERCENT]: percentToRemove,
+      [Field.LIQUIDITY]: userPreRemoveLiquidity,
+      [Field.CURRENCY_A]: aIs721 ? _ca : _ca?.add(new TokenAmount(_ca.token, preBurn721Data.change || '0')),
+      [Field.CURRENCY_B]: aIs721 ? _cb?.add(new TokenAmount(_cb.token, preBurn721Data.change || '0')) : _cb
+    }
+    return ret
+  }, [
+    is721Pair,
+    liquidityValueA,
+    liquidityValueB,
+    pair?.reserve0,
+    pair?.reserve1,
+    pair?.token0,
+    percentToRemove,
+    preBurn721Data.change,
+    removeAll,
+    tokenA,
+    tokenB,
+    userPreRemoveLiquidity
+  ])
 
   const removeAmountRaw = {
     [Field.CURRENCY_A]:
@@ -203,7 +275,7 @@ export function useDerivedBurnInfo(
     return undefined
   }, [liquidityValues, nftAmount, nftField, onUserInput, removeAll, typedValue])
 
-  return { pair, parsedAmounts, error, lpBalance: userLiquidity, poolShare, warning }
+  return { pair, parsedAmounts, error, lpBalance: userLiquidity, poolShare, warning, preBurn721Data, is721Pair }
 }
 
 export function useBurnActionHandlers(): {

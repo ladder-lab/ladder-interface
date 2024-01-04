@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { TransactionResponse } from '@ethersproject/providers'
-import { currencyEquals, Percent, WETH, ETHER } from '@ladder/sdk'
+import { currencyEquals, Percent, WETH, ETHER, TokenAmount } from '@ladder/sdk'
 import { Box, useTheme, Typography, Button, Slider, styled, ButtonBase } from '@mui/material'
 import { liquidityParamBuilder, routes, liquidityParamSplitter } from 'constants/routes'
 import AppBody from 'components/AppBody'
@@ -23,7 +23,7 @@ import { useTransactionAdder } from 'state/transactions/hooks'
 import useDebouncedChangeHandler from 'utils/useDebouncedChangeHandler'
 import ActionButton from 'components/Button/ActionButton'
 import ConfirmRemoveModal from 'components/Modal/ConfirmRemoveModal'
-import { getTokenText } from 'utils/checkIs1155'
+import { checkIs721, getTokenText } from 'utils/checkIs1155'
 import useModal from 'hooks/useModal'
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
@@ -34,6 +34,7 @@ import { useIsDarkMode } from 'state/user/hooks'
 import { getSymbol } from 'utils/getSymbol'
 import { replaceErrorMessage } from 'utils'
 import { getChainCurrencySymbol } from 'constants/chain'
+import { Token } from 'constants/token'
 
 enum Mode {
   SIMPLE,
@@ -65,10 +66,11 @@ export default function RemoveLiquidity() {
 
   // burn state
   const { independentField, typedValue } = useBurnState()
-  const { pair, parsedAmounts, error, lpBalance, poolShare, warning } = useDerivedBurnInfo(
+  const { pair, parsedAmounts, error, lpBalance, poolShare, warning, is721Pair, preBurn721Data } = useDerivedBurnInfo(
     currencyA ?? undefined,
     currencyB ?? undefined
   )
+  console.log('🚀 ~ file: RemoveLiquidity.tsx:63 ~ RemoveLiquidity ~ is721Pair:', is721Pair, preBurn721Data)
   const { onUserInput: _onUserInput } = useBurnActionHandlers()
   const { burnCallback, burnApproveCallback, setSignatureData, approval, signatureData } = useBurnCallback(
     currencyA,
@@ -277,12 +279,22 @@ export default function RemoveLiquidity() {
         <Box sx={{ height: 76, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => {}}>
           <ArrowCircle />
         </Box>
-        <OutputCard value={formattedAmounts[Field.CURRENCY_A]} currency={currencyA} />
+        <OutputCard
+          value={formattedAmounts[Field.CURRENCY_A]}
+          currency={currencyA}
+          is721Pair={is721Pair}
+          preBurn721Data={preBurn721Data}
+        />
         <Box sx={{ height: 76, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => {}}>
           <AddCircle />
         </Box>
 
-        <OutputCard value={formattedAmounts[Field.CURRENCY_B]} currency={currencyB} />
+        <OutputCard
+          value={formattedAmounts[Field.CURRENCY_B]}
+          currency={currencyB}
+          is721Pair={is721Pair}
+          preBurn721Data={preBurn721Data}
+        />
         {pair && (
           <Box display={{ xs: 'grid', sm: 'flex' }} justifyContent="space-between" mt={36} gap={8}>
             <Typography sx={{ fontSize: 18 }}>Price</Typography>
@@ -486,10 +498,27 @@ function InputCard({
   )
 }
 
-function OutputCard({ value, currency }: { value: string; currency: AllTokens | undefined }) {
+function OutputCard({
+  value,
+  currency,
+  is721Pair,
+  preBurn721Data
+}: {
+  value: string
+  currency: AllTokens | undefined
+  is721Pair: boolean
+  preBurn721Data: {
+    erc20Amount: string | undefined
+    erc721Amount: string | undefined
+    change: string | undefined
+    erc721Fragment: string | undefined
+  }
+}) {
   const theme = useTheme()
   const { chainId } = useActiveWeb3React()
   const { token1Text } = getTokenText(chainId, currency)
+
+  const pair721AndTokenIsErc20 = useMemo(() => is721Pair && !checkIs721(currency), [currency, is721Pair])
 
   return (
     <Card color={theme.palette.background.default} padding="24px">
@@ -503,6 +532,12 @@ function OutputCard({ value, currency }: { value: string; currency: AllTokens | 
           <Typography>{token1Text}</Typography>
         </Box>
       </Box>
+      {pair721AndTokenIsErc20 && !!Number(preBurn721Data.erc721Fragment) && !!currency && (
+        <Typography color={'error'}>
+          Exchange: {preBurn721Data.erc721Fragment} NFT swap to{' '}
+          {new TokenAmount(currency as Token, preBurn721Data.change || '0').toSignificant()} {currency?.symbol}
+        </Typography>
+      )}
     </Card>
   )
 }
