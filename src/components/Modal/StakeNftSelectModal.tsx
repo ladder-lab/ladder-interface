@@ -17,7 +17,7 @@ import { ApprovalState } from 'hooks/useApproveCallback'
 import ActionButton from 'components/Button/ActionButton'
 import { erc721contract, useStakeErc721CallBack } from 'hooks/useStakeCallback'
 import { useNFTApproveAllCallback } from 'hooks/useNFTApproveAllCallback'
-import { STAKE_NFT_TOKEN_ADDRESS } from '../../constants'
+import { STAKE_ERC_TOKEN_ADDRESS } from '../../constants'
 import TransacitonPendingModal from './TransactionModals/TransactionPendingModal'
 import useModal from 'hooks/useModal'
 import MessageBox from './TransactionModals/MessageBox'
@@ -40,7 +40,7 @@ export default function StakeNftSelectModal({
   const [searchId, setSearchId] = useState('')
   const [selectAll, setSelectAll] = useState(false)
   const isDownMd = useBreakpoint('md')
-  const { StakeErc721 } = useStakeErc721CallBack()
+  const { StakeErc721 } = useStakeErc721CallBack(erc721contract)
   const { onClearTokens, tokens, onToggleToken, setTokens } = useERC721Tokens()
   const { showModal, hideModal } = useModal()
   const balance = useToken721Balance(pairAddress ? undefined : collection)
@@ -100,8 +100,7 @@ export default function StakeNftSelectModal({
   }, [availableTokens, pairAddress, poolTokens])
 
   const modalHeight = useCurrencyModalListHeight('0px')
-  const [approvalState, approve] = useNFTApproveAllCallback(erc721contract, STAKE_NFT_TOKEN_ADDRESS, true)
-  console.log('🚀 ~ file: StakeNftSelectModal.tsx:81 ~ approvalA:', approvalState)
+  const [approvalState, approve] = useNFTApproveAllCallback(erc721contract, STAKE_ERC_TOKEN_ADDRESS, true)
 
   const bt = useMemo(() => {
     if (loading || poolLoading) {

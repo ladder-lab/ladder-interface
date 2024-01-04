@@ -22,7 +22,7 @@ import {
   ARGENT_WALLET_DETECTOR_ABI,
   ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS
 } from '../constants/abis/argent-wallet-detector'
-import { MERKLE_TREE_ADDRESS, SBT_URI_ADDRESS, STAKE_NFT_TOKEN_ADDRESS, TEST_NFT_URI_ADDRESS } from '../constants'
+import { MERKLE_TREE_ADDRESS, SBT_URI_ADDRESS, STAKE_ERC_TOKEN_ADDRESS, TEST_NFT_URI_ADDRESS } from '../constants'
 import SbtAbi from 'constants/abis/SbtFactory.json'
 
 // returns null on errors
@@ -125,7 +125,7 @@ export function useSbtContract(): Contract | null {
 }
 
 export function useStakeContract(): Contract | null {
-  return useContract(STAKE_NFT_TOKEN_ADDRESS, STAKE_ABI, true)
+  return useContract(STAKE_ERC_TOKEN_ADDRESS, STAKE_ABI, true)
 }
 
 export function use721PairV2Contract(address: string | undefined, withSignerIfPossible?: boolean): Contract | null {

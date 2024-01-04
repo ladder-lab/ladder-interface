@@ -7,10 +7,12 @@ import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import TransactiontionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import { BigNumber } from 'ethers'
+import { CurrencyAmount } from '@ladder/sdk'
+import { Token } from 'constants/token'
 
 export const erc721contract = '0x3ec2Bb9E04C8DB50fb77E170BF9116B330293209'
 
-export function useStakeErc721CallBack() {
+export function useStakeErc721CallBack(tokenAddress: string) {
   const { account } = useActiveWeb3React()
   const contract = useStakeContract()
   const StakeErc721 = useCallback(
@@ -18,27 +20,44 @@ export function useStakeErc721CallBack() {
       if (!contract || !account) {
         throw 'Params error'
       }
-      const args = [erc721contract, tokenIds.map(v => Number(v)), amount]
+      const args = [tokenAddress, tokenIds.map(v => Number(v)), amount]
       return await contract['deposit'](...args)
     },
-    [account, contract]
+    [account, contract, tokenAddress]
   )
   return { StakeErc721 }
 }
 
-export function useViewRewardCallBack() {
+export function useStakeErc20CallBack() {
+  const { account } = useActiveWeb3React()
+  const contract = useStakeContract()
+  const StakeErc20 = useCallback(
+    async (currency: CurrencyAmount | undefined) => {
+      const token = currency?.currency as Token
+      if (!contract || !account) {
+        throw 'Params error'
+      }
+      const args = [token?.address, [], currency?.raw.toString()]
+      return await contract['deposit'](...args)
+    },
+    [account, contract]
+  )
+  return { StakeErc20 }
+}
+
+export function useViewRewardCallBack(tokenAddress: string | undefined) {
   const { account } = useActiveWeb3React()
   const contract = useStakeContract()
   const [result, SetResult] = useState<BigNumber>()
 
   useEffect(() => {
-    if (!contract) {
+    if (!contract || !tokenAddress) {
       return
     }
 
     ;(async () => {
       try {
-        const args = [erc721contract, account]
+        const args = [tokenAddress, account]
 
         const res = await contract['pendingReward'](...args)
         if (res) {
@@ -48,11 +67,11 @@ export function useViewRewardCallBack() {
         console.error(error)
       }
     })()
-  }, [account, contract])
+  }, [account, contract, tokenAddress])
   return { result }
 }
 
-export function useClaimRewardCallBack() {
+export function useClaimRewardCallBack(tokenAddress: string | undefined) {
   const { account } = useActiveWeb3React()
   const contract = useStakeContract()
   const { showModal, hideModal } = useModal()
@@ -60,13 +79,13 @@ export function useClaimRewardCallBack() {
 
   const ClaimReward = useCallback(
     async (amount?: string | undefined) => {
-      if (!contract || !account) {
-        throw 'Params error'
+      if (!contract || !account || !tokenAddress) {
+        return
       }
       showModal(<TransacitonPendingModal />)
       try {
         console.log('🚀 ~ file: useStakeCallBack.tsx:64 ~ amount:', amount)
-        const args = [erc721contract, amount ? Number(amount) : 0]
+        const args = [tokenAddress, amount ? Number(amount) : 0]
         const res = await contract['withdraw'](...args)
         hideModal()
         showModal(<TransactiontionSubmittedModal hash={res?.hash} />)
@@ -74,8 +93,8 @@ export function useClaimRewardCallBack() {
           summary: !amount ? 'Claim Reward' : 'Redeem Principal',
           claim: {
             recipient: !amount
-              ? `${account}_${erc721contract}_claim_reward`
-              : `${account}_${erc721contract}_redeem_principal`
+              ? `${account}_${tokenAddress}_claim_reward`
+              : `${account}_${tokenAddress}_redeem_principal`
           }
         })
       } catch (err: any) {
@@ -92,26 +111,26 @@ export function useClaimRewardCallBack() {
         )
       }
     },
-    [account, addTransaction, contract, hideModal, showModal]
+    [account, addTransaction, contract, tokenAddress, hideModal, showModal]
   )
   return {
     ClaimReward
   }
 }
 
-export function useUserStakeInfoCallBack() {
+export function useUserStakeInfoCallBack(tokenAddress: string | undefined) {
   const { account } = useActiveWeb3React()
   const contract = useStakeContract()
   const [result, SetResult] = useState<any>()
 
   useEffect(() => {
-    if (!contract) {
+    if (!contract || !tokenAddress) {
       return
     }
 
     ;(async () => {
       try {
-        const args = [erc721contract, account]
+        const args = [tokenAddress, account]
 
         const res = await contract['userInfo'](...args)
         if (res) {
@@ -121,6 +140,6 @@ export function useUserStakeInfoCallBack() {
         console.error(error)
       }
     })()
-  }, [account, contract])
+  }, [account, contract, tokenAddress])
   return { result }
 }

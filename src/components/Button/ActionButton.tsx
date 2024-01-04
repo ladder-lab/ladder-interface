@@ -12,7 +12,8 @@ export default function ActionButton({
   height,
   width,
   disableAction,
-  successText
+  successText,
+  padding
 }: {
   error?: string | undefined
   pending?: boolean
@@ -24,6 +25,7 @@ export default function ActionButton({
   height?: string
   width?: string
   disableAction?: boolean
+  padding?: string
 }) {
   const theme = useTheme()
 
@@ -46,7 +48,12 @@ export default function ActionButton({
         </Button>
       ) : (
         <Button
-          sx={{ height: height ? height : '50px', width, background: theme.gradient.gradient1, padding: '0 60px' }}
+          sx={{
+            height: height ? height : '50px',
+            width,
+            background: theme.gradient.gradient1,
+            padding: padding ?? '0 60px'
+          }}
           onClick={onAction}
           disabled={disableAction}
         >

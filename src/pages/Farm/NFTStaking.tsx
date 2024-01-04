@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material'
 import { CardTYPE, Container, Title } from '.'
 import { useTrackedToken721List } from 'state/user/hooks'
-import { Grid, TestNetCard, TestNetData } from './Card'
+import { Grid, TestNetCard } from './Card'
 import { Loader } from 'components/AnimatedSvg/Loader'
 import { erc721contract } from 'hooks/useStakeCallback'
 
@@ -24,16 +24,7 @@ export default function NFTStaking() {
                 {data
                   .filter(v => v.address === erc721contract)
                   .map((item, idx) => {
-                    const showData: TestNetData = {
-                      avatar: '',
-                      name: item.name,
-                      state: '123',
-                      apr: '1',
-                      earn: '2',
-                      ladEarn: '4'
-                    }
-
-                    return <TestNetCard type={CardTYPE.nft} key={idx} data={showData} nft721={item} />
+                    return <TestNetCard type={CardTYPE.nft} key={idx} nft721={item} />
                   })}
               </Grid>
             ) : (

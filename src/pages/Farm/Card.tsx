@@ -13,16 +13,10 @@ import { useViewRewardCallBack, useClaimRewardCallBack, useUserStakeInfoCallBack
 import { useActiveWeb3React } from 'hooks'
 import { BigNumber } from 'ethers'
 import { MetaDataLogo } from 'components/Modal/Erc721IdSelectionModal'
+import StackErc20Modal from 'components/Modal/StakeErc20Modal'
+import { Token } from 'constants/token'
+import { CurrencyAmount } from '@ladder/sdk'
 // import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
-
-export interface TestNetData {
-  avatar?: string
-  name?: string
-  state?: string
-  apr?: string
-  earn?: string
-  ladEarn?: string
-}
 
 const CardBg = styled(Box)`
   padding: 24px;
@@ -70,35 +64,39 @@ export const Grid = styled(Box)`
 `
 
 export function TestNetCard({
-  data,
-  onClick,
-  setModalStatus,
   type,
-  nft721
+  currency,
+  nft721,
+  currencyAUrl,
+  currencyBUrl
 }: {
-  data: TestNetData
   type: number
-  onClick?: (arg: TestNetData) => void
-  setModalStatus?: () => void
+  currency?: Token
   nft721?: Token721
+  currencyAUrl?: string
+  currencyBUrl?: string
 }) {
+  const _token: any = currency
   const { account } = useActiveWeb3React()
+
   const { showModal, hideModal } = useModal()
   const toggleWalletModal = useWalletModalToggle()
-  const { result: StakeInfo } = useUserStakeInfoCallBack()
-  const { result: rewards } = useViewRewardCallBack()
-  const { ClaimReward } = useClaimRewardCallBack()
+  const { result: StakeInfo } = useUserStakeInfoCallBack(type === CardTYPE.nft ? nft721?.address : _token?.address)
+  const { result: rewards } = useViewRewardCallBack(type === CardTYPE.nft ? nft721?.address : _token?.address)
+  const { ClaimReward } = useClaimRewardCallBack(type === CardTYPE.nft ? nft721?.address : _token?.address)
   const RewardNum = useMemo(() => {
     return rewards && rewards?.div(BigNumber.from('10').pow(18)).toString()
   }, [rewards])
 
-  const StakeAmount = useMemo(() => {
+  const StakeNFTAmount: string | undefined = useMemo(() => {
     return StakeInfo?.amount && StakeInfo?.amount.toString()
   }, [StakeInfo?.amount])
 
-  const is721 = filter721(nft721)
+  const StakeLPAmount: CurrencyAmount | undefined = useMemo(() => {
+    return StakeInfo?.amount && CurrencyAmount.ether(StakeInfo?.amount.toString())
+  }, [StakeInfo?.amount])
 
-  console.log('🚀 ~ file: Card.tsx:94 ~ StakeInfo:', StakeInfo, StakeInfo?.amount.toString())
+  const is721 = filter721(nft721)
 
   const bt = useMemo(() => {
     if (!account) {
@@ -134,8 +132,7 @@ export function TestNetCard({
         <Button
           style={{ fontSize: '14px', height: '44px', marginTop: '8px' }}
           onClick={() => {
-            setModalStatus && setModalStatus()
-            onClick && onClick(data)
+            if (currency) showModal(<StackErc20Modal onDismiss={hideModal} currency={currency} />)
           }}
         >
           Stake LP
@@ -143,7 +140,9 @@ export function TestNetCard({
       )
     }
     return <Button>Stake</Button>
-  }, [account, data, hideModal, is721, onClick, setModalStatus, showModal, toggleWalletModal, type])
+  }, [account, currency, hideModal, is721, showModal, toggleWalletModal, type])
+
+  console.log('type=>>', type === CardTYPE.nft, StakeNFTAmount, StakeLPAmount?.toSignificant())
 
   return (
     <CardBg>
@@ -165,7 +164,7 @@ export function TestNetCard({
             />
           ) : (
             <img
-              src={data?.avatar || nft721?.uri || DefaultAvatar1}
+              src={currencyAUrl ?? DefaultAvatar1}
               width={48}
               height={48}
               style={{
@@ -175,7 +174,7 @@ export function TestNetCard({
           )}
 
           <img
-            src={DefaultAvatar2}
+            src={currencyBUrl ?? DefaultAvatar2}
             width={26}
             height={26}
             style={{
@@ -187,12 +186,12 @@ export function TestNetCard({
           />
         </Box>
 
-        <BlackText sx={{ fontSize: '18px' }}>{data.name}</BlackText>
+        <BlackText sx={{ fontSize: '18px' }}>{nft721?.name || currency?.symbol || '--'}</BlackText>
       </CenterRow>
       <BetweenRowBg>
         <Hint>APR</Hint>
         <Box display={'flex'} alignItems={'center'} gap={'5px'}>
-          <BlackText>{data?.apr}</BlackText>
+          <BlackText>{'1%'}</BlackText>
           <img src={ARPIcon} />
         </Box>
       </BetweenRowBg>
@@ -225,7 +224,7 @@ export function TestNetCard({
           </Button>
         </BetweenRow>
       </RowBg>
-      {StakeAmount && StakeAmount !== '0' && (
+      {((StakeNFTAmount && StakeNFTAmount !== '0') || StakeLPAmount?.greaterThan('0')) && (
         <RowBg>
           <Row>
             <BlackText>Redeem principal</BlackText>
@@ -237,16 +236,16 @@ export function TestNetCard({
               }
             }}
           >
-            <BlackText>{StakeAmount || 0}</BlackText>
+            <BlackText>{type === CardTYPE.nft ? StakeNFTAmount || 0 : StakeLPAmount?.toSignificant()}</BlackText>
             <Button
               style={{
                 fontSize: '14px',
                 height: 'auto',
                 width: 'fit-content'
               }}
-              disabled={!account || !StakeAmount || StakeAmount === '0'}
+              disabled={!account || !StakeNFTAmount || StakeNFTAmount === '0'}
               onClick={() => {
-                ClaimReward(StakeAmount)
+                ClaimReward(StakeNFTAmount)
               }}
             >
               Withdraw

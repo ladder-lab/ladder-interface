@@ -47,7 +47,7 @@ export enum CardTYPE {
 }
 
 export default function Index() {
-  const [currentTab, setTab] = useState<number>(1)
+  const [currentTab, setTab] = useState<number>(0)
   return (
     <>
       <Tab>
