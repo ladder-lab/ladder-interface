@@ -416,7 +416,7 @@ export function NftCard({
   )
 }
 
-function MetaDataLogo({ token }: { token: Token721 }) {
+export function MetaDataLogo({ token, sx }: { token: Token721; sx?: React.CSSProperties | undefined }) {
   const [curUri, setCurUri] = useState(token.uri)
   const [reload, setReload] = useState(0)
 
@@ -438,7 +438,8 @@ function MetaDataLogo({ token }: { token: Token721 }) {
         overflow: 'hidden',
         width: '100%',
         height: '100%',
-        objectFit: 'contain'
+        objectFit: 'contain',
+        ...sx
       }}
     />
   )

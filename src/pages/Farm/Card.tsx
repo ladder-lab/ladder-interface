@@ -12,6 +12,7 @@ import { useWalletModalToggle } from 'state/application/hooks'
 import { useViewRewardCallBack, useClaimRewardCallBack, useUserStakeInfoCallBack } from 'hooks/useStakeCallback'
 import { useActiveWeb3React } from 'hooks'
 import { BigNumber } from 'ethers'
+import { MetaDataLogo } from 'components/Modal/Erc721IdSelectionModal'
 // import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 
 export interface TestNetData {
@@ -153,14 +154,26 @@ export function TestNetCard({
             pr: 11
           }}
         >
-          <img
-            src={data?.avatar || nft721?.uri || DefaultAvatar1}
-            width={48}
-            height={48}
-            style={{
-              borderRadius: '50%'
-            }}
-          />
+          {type === CardTYPE.nft && is721 ? (
+            <MetaDataLogo
+              token={is721}
+              sx={{
+                width: 48,
+                height: 48,
+                borderRadius: '50%'
+              }}
+            />
+          ) : (
+            <img
+              src={data?.avatar || nft721?.uri || DefaultAvatar1}
+              width={48}
+              height={48}
+              style={{
+                borderRadius: '50%'
+              }}
+            />
+          )}
+
           <img
             src={DefaultAvatar2}
             width={26}
