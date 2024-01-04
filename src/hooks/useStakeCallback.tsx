@@ -55,30 +55,39 @@ export function useViewRewardCallBack() {
 export function useClaimRewardCallBack() {
   const { account } = useActiveWeb3React()
   const contract = useStakeContract()
-
   const { showModal, hideModal } = useModal()
   const addTransaction = useTransactionAdder()
 
   const ClaimReward = useCallback(
-    async (amount = 0) => {
+    async (amount?: string | undefined) => {
       if (!contract || !account) {
         throw 'Params error'
       }
       showModal(<TransacitonPendingModal />)
       try {
-        const args = [erc721contract, amount]
+        console.log('🚀 ~ file: useStakeCallBack.tsx:64 ~ amount:', amount)
+        const args = [erc721contract, amount ? Number(amount) : 0]
         const res = await contract['withdraw'](...args)
         hideModal()
         showModal(<TransactiontionSubmittedModal hash={res?.hash} />)
         addTransaction(res, {
-          summary: 'Claim Reward'
+          summary: !amount ? 'Claim Reward' : 'Redeem Principal',
+          claim: {
+            recipient: !amount
+              ? `${account}_${erc721contract}_claim_reward`
+              : `${account}_${erc721contract}_redeem_principal`
+          }
         })
       } catch (err: any) {
         hideModal()
         console.error(err)
         showModal(
           <MessageBox type="error">
-            {err?.reason || err?.data?.message || err?.error?.message || err?.message || 'Claim Reward Failed'}
+            {err?.reason ||
+              err?.data?.message ||
+              err?.error?.message ||
+              err?.message ||
+              (!amount ? 'Claim Reward Failed' : 'Redeem Principal Failed')}
           </MessageBox>
         )
       }
@@ -88,4 +97,30 @@ export function useClaimRewardCallBack() {
   return {
     ClaimReward
   }
+}
+
+export function useUserStakeInfoCallBack() {
+  const { account } = useActiveWeb3React()
+  const contract = useStakeContract()
+  const [result, SetResult] = useState<any>()
+
+  useEffect(() => {
+    if (!contract) {
+      return
+    }
+
+    ;(async () => {
+      try {
+        const args = [erc721contract, account]
+
+        const res = await contract['userInfo'](...args)
+        if (res) {
+          SetResult(res)
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    })()
+  }, [account, contract])
+  return { result }
 }

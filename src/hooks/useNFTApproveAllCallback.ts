@@ -20,7 +20,8 @@ export function useGetApproved(contract: Contract | undefined, spender: string |
 
 export function useNFTApproveAllCallback(
   contractAddress: string | undefined,
-  spender: string | undefined
+  spender: string | undefined,
+  noClose?: boolean | undefined
 ): [ApprovalState, () => Promise<{ transactionReceipt: Promise<TransactionReceipt> }>] {
   // const { account } = useActiveWeb3React()
   const { hideModal } = useModal()
@@ -65,6 +66,9 @@ export function useNFTApproveAllCallback(
         gasLimit: calculateGasMargin(estimatedGas)
       })
       .then((response: TransactionResponse) => {
+        if (!noClose) {
+          hideModal()
+        }
         addTransaction(response, {
           summary: 'Approve NFT',
           approval: { tokenAddress: contract.address, spender }
@@ -72,11 +76,13 @@ export function useNFTApproveAllCallback(
         return { transactionReceipt: response.wait(1) }
       })
       .catch((error: Error) => {
-        hideModal()
+        if (!noClose) {
+          hideModal()
+        }
         console.debug('Failed to approve nft', error)
         throw error
       })
-  }, [approvalState, contract, spender, hideModal, addTransaction])
+  }, [approvalState, contract, spender, noClose, addTransaction, hideModal])
 
   return [approvalState, approve]
 }

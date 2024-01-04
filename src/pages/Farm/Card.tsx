@@ -1,5 +1,6 @@
 import { Box, Button, styled, Typography } from '@mui/material'
-import DefaultAvatar from 'assets/svg/default_avatar.svg'
+import DefaultAvatar1 from 'assets/svg/default_pair_logo1.svg'
+import DefaultAvatar2 from 'assets/svg/default_pair_logo2.svg'
 import ARPIcon from 'assets/svg/MathOperations.svg'
 import { useMemo } from 'react'
 import { CardTYPE, CenterRow } from '.'
@@ -8,7 +9,7 @@ import StakeNftSelectModal from 'components/Modal/StakeNftSelectModal'
 import { Token721 } from 'constants/token/token721'
 import { filter721 } from 'utils/checkIs1155'
 import { useWalletModalToggle } from 'state/application/hooks'
-import { useViewRewardCallBack, useClaimRewardCallBack } from 'hooks/useStakeCallback'
+import { useViewRewardCallBack, useClaimRewardCallBack, useUserStakeInfoCallBack } from 'hooks/useStakeCallback'
 import { useActiveWeb3React } from 'hooks'
 import { BigNumber } from 'ethers'
 // import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
@@ -83,14 +84,20 @@ export function TestNetCard({
   const { account } = useActiveWeb3React()
   const { showModal, hideModal } = useModal()
   const toggleWalletModal = useWalletModalToggle()
+  const { result: StakeInfo } = useUserStakeInfoCallBack()
   const { result: rewards } = useViewRewardCallBack()
-
-  const Reward = useMemo(() => {
-    return rewards?.div(BigNumber.from('10').pow(18)).toString()
+  const { ClaimReward } = useClaimRewardCallBack()
+  const RewardNum = useMemo(() => {
+    return rewards && rewards?.div(BigNumber.from('10').pow(18)).toString()
   }, [rewards])
 
-  const { ClaimReward } = useClaimRewardCallBack()
+  const StakeAmount = useMemo(() => {
+    return StakeInfo?.amount && StakeInfo?.amount.toString()
+  }, [StakeInfo?.amount])
+
   const is721 = filter721(nft721)
+
+  console.log('🚀 ~ file: Card.tsx:94 ~ StakeInfo:', StakeInfo, StakeInfo?.amount.toString())
 
   const bt = useMemo(() => {
     if (!account) {
@@ -140,7 +147,33 @@ export function TestNetCard({
   return (
     <CardBg>
       <CenterRow>
-        <img src={data?.avatar || DefaultAvatar} />
+        <Box
+          sx={{
+            position: 'relative',
+            pr: 11
+          }}
+        >
+          <img
+            src={data?.avatar || nft721?.uri || DefaultAvatar1}
+            width={48}
+            height={48}
+            style={{
+              borderRadius: '50%'
+            }}
+          />
+          <img
+            src={DefaultAvatar2}
+            width={26}
+            height={26}
+            style={{
+              borderRadius: '50%',
+              position: 'absolute',
+              right: 3,
+              bottom: 0
+            }}
+          />
+        </Box>
+
         <BlackText sx={{ fontSize: '18px' }}>{data.name}</BlackText>
       </CenterRow>
       <BetweenRowBg>
@@ -150,10 +183,7 @@ export function TestNetCard({
           <img src={ARPIcon} />
         </Box>
       </BetweenRowBg>
-      {/* <BetweenRowBg>
-        <Hint>Earn</Hint>
-        <BlackText>{data?.earn} AMMX</BlackText>
-      </BetweenRowBg> */}
+
       <RowBg>
         <Row>
           <BlackText>AMMX</BlackText>
@@ -166,7 +196,7 @@ export function TestNetCard({
             }
           }}
         >
-          <BlackText>{Reward || 0}</BlackText>
+          <BlackText>{RewardNum || 0}</BlackText>
           <Button
             style={{
               fontSize: '14px',
@@ -182,6 +212,36 @@ export function TestNetCard({
           </Button>
         </BetweenRow>
       </RowBg>
+      {StakeAmount && StakeAmount !== '0' && (
+        <RowBg>
+          <Row>
+            <BlackText>Redeem principal</BlackText>
+          </Row>
+          <BetweenRow
+            sx={{
+              '.Mui-disabled': {
+                background: '#e1e1e1 !important'
+              }
+            }}
+          >
+            <BlackText>{StakeAmount || 0}</BlackText>
+            <Button
+              style={{
+                fontSize: '14px',
+                height: 'auto',
+                width: 'fit-content'
+              }}
+              disabled={!account || !StakeAmount || StakeAmount === '0'}
+              onClick={() => {
+                ClaimReward(StakeAmount)
+              }}
+            >
+              Withdraw
+            </Button>
+          </BetweenRow>
+        </RowBg>
+      )}
+
       <RowBg>
         <Row>
           <Typography>AMMX</Typography>

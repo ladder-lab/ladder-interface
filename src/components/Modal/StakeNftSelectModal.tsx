@@ -100,7 +100,7 @@ export default function StakeNftSelectModal({
   }, [availableTokens, pairAddress, poolTokens])
 
   const modalHeight = useCurrencyModalListHeight('0px')
-  const [approvalState, approve] = useNFTApproveAllCallback(erc721contract, STAKE_NFT_TOKEN_ADDRESS)
+  const [approvalState, approve] = useNFTApproveAllCallback(erc721contract, STAKE_NFT_TOKEN_ADDRESS, true)
   console.log('🚀 ~ file: StakeNftSelectModal.tsx:81 ~ approvalA:', approvalState)
 
   const bt = useMemo(() => {
@@ -112,7 +112,7 @@ export default function StakeNftSelectModal({
       )
     }
 
-    if (approvalState !== ApprovalState.APPROVED) {
+    if (approvalState !== ApprovalState.APPROVED && !!filteredAvailableTokens?.length) {
       return (
         <ActionButton
           width="300px"
@@ -130,7 +130,17 @@ export default function StakeNftSelectModal({
         {tokens.length} {collection?.symbol ?? collection?.name} Stake
       </Button>
     )
-  }, [approvalState, approve, collection?.name, collection?.symbol, loading, onConfirm, poolLoading, tokens.length])
+  }, [
+    approvalState,
+    approve,
+    collection?.name,
+    collection?.symbol,
+    filteredAvailableTokens?.length,
+    loading,
+    onConfirm,
+    poolLoading,
+    tokens.length
+  ])
 
   return (
     <Modal
