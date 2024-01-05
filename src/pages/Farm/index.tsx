@@ -14,28 +14,37 @@ export const CenterBetweenRow = styled(CenterRow)`
   justify-content: space-between;
 `
 
-const Tab = styled(Row)`
-  background: white;
-  width: 100%;
-  padding: 18px 45px;
-  gap: 24px;
-`
-const TabItem = styled(Typography)`
-  font-size: 16px;
-  padding: 12px 24px;
-  cursor: pointer;
-  &.selected {
-    background: #1f9898;
-    border-radius: 12px;
-    color: white;
+const Tab = styled(Row)(({ theme }) => ({
+  background: 'white',
+  width: '100%',
+  padding: '18px 45px',
+  gap: '24px',
+  [theme.breakpoints.down('md')]: {
+    padding: '18px 20px'
   }
-`
+}))
+const TabItem = styled(Typography)(({ theme }) => ({
+  fontSize: '16px',
+  padding: '12px 24px',
+  cursor: 'pointer',
+  '&.selected': {
+    background: '#1f9898',
+    borderRadius: '12px',
+    color: 'white'
+  },
+  [theme.breakpoints.down('md')]: {
+    padding: '10px 24px'
+  }
+}))
 
-export const Container = styled(Box)`
-  width: 100%;
-  max-width: 1440px;
-  padding: 26px 45px;
-`
+export const Container = styled(Box)(({ theme }) => ({
+  width: '100%',
+  maxWidth: '1440px',
+  padding: '26px 45px',
+  [theme.breakpoints.down('md')]: {
+    padding: '32px 20px'
+  }
+}))
 export const Title = styled(Typography)`
   font-size: 24px;
   line-height: 36px;

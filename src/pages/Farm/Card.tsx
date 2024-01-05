@@ -33,6 +33,7 @@ const RowBg = styled(Box)`
 `
 const BlackText = styled(Typography)`
   color: #333333;
+  word-break: break-word;
 `
 
 const BetweenRow = styled(Box)`
@@ -56,12 +57,18 @@ const Hint = styled(Typography)`
   font-size: 16px;
 `
 
-export const Grid = styled(Box)`
-  display: grid;
-  gap: 20px;
-  margin-top: 30px;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-`
+export const Grid = styled(Box)(({ theme }) => ({
+  display: 'grid',
+  gap: '20px',
+  marginTop: '30px',
+  gridTemplateColumns: '1fr 1fr 1fr 1fr',
+  [theme.breakpoints.down('lg')]: {
+    gridTemplateColumns: '1fr 1fr 1fr'
+  },
+  [theme.breakpoints.down('md')]: {
+    gridTemplateColumns: 'unset'
+  }
+}))
 
 export function TestNetCard({
   type,

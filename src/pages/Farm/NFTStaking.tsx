@@ -4,16 +4,23 @@ import { useTrackedToken721List } from 'state/user/hooks'
 import { Grid, TestNetCard } from './Card'
 import { Loader } from 'components/AnimatedSvg/Loader'
 import { erc721contract } from 'hooks/useStakeCallback'
+import { useState, useEffect } from 'react'
 
 export default function NFTStaking() {
   const { loading, data } = useTrackedToken721List()
+  const [defaultLoading, setDefaultLoading] = useState<boolean>(true)
 
+  useEffect(() => {
+    setTimeout(() => {
+      setDefaultLoading(false)
+    }, 500)
+  }, [])
   return (
     <Container>
       <Title>NFT Staking</Title>
       <Typography>Stake Token To Get LAD Rewards</Typography>
       <>
-        {loading ? (
+        {loading || defaultLoading ? (
           <Box minHeight={332} display="flex" justifyContent="center" alignItems="center">
             <Loader size={90} />
           </Box>
