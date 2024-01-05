@@ -78,7 +78,6 @@ export function TestNetCard({
 }) {
   const _token: any = currency
   const { account } = useActiveWeb3React()
-
   const { showModal, hideModal } = useModal()
   const toggleWalletModal = useWalletModalToggle()
   const { result: StakeInfo } = useUserStakeInfoCallBack(type === CardTYPE.nft ? nft721?.address : _token?.address)
@@ -115,31 +114,20 @@ export function TestNetCard({
         </Button>
       )
     }
-    if (type === CardTYPE.nft) {
-      return (
-        <Button
-          style={{ fontSize: '14px', height: '44px', marginTop: '8px' }}
-          onClick={() => {
-            showModal(<StakeNftSelectModal onDismiss={hideModal} collection={is721} />)
-          }}
-        >
-          Stake LP
-        </Button>
-      )
-    }
-    if (type === CardTYPE.box) {
-      return (
-        <Button
-          style={{ fontSize: '14px', height: '44px', marginTop: '8px' }}
-          onClick={() => {
-            if (currency) showModal(<StackErc20Modal onDismiss={hideModal} currency={currency} />)
-          }}
-        >
-          Stake LP
-        </Button>
-      )
-    }
-    return <Button>Stake</Button>
+
+    return (
+      <Button
+        style={{ fontSize: '14px', height: '44px', marginTop: '8px' }}
+        onClick={() => {
+          if (currency && type === CardTYPE.box) {
+            showModal(<StackErc20Modal onDismiss={hideModal} currency={currency} />)
+          }
+          if (type === CardTYPE.nft) showModal(<StakeNftSelectModal onDismiss={hideModal} collection={is721} />)
+        }}
+      >
+        Stake LP
+      </Button>
+    )
   }, [account, currency, hideModal, is721, showModal, toggleWalletModal, type])
 
   console.log('type=>>', type === CardTYPE.nft, StakeNFTAmount, StakeLPAmount?.toSignificant())
