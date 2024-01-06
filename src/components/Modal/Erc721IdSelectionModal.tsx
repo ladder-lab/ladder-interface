@@ -49,7 +49,6 @@ export default function Erc721IdSelectionModal({
 
   const balance = useToken721Balance(pairAddress ? undefined : collection)
   const { loading, availableTokens } = useToken721BalanceTokens(balance)
-  console.log('🚀 ~ file: Erc721IdSelectionModal.tsx:53 ~ availableTokens:', availableTokens)
   const { loading: poolLoading, poolTokens, page } = useToken721PoolIds(pairAddress, collection)
 
   const [filteredAvailableTokens, setFilteredAvailableTokens] = useState(pairAddress ? poolTokens : availableTokens)
