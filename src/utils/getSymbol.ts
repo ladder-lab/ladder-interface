@@ -10,8 +10,8 @@ const names = {
 export function getSymbol(token: AllTokens | undefined, chainId?: ChainId | null) {
   const is721 = checkIs721(token)
   const _token: any = token
-  if (is721 && _token?.address && names[_token?.address]) {
-    return names[_token?.address]
+  if (is721 && _token?.address && names[_token?.address.toLowerCase()]) {
+    return names[_token?.address.toLowerCase()]
   }
 
   return token

@@ -81,6 +81,7 @@ export default function Swap() {
     selectedTokenIds
   } = useDerivedSwapInfo()
   const { [Field.INPUT]: fromAsset, [Field.OUTPUT]: toAsset } = currencies
+  console.log('🚀 ~ file: index.tsx:84 ~ Swap ~ currencies:', currencies)
 
   const [fromErc721SubTokens, setFromErc721SubTokens] = useState<Token721[] | null>(null)
   const [toErc721SubTokens, setToErc721SubTokens] = useState<Token721[] | null>(null)
@@ -222,6 +223,8 @@ export default function Swap() {
 
   const handleFromAsset = useCallback(
     (currency: AllTokens) => {
+      console.log('currency=>', currency)
+
       resetSubTokenSelection(Field.INPUT)
       setApprovalSubmitted(false) // reset 2 step UI for approvals
       onCurrencySelection(Field.INPUT, currency)

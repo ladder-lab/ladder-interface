@@ -18,6 +18,15 @@ import useModal from 'hooks/useModal'
 import { Loader } from 'components/AnimatedSvg/Loader'
 import { useCurrencyModalListHeight } from 'hooks/useScreenSize'
 
+const DefaultErc721 = [
+  new Token721(1, '0xE684c11F6E90905EF63B16A4FAD3851AC8f432Be', 1, {
+    name: 'AI_Meets_Bitcoin',
+    symbol: 'AIBTC',
+    uri: '',
+    tokenUri: ''
+  })
+]
+
 export default function ERC721List({
   searchQueryNFT,
   onSelectCurrency
@@ -37,7 +46,7 @@ export default function ERC721List({
   const addUserToken = useAddUserToken()
 
   const filteredTokens: Token[] | Token721[] = useMemo(() => {
-    return filterTokens(Object.values(tokenOptions), debouncedQueryNFT)
+    return filterTokens(Object.values(tokenOptions), debouncedQueryNFT).concat(...DefaultErc721)
   }, [debouncedQueryNFT, tokenOptions])
 
   // const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
@@ -95,7 +104,7 @@ export default function ERC721List({
               <Loader />
             </Box>
           )}
-          {filteredTokens.length === 0 && !searchTokenNFT && !loading && !Token721Loading ? (
+          {searchTokenNFT && filteredTokens.length === 0 && !loading && !Token721Loading ? (
             <Box width={'100%'} display="flex" alignItems="center" justifyContent="center" mt={100}>
               <Typography
                 textAlign="center"
@@ -113,7 +122,13 @@ export default function ERC721List({
           ) : (
             <CollectionListComponent
               onSelect={onSelectCollection}
-              options={filteredTokens.length ? (filteredTokens as Token721[]) : searchTokenNFT ? [searchTokenNFT] : []}
+              options={
+                !!filteredTokens.length
+                  ? (filteredTokens as Token721[])
+                  : searchTokenNFT
+                  ? [searchTokenNFT]
+                  : DefaultErc721
+              }
             />
           )}
         </Box>
