@@ -84,7 +84,9 @@ export function TestNetCard({
   currencyBUrl?: string
 }) {
   const _token: any = currency
-  const address = type === CardTYPE.nft ? nft721?.address : _token?.address
+  const isNFTCard = type === CardTYPE.nft
+  const isErc20Card = type === CardTYPE.box
+  const address = isNFTCard ? nft721?.address : _token?.address
   const { account } = useActiveWeb3React()
   const { showModal, hideModal } = useModal()
   const toggleWalletModal = useWalletModalToggle()
@@ -127,18 +129,18 @@ export function TestNetCard({
       <Button
         style={{ fontSize: '14px', height: '44px', marginTop: '8px' }}
         onClick={() => {
-          if (currency && type === CardTYPE.box) {
+          if (currency && isErc20Card) {
             showModal(<StackErc20Modal onDismiss={hideModal} currency={currency} />)
           }
-          if (type === CardTYPE.nft) showModal(<StakeNftSelectModal onDismiss={hideModal} collection={is721} />)
+          if (isNFTCard) showModal(<StakeNftSelectModal onDismiss={hideModal} collection={is721} />)
         }}
       >
         Stake LP
       </Button>
     )
-  }, [account, currency, hideModal, is721, showModal, toggleWalletModal, type])
+  }, [account, currency, hideModal, is721, isErc20Card, isNFTCard, showModal, toggleWalletModal])
 
-  console.log('type=>>', type === CardTYPE.nft, StakeNFTAmount, StakeLPAmount?.toSignificant())
+  console.log('type=>>', isNFTCard, StakeNFTAmount, StakeLPAmount?.toSignificant())
 
   return (
     <CardBg>
@@ -149,7 +151,7 @@ export function TestNetCard({
             pr: 11
           }}
         >
-          {type === CardTYPE.nft && is721 ? (
+          {isNFTCard && is721 ? (
             <MetaDataLogo
               token={is721}
               sx={{
@@ -169,17 +171,19 @@ export function TestNetCard({
             />
           )}
 
-          <img
-            src={currencyBUrl ?? DefaultAvatar2}
-            width={26}
-            height={26}
-            style={{
-              borderRadius: '50%',
-              position: 'absolute',
-              right: 3,
-              bottom: 0
-            }}
-          />
+          {!isNFTCard && (
+            <img
+              src={currencyBUrl ?? DefaultAvatar2}
+              width={26}
+              height={26}
+              style={{
+                borderRadius: '50%',
+                position: 'absolute',
+                right: 3,
+                bottom: 0
+              }}
+            />
+          )}
         </Box>
 
         <BlackText sx={{ fontSize: '18px' }}>{nft721?.name || currency?.symbol || '--'}</BlackText>
@@ -232,7 +236,7 @@ export function TestNetCard({
               }
             }}
           >
-            <BlackText>{type === CardTYPE.nft ? StakeNFTAmount || 0 : StakeLPAmount?.toSignificant()}</BlackText>
+            <BlackText>{isNFTCard ? StakeNFTAmount || 0 : StakeLPAmount?.toSignificant()}</BlackText>
             <Button
               style={{
                 fontSize: '14px',
