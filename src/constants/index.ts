@@ -39,7 +39,7 @@ export const ROUTER_ADDRESS: (chainId: ChainId | null | undefined) => string = c
     {
       [4]: '0x2cB34c38f7FFF789fab70AB69DAA9f7F05a4ecc8',
       [56]: '0x54F0d8485e931c22D542D7b95dbbf5ecdE9C91E8',
-      [1]: '',
+      [1]: '0x6ECBC55F9087b86aF9AADF553F086EfdAC5c1458', //error
       [5]: '0x6ECBC55F9087b86aF9AADF553F086EfdAC5c1458',
       [11155111]: '0x6e2c879382520c7B15927902eEf1c0FbC1F8de91',
       [137]: '0x3c36a8F43c583c3b4d54E3170cCE7D04EfD41a49'
