@@ -491,6 +491,7 @@ export default function Swap() {
                   />
                 )}
                 <ActionButton
+                  height="60px"
                   actionText={`Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
                   onAction={() => {
                     if (isExpertMode) {

@@ -20,6 +20,7 @@ interface Props {
   height?: string
   backdropColor?: string
   closeVariant?: 'button' | 'plain'
+  minHeight?: string
 }
 
 const Transition = React.forwardRef<unknown, SlideProps | FadeProps>(function Transition(props, ref) {
@@ -42,7 +43,8 @@ export default function Modal(props: Props) {
     background,
     height,
     backdropColor,
-    closeVariant
+    closeVariant,
+    minHeight
   } = props
   const { isOpen, hideModal } = useModal()
   const node = useRef<any>()
@@ -69,6 +71,7 @@ export default function Modal(props: Props) {
             ...{
               width: { xs: 'calc(100vw - 32px)!important', sm: width || 488 },
               maxWidth,
+              minHeight: minHeight ? minHeight : 'unset',
               background: theme => background ?? theme.palette.background.paper,
               border: hasBorder ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid transparent',
               boxShadow: 'unset',
