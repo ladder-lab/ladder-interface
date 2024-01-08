@@ -17,6 +17,7 @@ import TransacitonPendingModal from './TransactionModals/TransactionPendingModal
 import MessageBox from './TransactionModals/MessageBox'
 import TransactiontionSubmittedModal from './TransactionModals/TransactiontionSubmittedModal'
 import { useTransactionAdder } from 'state/transactions/hooks'
+import { useGetLPTokenPair } from 'hooks/useToken721PairTrade'
 
 export default function StackErc20Modal({ onDismiss, currency }: { onDismiss: () => void; currency: Token }) {
   const theme = useTheme()
@@ -30,6 +31,8 @@ export default function StackErc20Modal({ onDismiss, currency }: { onDismiss: ()
     STAKE_ERC_TOKEN_ADDRESS,
     true
   )
+  const { token0, token1 } = useGetLPTokenPair(currency.address)
+
   const addTransaction = useTransactionAdder()
 
   const balance = useMemo(() => {
@@ -158,8 +161,13 @@ export default function StackErc20Modal({ onDismiss, currency }: { onDismiss: ()
         </Stack>
 
         <CenterRow justifyContent={'center'}>
-          <a style={{ color: '#1F9898' }}>Get LAD-ASD LP</a>
-          <img src={LinkIcon} />
+          <a
+            style={{ color: '#1F9898', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 5 }}
+            href={`add-liquidity/${token0}/${token1}/${'erc721&'}`}
+          >
+            Get LAD-ASD LP
+            <img src={LinkIcon} />
+          </a>
         </CenterRow>
       </Box>
     </Modal>
