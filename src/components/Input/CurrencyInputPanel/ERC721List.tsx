@@ -99,37 +99,40 @@ export default function ERC721List({
 
       <Box sx={{ overflow: 'auto', height: listHeight }}>
         <Box paddingTop={'24px'} position="relative">
-          {(loading || Token721Loading) && (
+          {loading || Token721Loading ? (
             <Box marginTop="40px" position="absolute" left="50%" sx={{ transform: 'translateX(-50%)' }}>
               <Loader />
             </Box>
-          )}
-          {searchTokenNFT && filteredTokens.length === 0 && !loading && !Token721Loading ? (
-            <Box width={'100%'} display="flex" alignItems="center" justifyContent="center" mt={100}>
-              <Typography
-                textAlign="center"
-                mb="20px"
-                fontSize={16}
-                fontWeight={500}
-                component="div"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
-                No results found.
-              </Typography>
-            </Box>
           ) : (
-            <CollectionListComponent
-              onSelect={onSelectCollection}
-              options={
-                !!filteredTokens.length
-                  ? (filteredTokens as Token721[])
-                  : searchTokenNFT
-                  ? [searchTokenNFT]
-                  : DefaultErc721
-              }
-            />
+            <>
+              {searchTokenNFT && filteredTokens.length === 0 && !loading && !Token721Loading ? (
+                <Box width={'100%'} display="flex" alignItems="center" justifyContent="center" mt={100}>
+                  <Typography
+                    textAlign="center"
+                    mb="20px"
+                    fontSize={16}
+                    fontWeight={500}
+                    component="div"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    No results found.
+                  </Typography>
+                </Box>
+              ) : (
+                <CollectionListComponent
+                  onSelect={onSelectCollection}
+                  options={
+                    !!filteredTokens.length
+                      ? (filteredTokens as Token721[])
+                      : searchTokenNFT
+                      ? [searchTokenNFT]
+                      : DefaultErc721
+                  }
+                />
+              )}
+            </>
           )}
         </Box>
       </Box>
