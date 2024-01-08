@@ -27,7 +27,8 @@ export default function StackErc20Modal({ onDismiss, currency }: { onDismiss: ()
   const Balances = useTokenBalance(account ?? undefined, currency)
   const [approvalState, approve] = useApproveCallback(
     tryParseAmount(value || undefined, currency),
-    STAKE_ERC_TOKEN_ADDRESS
+    STAKE_ERC_TOKEN_ADDRESS,
+    true
   )
   const addTransaction = useTransactionAdder()
 
