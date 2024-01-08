@@ -12,8 +12,8 @@ import { fortmatic, injected, portis, walletconnect, walletlink } from '../conne
 import { NETWORK_CHAIN_ID } from './chain'
 import { DEFAULT_1155_LIST } from './default1155List'
 
-console.log(FACTORY_ADDRESS_SDK(137, true))
-console.log(INIT_CODE_HASH(137, true))
+console.log(FACTORY_ADDRESS_SDK(1, true))
+console.log(INIT_CODE_HASH(1, true))
 
 type ChainTokenList = {
   readonly [chainId in ChainId]: Token[]
@@ -25,12 +25,12 @@ export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16))
 export const ROUTER_ADDRESS_721: (chainId: ChainId | null | undefined) => string = chainId =>
   ((
     {
-      [5]: '0xB2d06a54f2DBC5a2b608358c034be6aA88646Df4',
-      [4]: '0xC61d146BB1965ba0e387aA2Ad94c500a17dfe65F',
+      [5]: '',
+      [4]: '',
       [56]: '',
-      [1]: '',
+      [1]: '0x7770AE4205771Cc5a1a23ED9B6575aB2E5855341',
       [11155111]: '0x18Acb521d87A46FdDceD5074f26A155c64074365',
-      [137]: '0xf434274C78CF5567D47D765420CDbf552d1C1067'
+      [137]: ''
     } as any
   )[chainId ?? NETWORK_CHAIN_ID] ?? '')
 
