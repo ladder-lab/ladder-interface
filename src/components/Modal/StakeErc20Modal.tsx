@@ -27,7 +27,8 @@ export default function StackErc20Modal({ onDismiss, currency }: { onDismiss: ()
   const Balances = useTokenBalance(account ?? undefined, currency)
   const [approvalState, approve] = useApproveCallback(
     tryParseAmount(value || undefined, currency),
-    STAKE_ERC_TOKEN_ADDRESS
+    STAKE_ERC_TOKEN_ADDRESS,
+    true
   )
   const addTransaction = useTransactionAdder()
 
@@ -94,7 +95,7 @@ export default function StackErc20Modal({ onDismiss, currency }: { onDismiss: ()
     <Modal customOnDismiss={onDismiss} width="100%" maxWidth="550px" closeIcon closeVariant="button" height="350px">
       <Box
         sx={{
-          padding: '32px 34px',
+          padding: { xs: '16px 20px', md: '32px 34px' },
           height: '100%',
           display: 'flex',
           flexDirection: 'column',

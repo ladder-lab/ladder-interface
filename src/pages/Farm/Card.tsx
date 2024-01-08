@@ -84,12 +84,13 @@ export function TestNetCard({
   currencyBUrl?: string
 }) {
   const _token: any = currency
+  const address = type === CardTYPE.nft ? nft721?.address : _token?.address
   const { account } = useActiveWeb3React()
   const { showModal, hideModal } = useModal()
   const toggleWalletModal = useWalletModalToggle()
-  const { result: StakeInfo } = useUserStakeInfoCallBack(type === CardTYPE.nft ? nft721?.address : _token?.address)
-  const { result: rewards } = useViewRewardCallBack(type === CardTYPE.nft ? nft721?.address : _token?.address)
-  const { ClaimReward } = useClaimRewardCallBack(type === CardTYPE.nft ? nft721?.address : _token?.address)
+  const { result: StakeInfo } = useUserStakeInfoCallBack(address)
+  const { result: rewards } = useViewRewardCallBack(address)
+  const { ClaimReward } = useClaimRewardCallBack(address)
   const RewardNum = useMemo(() => {
     return rewards && rewards?.div(BigNumber.from('10').pow(18)).toString()
   }, [rewards])

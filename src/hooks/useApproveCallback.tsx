@@ -31,7 +31,8 @@ export enum ApprovalState {
 // returns a variable indicating the state of the approval and a function which approves if necessary or early returns
 export function useApproveCallback(
   amountToApprove?: CurrencyAmount,
-  spender?: string
+  spender?: string,
+  noClose?: boolean
 ): [ApprovalState, () => Promise<void>] {
   const { showModal, hideModal } = useModal()
   const { account } = useActiveWeb3React()
@@ -98,7 +99,7 @@ export function useApproveCallback(
 
     const { gasPrice } = await getGasPrice()
 
-    showModal(<TransacitonPendingModal />)
+    !noClose && showModal(<TransacitonPendingModal />)
     return tokenContract
       .approve(spender, isERC20ApproveAllMode ? MaxUint256 : amountToApprove.raw.toString(), {
         // .approve(spender, useExact ? amountToApprove.raw.toString() : MaxUint256, {
@@ -106,16 +107,20 @@ export function useApproveCallback(
         gasPrice
       })
       .then((response: TransactionResponse) => {
-        hideModal()
-        showModal(<TransactionSubmittedModal />)
+        if (!noClose) {
+          hideModal()
+          showModal(<TransactionSubmittedModal />)
+        }
         addTransaction(response, {
           summary: 'Approve ' + amountToApprove.currency.symbol,
           approval: { tokenAddress: token.address, spender: spender }
         })
       })
       .catch((error: Error) => {
-        hideModal()
-        showModal(<MessageBox type="error">Failed to approve token</MessageBox>)
+        if (!noClose) {
+          hideModal()
+          showModal(<MessageBox type="error">Failed to approve token</MessageBox>)
+        }
         console.debug('Failed to approve token', error)
         throw error
       })
@@ -127,6 +132,7 @@ export function useApproveCallback(
     spender,
     isERC20ApproveAllMode,
     getGasPrice,
+    noClose,
     showModal,
     hideModal,
     addTransaction

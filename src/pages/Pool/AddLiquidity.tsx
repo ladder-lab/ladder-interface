@@ -330,6 +330,7 @@ export default function AddLiquidy() {
                     <Box display="flex" gap={16}>
                       {approvalA !== ApprovalState.APPROVED && (
                         <ActionButton
+                          height="60px"
                           onAction={approveACallback}
                           disableAction={approvalA === ApprovalState.PENDING}
                           pending={approvalA === ApprovalState.PENDING}
@@ -344,6 +345,7 @@ export default function AddLiquidy() {
                       {approvalB !== ApprovalState.APPROVED && (
                         <ActionButton
                           onAction={approveBCallback}
+                          height="60px"
                           disableAction={approvalB === ApprovalState.PENDING}
                           pending={approvalB === ApprovalState.PENDING}
                           pendingText={`Approving ${

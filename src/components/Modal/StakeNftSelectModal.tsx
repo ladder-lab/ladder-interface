@@ -147,6 +147,7 @@ export default function StakeNftSelectModal({
       width="100%"
       height={isDownMd ? modalHeight : '60vh'}
       maxWidth="680px"
+      minHeight={isDownMd ? 'unset' : '580px'}
       closeIcon
       closeVariant="button"
       padding={isDownMd ? '28px 16px' : '32px 32px'}
@@ -190,7 +191,7 @@ export default function StakeNftSelectModal({
           overflow: 'auto',
           margin: '20px 0',
           height: '100%',
-          maxHeight: { xs: 'calc(100% - 180px)', md: '466px' }
+          maxHeight: 'calc(100% - 180px)'
         }}
       >
         <Box display="flex" flexDirection="column" gap={20}>
