@@ -16,21 +16,21 @@ import darkBg from 'assets/images/dark_bg.png'
 import lightBg from 'assets/images/light_bg.png'
 import { useIsDarkMode } from 'state/user/hooks'
 import RemoveLiquidity from './Pool/RemoveLiquidity'
-import Testnet from './Testnet'
-import Explorer from './Explore'
-import Collection from './Collection'
+// import Testnet from './Testnet'
+// import Explorer from './Explore'
+// import Collection from './Collection'
 import Statistics from './Statistics'
 import StatisticsTokens from './Statistics/Tokens'
 import StatisticsPools from './Statistics/Pools'
-import Feedback from './Feedback'
+// import Feedback from './Feedback'
 import GoogleAnalyticsReporter from 'components/analytics/GoogleAnalyticsReporter'
-import Sbt from './Earn/Sbt'
-import ListOfWinners from './Testnet/ListOfWinners'
-import BecomePartnerNew from './Earn/Sbt/BecomePartnerNew'
-import MyAccount from './MyAccount'
-import OrigAccount from './MyAccount/OrigAccount'
+// import Sbt from './Earn/Sbt'
+// import ListOfWinners from './Testnet/ListOfWinners'
+// import BecomePartnerNew from './Earn/Sbt/BecomePartnerNew'
+// import MyAccount from './MyAccount'
+// import OrigAccount from './MyAccount/OrigAccount'
+// import Airdrop from './Airdrop'
 import Footer from '../components/Footer'
-import Airdrop from './Airdrop'
 import Farms from './Farm'
 
 const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
@@ -93,11 +93,11 @@ export default function App() {
               {/* <WarningModal /> */}
               <Web3ReactManager>
                 <Routes>
-                  <Route path={routes.airdrop} element={<Airdrop />} />
+                  {/* <Route path={routes.airdrop} element={<Airdrop />} />
                   <Route path={routes.testnet} element={<Testnet />} />
                   <Route path={routes.winners} element={<ListOfWinners />} />
                   <Route path={routes.explorer} element={<Explorer />} />
-                  <Route path={routes.explorer + routes.collectionParams} element={<Collection />} />
+                  <Route path={routes.explorer + routes.collectionParams} element={<Collection />} /> */}
                   <Route path={routes.swap} element={<Swap />}>
                     <Route path={routes.removeLiquidityParams.slice(1)} element={<Swap />} />
                   </Route>
@@ -115,11 +115,11 @@ export default function App() {
                   <Route path={routes.removeLiquidity}>
                     <Route path={routes.removeLiquidity + routes.removeLiquidityParams} element={<RemoveLiquidity />} />
                   </Route>
-                  <Route path={routes.feedback} element={<Feedback />} />
+                  {/* <Route path={routes.feedback} element={<Feedback />} />
                   <Route path={routes.sbt} element={<Sbt />} />
                   <Route path={routes.becomePartner} element={<BecomePartnerNew />} />
                   <Route path={routes.myAccount} element={<MyAccount />} />
-                  <Route path={routes.origAccount} element={<OrigAccount />} />
+                  <Route path={routes.origAccount} element={<OrigAccount />} /> */}
                   <Route path={routes.farms} element={<Farms />} />
                   <Route path="*" element={<Navigate to={routes.swap} replace />} />
                 </Routes>
