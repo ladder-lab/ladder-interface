@@ -332,6 +332,7 @@ export function useTrackedTokenPairs(): [Token, Token][] {
                       .concat(erc721s)
                       .concat(userTokens)
                       .concat(BASES_TO_TRACK_LIQUIDITY_FOR[chainId] ?? [])
+                      .filter(v => v.chainId === chainId)
                   : [...(BASES_TO_TRACK_LIQUIDITY_FOR[chainId] ?? []), userTokens]
               )
                 // to construct pairs of the given token with each base
