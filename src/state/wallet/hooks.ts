@@ -14,6 +14,8 @@ import { useBlockNumber } from 'state/application/hooks'
 import { Token721 } from 'constants/token/token721'
 import { getTest721uriWithIndex, isTest721 } from 'constants/default721List'
 import { getAlchemy } from 'utils/alchemy'
+import { defaultErc721Address } from 'components/Input/CurrencyInputPanel/ERC721List'
+import AiBitcoin from 'assets/images/ai_bitcoin.png'
 
 export interface Token721Info {
   address: string
@@ -312,7 +314,6 @@ export function useToken721BalanceTokens(tokenAmount?: TokenAmount): {
         const res = await getAlchemy(chainId).nft.getNftsForOwner(account, {
           contractAddresses: [tokenAmount.token.address]
         })
-
         if (res.totalCount > 0 && !isTest721(tokenAmount.token.address)) {
           const token721 = filter721(tokenAmount.token)
           const tokens = res.ownedNfts.map(
@@ -324,7 +325,11 @@ export function useToken721BalanceTokens(tokenAmount?: TokenAmount): {
                 uri:
                   ChainId.SEPOLIA && isTest721(tokenAmount.token.address) && token721?.uri
                     ? getTest721uriWithIndex(token721.uri, data.tokenId ? parseInt(data.tokenId) : 1)
-                    : data.contract.openSeaMetadata.imageUrl ?? undefined
+                    : data.contract.openSeaMetadata.imageUrl
+                    ? data.contract.openSeaMetadata.imageUrl
+                    : tokenAmount.token.address === defaultErc721Address
+                    ? AiBitcoin
+                    : undefined
               })
           )
           setTokens(tokens)
