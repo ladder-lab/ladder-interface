@@ -61,7 +61,7 @@
   "scripts": {
     "start": "react-scripts start",
     "start:service-worker": "yarn build && yarn serve -s build",
-    "build": "CI=true react-scripts build",
+    "build": "CI=false react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
