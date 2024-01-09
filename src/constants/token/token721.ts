@@ -1,5 +1,6 @@
 import { ChainId } from '../chain'
 import { Token } from '@ladder/sdk'
+import { getAlchemy } from 'utils/alchemy'
 import { Axios } from 'utils/axios'
 
 /**
@@ -33,13 +34,16 @@ export class Token721 extends Token {
     this.name = metadata?.name ?? 'ERC721'
     this.symbol = metadata?.symbol ?? 'NFT'
     this.tokenUri = metadata?.tokenUri ?? ''
+
     if ((!metadata || !metadata.uri) && chainId !== ChainId.SEPOLIA) {
-      Axios.getMetadata(address, tokenId)
-        .then(r => {
-          const data = r.data.data
-          this.uri = data?.image_uri ?? data?.logo_url ?? ''
-          this.name = data?.name ?? data?.contract_name ?? 'ERC721'
-          this.symbol = data?.contract_name ?? data?.name ?? 'NFT'
+      getAlchemy(chainId)
+        .nft.getContractMetadata(address)
+        .then(res => {
+          console.log('res=>', res)
+          this.uri = res.openSeaMetadata.imageUrl ?? ''
+          this.name = res.name ?? res.openSeaMetadata.collectionName ?? 'ERC721'
+          this.symbol = res.symbol ?? res.openSeaMetadata.collectionSlug ?? 'NFT'
+
           refresh && refresh()
         })
         .catch(e => {
