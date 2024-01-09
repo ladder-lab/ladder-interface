@@ -5,6 +5,7 @@ import { useAddUserToken, useTrackedToken721List } from 'state/user/hooks'
 // import useBreakpoint from 'hooks/useBreakpoint'
 import { CollectionListComponent } from './ListComponent'
 // import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
+import AiBitcoin from 'assets/images/ai_bitcoin.png'
 
 // TOOD: Update to ERC721
 import { Token721 } from 'constants/token/token721'
@@ -18,11 +19,13 @@ import useModal from 'hooks/useModal'
 import { Loader } from 'components/AnimatedSvg/Loader'
 import { useCurrencyModalListHeight } from 'hooks/useScreenSize'
 
-const DefaultErc721 = [
-  new Token721(1, '0xE684c11F6E90905EF63B16A4FAD3851AC8f432Be', 1, {
+export const defaultErc721Address = '0xE684c11F6E90905EF63B16A4FAD3851AC8f432Be'
+
+const DefaultErc721: Token721[] = [
+  new Token721(1, defaultErc721Address, 1, {
     name: 'AI_Meets_Bitcoin',
     symbol: 'AIBTC',
-    uri: '',
+    uri: AiBitcoin,
     tokenUri: ''
   })
 ]

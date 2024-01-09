@@ -15,6 +15,7 @@ import { getName } from 'utils/getSymbol'
 import { Token721 } from 'constants/token/token721'
 import TestnetV3Mark from 'components/TestnetV3Mark'
 import { useActiveWeb3React } from 'hooks'
+import { useRequest } from 'ahooks'
 
 export function AssetAccordion({
   token,
@@ -43,6 +44,14 @@ export function AssetAccordion({
   const is1155 = checkIs1155(token)
   const is721 = checkIs721(token)
 
+  const { data: token721Name } = useRequest(
+    async () => {
+      return is721 ? token?.name : undefined
+    },
+    {
+      pollingInterval: 1500
+    }
+  )
   const summary = useMemo(() => {
     return (
       <Box
@@ -63,7 +72,8 @@ export function AssetAccordion({
         <CurrencyLogo currency={token} style={{ width: 36 }} />
         <Box display="flex" flexDirection="column" gap={8} width="100%">
           <Typography color={theme.palette.text.secondary} display="flex" alignItems="center" component="div">
-            Name: {getTokenText(chainId, token).token1Text ?? '-'} <TestnetV3Mark addresss={[_token?.address]} />
+            Name: {(token721Name || getTokenText(chainId, token).token1Text) ?? '-'}{' '}
+            <TestnetV3Mark addresss={[_token?.address]} />
           </Typography>
           <Typography
             color={theme.palette.text.secondary}
@@ -90,7 +100,7 @@ export function AssetAccordion({
         <Tag sx={{ position: 'absolute', right: 0, top: 0 }}>{is1155 ? 'ERC1155' : is721 ? 'ERC721' : 'ERC20'}</Tag>
       </Box>
     )
-  }, [token, theme.palette.text.secondary, chainId, _token?.address, is1155, is721])
+  }, [token, theme.palette.text.secondary, token721Name, chainId, _token?.address, is1155, is721])
 
   const details = useMemo(() => {
     return (

@@ -15,6 +15,7 @@ import { getSymbol } from 'utils/getSymbol'
 import Erc721IdSelectionModal from 'components/Modal/Erc721IdSelectionModal'
 import { Token721 } from 'constants/token/token721'
 import QuestionHelper from 'components/essential/QuestionHelper'
+import { useRequest } from 'ahooks'
 
 interface Props {
   currency?: AllTokens | null
@@ -107,6 +108,7 @@ export default function CurrencyInputPanel({
   const is721 = filter721(currency)
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
   const [swapType, setSwapType] = useState(SwapType.AUTO)
+  console.log('currency=>', currency)
 
   const { hideModal, showModal } = useModal()
   const theme = useTheme()
@@ -162,6 +164,15 @@ export default function CurrencyInputPanel({
       onSelectSubTokens([])
     }
   }, [enableAuto, onSelectSubTokens, swapType])
+
+  const { data: symbol721 } = useRequest(
+    async () => {
+      return is721 ? is721.symbol : undefined
+    },
+    {
+      pollingInterval: 1500
+    }
+  )
 
   return (
     <>
@@ -244,7 +255,7 @@ export default function CurrencyInputPanel({
           {currency ? (
             <LogoText
               logo={<CurrencyLogo currency={currency} />}
-              text={is1155 ? currency.name : getSymbol(currency, chainId)}
+              text={is1155 ? currency.name : symbol721 || getSymbol(currency, chainId)}
             />
           ) : (
             <>Select Token</>
