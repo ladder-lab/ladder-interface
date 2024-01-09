@@ -95,7 +95,12 @@ export const AllChainList = [
   }
 ]
 
-export const ChainList = AllChainList.filter(v => SUPPORT_NETWORK_CHAIN_IDS.includes(v.id))
+export const ChainList = AllChainList.filter(v => {
+  if (IS_TEST_NET) {
+    return SUPPORT_NETWORK_CHAIN_IDS.includes(v.id)
+  }
+  return SUPPORT_NETWORK_CHAIN_IDS.includes(v.id) && v.id !== ChainId.SEPOLIA
+})
 
 export const ChainListMap: {
   [key: number]: { icon: JSX.Element; link?: string; selectedIcon?: JSX.Element } & Chain
