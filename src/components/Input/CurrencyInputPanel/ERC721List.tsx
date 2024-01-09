@@ -49,7 +49,11 @@ export default function ERC721List({
   const addUserToken = useAddUserToken()
 
   const filteredTokens: Token[] | Token721[] = useMemo(() => {
-    return filterTokens(Object.values(tokenOptions), debouncedQueryNFT).concat(...DefaultErc721)
+    const tokens = filterTokens(Object.values(tokenOptions), debouncedQueryNFT)
+    if (tokenOptions.find(v => v.address === defaultErc721Address)) {
+      return tokens
+    }
+    return tokens.concat(...DefaultErc721)
   }, [debouncedQueryNFT, tokenOptions])
 
   // const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
