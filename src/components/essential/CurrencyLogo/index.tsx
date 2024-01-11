@@ -12,7 +12,8 @@ import tUSDCImg from 'assets/images/tUSDC.jpg'
 import tWETHImg from 'assets/images/tWETH.jpg'
 import AiBitcoin from 'assets/images/ai_bitcoin.png'
 import { defaultErc721Address } from 'components/Input/CurrencyInputPanel/ERC721List'
-import { useRequest } from 'ahooks'
+import { useIntervalGetToken721 } from 'hooks/useInterval'
+import { filter721 } from 'utils/checkIs1155'
 
 export const getTokenLogoURL = (address: string) =>
   `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`
@@ -32,18 +33,9 @@ export default function CurrencyLogo({
 }) {
   const { chainId } = useActiveWeb3React()
   const _token = currency as any
+  const is721 = filter721(currency)
 
-  const { data: _token721Url } = useRequest(
-    async () => {
-      if (currency instanceof Token1155 || currency instanceof Token721) {
-        return currency.uri
-      }
-      return undefined
-    },
-    {
-      pollingInterval: 1000
-    }
-  )
+  const { token721 } = useIntervalGetToken721(is721)
 
   const srcs: string[] = useMemo(() => {
     const uriLocations = currency instanceof WrappedTokenInfo ? currency.logoURI : undefined
@@ -81,8 +73,8 @@ export default function CurrencyLogo({
     if (!currency) return []
 
     if (currency instanceof Token1155 || currency instanceof Token721) {
-      if (_token721Url) {
-        return [_token721Url]
+      if (token721?.uri) {
+        return [token721.uri]
       }
     }
 
@@ -101,7 +93,7 @@ export default function CurrencyLogo({
     }
 
     return [uriLocations]
-  }, [_token?.address, _token721Url, chainId, currency, currencySymbol])
+  }, [_token?.address, chainId, currency, currencySymbol, token721?.uri])
 
   return (
     <Logo
