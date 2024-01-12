@@ -12,6 +12,12 @@ import { ReactComponent as Trading } from 'assets/svg/airdrop/trading.svg'
 const expiredList = ['test1', 'test2', 'monopoly']
 
 const tasks = [
+  // {
+  //   title: ' Make a swap in “AI Meets Bitcoin” Liquidity Pool',
+  //   chain: ChainId.MAINNET,
+  //   id: 'swapAIBtc',
+  //   icon: <Tester />
+  // },
   {
     title: 'Participate in testnet 1',
     chain: ChainId.SEPOLIA,
