@@ -76,9 +76,9 @@ export default function Pool() {
               Liquid provider rewards
             </Typography>
             <Typography sx={{ fontSize: { xs: 14, md: 18 }, fontWeight: 500, color: theme.palette.text.secondary }}>
-              Liquidity providers earn a 0.3% fee on all trades proportional to their share of the pool. Fees are added
-              to the pool, accrue in real time and can be claimed by withdrawing your liquidity. Read more about
-              providing liquidity
+              Liquidity providers earn a 1% fee on all trades proportional to their share of the pool. Fees are added to
+              the pool, accrue in real time and can be claimed by withdrawing your liquidity. Read more about providing
+              liquidity
             </Typography>
           </Box>
           <Box

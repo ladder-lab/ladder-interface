@@ -135,7 +135,7 @@ export function SwapSummary({
             <Typography>Router</Typography>
             {/* <AddIcon /> */}
           </Box>
-          <RouterGraph tokens={routerTokens} fromAsset={fromAsset} toAsset={toAsset} fee="0.3%" />
+          <RouterGraph tokens={routerTokens} fromAsset={fromAsset} toAsset={toAsset} fee="1%" />
           <Typography sx={{ color: theme.palette.text.secondary, opacity: 0.5 }}>
             Best price route costs ~${gasFee} in gas.This route optimizes your total output by considering aplit
             routes,multiple hops,and the gas cost of each step.
