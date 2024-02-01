@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Axios, StatBaseURL } from 'utils/axios'
+import { Axios, StatBaseURL, v4Url } from 'utils/axios'
 import { ChainId } from 'constants/chain'
 import { StatTopPoolsProp, topPoolsListDataHandler } from './useStatBacked'
 import { useActiveWeb3React } from 'hooks'
@@ -19,7 +19,7 @@ export function useV3ActivityData(chainId: ChainId) {
         return
       }
       try {
-        const res = await Axios.get(StatBaseURL + 'getActivityData', {
+        const res = await Axios.get(v4Url + 'getActivityData', {
           chainId,
           account: account || ''
         })
