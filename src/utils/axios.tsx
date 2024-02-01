@@ -2,7 +2,7 @@ import axios, { AxiosResponse, AxiosPromise, AxiosRequestConfig } from 'axios'
 import qs from 'qs'
 
 // export const StatBaseURL = 'https://dualinvest-testapi.antimatter.finance/web/'
-export const StatBaseURL = 'https://api-lokdev.ladder.top/ladder/web/'
+export const StatBaseURL = 'https://dev-api.ladder.top/ladder/web/'
 export const baseURL = 'https://test-nftapi.antimatter.finance:8443/web/'
 // export const baseURL = 'https://dualinvest-testapi.antimatter.finance/web/'
 export const testURL = 'https://testapi.settle3.com/web/'
@@ -34,7 +34,7 @@ export const axiosAirdropInstance = axios.create({
 })
 
 export const axiosAirdropInstanceLockLP = axios.create({
-  baseURL: 'https://api-lokdev.ladder.top',
+  baseURL: 'https://dev-api.ladder.top/ladder/',
   timeout: 10000,
   headers: { 'content-type': 'application/json', accept: 'application/json' }
 })
