@@ -12,6 +12,12 @@ import { ReactComponent as Trading } from 'assets/svg/airdrop/trading.svg'
 const expiredList = ['test1', 'test2', 'monopoly']
 
 const tasks = [
+  // {
+  //   title: ' Make a swap in “AI Meets Bitcoin” Liquidity Pool',
+  //   chain: ChainId.MAINNET,
+  //   id: 'swapAIBtc',
+  //   icon: <Tester />
+  // },
   {
     title: 'Participate in testnet 1',
     chain: ChainId.SEPOLIA,
@@ -58,29 +64,29 @@ const tasks = [
     icon: <Badges />,
     route: 'round3'
   },
-  {
-    title: 'Buy at least 1 DWD-SFT',
-    id: 'dogewalkSwap',
-    chain: ChainId.BSC,
-    link: 'http://dogewalk.ladder.top/',
-    icon: <Trading />
-  },
-  {
-    title: 'Hold at least 4 DWD-SFT',
-    id: 'dogewalkHold',
-    chain: ChainId.BSC,
-    link: 'http://dogewalk.ladder.top/',
-    icon: <Trading />,
-    tooltip:
-      'A snapshot will be taken on a random date. All wallets with more than 4 DW SFTs will qualify for the reward.						'
-  },
-  {
-    title: 'Provide LP for LOK/ MATIC pool to earn Ladder Box',
-    id: 'lockLP',
-    chain: ChainId.MATIC,
-    link: 'https://lok.ladder.top',
-    icon: <Trading />
-  },
+  // {
+  //   title: 'Buy at least 1 DWD-SFT',
+  //   id: 'dogewalkSwap',
+  //   chain: ChainId.BSC,
+  //   link: 'http://dogewalk.ladder.top/',
+  //   icon: <Trading />
+  // },
+  // {
+  //   title: 'Hold at least 4 DWD-SFT',
+  //   id: 'dogewalkHold',
+  //   chain: ChainId.BSC,
+  //   link: 'http://dogewalk.ladder.top/',
+  //   icon: <Trading />,
+  //   tooltip:
+  //     'A snapshot will be taken on a random date. All wallets with more than 4 DW SFTs will qualify for the reward.						'
+  // },
+  // {
+  //   title: 'Provide LP for LOK/ MATIC pool to earn Ladder Box',
+  //   id: 'lockLP',
+  //   chain: ChainId.MATIC,
+  //   link: 'https://lok.ladder.top',
+  //   icon: <Trading />
+  // },
   {
     title: 'Make 2 swaps to Earn Ladder Box => Swap at least 2 WolfPack Pups NFTs',
     id: 'swap-two',

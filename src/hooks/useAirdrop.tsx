@@ -77,8 +77,8 @@ export function useBoxTasks(refreshCb: () => void) {
 
       const [res1, res2, res3] = await Promise.all([
         axiosAirdropInstance.get('/drop/getCompleteTaskStatus', { params: { account, chainId } }),
-        axiosAirdropInstanceLockLP.get('/ladder/lock/check', { params: { address: account } }),
-        axiosAirdropInstanceLockLP.get('/ladder/swap/count', { params: { sender: account } })
+        axiosAirdropInstanceLockLP.get('lock/check', { params: { address: account } }),
+        axiosAirdropInstanceLockLP.get('swap/count', { params: { sender: account } })
       ])
 
       if (res1.data.code === 200) {
@@ -184,7 +184,7 @@ export function useActivityList(refreshCb: () => void) {
   const cb = useCallback(() => {
     if (!account) return
     axiosAirdropInstanceLockLP
-      .get('ladder/mint/nft/complete', {
+      .get('mint/nft/complete', {
         params: { account }
       })
       .then(r => {
