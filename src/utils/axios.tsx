@@ -10,7 +10,7 @@ export const testAssetUrl = 'https://testapi.settle3.com'
 export const v4Url = 'https://v1-test.ladder.top/web/'
 export const testAirdropUrl = 'https://v1-test.ladder.top/'
 const airdropBaseUrl = 'https://dev-api.ladder.top/ladder/'
-const xApiKey = 'lz5gWLaiA8ZXOHlyFK854hRg'
+const nftScanXApiKey = 'lz5gWLaiA8ZXOHlyFK854hRg'
 
 export const axiosInstance = axios.create({
   baseURL,
@@ -26,7 +26,7 @@ export const axiosTestInstance = axios.create({
 export const axiosNftScanInstance = axios.create({
   baseURL: 'https://polygonapi.nftscan.com/api/v2/',
   timeout: 10000,
-  headers: { 'content-type': 'application/json', accept: 'application/json', 'X-API-KEY': xApiKey }
+  headers: { 'content-type': 'application/json', accept: 'application/json', 'X-API-KEY': nftScanXApiKey }
 })
 
 export const axiosAirdropInstance = axios.create({
