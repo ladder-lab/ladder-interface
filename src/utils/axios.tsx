@@ -9,6 +9,8 @@ export const testURL = 'https://testapi.settle3.com/web/'
 export const testAssetUrl = 'https://testapi.settle3.com'
 export const v4Url = 'https://v1-test.ladder.top/web/'
 export const testAirdropUrl = 'https://v1-test.ladder.top/'
+const airdropBaseUrl = 'https://dev-api.ladder.top/ladder/'
+const xApiKey = 'lz5gWLaiA8ZXOHlyFK854hRg'
 
 export const axiosInstance = axios.create({
   baseURL,
@@ -24,7 +26,7 @@ export const axiosTestInstance = axios.create({
 export const axiosNftScanInstance = axios.create({
   baseURL: 'https://polygonapi.nftscan.com/api/v2/',
   timeout: 10000,
-  headers: { 'content-type': 'application/json', accept: 'application/json', 'X-API-KEY': 'lz5gWLaiA8ZXOHlyFK854hRg' }
+  headers: { 'content-type': 'application/json', accept: 'application/json', 'X-API-KEY': xApiKey }
 })
 
 export const axiosAirdropInstance = axios.create({
@@ -34,7 +36,7 @@ export const axiosAirdropInstance = axios.create({
 })
 
 export const axiosAirdropInstanceLockLP = axios.create({
-  baseURL: 'https://dev-api.ladder.top/ladder/',
+  baseURL: airdropBaseUrl,
   timeout: 10000,
   headers: { 'content-type': 'application/json', accept: 'application/json' }
 })
@@ -52,8 +54,10 @@ export const Axios = {
   ): AxiosPromise<ResponseType<T>> {
     return axiosInstance.post(url, isFormData ? qs.stringify(data) : data, { params, ...config })
   },
-  getMetadata(contractAddress: string, tokenId: string | number): AxiosPromise<ResponseType<NFTResponseType>> {
-    return axiosNftScanInstance.get(`assets/${contractAddress}/${tokenId}`)
+  getMetadata(contractAddress: string, tokenId?: string | number): AxiosPromise<ResponseType<NFTResponseType>> {
+    return tokenId
+      ? axiosNftScanInstance.get(`assets/${contractAddress}/${tokenId}`)
+      : axiosNftScanInstance.get(`collections/${contractAddress}`)
   }
 }
 
@@ -69,7 +73,7 @@ export interface NFTResponseType {
   contract_address: string
   contract_name: string
   contract_token_id: string
-  token_id: string
+  token_id?: string
   erc_type: string
   amount: string
   minter: string
@@ -78,6 +82,8 @@ export interface NFTResponseType {
   name: null | string
   description: null | string
   image_uri: null | string
+  symbol?: string
+  logo_url?: string
 }
 
 export interface erc721CollectionResponseType {
