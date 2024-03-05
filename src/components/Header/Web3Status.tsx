@@ -34,6 +34,7 @@ function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
 
 function Web3StatusInner() {
   const { account, error } = useWeb3React()
+  // const { deactivate } = useWeb3React()
   const { ENSName } = useENSName(account ?? undefined)
   const allTransactions = useAllTransactions()
   const sortedRecentTransactions = useMemo(() => {
@@ -46,7 +47,6 @@ function Web3StatusInner() {
   const theme = useTheme()
   const isDownSm = useBreakpoint()
 
-  // console.log('account', account)
   if (account) {
     return (
       <Box sx={{ cursor: 'pointer' }} onClick={toggleWalletModal}>
@@ -90,6 +90,18 @@ function Web3StatusInner() {
             )}
           </Box>
           <Web3StatusIcon />
+          {/* <ActionButton
+            sx={{
+              width: isDownSm ? '108px' : '120px',
+              height: isDownSm ? '28px' : '36px',
+              fontSize: isDownSm ? '12px' : '14px'
+            }}
+            onClick={() => {
+              deactivate()
+            }}
+          >
+            Disconnect
+          </ActionButton> */}
         </Box>
       </Box>
     )
