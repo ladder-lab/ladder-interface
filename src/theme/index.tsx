@@ -322,8 +322,10 @@ export const override: (palette: any) => any & {
 })
 
 const FONTS = {
-  title: 'Monument Extended, Helvetica, sans-serif',
-  content: 'Lato, Helvetica, sans-serif'
+  // title: 'Monument Extended, Helvetica, sans-serif',
+  // content: 'Lato, Helvetica, sans-serif'
+  title: 'Sora, Helvetica, sans-serif',
+  content: 'Poppins, Helvetica, sans-serif'
 }
 
 export const HideOnMobile = styled('div', {
