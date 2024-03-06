@@ -171,7 +171,7 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
     >
       {data.map((data, idx) => (
         <Card key={data.title + idx} color={isDarkMode ? '#1A1C1E' : undefined} width="100%">
-          <Box padding="24px" display={'flex'} flexDirection={'column'} gap={20} height="100%">
+          <Box padding="24px" display={'flex'} flexDirection={'column'} gap={20} height="100%" marginBottom="15px">
             <Box
               sx={{ color: data.expired ? '#B0B0B0' : type === TYPE.box ? '#7D74FF' : '#1F9898' }}
               display="flex"
@@ -202,6 +202,7 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
               </Box>
               {data.tooltip && <QuestionHelper text={data.tooltip} />}
             </Box>
+
             <Typography fontSize={18} fontWeight={700} component="div">
               {data.title}
             </Typography>
@@ -215,6 +216,7 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
               mx="-24px"
               marginTop={'auto'}
             ></Box>
+
             <Box display={'flex'} justifyContent={'space-between'}>
               {data.plus1Icon ? (
                 <Box display={'flex'} alignItems={'center'}>
@@ -238,7 +240,7 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                         }
                         marginLeft={-5}
                       >
-                        {data.count > 0 ? `X ${data.count}` : '+ 0'}
+                        {data.count > 0 ? `X ${data.count}` : '+ 1'}
                       </Typography>
                     </>
                   )}
@@ -271,6 +273,7 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                   </Typography>
                 </Box>
               )}
+
               {!account && (
                 <Button
                   sx={{

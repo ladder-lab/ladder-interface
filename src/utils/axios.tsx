@@ -2,14 +2,25 @@ import axios, { AxiosResponse, AxiosPromise, AxiosRequestConfig } from 'axios'
 import qs from 'qs'
 
 // export const StatBaseURL = 'https://dualinvest-testapi.antimatter.finance/web/'
-export const StatBaseURL = 'https://dev-api.ladder.top/ladder/web/'
+// export const StatBaseURL = 'https://dev-api.ladder.top/ladder/web/'
+export const StatBaseURL = 'https://ladder.c2py.com/ladder/web/'
+
 export const baseURL = 'https://test-nftapi.antimatter.finance:8443/web/'
 // export const baseURL = 'https://dualinvest-testapi.antimatter.finance/web/'
 export const testURL = 'https://testapi.settle3.com/web/'
 export const testAssetUrl = 'https://testapi.settle3.com'
-export const v4Url = 'https://v1-test.ladder.top/web/'
-export const testAirdropUrl = 'https://v1-test.ladder.top/'
-const airdropBaseUrl = 'https://dev-api.ladder.top/ladder/'
+
+// export const v4Url = 'https://v1-test.ladder.top/web/'
+export const v4Url = 'https://ladder.c2py.com/web/'
+// export const v4Url = 'https://v1-ladder.c2py.com/web/'
+
+// export const testAirdropUrl = 'https://v1-test.ladder.top/'
+export const testAirdropUrl = 'https://ladder.c2py.com/'
+// export const testAirdropUrl = 'https://v1-ladder.c2py.com/'
+
+// const airdropBaseUrl = 'https://dev-api.ladder.top/ladder/'
+const airdropBaseUrl = 'https://ladder.c2py.com/ladder/'
+
 const nftScanXApiKey = 'lz5gWLaiA8ZXOHlyFK854hRg'
 
 export const axiosInstance = axios.create({

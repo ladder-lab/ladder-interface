@@ -9,7 +9,7 @@ import { ReactComponent as Ladder } from 'assets/svg/airdrop/ladder.svg'
 import QuestionHelper from 'components/essential/QuestionHelper'
 import { TYPE, TaskCards } from './TaskList'
 import { ChainId } from '@ladder/sdk'
-import { useMuaTasks } from 'hooks/useAirdrop'
+// import { useMuaTasks } from 'hooks/useAirdrop'
 import { useIsDarkMode } from 'state/user/hooks'
 import { useNavigate } from 'react-router-dom'
 import { routes } from 'constants/routes'
@@ -17,7 +17,8 @@ import { routes } from 'constants/routes'
 const disabledBtn = false
 
 export default function Mua() {
-  const { taskState } = useMuaTasks()
+  // const { taskState } = useMuaTasks()
+  const taskState = { nftSwapCount: 0, sftSwapCount: 0, task3: false }
   const isDarkMode = useIsDarkMode()
   const navigate = useNavigate()
   return (
@@ -39,13 +40,13 @@ export default function Mua() {
       </Typography>
       <Typography maxWidth={600} textAlign={'center'}>
         Ladder is joining the MUAverse and onboarding the Odyssey Season Two. Complete the following Ladder tasks, earn
-        MUA points, and get to raffle and split for{' '}
+        MUA points, upgrade your MUA starship, and be ready to take off to win raffles for{' '}
         <Typography component={'span'} fontWeight={700}>
           1,500 USDT.
         </Typography>
       </Typography>
       <Box display={'flex'} alignItems={'center'} gap={40}>
-        <Box
+        {/* <Box
           sx={{
             cursor: disabledBtn ? 'not-allowed' : 'pointer',
             opacity: disabledBtn ? 0.6 : 1,
@@ -126,6 +127,58 @@ export default function Mua() {
             text="Earn extra by completing mini-tasks at QuestN"
             style={{ background: 'transparent', color: isDarkMode ? '#555555' : undefined }}
           />
+        </Box> */}
+        <Box
+          sx={{
+            cursor: disabledBtn ? 'not-allowed' : 'pointer',
+            opacity: disabledBtn ? 0.6 : 1,
+            padding: '6px 24px',
+            background: isDarkMode ? '#ffffff50' : '#ffffff70',
+            borderRadius: 6,
+            fontWeight: 500,
+            border: '1px solid transparent',
+            '&:hover': {
+              border: '1px solid #FFB3F3'
+            }
+          }}
+          display={'flex'}
+          alignItems={'center'}
+          gap={5}
+          onClick={() => {
+            !disabledBtn && window.open('https://muaverse.build/boarding', '_blank')
+          }}
+        >
+          To MUA
+          <QuestionHelper
+            text="Check out how many points you earn at MUA "
+            style={{ background: 'transparent', color: isDarkMode ? '#555555' : undefined }}
+          />
+        </Box>
+        <Box
+          sx={{
+            cursor: disabledBtn ? 'not-allowed' : 'pointer',
+            opacity: disabledBtn ? 0.6 : 1,
+            padding: '6px 24px',
+            background: isDarkMode ? '#ffffff50' : '#ffffff70',
+            borderRadius: 6,
+            fontWeight: 500,
+            border: '1px solid transparent',
+            '&:hover': {
+              border: '1px solid #FFB3F3'
+            }
+          }}
+          display={'flex'}
+          alignItems={'center'}
+          gap={5}
+          onClick={() => {
+            !disabledBtn && window.open('https://app.questn.com/quest/827279623466156047', '_blank')
+          }}
+        >
+          To QuestN
+          <QuestionHelper
+            text="Earn extra by completing mini-tasks at QuestN"
+            style={{ background: 'transparent', color: isDarkMode ? '#555555' : undefined }}
+          />
         </Box>
       </Box>
       <Box display={'flex'} justifyContent={'center'} mb={20}>
@@ -175,7 +228,7 @@ export default function Mua() {
                 <>
                   Earn 500 MUA points on each Swap.
                   <br />
-                  (Max 5000 pt)
+                  (Max 5000 Pt)
                 </>
               ),
               // route?: string
@@ -196,7 +249,7 @@ export default function Mua() {
                 <>
                   Earn 500 MUA points on each Swap.
                   <br />
-                  (Max 5000 pt)
+                  (Max 5000 Pt)
                 </>
               ),
               chainTag: (
