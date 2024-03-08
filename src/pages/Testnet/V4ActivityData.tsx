@@ -54,12 +54,12 @@ export default function V3ActivityData() {
               }}
             >
               <Box>
-                <Typography color={theme.palette.text.primary} fontSize={16} component="div" mb={16}>
+                <Typography color={theme.palette.text.primary} fontSize={20} component="div" mb={16}>
                   <Row>
                     {item.name} <QuestionHelper style={{ marginLeft: 5 }} text={item.helperText} />
                   </Row>
                 </Typography>
-                <Typography color={theme.palette.text.primary} fontSize={24} fontWeight={700}>
+                <Typography color={theme.palette.text.primary} fontSize={32} fontWeight={600}>
                   {item.value}
                 </Typography>
               </Box>

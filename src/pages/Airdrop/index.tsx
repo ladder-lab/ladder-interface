@@ -77,14 +77,14 @@ export default function Airdrop() {
         >
           <Box maxWidth={600} display={'flex'} flexDirection={'column'} justifyContent={'center'}>
             <Typography
-              fontSize={{ xs: 20, md: 26 }}
+              fontSize={{ xs: 20, md: 32 }}
               my={30}
               variant="h5"
               sx={{ '& span': { color: theme.palette.primary.main } }}
             >
               Airdrop Rules Introduction
             </Typography>
-            <Typography fontSize={20} sx={{ color: theme.palette.text.secondary }}>
+            <Typography fontSize={16} sx={{ color: theme.palette.text.secondary }}>
               The Ladder Airdrop is designed to reward early supporters and active traders. The more you interact with
               our protocol, the higher your rewards will be! Complete the tasks below to receive more Ladder Boxes and
               increase your Luck!
@@ -123,6 +123,7 @@ export default function Airdrop() {
               </Link>
             </Box>
             <Box
+              fontSize={20}
               sx={{
                 mb: '20px',
                 background: isDarkMode
@@ -133,7 +134,7 @@ export default function Airdrop() {
               }}
             >
               Current Participants:{' '}
-              <Typography component="span" fontWeight={700} fontSize={20}>
+              <Typography component="span" fontWeight={400} fontSize={20}>
                 {airdropData ? airdropData.currentParticipants ?? '--' : '--'}
               </Typography>
             </Box>
@@ -155,13 +156,15 @@ export default function Airdrop() {
               <Box width="100%" display="grid" justifyItems={'center'}>
                 <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }} gap={5}>
                   <BoxIcon />
-                  YOUR BOXES
+                  <Typography fontSize={18} fontWeight={500}>
+                    YOUR BOXES
+                  </Typography>
                   <QuestionHelper
                     text="Ladder Boxes contain random amount of Ladder tokens and can be earned by interacting with our protocol."
                     style={{ background: 'transparent' }}
                   />
                 </Typography>
-                <Typography fontSize={32} fontWeight={700}>
+                <Typography fontSize={26} fontWeight={400}>
                   {airdropData ? airdropData?.myBoxs : '--'}
                 </Typography>
               </Box>
@@ -190,13 +193,15 @@ export default function Airdrop() {
               <Box width="100%" display="grid" justifyItems={'center'}>
                 <Typography component="div" sx={{ display: 'flex', alignItems: 'center' }} gap={5}>
                   <LuckIcon />
-                  YOUR LUCK
+                  <Typography fontSize={18} fontWeight={500}>
+                    YOUR LUCK
+                  </Typography>
                   <QuestionHelper
                     text="Luck determines the quality of your rewards from Ladder Boxes! By increasing your luck parameter, you enhance your chances of receiving more valuable rewards in the box."
                     style={{ background: 'transparent' }}
                   />
                 </Typography>
-                <Typography fontSize={32} fontWeight={700} mb={15}>
+                <Typography fontSize={26} fontWeight={400} mb={15}>
                   {airdropData ? airdropData?.myLuck : '--'}%
                 </Typography>
               </Box>

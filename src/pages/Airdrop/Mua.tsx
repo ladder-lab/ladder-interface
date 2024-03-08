@@ -32,7 +32,7 @@ export default function Mua() {
         padding: '46px 24px'
       }}
     >
-      <Typography fontSize={31} fontWeight={800} textAlign={'center'}>
+      <Typography fontSize={32} fontWeight={700} textAlign={'center'}>
         MUA Boarding Odyssey: Season Two - Ladder
       </Typography>
       <Typography textAlign={'center'} fontSize={14}>
@@ -135,7 +135,7 @@ export default function Mua() {
             padding: '6px 24px',
             background: isDarkMode ? '#ffffff50' : '#ffffff70',
             borderRadius: 6,
-            fontWeight: 500,
+            fontWeight: 400,
             border: '1px solid transparent',
             '&:hover': {
               border: '1px solid #FFB3F3'
@@ -161,7 +161,7 @@ export default function Mua() {
             padding: '6px 24px',
             background: isDarkMode ? '#ffffff50' : '#ffffff70',
             borderRadius: 6,
-            fontWeight: 500,
+            fontWeight: 400,
             border: '1px solid transparent',
             '&:hover': {
               border: '1px solid #FFB3F3'

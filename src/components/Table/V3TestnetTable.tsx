@@ -1,4 +1,5 @@
 import {
+  Typography,
   TableContainer,
   TableHead,
   TableCell,
@@ -123,7 +124,9 @@ export default function V3TestnetTable({
           <StyledTableHead>
             <TableRow>
               {header.map((string, idx) => (
-                <TableCell key={idx}>{string}</TableCell>
+                <TableCell key={idx}>
+                  <Typography fontSize={16}>{string}</Typography>
+                </TableCell>
               ))}
             </TableRow>
           </StyledTableHead>

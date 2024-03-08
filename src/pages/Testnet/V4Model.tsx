@@ -68,7 +68,7 @@ export default function V4Medal() {
     <Stack spacing={isDownMD ? 30 : 60}>
       <Typography
         sx={{
-          fontSize: '18px',
+          fontSize: '16px',
           lineHeight: '1.5',
           background: theme.palette.background.default,
           borderRadius: '12px',
@@ -206,7 +206,7 @@ function MedalRow({
       }}
     >
       <Box minWidth={350} pl={isDownMD ? 20 : 0} mb={isDownMD ? '22px' : '0'}>
-        <Typography color={theme.palette.text.primary} fontWeight={800} fontSize={18}>
+        <Typography color={theme.palette.text.primary} fontWeight={600} fontSize={16}>
           {medal.type}
         </Typography>
         <Typography maxWidth={191} mt={11} color={'#747678'} fontSize={16}>
@@ -223,7 +223,7 @@ function MedalRow({
                 ) : (
                   <GrayImg src={ic.icon} alt="" style={imgStyle} />
                 )}
-                <Typography fontSize={16} mt={10} textAlign={'center'} maxWidth={96}>
+                <Typography fontSize={12} mt={10} textAlign={'center'} maxWidth={96}>
                   {(needDollar ? '$' : '') + milestone[idx].toLocaleString()}
                   {needTips ? '**' : ''}{' '}
                 </Typography>

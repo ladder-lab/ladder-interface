@@ -247,13 +247,17 @@ export default function CurrencyInputPanel({
               text={is1155 ? currency.name : getSymbol(currency, chainId)}
             />
           ) : (
-            <>Select Token</>
+            <Typography fontSize={16} fontWeight={500}>
+              Select Token
+            </Typography>
           )}
         </SelectButton>
         {is721 && !enableAuto ? (
           <Box flexGrow={1}>
             <SelectButton onClick={handleOpenIdSelectionModal} selected={!!value}>
-              {!!value ? value.toString() : 'Choose token Id'}
+              <Typography fontSize={16} fontWeight={500}>
+                {!!value ? value.toString() : 'Choose token Id'}
+              </Typography>
             </SelectButton>
           </Box>
         ) : (

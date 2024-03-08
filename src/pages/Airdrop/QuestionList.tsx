@@ -62,7 +62,7 @@ export default function QuestionList() {
           title={
             <RowBetween>
               <Box display={'flex'}>
-                <Typography fontSize={24} fontWeight={500} mb={20} variant="h5">
+                <Typography fontSize={20} fontWeight={600} mb={20} variant="h5">
                   FAQ
                 </Typography>
               </Box>

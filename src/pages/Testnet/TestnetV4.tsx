@@ -68,6 +68,7 @@ const RowBetween = styled(Box)(({}) => ({
 
 const StyledQATitle = styled(Box)(({ theme }) => ({
   fontSize: 20,
+  fontWeight: 600,
   marginBottom: 16,
   [theme.breakpoints.down('md')]: {
     fontSize: 16
@@ -75,7 +76,8 @@ const StyledQATitle = styled(Box)(({ theme }) => ({
 }))
 
 const StyledQABody = styled(Box)(({ theme }) => ({
-  fontSize: 20,
+  fontSize: 16,
+  fontWeight: 400,
   color: theme.palette.text.secondary,
   [theme.breakpoints.down('md')]: {
     fontSize: 16
@@ -161,7 +163,7 @@ export default function TestnetV4() {
   return (
     <Stack spacing={40}>
       <Box>
-        <Typography fontSize={16} fontWeight={600} mb={-10}>
+        <Typography fontSize={20} fontWeight={600} mb={-10}>
           Activity data
         </Typography>
         <V4ActivityData />
@@ -172,7 +174,7 @@ export default function TestnetV4() {
           title={
             <RowBetween flexWrap={'wrap'}>
               <Box display={'flex'} flexWrap={'wrap'}>
-                <Typography fontSize={16} fontWeight={600} mr={12}>
+                <Typography fontSize={20} fontWeight={600} mr={12}>
                   Join Ladder Spring Training for Free
                 </Typography>
               </Box>
@@ -208,7 +210,7 @@ export default function TestnetV4() {
           title={
             <RowBetween>
               <Box display={'flex'}>
-                <Typography fontSize={16} fontWeight={600} color={theme.palette.text.primary} mr={12}>
+                <Typography fontSize={20} fontWeight={600} color={theme.palette.text.primary} mr={12}>
                   Experience more novel features of ladder!
                 </Typography>
               </Box>
@@ -232,7 +234,7 @@ export default function TestnetV4() {
           title={
             <RowBetween>
               <Box display={'flex'}>
-                <Typography fontSize={16} fontWeight={600} color={theme.palette.text.primary} mr={12}>
+                <Typography fontSize={20} fontWeight={600} color={theme.palette.text.primary} mr={12}>
                   Leaderboard
                 </Typography>
               </Box>
@@ -248,7 +250,7 @@ export default function TestnetV4() {
           title={
             <RowBetween>
               <Box display={'flex'}>
-                <Typography fontSize={16} fontWeight={600} color={theme.palette.text.primary} mr={12}>
+                <Typography fontSize={20} fontWeight={600} color={theme.palette.text.primary} mr={12}>
                   Q&A
                 </Typography>
               </Box>
@@ -368,7 +370,7 @@ export default function TestnetV4() {
 }
 
 const StepText = styled(Typography)`
-  font-weight: 800;
+  font-weight: 700;
   font-size: 18px;
   line-height: 22px;
   letter-spacing: 0.03em;
@@ -901,7 +903,8 @@ function LeaderBoardBox() {
               sx={{
                 height: '33px',
                 display: 'flex',
-                alignItems: 'center'
+                alignItems: 'center',
+                fontSize: '14px'
               }}
             >
               {item}
@@ -1036,7 +1039,7 @@ function LeaderBoardRank({
             overflowX: 'auto'
           }}
         >
-          <Typography display={'flex'} alignItems="center" fontWeight={700} fontSize={18} padding={'15px 24px'}>
+          <Typography display={'flex'} alignItems="center" fontWeight={600} fontSize={18} padding={'15px 24px'}>
             {title}
             {helper && <QuestionHelper style={{ marginLeft: 5 }} text={helper} />}
           </Typography>

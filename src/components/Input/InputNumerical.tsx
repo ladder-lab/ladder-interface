@@ -83,7 +83,15 @@ export default function NumericalInput({
         spellCheck="false"
         endAdornment={
           onMax && (
-            <Box gap="20px" display="flex" alignItems="center" paddingLeft="10px" paddingBottom="2px">
+            <Box
+              gap="20px"
+              display="flex"
+              alignItems="center"
+              paddingLeft="10px"
+              paddingBottom="2px"
+              fontSize={16}
+              fontWeight={500}
+            >
               {endAdornment ? endAdornment : unit && <span>{unit ?? 'MATTER'}</span>}
               <Button
                 color="secondary"

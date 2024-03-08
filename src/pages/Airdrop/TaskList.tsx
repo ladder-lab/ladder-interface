@@ -68,8 +68,10 @@ export default function TaskList({ type, data }: { type: TYPE; data?: TaskListDa
       padding={24}
       // overflow="hidden"
     >
-      <Typography variant="h5">{type === TYPE.box ? 'Earn Boxes' : 'Boost your Luck'}</Typography>
-      <Typography whiteSpace={'break-spaces'}>
+      <Typography fontSize={30} fontWeight={700}>
+        {type === TYPE.box ? 'Earn Boxes' : 'Boost your Luck'}
+      </Typography>
+      <Typography fontSize={16} fontWeight={400} whiteSpace={'break-spaces'}>
         {type === TYPE.box
           ? 'Complete these tasks to earn more boxes!'
           : 'Increase your chances of getting better rewards from Ladder Boxes by completing these tasks!'}
@@ -125,6 +127,8 @@ function Tabs(props: Props) {
               key={idx}
               label={tab}
               sx={{
+                fontSize: 16,
+                fontWeight: 400,
                 padding: '6px 20px',
                 mt: 6,
                 mr: { xs: 23, md: 25 },
@@ -187,7 +191,7 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                     background: isDarkMode ? '#343739' : '#F4F4F4',
                     padding: '4px 8px 6px',
                     borderRadius: 0.6,
-                    fontWeight: 700,
+                    fontWeight: 600,
                     display: 'flex',
                     alignItems: 'center',
                     gap: 5
@@ -203,7 +207,7 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
               {data.tooltip && <QuestionHelper text={data.tooltip} />}
             </Box>
 
-            <Typography fontSize={18} fontWeight={700} component="div">
+            <Typography fontSize={type == TYPE.swap ? 18 : 16} fontWeight={600} component="div">
               {data.title}
             </Typography>
 
@@ -234,7 +238,7 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                     <>
                       <Typography
                         fontSize={18}
-                        fontWeight={600}
+                        fontWeight={700}
                         color={
                           data.count > 0 ? (isDarkMode ? '#ffffff' : '#333333') : isDarkMode ? '#747678' : '#B0B0B0'
                         }
@@ -268,7 +272,7 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                   ) : (
                     <LuckIcon width={28} />
                   )}
-                  <Typography fontSize={16} fontWeight={700}>
+                  <Typography fontSize={18} fontWeight={700}>
                     {type === TYPE.box || data.id === ActivityProps.Mint ? 'x 1' : '+ 10%'}
                   </Typography>
                 </Box>
@@ -277,6 +281,8 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
               {!account && (
                 <Button
                   sx={{
+                    fontSize: 16,
+                    fontWeight: 400,
                     width: 'max-content',
                     padding: '10px',
                     minHeight: 'unset',
@@ -335,6 +341,8 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                     data.isLoading ? (
                       <Button
                         sx={{
+                          fontSize: 16,
+                          fontWeight: 400,
                           maxWidth: '130px',
                           padding: '10px 50px',
                           minHeight: 'unset',
@@ -348,6 +356,8 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                     ) : (
                       <Button
                         sx={{
+                          fontSize: 16,
+                          fontWeight: 400,
                           maxWidth: '130px',
                           padding: '10px 50px',
                           minHeight: 'unset',
@@ -363,6 +373,8 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                   ) : (
                     <Button
                       sx={{
+                        fontSize: 16,
+                        fontWeight: 400,
                         maxWidth: '130px',
                         padding: '10px 50px',
                         minHeight: 'unset',
@@ -395,6 +407,8 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
               {account && type === TYPE.swap && !data.plus1Icon && (
                 <Button
                   sx={{
+                    fontSize: 16,
+                    fontWeight: 400,
                     width: '150px',
                     padding: '10px',
                     minHeight: 'unset',
@@ -435,6 +449,8 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                   ) : (
                     <Button
                       sx={{
+                        fontSize: 16,
+                        fontWeight: 400,
                         width: '150px',
                         padding: '10px',
                         minHeight: 'unset',
