@@ -40,7 +40,7 @@ export default function V3ActivityData() {
         display={'grid'}
         sx={{
           gridTemplateColumns: { md: '1fr 1fr 1fr', xs: '1fr' },
-          mt: { md: 40, xs: 20 },
+          mt: { md: 10, xs: 10 },
           gap: { md: '30px', xs: '20px' }
         }}
       >

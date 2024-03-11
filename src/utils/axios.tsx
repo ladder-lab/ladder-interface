@@ -19,6 +19,8 @@ export const testAirdropUrl = 'https://v1-test.ladder.top/'
 // const airdropBaseUrl = 'https://v1-test.ladder.top/ladder/'
 const airdropBaseUrl = 'https://ladder.c2py.com/ladder/'
 
+const airdropMuaTaskUrl = 'https://v1-test.ladder.top/drop/v1/'
+
 const nftScanXApiKey = 'lz5gWLaiA8ZXOHlyFK854hRg'
 
 export const axiosInstance = axios.create({
@@ -46,6 +48,12 @@ export const axiosAirdropInstance = axios.create({
 
 export const axiosAirdropInstanceLockLP = axios.create({
   baseURL: airdropBaseUrl,
+  timeout: 10000,
+  headers: { 'content-type': 'application/json', accept: 'application/json' }
+})
+
+export const axiosAirdropMuaInstance = axios.create({
+  baseURL: airdropMuaTaskUrl,
   timeout: 10000,
   headers: { 'content-type': 'application/json', accept: 'application/json' }
 })

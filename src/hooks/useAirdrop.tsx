@@ -1,4 +1,4 @@
-import { axiosAirdropInstance, axiosAirdropInstanceLockLP } from 'utils/axios'
+import { axiosAirdropInstance, axiosAirdropInstanceLockLP, axiosAirdropMuaInstance } from 'utils/axios'
 import useInterval from './useInterval'
 import { useActiveWeb3React } from 'hooks'
 import { useCallback, useEffect, useState } from 'react'
@@ -345,4 +345,53 @@ export function useMuaTasks() {
   useInterval(cb, account ? 60000 : null)
 
   return { taskState }
+}
+
+export function useMuaSeasonTwoTasks() {
+  const { account, chainId } = useActiveWeb3React()
+  const [taskState, setTaskState] = useState<any>(null)
+  const { hideModal } = useModal()
+
+  const cb = useCallback(() => {
+    if (!account || !chainId) return
+    axiosAirdropMuaInstance
+      .get('getCompleteTaskStatus', {
+        params: { account: account, chainId: chainId }
+      })
+      .then(r => {
+        if (r.data.code === 200) {
+          setTaskState(r.data.data)
+        }
+      })
+      .catch(e => {
+        console.error(e)
+      })
+  }, [account, chainId])
+
+  const getBox = useCallback(
+    ({ boxType, boxs }: { boxType: number; boxs: number }) =>
+      () => {
+        if (!account || !chainId) return
+        axiosAirdropInstance
+          .get('/drop/saveCompleteBox', { params: { account, boxType, boxs, chainId } })
+          .then(r => {
+            if (r.data.code === 200) {
+              cb()
+              hideModal()
+            }
+          })
+          .catch(e => {
+            console.error(e)
+          })
+      },
+    [account, cb, chainId, hideModal]
+  )
+
+  useEffect(() => {
+    cb()
+  }, [cb])
+
+  useInterval(cb, account ? 60000 : null)
+
+  return { taskState, getBox }
 }

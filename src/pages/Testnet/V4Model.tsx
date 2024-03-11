@@ -69,10 +69,10 @@ export default function V4Medal() {
       <Typography
         sx={{
           fontSize: '16px',
-          lineHeight: '1.5',
+          lineHeight: '1.8',
           background: theme.palette.background.default,
           borderRadius: '12px',
-          padding: '19px 24px'
+          padding: '31px 13px 45px 23px'
         }}
       >
         Participating in Ladder&apos;s testnet is the easiest way to <LineText>secure future airdrop rewards</LineText>.
@@ -206,10 +206,10 @@ function MedalRow({
       }}
     >
       <Box minWidth={350} pl={isDownMD ? 20 : 0} mb={isDownMD ? '22px' : '0'}>
-        <Typography color={theme.palette.text.primary} fontWeight={600} fontSize={16}>
+        <Typography color={theme.palette.text.primary} fontWeight={600} fontSize={16} lineHeight={1.5}>
           {medal.type}
         </Typography>
-        <Typography maxWidth={191} mt={11} color={'#747678'} fontSize={16}>
+        <Typography maxWidth={191} mt={11} color={'#747678'} fontSize={16} lineHeight={1.5}>
           {medal.desc}
         </Typography>
       </Box>

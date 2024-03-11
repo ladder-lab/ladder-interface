@@ -78,13 +78,14 @@ export default function Airdrop() {
           <Box maxWidth={600} display={'flex'} flexDirection={'column'} justifyContent={'center'}>
             <Typography
               fontSize={{ xs: 20, md: 32 }}
-              my={30}
+              lineHeight={1.5}
+              my={20}
               variant="h5"
               sx={{ '& span': { color: theme.palette.primary.main } }}
             >
               Airdrop Rules Introduction
             </Typography>
-            <Typography fontSize={16} sx={{ color: theme.palette.text.secondary }}>
+            <Typography fontSize={16} lineHeight={1.3} sx={{ color: theme.palette.text.secondary }}>
               The Ladder Airdrop is designed to reward early supporters and active traders. The more you interact with
               our protocol, the higher your rewards will be! Complete the tasks below to receive more Ladder Boxes and
               increase your Luck!

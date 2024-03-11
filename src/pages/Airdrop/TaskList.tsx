@@ -30,7 +30,7 @@ interface Props {
   customOnChange?: (val: number) => void
 }
 
-interface CardProp {
+export interface CardProp {
   title: string
   chain: number
   completed: boolean
@@ -64,14 +64,14 @@ export default function TaskList({ type, data }: { type: TYPE; data?: TaskListDa
       maxWidth={theme.width.maxContent}
       margin="0 auto"
       display="grid"
-      gap={20}
+      gap={0}
       padding={24}
       // overflow="hidden"
     >
-      <Typography fontSize={30} fontWeight={700}>
+      <Typography fontSize={30} lineHeight={1.5} fontWeight={700} mb={8}>
         {type === TYPE.box ? 'Earn Boxes' : 'Boost your Luck'}
       </Typography>
-      <Typography fontSize={16} fontWeight={400} whiteSpace={'break-spaces'}>
+      <Typography fontSize={16} fontWeight={400} whiteSpace={'break-spaces'} mb={20}>
         {type === TYPE.box
           ? 'Complete these tasks to earn more boxes!'
           : 'Increase your chances of getting better rewards from Ladder Boxes by completing these tasks!'}
@@ -112,7 +112,7 @@ function Tabs(props: Props) {
       <Box maxWidth={{ xs: '80vw', sm: 'unset', overflow: 'hidden' }} mb={15}>
         <MuiTabs
           variant="scrollable"
-          scrollButtons
+          // scrollButtons
           allowScrollButtonsMobile
           value={customCurrentTab !== undefined ? customCurrentTab : value}
           onChange={onChange}
@@ -207,7 +207,7 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
               {data.tooltip && <QuestionHelper text={data.tooltip} />}
             </Box>
 
-            <Typography fontSize={type == TYPE.swap ? 18 : 16} fontWeight={600} component="div">
+            <Typography fontSize={type == TYPE.swap ? 18 : 16} lineHeight={1.3} fontWeight={600} component="div">
               {data.title}
             </Typography>
 
@@ -468,6 +468,195 @@ export function TaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx
                       onClick={data.action}
                     >
                       Finish Now
+                    </Button>
+                  )}
+                </>
+              )}
+            </Box>
+          </Box>
+        </Card>
+      ))}
+    </Box>
+  )
+}
+
+export function MuaSeasonTowTaskCards({ data, type, sx }: { data: CardProp[]; type: TYPE; sx?: SxProps }) {
+  const { account } = useActiveWeb3React()
+  const isDarkMode = useIsDarkMode()
+  const toggleWalletModal = useWalletModalToggle()
+  if (data.length === 0)
+    return (
+      <Typography variant="h5" fontSize={20} textAlign={'center'} pt={60}>
+        No Tasks
+      </Typography>
+    )
+
+  return (
+    <Box
+      display={{ md: 'grid', lg: type === TYPE.activity ? 'flex' : 'grid' }}
+      gridTemplateColumns={{ xs: '100%', md: '1fr 1fr 1fr', lg: type === TYPE.activity ? 'unset' : '1fr 1fr 1fr 1fr' }}
+      gap={20}
+      sx={sx}
+    >
+      {data.map((data, idx) => (
+        <Card key={data.title + idx} color={isDarkMode ? '#1A1C1E' : undefined} width="100%">
+          <Box padding="24px" display={'flex'} flexDirection={'column'} gap={20} height="100%" marginBottom="15px">
+            <Box
+              sx={{ color: data.expired ? '#B0B0B0' : type === TYPE.box ? '#7D74FF' : '#1F9898' }}
+              display="flex"
+              alignItems={'center'}
+              justifyContent={'space-between'}
+            >
+              <Box display="flex" alignItems={'center'} gap={15}>
+                {data.icon}
+                <Typography
+                  sx={{
+                    fontSize: 12,
+                    color: '#747678',
+                    background: isDarkMode ? '#343739' : '#F4F4F4',
+                    padding: '4px 8px 6px',
+                    borderRadius: 0.6,
+                    fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 5
+                  }}
+                >
+                  {data.chainTag ? (
+                    data.chainTag
+                  ) : (
+                    <>{SUPPORTED_NETWORKS[data.chain as keyof typeof SUPPORTED_NETWORKS]?.chainName ?? 'NETWORK'}</>
+                  )}
+                </Typography>
+              </Box>
+              {data.tooltip && <QuestionHelper text={data.tooltip} />}
+            </Box>
+
+            <Typography fontSize={type == TYPE.swap ? 18 : 16} lineHeight={1.3} fontWeight={600} component="div">
+              {data.title}
+            </Typography>
+
+            {data.desc ? <Typography color="#747678"> {data.desc}</Typography> : <br />}
+
+            <Box
+              borderTop={'2px dotted'}
+              borderColor={isDarkMode ? '#343739' : '#E4E4E4'}
+              width="calc(100% + 48px)"
+              mx="-24px"
+              marginTop={'auto'}
+            ></Box>
+
+            <Box display={'flex'} justifyContent={'space-between'}>
+              <Box display={'flex'} alignItems={'center'}>
+                {!!data.count ? (
+                  <SwapPlus1Color />
+                ) : (
+                  <SwapPlus1 style={{ color: isDarkMode ? '#343739' : '#B0B0B0' }} />
+                )}
+
+                {data.count !== undefined && (
+                  <>
+                    <Typography
+                      fontSize={18}
+                      fontWeight={700}
+                      color={data.count > 0 ? (isDarkMode ? '#ffffff' : '#333333') : isDarkMode ? '#747678' : '#B0B0B0'}
+                      marginLeft={-5}
+                    >
+                      {data.count > 0 ? `x ${data.count}` : '+ 1'}
+                    </Typography>
+                  </>
+                )}
+              </Box>
+
+              {!account && (
+                <Button
+                  sx={{
+                    fontSize: 16,
+                    fontWeight: 400,
+                    width: 'max-content',
+                    padding: '10px',
+                    minHeight: 'unset',
+                    height: '40px',
+                    background:
+                      type === TYPE.swap ? 'linear-gradient(90deg, #FFB3F3 0%, #D7C6FF 106.67%)!important' : undefined,
+                    '&.MuiButton-root.MuiButton-contained.MuiButtonBase-root:hover': {
+                      background:
+                        type === TYPE.swap ? 'linear-gradient(90deg, #D7C6FF 0%, #FFB3F3 106.67%)!important' : undefined
+                    }
+                  }}
+                  disabled={disabledBtn}
+                  onClick={toggleWalletModal}
+                >
+                  Connect Wallet
+                </Button>
+              )}
+
+              {account && (
+                <>
+                  {!data.completed ? (
+                    <Button
+                      sx={{
+                        fontSize: 16,
+                        fontWeight: 400,
+                        width: '150px',
+                        padding: '10px',
+                        minHeight: 'unset',
+                        height: '40px',
+                        background:
+                          type === TYPE.swap ? 'linear-gradient(90deg, #FFB3F3 0%, #D7C6FF 106.67%)' : undefined,
+                        '&.MuiButton-root.MuiButton-contained.MuiButtonBase-root:hover': {
+                          background:
+                            type === TYPE.swap
+                              ? 'linear-gradient(90deg, #D7C6FF 0%, #FFB3F3 106.67%)!important'
+                              : undefined
+                        }
+                      }}
+                      disabled={disabledBtn}
+                      onClick={data.action}
+                    >
+                      Swap Now
+                    </Button>
+                  ) : data.claimed ? (
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      sx={{
+                        color: '#333333',
+                        background: 'transparent',
+                        height: '40px',
+                        borderRadius: 1.2,
+                        padding: '10px 20px',
+                        border: '1px solid #FFB3F3'
+                      }}
+                      gap={5}
+                    >
+                      <CompletedColor />
+                      <Typography fontSize={16} fontWeight={600}>
+                        Completed
+                      </Typography>
+                    </Box>
+                  ) : (
+                    <Button
+                      sx={{
+                        fontSize: 16,
+                        fontWeight: 400,
+                        width: '150px',
+                        padding: '10px',
+                        minHeight: 'unset',
+                        height: '40px',
+                        background:
+                          type === TYPE.swap ? 'linear-gradient(90deg, #FFB3F3 0%, #D7C6FF 106.67%)' : undefined,
+                        '&.MuiButton-root.MuiButton-contained.MuiButtonBase-root:hover': {
+                          background:
+                            type === TYPE.swap
+                              ? 'linear-gradient(90deg, #D7C6FF 0%, #FFB3F3 106.67%)!important'
+                              : undefined
+                        }
+                      }}
+                      disabled={disabledBtn}
+                      onClick={data.action}
+                    >
+                      Get Box
                     </Button>
                   )}
                 </>

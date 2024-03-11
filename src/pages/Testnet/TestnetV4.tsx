@@ -69,7 +69,8 @@ const RowBetween = styled(Box)(({}) => ({
 const StyledQATitle = styled(Box)(({ theme }) => ({
   fontSize: 20,
   fontWeight: 600,
-  marginBottom: 16,
+  lineHeight: 1.6,
+  marginBottom: 0,
   [theme.breakpoints.down('md')]: {
     fontSize: 16
   }
@@ -78,6 +79,7 @@ const StyledQATitle = styled(Box)(({ theme }) => ({
 const StyledQABody = styled(Box)(({ theme }) => ({
   fontSize: 16,
   fontWeight: 400,
+  lineHeight: 1.75,
   color: theme.palette.text.secondary,
   [theme.breakpoints.down('md')]: {
     fontSize: 16
@@ -163,7 +165,7 @@ export default function TestnetV4() {
   return (
     <Stack spacing={40}>
       <Box>
-        <Typography fontSize={20} fontWeight={600} mb={-10}>
+        <Typography lineHeight={1.5} fontSize={20} fontWeight={600} mb={0}>
           Activity data
         </Typography>
         <V4ActivityData />
@@ -174,7 +176,7 @@ export default function TestnetV4() {
           title={
             <RowBetween flexWrap={'wrap'}>
               <Box display={'flex'} flexWrap={'wrap'}>
-                <Typography fontSize={20} fontWeight={600} mr={12}>
+                <Typography lineHeight={1.5} fontSize={20} fontWeight={600} mr={12}>
                   Join Ladder Spring Training for Free
                 </Typography>
               </Box>
@@ -234,7 +236,7 @@ export default function TestnetV4() {
           title={
             <RowBetween>
               <Box display={'flex'}>
-                <Typography fontSize={20} fontWeight={600} color={theme.palette.text.primary} mr={12}>
+                <Typography lineHeight={1.5} fontSize={20} fontWeight={600} color={theme.palette.text.primary} mr={12}>
                   Leaderboard
                 </Typography>
               </Box>
@@ -250,7 +252,7 @@ export default function TestnetV4() {
           title={
             <RowBetween>
               <Box display={'flex'}>
-                <Typography fontSize={20} fontWeight={600} color={theme.palette.text.primary} mr={12}>
+                <Typography lineHeight={1.5} fontSize={20} fontWeight={600} color={theme.palette.text.primary} mr={12}>
                   Q&A
                 </Typography>
               </Box>
@@ -275,12 +277,9 @@ export default function TestnetV4() {
               <StyledQABody>
                 {`Ladder is a unique AMM (Automated Market Maker) that will provide instant liquidity for NFT's including ERC-20, ERC-721, ERC-1155. `}
                 <br />
-                <br />
                 {`Unlike other NFT marketplaces which operate on an order book style of exchange, Ladder protocol takes a different approach by using Automated Market Makers and limit orders. By doing so, we aim to provide instant swaps for NFTs with low slippage and low fees!`}
                 <br />
-                <br />
                 {`On Ladder protocol, now you can see how much certainty your NFT is backed by, or swap for any NFT in the Pool, or earn a commission for providing liquidity with your NFT. `}
-                <br />
                 <br />
                 {`Ladder builds an infinite door for NFT!`}
               </StyledQABody>
@@ -904,7 +903,8 @@ function LeaderBoardBox() {
                 height: '33px',
                 display: 'flex',
                 alignItems: 'center',
-                fontSize: '14px'
+                fontSize: '14px',
+                lineHeight: '1.5'
               }}
             >
               {item}
@@ -935,7 +935,7 @@ function LeaderBoardBox() {
       </Box>
       <Box
         sx={{
-          mt: 10,
+          mt: 20,
           gap: 20,
           display: 'grid',
           gridTemplateColumns: {

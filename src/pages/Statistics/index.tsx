@@ -60,7 +60,7 @@ export const StyledTabButtonText = styled(Box)(({ theme }) => ({
   cursor: 'pointer',
   color: theme.palette.secondary.contrastText,
   backgroundColor: theme.palette.background.paper,
-  padding: '6px 16px',
+  padding: '6px 24px',
   borderRadius: '15px',
   textTransform: 'uppercase',
   marginRight: 8,
@@ -682,28 +682,48 @@ export function ShowTopPoolsCurrencyBox({
       {token0Info.symbol.length > 4 ? (
         <Typography
           noWrap
-          fontSize={fontSize}
-          fontWeight={fontWeight}
+          fontSize={fontSize ? fontSize : 14}
+          fontWeight={fontWeight ? fontWeight : 400}
           color={color || theme.palette.text.primary}
           ml={8}
         >
           {token0Info.symbol}
         </Typography>
       ) : (
-        <Typography fontSize={fontSize} fontWeight={fontWeight} color={color || theme.palette.text.primary} ml={8}>
+        <Typography
+          fontSize={fontSize ? fontSize : 14}
+          fontWeight={fontWeight ? fontWeight : 400}
+          color={color || theme.palette.text.primary}
+          ml={8}
+        >
           {token0Info.symbol}
         </Typography>
       )}
       {token0Info.type === Mode.ERC1155 && (
-        <Typography fontSize={fontSize} fontWeight={fontWeight} color={color || theme.palette.text.primary} ml={8}>
+        <Typography
+          fontSize={fontSize ? fontSize : 14}
+          fontWeight={fontWeight ? fontWeight : 400}
+          color={color || theme.palette.text.primary}
+          ml={8}
+        >
           #{token0Info.tokenId}
         </Typography>
       )}
-      <Typography noWrap fontSize={fontSize} fontWeight={fontWeight} color={color || theme.palette.text.primary}>
+      <Typography
+        noWrap
+        fontSize={fontSize ? fontSize : 14}
+        fontWeight={fontWeight ? fontWeight : 400}
+        color={color || theme.palette.text.primary}
+      >
         /{token1Info.symbol}
       </Typography>
       {token1Info.type === Mode.ERC1155 && (
-        <Typography fontSize={fontSize} fontWeight={fontWeight} color={color || theme.palette.text.primary} ml={8}>
+        <Typography
+          fontSize={fontSize ? fontSize : 14}
+          fontWeight={fontWeight ? fontWeight : 400}
+          color={color || theme.palette.text.primary}
+          ml={8}
+        >
           #{token1Info.tokenId}
         </Typography>
       )}
