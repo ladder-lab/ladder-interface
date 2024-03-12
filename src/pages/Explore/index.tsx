@@ -128,7 +128,7 @@ export default function Explore() {
 
   return (
     <Box
-      maxWidth={theme.width.maxContent}
+      // maxWidth={theme.width.maxContent}
       sx={{
         overflow: 'hidden',
         width: '100%',
