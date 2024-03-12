@@ -120,7 +120,7 @@ const test721TestnetV3ListSepolia = [
     address: '0xbCaf52f2C202C0f44Ed3404a1Acb6AE4b07E1544',
     name: 'WonderPals',
     symbol: 'WNDR',
-    uriName: 'WNDR'
+    uriName: 'WNDR',
     // metaDataUri: 'https://wonderpals.mypinata.cloud/ipfs/QmSvKdz3ecY3tKT4k7bcMnwPHXRby7tSLfPCngtb1Eq9PQ/'
     metaDataUri: 'https://ipfs.io/ipfs/QmSvKdz3ecY3tKT4k7bcMnwPHXRby7tSLfPCngtb1Eq9PQ/'
   },
