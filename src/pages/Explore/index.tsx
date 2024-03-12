@@ -128,6 +128,7 @@ export default function Explore() {
 
   return (
     <Box
+      maxWidth={theme.width.maxContent}
       sx={{
         overflow: 'hidden',
         width: '100%',
@@ -342,7 +343,17 @@ function CollectionListing({
         alt={'Token logo'}
       />
       <Box sx={{ padding: 16 }}>
-        <Typography sx={{ mb: 21, color: dark ? '#FFFFFF' : '#333333' }}>{title}</Typography>
+        <Typography
+          sx={{
+            mb: 21,
+            color: dark ? '#FFFFFF' : '#333333',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }}
+        >
+          {title}
+        </Typography>
         <Typography sx={{ color: dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(51, 51, 51, 0.5)' }}>
           Total Liquidity
         </Typography>

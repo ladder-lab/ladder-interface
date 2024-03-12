@@ -303,8 +303,8 @@ export const override: (palette: any) => any & {
         fontFamily: FONTS.title
       },
       h5: {
-        fontSize: 28,
-        fontWeight: 500,
+        fontSize: 32,
+        fontWeight: 700,
         fontFamily: FONTS.title
       },
       h6: {
@@ -322,8 +322,10 @@ export const override: (palette: any) => any & {
 })
 
 const FONTS = {
-  title: 'Monument Extended, Helvetica, sans-serif',
-  content: 'Lato, Helvetica, sans-serif'
+  // title: 'Monument Extended, Helvetica, sans-serif',
+  // content: 'Lato, Helvetica, sans-serif'
+  title: 'Sora, Helvetica, sans-serif',
+  content: 'Poppins, Helvetica, sans-serif'
 }
 
 export const HideOnMobile = styled('div', {

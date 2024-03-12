@@ -5,7 +5,7 @@ import { useIsDarkMode } from 'state/user/hooks'
 
 export const StyledCardWrapper = styled(Box)(({ theme }) => ({
   borderRadius: '16px',
-  padding: '30px 28px',
+  padding: '0px 0px',
   [theme.breakpoints.down('md')]: {
     padding: '16px'
   }
@@ -62,7 +62,7 @@ export default function QuestionList() {
           title={
             <RowBetween>
               <Box display={'flex'}>
-                <Typography fontSize={24} fontWeight={500} mb={20} variant="h5">
+                <Typography fontSize={20} fontWeight={600} mb={0} variant="h5">
                   FAQ
                 </Typography>
               </Box>
@@ -70,11 +70,11 @@ export default function QuestionList() {
           }
         >
           <Stack
-            spacing={44}
+            spacing={30}
             sx={{
               background: isDarkMode ? '#1A1C1E' : '#ffffff',
               borderRadius: 2,
-              padding: '60px 24px'
+              padding: '32px 108px 45px 24px'
             }}
           >
             {questionList.map(q => {

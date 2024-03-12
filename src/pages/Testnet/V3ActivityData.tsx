@@ -47,7 +47,7 @@ export default function V3ActivityData() {
         display={'grid'}
         sx={{
           gridTemplateColumns: { md: '1fr 1fr 1fr', xs: '1fr' },
-          mt: { md: 40, xs: 20 },
+          mt: { md: 10, xs: 10 },
           gap: { md: '30px', xs: '20px' }
         }}
       >
@@ -68,12 +68,12 @@ export default function V3ActivityData() {
               }}
             >
               <RowBetween>
-                <Typography color={theme.palette.text.secondary} fontSize={16} component="div">
+                <Typography color={theme.palette.text.secondary} fontSize={20} component="div">
                   <RowBetween>
                     {item.name} <QuestionHelper style={{ marginLeft: 5 }} text={item.helperText} />
                   </RowBetween>
                 </Typography>
-                <Typography color={theme.palette.text.primary} fontSize={24} fontWeight={700}>
+                <Typography color={theme.palette.text.primary} fontSize={32} fontWeight={600}>
                   {item.value}
                 </Typography>
               </RowBetween>

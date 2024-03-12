@@ -643,7 +643,7 @@ export function TestnetV1Old() {
           title={
             <RowBetween>
               <Box display={'flex'}>
-                <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                <Typography fontSize={20} fontWeight={600} color={theme.palette.info.main} mr={12}>
                   Q&A
                 </Typography>
               </Box>
@@ -1045,7 +1045,7 @@ export function TestnetV2() {
           title={
             <RowBetween>
               <Box display={'flex'}>
-                <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                <Typography fontSize={20} fontWeight={600} color={theme.palette.info.main} mr={12}>
                   Q&A
                 </Typography>
               </Box>

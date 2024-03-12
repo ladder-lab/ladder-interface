@@ -34,6 +34,7 @@ function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
 
 function Web3StatusInner() {
   const { account, error } = useWeb3React()
+  // const { deactivate } = useWeb3React()
   const { ENSName } = useENSName(account ?? undefined)
   const allTransactions = useAllTransactions()
   const sortedRecentTransactions = useMemo(() => {
@@ -76,17 +77,31 @@ function Web3StatusInner() {
                 </Box>
               </Box>
             ) : (
-              <Typography
-                sx={{
-                  fontSize: { xs: 11, sm: 14 },
-                  color: theme.palette.text.secondary
-                }}
-              >
-                {ENSName || shortenAddress(account)}
-              </Typography>
+              <>
+                <Typography
+                  sx={{
+                    fontSize: { xs: 11, sm: 14 },
+                    color: theme.palette.text.secondary
+                  }}
+                >
+                  {ENSName || shortenAddress(account)}
+                </Typography>
+              </>
             )}
           </Box>
           <Web3StatusIcon />
+          {/* <ActionButton
+            sx={{
+              width: isDownSm ? '108px' : '120px',
+              height: isDownSm ? '28px' : '36px',
+              fontSize: isDownSm ? '12px' : '14px'
+            }}
+            onClick={() => {
+              deactivate()
+            }}
+          >
+            Disconnect
+          </ActionButton> */}
         </Box>
       </Box>
     )
@@ -94,7 +109,7 @@ function Web3StatusInner() {
     return (
       <ActionButton
         sx={{
-          width: isDownSm ? '128px' : '140px',
+          width: isDownSm ? '128px' : '160px',
           height: isDownSm ? '28px' : '36px',
           fontSize: isDownSm ? '12px' : '14px'
         }}
@@ -107,7 +122,7 @@ function Web3StatusInner() {
     return (
       <ActionButton
         sx={{
-          width: isDownSm ? '128px' : '140px',
+          width: isDownSm ? '128px' : '160px',
           height: isDownSm ? '28px' : '36px',
           fontSize: isDownSm ? '12px' : '14px'
         }}

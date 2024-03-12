@@ -83,14 +83,18 @@ const RowBetween = styled(Box)(({}) => ({
 
 export const StyledQATitle = styled(Box)(({ theme }) => ({
   fontSize: 20,
-  marginBottom: 16,
+  fontWeight: 600,
+  lineHeight: 1.6,
+  marginBottom: 0,
   [theme.breakpoints.down('md')]: {
     fontSize: 16
   }
 }))
 
 export const StyledQABody = styled(Box)(({ theme }) => ({
-  fontSize: 20,
+  fontSize: 16,
+  fontWeight: 400,
+  lineHeight: 1.75,
   color: theme.palette.text.secondary,
   [theme.breakpoints.down('md')]: {
     fontSize: 16
@@ -191,7 +195,7 @@ export default function TestnetV3() {
       <Banner setOpenTrue={() => setOpen(true)} />
 
       <Box padding="10px">
-        <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mb={-10}>
+        <Typography lineHeight={1.5} fontSize={20} fontWeight={600} color={theme.palette.info.main} mb={-10}>
           Activity data
         </Typography>
         <V3ActivityData />
@@ -203,7 +207,7 @@ export default function TestnetV3() {
           title={
             <RowBetween flexWrap={'wrap'}>
               <Box display={'flex'} flexWrap={'wrap'}>
-                <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                <Typography fontSize={20} fontWeight={600} color={theme.palette.info.main} mr={12}>
                   Ladder SEPOLIA Monopoly Participate in preparation
                 </Typography>
               </Box>
@@ -351,7 +355,7 @@ export default function TestnetV3() {
           title={
             <RowBetween>
               <Box display={'flex'}>
-                <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                <Typography fontSize={20} fontWeight={600} color={theme.palette.info.main} mr={12}>
                   Experience more novel features of ladder!
                 </Typography>
               </Box>
@@ -405,7 +409,7 @@ export default function TestnetV3() {
           title={
             <RowBetween>
               <Box display={'flex'}>
-                <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                <Typography lineHeight={1.5} fontSize={20} fontWeight={600} color={theme.palette.info.main} mr={12}>
                   Leaderboard
                 </Typography>
               </Box>
@@ -464,7 +468,7 @@ export default function TestnetV3() {
           title={
             <RowBetween>
               <Box display={'flex'}>
-                <Typography fontSize={16} fontWeight={600} color={theme.palette.info.main} mr={12}>
+                <Typography lineHeight={1.5} fontSize={20} fontWeight={600} color={theme.palette.info.main} mr={12}>
                   Q&A
                 </Typography>
               </Box>
@@ -736,7 +740,7 @@ function LeaderBoardBox() {
     <Box>
       <Box
         sx={{
-          mt: 10,
+          mt: 20,
           gap: 20,
           display: 'grid',
           gridTemplateColumns: {
@@ -804,7 +808,7 @@ function LeaderBoardRank({
             display: 'inline-block'
           }}
         >
-          <Typography display={'flex'} alignItems="center">
+          <Typography display={'flex'} alignItems="center" fontWeight={600}>
             {title}
             {helper && <QuestionHelper style={{ marginLeft: 5 }} text={helper} />}
           </Typography>

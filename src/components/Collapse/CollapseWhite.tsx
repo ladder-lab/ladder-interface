@@ -23,7 +23,7 @@ export default function CollapseWhite({
           gridTemplateColumns: { xs: '1fr 36px', sm: '1fr 52px' },
           gap: { xs: 16, sm: 28 },
           alignItems: { xs: 'flex-start', sm: 'center' },
-          mb: 15
+          mb: 0
         }}
       >
         {title}

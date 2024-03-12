@@ -380,7 +380,7 @@ export default function Swap() {
             sx={{
               fontSize: {
                 xs: 20,
-                md: 28
+                md: 32
               },
               mb: {
                 xs: 32,
@@ -460,7 +460,9 @@ export default function Swap() {
           )}
           <Box mt={40}>
             {!account ? (
-              <Button onClick={toggleWallet}>Connect Wallet</Button>
+              <Button onClick={toggleWallet} sx={{ fontSize: 16, fontWeight: 600 }}>
+                Connect Wallet
+              </Button>
             ) : // : showWrap ? (
             // <Button disabled={Boolean(wrapInputError)} onClick={onWrap}>
             //   {wrapInputError ??
@@ -468,7 +470,7 @@ export default function Swap() {
             // </Button>
             // )
             noRoute && userHasSpecifiedInputOutput ? (
-              <Button disabled style={{ textAlign: 'center' }}>
+              <Button disabled style={{ textAlign: 'center' }} sx={{ fontSize: 16, fontWeight: 600 }}>
                 <Typography mb="4px">
                   Insufficient liquidity for this trade. {singleHopOnly && 'Try enabling multi-hop trades.'}
                 </Typography>

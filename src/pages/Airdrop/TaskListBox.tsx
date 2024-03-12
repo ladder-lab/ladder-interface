@@ -105,7 +105,7 @@ const tasks = [
 
 export default function TaskListLuck({ refreshCb }: { refreshCb: () => void }) {
   const { getBox, taskState: state } = useBoxTasks(refreshCb)
-  console.log('🚀 ~ file: TaskListBox.tsx:100 ~ TaskListLuck ~ state:', state)
+  // console.log('🚀 ~ file: TaskListBox.tsx:100 ~ TaskListLuck ~ state:', state)
   const { showModal } = useModal()
 
   const sorted: TaskListData = useMemo(
