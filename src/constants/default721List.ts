@@ -71,7 +71,7 @@ const test721TestnetV3ListSepolia = [
     address: '0xAd1b8Fa357265D15a056B51c299a29843bE874DB',
     name: 'GensoKishiOnline.v2',
     symbol: 'Genso_NFT_v2',
-    uriName: 'GensoKishiOnline.v2'
+    uriName: 'Genso_NFT_v2'
   },
   {
     address: '0x3ec2Bb9E04C8DB50fb77E170BF9116B330293209',
@@ -101,7 +101,8 @@ const test721TestnetV3ListSepolia = [
     address: '0x2B95cc8D52e986C8cC209ef4DfBF2aA02D81fC2D',
     name: 'GrittiNFT',
     symbol: 'GNFT',
-    metaDataUri: 'https://tkres.gritti.io/nftjson/56/'
+    uriName: 'GrittiNFT'
+    // metaDataUri: 'https://tkres.gritti.io/nftjson/56/'
   },
   {
     address: '0xdCF53E67375DaD97A273f0Ae49E5EBf2fEf44D91',
@@ -119,8 +120,8 @@ const test721TestnetV3ListSepolia = [
     address: '0xbCaf52f2C202C0f44Ed3404a1Acb6AE4b07E1544',
     name: 'WonderPals',
     symbol: 'WNDR',
+    uriName: 'WNDR'
     // metaDataUri: 'https://wonderpals.mypinata.cloud/ipfs/QmSvKdz3ecY3tKT4k7bcMnwPHXRby7tSLfPCngtb1Eq9PQ/'
-    metaDataUri: 'https://ipfs.io/ipfs/QmSvKdz3ecY3tKT4k7bcMnwPHXRby7tSLfPCngtb1Eq9PQ/'
   },
   {
     address: '0xE9DDf46639dbaD61e4B180296AEE4e6c05562CFC',
@@ -131,7 +132,8 @@ const test721TestnetV3ListSepolia = [
 ]
 
 export const getTest721uri = (name: string, uriName?: string) => {
-  return `https://info.chainswap.com/${uriName ?? name.split(' ').join('')}/0.jpg`
+  // return `https://info.chainswap.com/${uriName ?? name.split(' ').join('')}/0.jpg`
+  return `https://libdatas.s3.ap-southeast-1.amazonaws.com/ladder/logo/${uriName ?? name.split(' ').join('')}.png`
 }
 
 export const getTest721uriWithIndex = (uri: string, idx: string | number) => {
