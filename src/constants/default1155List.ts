@@ -41,7 +41,8 @@ const TEST_1155_LIST = test1155List.map((address, idx) => {
   return new Token1155(ChainId.GÖRLI, address, '1', {
     name: `Test NFT-ERC1155-${idx + 1}`,
     symbol: `TNT-${idx + 1}`,
-    uri: ` https://info.chainswap.com/file/tnt-${idx + 1}.jpg`
+    // uri: ` https://info.chainswap.com/file/tnt-${idx + 1}.jpg`
+    uri: `https://libdatas.s3.ap-southeast-1.amazonaws.com/ladder/logo/LTTNT.png`
   })
 })
 
@@ -119,7 +120,8 @@ export const DEFAULT_1155_LIST: { [chainId in ChainId]?: Token1155[] } = {
       return new Token1155(ChainId.SEPOLIA, address, '1', {
         name: `Test NFT-ERC1155-${idx + 1}`,
         symbol: `TNT-${idx + 1}`,
-        uri: ` https://info.chainswap.com/file/tnt-${idx + 1}.jpg`
+        // uri: ` https://info.chainswap.com/file/tnt-${idx + 1}.jpg`
+        uri: `https://libdatas.s3.ap-southeast-1.amazonaws.com/ladder/logo/LTTNT.png`
       })
     })
   ]
