@@ -8,6 +8,7 @@ import MetamaskIcon from 'assets/walletIcon/metamask.png'
 import { /*fortmatic,*/ injected, portis } from 'connectors'
 // import { OVERLAY_READY } from 'connectors/Fortmatic'
 import { SUPPORTED_WALLETS } from 'constants/index'
+import { useWalletIsConnected, useWalletConnectStateManager } from 'state/walletConnect/hooks'
 import usePrevious from 'hooks/usePrevious'
 import { ApplicationModal } from 'state/application/actions'
 import { useModalOpen, useWalletModalToggle } from 'state/application/hooks'
@@ -42,6 +43,7 @@ export default function WalletModal({
   const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
 
   const [pendingWallet, setPendingWallet] = useState<AbstractConnector | undefined>()
+  const [pendingWalletName, setPendingWalletName] = useState<string | undefined>()
 
   const [pendingError, setPendingError] = useState<boolean>()
 
@@ -49,6 +51,9 @@ export default function WalletModal({
   const toggleWalletModal = useWalletModalToggle()
 
   const previousAccount = usePrevious(account)
+
+  const walletIsConnected = useWalletIsConnected()
+  const setWalletConnectState = useWalletConnectStateManager()
 
   // close on connection, when logged out before
   useEffect(() => {
@@ -75,10 +80,11 @@ export default function WalletModal({
   }, [setWalletView, active, error, connector, walletModalOpen, activePrevious, connectorPrevious])
 
   const tryActivation = useCallback(
-    async (connector: (() => Promise<AbstractConnector>) | AbstractConnector | undefined) => {
+    async (name: string, connector: (() => Promise<AbstractConnector>) | AbstractConnector | undefined) => {
       const conn = typeof connector === 'function' ? await connector() : connector
 
       setPendingWallet(conn) // set wallet for pending view
+      setPendingWalletName(name)
       setWalletView(WALLET_VIEWS.PENDING)
 
       // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
@@ -87,16 +93,22 @@ export default function WalletModal({
       }
 
       conn &&
-        activate(conn, undefined, true).catch(error => {
-          if (error instanceof UnsupportedChainIdError) {
-            activate(conn) // a little janky...can't use setError because the connector isn't set
-          } else {
-            console.error(error)
-            setPendingError(true)
-          }
-        })
+        activate(conn, undefined, true)
+          .then(() => {
+            setWalletConnectState(true, name)
+            setWalletView(WALLET_VIEWS.ACCOUNT)
+          })
+          .catch(error => {
+            if (error instanceof UnsupportedChainIdError) {
+              activate(conn) // a little janky...can't use setError because the connector isn't set
+            } else {
+              setWalletConnectState(false, '')
+              console.error(error)
+              setPendingError(true)
+            }
+          })
     },
-    [activate]
+    [activate, setWalletConnectState]
   )
 
   // close wallet modal if fortmatic modal is active
@@ -122,7 +134,7 @@ export default function WalletModal({
           return (
             <Option
               onClick={() => {
-                option.connector !== connector && !option.href && tryActivation(option.connector)
+                option.connector !== connector && !option.href && tryActivation(option.name, option.connector)
               }}
               id={`connect-${key}`}
               key={key}
@@ -171,12 +183,12 @@ export default function WalletModal({
           <Option
             id={`connect-${key}`}
             onClick={() => {
-              option.connector === connector
+              walletIsConnected && option.connector === connector
                 ? setWalletView(WALLET_VIEWS.ACCOUNT)
-                : !option.href && tryActivation(option.connector)
+                : !option.href && tryActivation(option.name, option.connector)
             }}
             key={key}
-            active={option.connector === connector}
+            active={walletIsConnected && option.connector === connector}
             link={option.href}
             header={option.name}
             icon={require('../../../assets/walletIcon/' + option.iconName)}
@@ -225,7 +237,7 @@ export default function WalletModal({
         </>
       )
     }
-    if (account && walletView === WALLET_VIEWS.ACCOUNT) {
+    if (walletIsConnected && account && walletView === WALLET_VIEWS.ACCOUNT) {
       return (
         <AccountDetails
           toggleWalletModal={toggleWalletModal}
@@ -242,6 +254,7 @@ export default function WalletModal({
 
         {walletView === WALLET_VIEWS.PENDING ? (
           <PendingView
+            name={pendingWalletName as any}
             connector={pendingWallet}
             error={pendingError}
             setPendingError={setPendingError}
