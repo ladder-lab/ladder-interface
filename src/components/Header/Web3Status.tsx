@@ -4,7 +4,7 @@ import { useTheme, Box, styled, Typography, Button } from '@mui/material'
 import { NetworkContextName } from '../../constants'
 import useENSName from '../../hooks/useENSName'
 import { useWalletModalToggle } from '../../state/application/hooks'
-import { useWalletIsConnected, useWalletConnectStateManager } from 'state/walletConnect/hooks'
+import { useWalletIsConnected } from 'state/walletConnect/hooks'
 import { isTransactionRecent, useAllTransactions } from '../../state/transactions/hooks'
 import { TransactionDetails } from '../../state/transactions/reducer'
 import { shortenAddress } from '../../utils'
@@ -34,7 +34,8 @@ function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
 }
 
 function Web3StatusInner() {
-  const { account, deactivate, error } = useWeb3React()
+  const { account, error } = useWeb3React()
+  // const { deactivate } = useWeb3React()
   const { ENSName } = useENSName(account ?? undefined)
   const allTransactions = useAllTransactions()
   const sortedRecentTransactions = useMemo(() => {
@@ -48,7 +49,7 @@ function Web3StatusInner() {
   const isDownSm = useBreakpoint()
 
   const walletIsConnected = useWalletIsConnected()
-  const setWalletConnectState = useWalletConnectStateManager()
+  // const setWalletConnectState = useWalletConnectStateManager()
 
   if (walletIsConnected && account) {
     return (
@@ -95,7 +96,7 @@ function Web3StatusInner() {
           </Box>
           <Web3StatusIcon />
         </Box>
-        <ActionButton
+        {/* <ActionButton
           sx={{
             width: isDownSm ? '108px' : '120px',
             height: isDownSm ? '28px' : '36px',
@@ -107,7 +108,7 @@ function Web3StatusInner() {
           }}
         >
           Disconnect
-        </ActionButton>
+        </ActionButton> */}
       </Box>
     )
   } else if (error) {

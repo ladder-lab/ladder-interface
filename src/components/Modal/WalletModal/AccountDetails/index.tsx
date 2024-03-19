@@ -4,6 +4,7 @@ import { Typography, Box, useTheme, styled, Button } from '@mui/material'
 import { useActiveWeb3React } from 'hooks/'
 import { AppDispatch } from 'state/'
 import { clearAllTransactions } from 'state/transactions/actions'
+import { useWalletConnectStateManager } from 'state/walletConnect/hooks'
 import { shortenAddress } from 'utils/'
 import Copy from 'components/essential/Copy'
 import Transaction from './Transaction'
@@ -44,9 +45,11 @@ export default function AccountDetails({
   ENSName,
   openOptions
 }: AccountDetailsProps) {
-  const { chainId, account, connector } = useActiveWeb3React()
+  const { chainId, account, connector, deactivate } = useActiveWeb3React()
   const dispatch = useDispatch<AppDispatch>()
   const theme = useTheme()
+
+  const setWalletConnectState = useWalletConnectStateManager()
 
   function formatConnectorName() {
     const { ethereum } = window
@@ -115,15 +118,25 @@ export default function AccountDetails({
         </Box>
       </Box>
       <Box display="flex" gap="10px" width="100%" justifyContent="center">
-        <Button variant="outlined" onClick={toggleWalletModal}>
+        {/* <Button variant="outlined" onClick={toggleWalletModal}>
           Close
-        </Button>
+        </Button> */}
         <Button
           onClick={() => {
             openOptions()
           }}
         >
           Change
+        </Button>
+        <Button
+          variant="outlined"
+          onClick={() => {
+            deactivate()
+            setWalletConnectState(false, '')
+            toggleWalletModal()
+          }}
+        >
+          Disconnect
         </Button>
       </Box>
       <OutlinedCard width="100%" padding="20px">
