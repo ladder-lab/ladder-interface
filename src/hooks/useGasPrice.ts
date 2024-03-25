@@ -23,3 +23,36 @@ export function useGasPriceInfo() {
     }
   }, [speed, web3])
 }
+
+export function useGasFee() {
+  const web3 = useWeb3Instance()
+  const [speed] = useUserTransactionSpeed()
+
+  return useCallback(async () => {
+    if (!web3) return null
+
+    let gasPrice: string | undefined = undefined
+    try {
+      gasPrice = await web3.eth.getGasPrice()
+    } catch (error) {
+      console.log(error)
+      return null
+    }
+    gasPrice = calculateGasPriceMargin(gasPrice || '', speed)
+
+    let gasLimit: number | undefined = undefined
+    try {
+      gasLimit = await web3.eth.estimateGas({})
+    } catch (error) {
+      console.log(error)
+      return null
+    }
+
+    const gasBN = web3.utils.toBN(gasPrice).mul(web3.utils.toBN(gasLimit))
+    const gasFeeEth = web3.utils.fromWei(gasBN, 'ether')
+    return {
+      gasFeeGwei: gasBN.toString(),
+      gasFeeEth: gasFeeEth
+    }
+  }, [speed, web3])
+}

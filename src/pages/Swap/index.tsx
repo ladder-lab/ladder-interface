@@ -35,6 +35,7 @@ import { liquidityParamBuilder, liquidityParamSplitter, routes } from 'constants
 import { useCurrency } from 'hooks/Tokens'
 import { replaceErrorMessage } from 'utils'
 import { useWalletIsConnected } from 'state/walletConnect/hooks'
+import { useGasFee } from 'hooks/useGasPrice'
 
 export default function Swap() {
   // const theme = useTheme()
@@ -45,6 +46,8 @@ export default function Swap() {
   const walletIsConnected = useWalletIsConnected()
 
   const [summaryExpanded, setSummaryExpanded] = useState(false)
+
+  const [gasFee, setGasFee] = useState('--')
 
   // modal and loading
   const [{ showConfirm, tradeToConfirm, attemptingTxn, txHash }, setSwapState] = useState<{
@@ -355,6 +358,10 @@ export default function Swap() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromAsset, typedValue])
 
+  useGasFeePromise().then(resp => {
+    return setGasFee(resp ? resp.gasFeeEth : '--')
+  })
+
   return (
     <>
       <ConfirmSwapModal
@@ -455,7 +462,7 @@ export default function Swap() {
               expanded={summaryExpanded}
               onChange={() => setSummaryExpanded(!summaryExpanded)}
               margin="20px 0 0"
-              gasFee="--"
+              gasFee={gasFee}
               slippage={+(priceImpactWithoutFee?.toFixed(2) ?? 0)}
               minReceiveQty={slippageAdjustedAmounts.OUTPUT?.toFixed(6) ?? '-'}
               routerTokens={trade?.route.path.slice(1, -1)}
@@ -547,6 +554,11 @@ export default function Swap() {
       )}
     </>
   )
+}
+
+async function useGasFeePromise() {
+  const getGasFee = useGasFee()
+  return await getGasFee()
 }
 
 function TokenInfo({
