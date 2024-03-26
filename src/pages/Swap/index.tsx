@@ -654,13 +654,14 @@ export function ActivityInfo() {
         ></Box> */}
         <Box
           sx={{
-            width: '68px',
-            height: '53px',
-            backgroundImage: `url(${Dogewalk})`,
-            backgroundPosition: '-173px 0px',
-            backgroundSize: '243px'
+            width: '40px',
+            height: '40px',
+            backgroundColor: '#ffffff',
+            borderRadius: '100%'
           }}
-        ></Box>
+        >
+          <Image src={GensoLogo} style={{ height: 40, width: 40 }} />
+        </Box>
         <Box
           sx={{
             width: '42px',
@@ -672,14 +673,13 @@ export function ActivityInfo() {
         ></Box>
         <Box
           sx={{
-            width: '40px',
-            height: '40px',
-            backgroundColor: '#ffffff',
-            borderRadius: '100%'
+            width: '68px',
+            height: '53px',
+            backgroundImage: `url(${Dogewalk})`,
+            backgroundPosition: '-173px 0px',
+            backgroundSize: '243px'
           }}
-        >
-          <Image src={GensoLogo} style={{ height: 40, width: 40 }} />
-        </Box>
+        ></Box>
       </Box>
       <Box>
         {/* <TitleStyle>Dew it with League of Kingdoms on Ladder</TitleStyle> */}
