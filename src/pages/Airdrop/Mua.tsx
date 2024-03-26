@@ -24,7 +24,7 @@ const disabledBtn = false
 
 const tasks = [
   {
-    id: 'boxTask14',
+    id: 'gensoSwap',
     boxType: 14,
     boxs: 0,
     claimed: false,
