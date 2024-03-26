@@ -37,6 +37,7 @@ import { replaceErrorMessage, replaceNativeTokenName } from 'utils'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { ActivityInfo } from 'pages/Swap'
 import { ETHER } from '../../constants/token'
+import { AllTokens } from 'models/allTokens'
 
 export const [currencyA, currencyB] = [
   ETHER,
@@ -49,6 +50,7 @@ export const [currencyA, currencyB] = [
 ]
 
 export default function AddLiquidy() {
+  const [currencyB, setCurrencyB] = useState<undefined | AllTokens>(undefined)
   const isDownSm = useBreakpoint('sm')
   // const [currencyA, setCurrencyA] = useState<undefined | AllTokens>(undefined)
   // const [currencyB, setCurrencyB] = useState<undefined | AllTokens>(undefined)
@@ -194,9 +196,9 @@ export default function AddLiquidy() {
   //   setCurrencyA(currency)
   // }, [])
 
-  // const handleAssetB = useCallback((currency: AllTokens) => {
-  //   setCurrencyB(currency)
-  // }, [])
+  const handleAssetB = useCallback((currency: AllTokens) => {
+    setCurrencyB(currency)
+  }, [])
 
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false)
@@ -306,10 +308,11 @@ export default function AddLiquidy() {
               <Box mb={currencyB ? 16 : 0} mt={16}>
                 <>
                   <CurrencyInputPanel
-                    disableCurrencySelect
+                    // disableCurrencySelect
                     // selectedTokenType={currencyA ? (checkIs1155(currencyA) ? 'erc1155' : 'erc20') : undefined}
                     value={formattedAmounts[Field.CURRENCY_B]}
                     onChange={handleAssetBVal}
+                    onSelectCurrency={handleAssetB}
                     currency={currencyB}
                     onMax={handleMaxInputB}
                     onSelectSubTokens={handleTokenIds}
