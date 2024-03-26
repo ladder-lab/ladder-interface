@@ -1,4 +1,5 @@
-import { useCallback } from 'react'
+import { useActiveWeb3React } from 'hooks'
+import { useCallback, useEffect, useState } from 'react'
 import { useWeb3Instance } from './useWeb3Instance'
 import { calculateGasPriceMargin } from 'utils'
 import { useUserTransactionSpeed } from 'state/user/hooks'
@@ -25,11 +26,22 @@ export function useGasPriceInfo() {
 }
 
 export function useGasFee() {
+  const { account, chainId } = useActiveWeb3React()
+  const [gasFeeState, setGasFeeState] = useState<{
+    gasFeeGwei: string
+    gasFeeEth: string
+  }>({
+    gasFeeGwei: '--',
+    gasFeeEth: '--'
+  })
+
   const web3 = useWeb3Instance()
   const [speed] = useUserTransactionSpeed()
 
-  return useCallback(async () => {
+  const cb = useCallback(async () => {
     if (!web3) return null
+
+    if (!account || !chainId) return
 
     let gasPrice: string | undefined = undefined
     try {
@@ -50,9 +62,16 @@ export function useGasFee() {
 
     const gasBN = web3.utils.toBN(gasPrice).mul(web3.utils.toBN(gasLimit))
     const gasFeeEth = web3.utils.fromWei(gasBN, 'ether')
-    return {
+
+    setGasFeeState({
       gasFeeGwei: gasBN.toString(),
       gasFeeEth: gasFeeEth
-    }
-  }, [speed, web3])
+    })
+  }, [account, chainId, speed, web3])
+
+  useEffect(() => {
+    cb()
+  }, [cb])
+
+  return { gasFeeState }
 }
