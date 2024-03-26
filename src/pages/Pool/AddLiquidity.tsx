@@ -39,21 +39,28 @@ import { ActivityInfo } from 'pages/Swap'
 import { ETHER } from '../../constants/token'
 import { AllTokens } from 'models/allTokens'
 
-export const [currencyA, currencyB] = [
-  ETHER,
-  new Token721(137, '0x9E8Ea82e76262E957D4cC24e04857A34B0D8f062', undefined, {
-    name: 'Drago',
-    tokenUri: 'https://lok-nft.leagueofkingdoms.com/api/drago/',
-    symbol: 'DRG',
-    uri: 'https://polygonscan.com/token/images/lokdrago_32.png'
-  })
-]
+// export const [currencyA, currencyB] = [
+//   ETHER,
+//   new Token721(137, '0x9E8Ea82e76262E957D4cC24e04857A34B0D8f062', undefined, {
+//     name: 'Drago',
+//     tokenUri: 'https://lok-nft.leagueofkingdoms.com/api/drago/',
+//     symbol: 'DRG',
+//     uri: 'https://polygonscan.com/token/images/lokdrago_32.png'
+//   })
+// ]
+// export const [currencyA] = [ETHER]
 
 export default function AddLiquidy() {
-  const [currencyB, setCurrencyB] = useState<undefined | AllTokens>(undefined)
   const isDownSm = useBreakpoint('sm')
-  // const [currencyA, setCurrencyA] = useState<undefined | AllTokens>(undefined)
-  // const [currencyB, setCurrencyB] = useState<undefined | AllTokens>(undefined)
+  const [currencyA, setCurrencyA] = useState<undefined | AllTokens>(ETHER)
+  const [currencyB, setCurrencyB] = useState<undefined | AllTokens>(
+    new Token721(137, '0x9E8Ea82e76262E957D4cC24e04857A34B0D8f062', undefined, {
+      name: 'Drago',
+      tokenUri: 'https://lok-nft.leagueofkingdoms.com/api/drago/',
+      symbol: 'DRG',
+      uri: 'https://polygonscan.com/token/images/lokdrago_32.png'
+    })
+  )
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
 
   // const { currencyIdA, currencyIdB, tokenIds } = useParams()
