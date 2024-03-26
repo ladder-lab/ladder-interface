@@ -150,7 +150,7 @@ export default function Mua() {
         MUA Boarding Odyssey Season 6: Ladder x Genso
       </Typography>
       <Typography textAlign={'center'} fontSize={14}>
-        Ladder Task Time: Mar. 26, 2024 - Apr. 9, 2024 at Ladder | MUA Raffle Time: Apr. 9, 2024 - Apr. 11 2024 at MUA
+        Ladder Task Time: Mar. 27, 2024 - Apr. 9, 2024 at Ladder | MUA Raffle Time: Apr. 9, 2024 - Apr. 11 2024 at MUA
       </Typography>
       <Typography maxWidth={600} lineHeight={'22px'} textAlign={'center'}>
         Ladder is returning to MUAverse for their Boarding Odyssey Season 6. Complete the following Ladder task, earn
