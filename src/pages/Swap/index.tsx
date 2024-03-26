@@ -35,7 +35,7 @@ import { liquidityParamBuilder, liquidityParamSplitter, routes } from 'constants
 import { useCurrency } from 'hooks/Tokens'
 import { replaceErrorMessage } from 'utils'
 import { useWalletIsConnected } from 'state/walletConnect/hooks'
-import { useGasFee } from 'hooks/useGasPrice'
+// import { useGasFee } from 'hooks/useGasPrice'
 
 export default function Swap() {
   // const theme = useTheme()
@@ -358,9 +358,9 @@ export default function Swap() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromAsset, typedValue])
 
-  useGasFeePromise().then(resp => {
-    return setGasFee(resp ? resp.gasFeeEth : '--')
-  })
+  // useGasFeePromise().then(resp => {
+  //   return setGasFee(resp ? resp.gasFeeEth : '--')
+  // })
 
   return (
     <>
@@ -556,10 +556,10 @@ export default function Swap() {
   )
 }
 
-async function useGasFeePromise() {
-  const getGasFee = useGasFee()
-  return await getGasFee()
-}
+// async function useGasFeePromise() {
+//   const getGasFee = useGasFee()
+//   return await getGasFee()
+// }
 
 function TokenInfo({
   fromAsset,
