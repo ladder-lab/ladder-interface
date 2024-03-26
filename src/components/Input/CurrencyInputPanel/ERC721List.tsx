@@ -4,7 +4,7 @@ import { isAddress } from 'utils'
 import { useAddUserToken, useTrackedToken721List } from 'state/user/hooks'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { CollectionListComponent } from './ListComponent'
-import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
+// import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
 
 // TOOD: Update to ERC721
 import { Token721 } from 'constants/token/token721'
