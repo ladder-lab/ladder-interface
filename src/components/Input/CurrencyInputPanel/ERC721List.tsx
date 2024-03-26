@@ -4,7 +4,7 @@ import { isAddress } from 'utils'
 import { useAddUserToken, useTrackedToken721List } from 'state/user/hooks'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { CollectionListComponent } from './ListComponent'
-// import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
+import { ReactComponent as SearchIcon } from 'assets/svg/search.svg'
 
 // TOOD: Update to ERC721
 import { Token721 } from 'constants/token/token721'
@@ -73,18 +73,20 @@ export default function ERC721List({
 
   return (
     <>
-      {/* <Typography fontSize={16} fontWeight={500} mb={16}>
-        Don&apos;t see your NFT ? Search address
-      </Typography>
-      <Input
-        value={searchQueryNFT}
-        onChange={handleInput}
-        placeholder="Search name or paste address"
-        // outlined
-        startAdornment={<SearchIcon />}
-        onKeyDown={handleEnter721}
-        height={isDownMd ? 48 : 60}
-      /> */}
+      <Box display={'none'}>
+        <Typography fontSize={16} fontWeight={500} mb={16}>
+          Don&apos;t see your NFT ? Search address
+        </Typography>
+        <Input
+          value={searchQueryNFT}
+          onChange={handleInput}
+          placeholder="Search name or paste address"
+          // outlined
+          startAdornment={<SearchIcon />}
+          onKeyDown={handleEnter721}
+          height={isDownMd ? 48 : 60}
+        />
+      </Box>
 
       <Box sx={{ overflow: 'auto', height: listHeight }}>
         <Box paddingTop={'24px'} position="relative">
