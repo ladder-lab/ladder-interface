@@ -167,7 +167,21 @@ export const DEFAULT_721_LIST: { [chainId in ChainId]?: Token721[] } = {
     })
   ] as Token721[],
   [ChainId.GÖRLI]: TEST_721_LIST,
-  [ChainId.SEPOLIA]: [...TEST_721_TESTNET_V3_LIST_SEPOLIA, ...TEST_721_LIST_SEPOLIA]
+  [ChainId.SEPOLIA]: [...TEST_721_TESTNET_V3_LIST_SEPOLIA, ...TEST_721_LIST_SEPOLIA],
+  [ChainId.MATIC]: [
+    new Token721(137, '0x9E8Ea82e76262E957D4cC24e04857A34B0D8f062', undefined, {
+      name: 'Drago',
+      // tokenUri: 'https://lok-nft.leagueofkingdoms.com/api/drago/',
+      symbol: 'DRG',
+      uri: 'https://polygonscan.com/token/images/lokdrago_32.png'
+    }),
+    new Token721(137, '0x0A77f356cF1dE1727145E66C92254881Ac3da34B', undefined, {
+      name: 'GensoKishiOnline.v2',
+      // tokenUri: 'https://lok-nft.leagueofkingdoms.com/api/drago/',
+      symbol: 'Genso_NFT_v2',
+      uri: 'https://image.nftscan.com/pls/logo/0x0a77f356cf1de1727145e66c92254881ac3da34b.png'
+    })
+  ] as Token721[]
 }
 
 const v3Erc20Tokens = ['0x55979784068d1BEf37B49F41cAC8040A4b79C4a7', '0xaDefa85603c36FcE62919fd85Cf60F90cb8Dc642']

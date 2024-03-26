@@ -51,7 +51,8 @@ export default function SelectCurrencyModal({
   const isDownMd = useBreakpoint('md')
   const [isImportOpen, setIsInportOpen] = useState(false)
   const theme = useTheme()
-  const [mode, setMode] = useState(selectedTokenType === 'erc20' ? Mode.ERC1155 : Mode.ERC20)
+  // const [mode, setMode] = useState(selectedTokenType === 'erc20' ? Mode.ERC1155 : Mode.ERC20)
+  const [mode, setMode] = useState(Mode.ERC721)
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [searchQueryNFT, setSearchQueryNFT] = useState<string>('')
   const [invertSearchOrder] = useState<boolean>(false)
@@ -172,9 +173,9 @@ export default function SelectCurrencyModal({
   // }, [])
   useEffect(() => {
     if (selectedTokenType === 'erc20') {
-      setMode(Mode.ERC1155)
+      // setMode(Mode.ERC1155)
     } else {
-      setMode(Mode.ERC20)
+      // setMode(Mode.ERC20)
     }
   }, [selectedTokenType])
 
@@ -219,7 +220,7 @@ export default function SelectCurrencyModal({
           /> */}
         </Box>
         <Box display="flex" gap={20} padding="31px 0 30px" alignItems="center">
-          <ModeButton
+          {/* <ModeButton
             selected={mode === Mode.ERC20}
             onClick={() => {
               setMode(Mode.ERC20)
@@ -240,7 +241,7 @@ export default function SelectCurrencyModal({
             disabled={selectedTokenType === 'erc1155'}
           >
             ERC1155
-          </ModeButton>
+          </ModeButton> */}
           <ModeButton
             selected={mode === Mode.ERC721}
             onClick={() => {

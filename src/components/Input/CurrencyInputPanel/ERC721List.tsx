@@ -73,7 +73,7 @@ export default function ERC721List({
 
   return (
     <>
-      <Typography fontSize={16} fontWeight={500} mb={16}>
+      {/* <Typography fontSize={16} fontWeight={500} mb={16}>
         Don&apos;t see your NFT ? Search address
       </Typography>
       <Input
@@ -84,7 +84,7 @@ export default function ERC721List({
         startAdornment={<SearchIcon />}
         onKeyDown={handleEnter721}
         height={isDownMd ? 48 : 60}
-      />
+      /> */}
 
       <Box sx={{ overflow: 'auto', height: listHeight }}>
         <Box paddingTop={'24px'} position="relative">

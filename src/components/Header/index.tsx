@@ -45,8 +45,8 @@ interface Tab extends TabContent {
 
 export const Tabs: Tab[] = [
   // { title: 'Testnet', route: routes.testnet },
-  { title: 'Add Liquidity', route: routes.pool },
-  { title: 'Swap', route: routes.swap }
+  // { title: 'Add Liquidity', route: routes.pool },
+  // { title: 'Swap', route: routes.swap }
   // { title: 'Pool', route: routes.pool },
   // { title: 'Explore', route: routes.explorer },
   // { title: 'Statistics', route: routes.statistics }

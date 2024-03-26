@@ -34,11 +34,14 @@ import { useNavigate } from 'react-router-dom'
 import { liquidityParamBuilder, routes } from 'constants/routes'
 // import { useCurrency } from 'hooks/Tokens'
 import { replaceErrorMessage } from 'utils'
-import dogewalkUrl from 'assets/images/dogewalk.png'
+// import dogewalkUrl from 'assets/images/dogewalk.png'
 // import laddarLogo from 'assets/images/logo_white_mark.png'
-import { ExternalLink } from 'theme/components'
+// import { ExternalLink } from 'theme/components'
 import Image from 'components/Image'
 import useBreakpoint from 'hooks/useBreakpoint'
+import Dogewalk from 'assets/images/dogewalk.png'
+import GensoLogo from 'assets/images/Airdrop/gensoLogo.png'
+import MuaLogo from 'assets/images/Airdrop/muaLogo.jpg'
 
 const TitleStyle = styled(Typography)(() => ({
   color: '#FFF',
@@ -47,7 +50,8 @@ const TitleStyle = styled(Typography)(() => ({
   fontWeight: '700'
 }))
 
-const [currency0, currency1] = [
+// eslint-disable-next-line prefer-const
+let [currency0, currency1] = [
   // new Token(137, '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', 6, 'USDC', 'USDC'),
   // new Token(137, '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063', 18, 'DAI', 'DAI'),
   // new Token721(137, '0x2871e92209D9B0936FbbB178483877f51C7c9321', undefined)
@@ -88,6 +92,8 @@ export default function Swap() {
   //   useCurrency(currencyIdA, tokenIdA) ?? undefined,
   //   useCurrency(currencyIdB, tokenIdB) ?? undefined
   // ]
+
+  const [disableCurrencySelectState, setDisableCurrencySelectState] = useState<boolean>(false)
 
   const { showModal, hideModal } = useModal()
   const toggleWallet = useWalletModalToggle()
@@ -312,7 +318,8 @@ export default function Swap() {
     const to = toErc721SubTokens
     setFromErc721SubTokens(to)
     setToErc721SubTokens(from)
-  }, [account, onSwitchTokens, fromErc721SubTokens, toErc721SubTokens])
+    setDisableCurrencySelectState(!disableCurrencySelectState)
+  }, [account, onSwitchTokens, fromErc721SubTokens, toErc721SubTokens, disableCurrencySelectState])
 
   useEffect(() => {
     if (fromAsset && checkIs721(fromAsset) && fromErc721SubTokens) {
@@ -399,13 +406,13 @@ export default function Swap() {
               <Box mb={fromAsset ? 16 : 0}>
                 <>
                   <CurrencyInputPanel
+                    disableCurrencySelect={!disableCurrencySelectState}
                     value={formattedAmounts[Field.INPUT]}
                     onChange={handleFromVal}
                     onSelectCurrency={handleFromAsset}
                     currency={fromAsset}
                     onMax={handleMaxInput}
                     disabled={!account}
-                    disableCurrencySelect
                     onSelectSubTokens={handleFromSubAssets}
                   />
                   {PriceCorrectInput}
@@ -431,7 +438,7 @@ export default function Swap() {
               <Box mb={toAsset ? 16 : 0}>
                 <>
                   <CurrencyInputPanel
-                    disableCurrencySelect
+                    disableCurrencySelect={disableCurrencySelectState}
                     value={formattedAmounts[Field.OUTPUT]}
                     onChange={handleToVal}
                     onSelectCurrency={handleToAsset}
@@ -587,45 +594,135 @@ export function ActivityInfo() {
       {/* <Typography fontSize={{ xs: 20, md: 34 }} fontWeight={700} lineHeight={'125%'}>
         Welcome to DogeWalk’s SFT AMM trading platform, powered by Ladder.
       </Typography> */}
-      <Image src={dogewalkUrl} style={{ height: 53, marginBottom: '20px' }} />
+      {/* <Image src={dogewalkUrl} style={{ height: 53, marginBottom: '20px' }} /> */}
+      <Box display={'flex'} alignItems={'center'}>
+        <Box
+          sx={{
+            width: '40px',
+            height: '53px',
+            // backgroundColor: '#ffffff',
+            display: 'flex',
+            alignItems: 'center'
+          }}
+        >
+          <Image src={MuaLogo} style={{ height: 40, width: 40, borderRadius: '100%' }} />
+        </Box>
+        <Box
+          sx={{
+            width: '42px',
+            height: '53px',
+            backgroundImage: `url(${Dogewalk})`,
+            backgroundPosition: '-43px 0px',
+            backgroundSize: '243px'
+          }}
+        ></Box>
+        <Box
+          sx={{
+            width: '40px',
+            height: '53px',
+            backgroundImage: `url(${Dogewalk})`,
+            backgroundPosition: '0px 0px',
+            backgroundSize: '243px'
+          }}
+        ></Box>
+        <Box
+          sx={{
+            width: '42px',
+            height: '53px',
+            backgroundImage: `url(${Dogewalk})`,
+            backgroundPosition: '-43px 0px',
+            backgroundSize: '243px'
+          }}
+        ></Box>
+        {/* <Box
+          sx={{
+            width: '46px',
+            height: '53px',
+            backgroundImage: `url(${Dogewalk})`,
+            backgroundPosition: '-84px 0px',
+            backgroundSize: '243px'
+          }}
+        ></Box>
+        <Box
+          sx={{
+            width: '42px',
+            height: '53px',
+            backgroundImage: `url(${Dogewalk})`,
+            backgroundPosition: '-43px 0px',
+            backgroundSize: '243px'
+          }}
+        ></Box> */}
+        <Box
+          sx={{
+            width: '68px',
+            height: '53px',
+            backgroundImage: `url(${Dogewalk})`,
+            backgroundPosition: '-173px 0px',
+            backgroundSize: '243px'
+          }}
+        ></Box>
+        <Box
+          sx={{
+            width: '42px',
+            height: '53px',
+            backgroundImage: `url(${Dogewalk})`,
+            backgroundPosition: '-43px 0px',
+            backgroundSize: '243px'
+          }}
+        ></Box>
+        <Box
+          sx={{
+            width: '40px',
+            height: '40px',
+            backgroundColor: '#ffffff',
+            borderRadius: '100%'
+          }}
+        >
+          <Image src={GensoLogo} style={{ height: 40, width: 40 }} />
+        </Box>
+      </Box>
       <Box>
-        <TitleStyle>Dew it with League of Kingdoms on Ladder</TitleStyle>
+        {/* <TitleStyle>Dew it with League of Kingdoms on Ladder</TitleStyle> */}
         <br />
         <Typography lineHeight={'140%'}>
           <Typography lineHeight={'140%'}>
-            Add liquidity (1 Drago + corresponding value in MATIC), lock it for 7 days, and win a Mystery Box, as well
-            as get Ladder Boxes. Mystery Boxes contain 1 of 4 types of Dragon Egg NFTs. Collect all 4 to receive a Dew
-            Token Airdrop Box as well.
+            MUA Boarding Odyssey Season 3 is LIVE and it integrates Ladder, Genso and League of Kingdoms IP in a
+            gamified experience. After users are onboarded into the MUAverse through minting their MUA Boarding Pass for
+            free, they need to collect MUA points in order to level up their Boarding Pass and participate in special
+            events.
           </Typography>
           <br />
-          To track your progress and for more tasks visit: 🔗
-          <ExternalLink sx={{ color: '#1F9898' }} href="https://galxe.com/dewgg/campaign/GCoHXUnvTW">
-            https://galxe.com/dewgg/campaign/GCoHXUnvTW
-          </ExternalLink>
+          Ladder has set up 2 different liquidity pools (for League of Kingdoms Dragos and Genso Beginner Equipment),
+          where each swap is rewarded with a hefty amount of MUA points
         </Typography>
 
         <br />
 
+        <TitleStyle>About MUA</TitleStyle>
+
+        <Typography lineHeight={'140%'} mt={10}>
+          Metaverse Universal Assets (MUA) is a pioneering Metaverse Middleware Infrastructure, offering a one-stop
+          solution for enterprises and businesses.
+          <br />
+          MUA enables the creation, operation and management of interoperable digital assets, across multiple Metaverse
+          platforms throughout the MUAverse.
+        </Typography>
+        <br />
+        <TitleStyle>About Genso</TitleStyle>
+        <Typography lineHeight={'140%'} mt={10}>
+          GensoKishi Online -META WORLD- is the metaverse reincarnation of &ldquo;Elemental Knights Online,&rdquo; a
+          well-acclaimed game that has received the 2012 Game of the year (Gold) in Taiwan with a record total of 8
+          million downloads worldwide.
+          <br />
+          With the introduction of blockchain technology, a new economic dimension opens up, aiming to provide new
+          spaces, experiences and entertainment that go beyond the boundaries of the real world.
+        </Typography>
+        <br />
         <TitleStyle>About League of Kingdoms</TitleStyle>
-
         <Typography lineHeight={'140%'} mt={10}>
-          League of Kingdoms is an MMO Strategy game where players forge kingdoms and fight for dominion.
-          <br />
-          Dragos are dragon-like creatures that dwell in the continents of the League of Kingdoms and have historically
-          been tamed by royal courts.
-        </Typography>
-        <br />
-        <TitleStyle>About Ladder</TitleStyle>
-        <Typography lineHeight={'140%'} mt={10}>
-          Ladder is a decentralized Automated Market Maker (AMM) protocol that provides instant liquidity for NFTs
-          through liquidity pools. Through Ladder, users can permisionlessly create their own markets that offer NFT
-          holders new revenue streams.
-          <br />
-          Go to 🔗{' '}
-          <ExternalLink sx={{ color: '#1F9898' }} href="https://test.ladder.top/airdrop">
-            [ladder airdrop]
-          </ExternalLink>{' '}
-          to find more tasks to get Ladder Boxes.
+          League of Kingdoms is an MMO strategy game where players forge kingdoms and fight for dominion. Dragos are
+          dragon-like creatures that dwell in the continents of League of Kingdoms and have historically been tamed by
+          royal courts.
         </Typography>
       </Box>
     </Box>
