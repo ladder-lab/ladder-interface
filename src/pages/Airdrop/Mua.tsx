@@ -7,7 +7,8 @@ import { ReactComponent as Bnb } from 'assets/svg/airdrop/bnb.svg'
 import { ReactComponent as Dogewalk } from 'assets/svg/airdrop/dogewalk.svg'
 import { ReactComponent as Ladder } from 'assets/svg/airdrop/ladder.svg'
 import Drago from 'assets/images/Airdrop/dragoLogo.jpg'
-import Genso from 'assets/images/Airdrop/gensoLogo.png'
+// import Genso from 'assets/images/Airdrop/gensoLogo.png'
+import Lok from 'assets/images/Airdrop/lokLogo.jpg'
 import QuestionHelper from 'components/essential/QuestionHelper'
 import { TYPE, CardProp, MuaSeasonTowTaskCards } from './TaskList'
 import { ChainId } from '@ladder/sdk'
@@ -23,6 +24,37 @@ const disabledBtn = false
 
 const tasks = [
   {
+    id: 'boxTask14',
+    boxType: 14,
+    boxs: 0,
+    claimed: false,
+    finished: false,
+    title: 'Genso Beginner Equipment Swap',
+    chain: ChainId.SEPOLIA,
+    completed: false,
+    action: () => {},
+    link: 'https://mua-campaign.ladder.top/swap',
+    route: '',
+    // icon: <Genso />,
+    iconUrl: Drago,
+    count: 0,
+    desc: (
+      <>
+        Earn 500 MUA points on each Swap.
+        <br />
+        (max 5000 points)
+      </>
+    ),
+    chainTag: (
+      <>
+        <Polygon />
+        <span>Polygon</span>
+      </>
+    ),
+    // route?: string
+    tooltip: `Genso Beginner Equipment is designed to give a starting boost for new players that venture into Genso’s fantasy MMO world.`
+  },
+  {
     id: 'lokSwap',
     boxType: 13,
     boxs: 0,
@@ -35,7 +67,7 @@ const tasks = [
     link: 'https://mua-campaign.ladder.top/swap',
     route: '',
     // icon: <Drago />,
-    iconUrl: Drago,
+    iconUrl: Lok,
     count: 0,
     desc: (
       <>
@@ -52,37 +84,6 @@ const tasks = [
     ),
     tooltip:
       'Dragos are dragon-like creatures that inhabit League of Kingdom’s MMO world, aiding players in their conquests.'
-  },
-  {
-    id: 'boxTask14',
-    boxType: 14,
-    boxs: 0,
-    claimed: false,
-    finished: false,
-    title: 'Genso Beginner Equipment Swap',
-    chain: ChainId.SEPOLIA,
-    completed: false,
-    action: () => {},
-    link: 'https://mua-campaign.ladder.top/swap',
-    route: '',
-    // icon: <Genso />,
-    iconUrl: Genso,
-    count: 0,
-    desc: (
-      <>
-        Earn 500 MUA points on each Swap.
-        <br />
-        (max 1500 points)
-      </>
-    ),
-    chainTag: (
-      <>
-        <Polygon />
-        <span>Polygon</span>
-      </>
-    ),
-    // route?: string
-    tooltip: `Genso Beginner Equipment is designed to give a starting boost for new players that venture into Genso’s fantasy MMO world.`
   }
   // {
   //   id: 'boxTask15',
