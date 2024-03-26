@@ -52,7 +52,7 @@ import { AllTokens } from 'models/allTokens'
 
 export default function AddLiquidy() {
   const isDownSm = useBreakpoint('sm')
-  const [currencyA, setCurrencyA] = useState<undefined | AllTokens>(ETHER)
+  const [currencyA] = useState<undefined | AllTokens>(ETHER)
   const [currencyB, setCurrencyB] = useState<undefined | AllTokens>(
     new Token721(137, '0x9E8Ea82e76262E957D4cC24e04857A34B0D8f062', undefined, {
       name: 'Drago',
