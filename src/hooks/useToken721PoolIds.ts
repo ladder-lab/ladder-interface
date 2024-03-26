@@ -9,7 +9,7 @@ import { use721PairContract } from './useContract'
 export function useToken721PoolIds(pairAddress: string | undefined, collection: Token721 | undefined) {
   const { chainId } = useActiveWeb3React()
   const [currentPage, setCurrentPage] = useState(1)
-  const pageSize = 20
+  const pageSize = 100
   const contract = use721PairContract(pairAddress)
   const length = useSingleCallResult(contract, 'erc721MapLength')
   const [, setRefresh] = useState(false)
