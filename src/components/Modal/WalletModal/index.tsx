@@ -97,6 +97,7 @@ export default function WalletModal({
           .then(() => {
             setWalletConnectState(true, name)
             setWalletView(WALLET_VIEWS.ACCOUNT)
+            toggleWalletModal()
           })
           .catch(error => {
             if (error instanceof UnsupportedChainIdError) {
@@ -108,7 +109,7 @@ export default function WalletModal({
             }
           })
     },
-    [activate, setWalletConnectState]
+    [activate, setWalletConnectState, toggleWalletModal]
   )
 
   // close wallet modal if fortmatic modal is active
