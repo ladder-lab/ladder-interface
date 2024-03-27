@@ -159,7 +159,7 @@ export default function Mua() {
           1,500 USDT.
         </Typography>
       </Typography>
-      <Box display={'flex'} alignItems={'center'} gap={40}>
+      <Box display={'flex'} alignItems={'center'} justifyContent={'center'} gap={40}>
         {/* <Box
           sx={{
             cursor: disabledBtn ? 'not-allowed' : 'pointer',
@@ -244,6 +244,7 @@ export default function Mua() {
         </Box> */}
         <Box
           sx={{
+            width: '260px',
             cursor: disabledBtn ? 'not-allowed' : 'pointer',
             opacity: disabledBtn ? 0.6 : 1,
             padding: '6px 24px',
@@ -257,6 +258,7 @@ export default function Mua() {
           }}
           display={'flex'}
           alignItems={'center'}
+          justifyContent={'center'}
           gap={5}
           onClick={() => {
             !disabledBtn && window.open('https://muaverse.build/boarding', '_blank')
@@ -270,6 +272,7 @@ export default function Mua() {
         </Box>
         <Box
           sx={{
+            width: '260px',
             cursor: disabledBtn ? 'not-allowed' : 'pointer',
             opacity: disabledBtn ? 0.6 : 1,
             padding: '6px 24px',
@@ -283,6 +286,7 @@ export default function Mua() {
           }}
           display={'flex'}
           alignItems={'center'}
+          justifyContent={'center'}
           gap={5}
           onClick={() => {
             !disabledBtn && window.open('https://app.questn.com/quest/886244190475755865', '_blank')
