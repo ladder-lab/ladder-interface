@@ -39,7 +39,7 @@ export function useGasFee() {
   const [speed] = useUserTransactionSpeed()
 
   const cb = useCallback(async () => {
-    if (!web3) return null
+    if (!web3) return
 
     if (!account || !chainId) return
 
@@ -48,7 +48,7 @@ export function useGasFee() {
       gasPrice = await web3.eth.getGasPrice()
     } catch (error) {
       console.log(error)
-      return null
+      return
     }
     gasPrice = calculateGasPriceMargin(gasPrice || '', speed)
 
@@ -57,7 +57,7 @@ export function useGasFee() {
       gasLimit = await web3.eth.estimateGas({})
     } catch (error) {
       console.log(error)
-      return null
+      return
     }
 
     const gasBN = web3.utils.toBN(gasPrice).mul(web3.utils.toBN(gasLimit))
