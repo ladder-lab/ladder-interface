@@ -9,7 +9,7 @@ import { ReactComponent as Monopoly } from 'assets/svg/airdrop/monopoly.svg'
 import { ReactComponent as Badges } from 'assets/svg/airdrop/badges.svg'
 import { ReactComponent as Trading } from 'assets/svg/airdrop/trading.svg'
 
-const expiredList = ['test1', 'test2', 'monopoly']
+const expiredList = ['test1', 'test2', 'monopoly', 'swap-two', 'hold-two']
 
 const tasks = [
   // {
