@@ -4,6 +4,7 @@ import { useTheme, Box, styled, Typography, Button } from '@mui/material'
 import { NetworkContextName } from '../../constants'
 import useENSName from '../../hooks/useENSName'
 import { useWalletModalToggle } from '../../state/application/hooks'
+import { useWalletIsConnected } from 'state/walletConnect/hooks'
 import { isTransactionRecent, useAllTransactions } from '../../state/transactions/hooks'
 import { TransactionDetails } from '../../state/transactions/reducer'
 import { shortenAddress } from '../../utils'
@@ -47,9 +48,12 @@ function Web3StatusInner() {
   const theme = useTheme()
   const isDownSm = useBreakpoint()
 
-  if (account) {
+  const walletIsConnected = useWalletIsConnected()
+  // const setWalletConnectState = useWalletConnectStateManager()
+
+  if (walletIsConnected && account) {
     return (
-      <Box sx={{ cursor: 'pointer' }} onClick={toggleWalletModal}>
+      <Box sx={{ cursor: 'pointer', display: 'flex', gap: 13, justifyContent: 'space-between', alignItems: 'center' }}>
         <Box
           sx={{
             height: { xs: 46, sm: 46 },
@@ -65,6 +69,7 @@ function Web3StatusInner() {
               md: '6px 9px 6px 25px'
             }
           }}
+          onClick={toggleWalletModal}
         >
           <Box>
             {hasPendingTransactions ? (
@@ -90,19 +95,20 @@ function Web3StatusInner() {
             )}
           </Box>
           <Web3StatusIcon />
-          {/* <ActionButton
-            sx={{
-              width: isDownSm ? '108px' : '120px',
-              height: isDownSm ? '28px' : '36px',
-              fontSize: isDownSm ? '12px' : '14px'
-            }}
-            onClick={() => {
-              deactivate()
-            }}
-          >
-            Disconnect
-          </ActionButton> */}
         </Box>
+        {/* <ActionButton
+          sx={{
+            width: isDownSm ? '108px' : '120px',
+            height: isDownSm ? '28px' : '36px',
+            fontSize: isDownSm ? '12px' : '14px'
+          }}
+          onClick={() => {
+            deactivate()
+            setWalletConnectState(false, '')
+          }}
+        >
+          Disconnect
+        </ActionButton> */}
       </Box>
     )
   } else if (error) {

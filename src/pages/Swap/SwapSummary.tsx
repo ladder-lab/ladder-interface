@@ -54,7 +54,7 @@ export function SwapSummary({
 
         <Box display="flex" gap={5} alignItems="center">
           <GasStationIcon />
-          <Typography color={theme.palette.text.secondary}>~${gasFee || '-'}</Typography>
+          <Typography color={theme.palette.text.secondary}>{gasFee || '-'} ETH</Typography>
         </Box>
       </Box>
     )
@@ -121,7 +121,7 @@ export function SwapSummary({
               )}
             </Box>
 
-            <Typography sx={{ color: theme.palette.text.secondary }}>~${gasFee || '-'}</Typography>
+            <Typography sx={{ color: theme.palette.text.secondary }}>{gasFee || '-'} ETH</Typography>
           </Box>
         </Box>
         <Divider />

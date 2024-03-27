@@ -6,6 +6,7 @@ import { OutlinedCard } from 'components/Card'
 import Spinner from 'components/Spinner'
 
 export default function PendingView({
+  name,
   connector,
   error = false,
   setPendingError,
@@ -13,10 +14,11 @@ export default function PendingView({
   children
 }: {
   children: React.ReactNode
+  name: string
   connector?: AbstractConnector
   error?: boolean
   setPendingError: (error: boolean) => void
-  tryActivation: (connector: AbstractConnector) => void
+  tryActivation: (name: string, connector: AbstractConnector) => void
 }) {
   const theme = useTheme()
 
@@ -45,7 +47,7 @@ export default function PendingView({
             <Button
               onClick={() => {
                 setPendingError(false)
-                connector && tryActivation(connector)
+                connector && tryActivation(name, connector)
               }}
             >
               Try Again

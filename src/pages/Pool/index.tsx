@@ -19,12 +19,14 @@ import { checkIs1155, checkIs721, getTokenText } from 'utils/checkIs1155'
 import { useWalletModalToggle } from 'state/application/hooks'
 import { generateErc20 } from 'utils/getHashAddress'
 import { trimNumberString } from 'utils/trimNumberString'
+import { useWalletIsConnected } from 'state/walletConnect/hooks'
 
 export default function Pool() {
   const theme = useTheme()
   const navigate = useNavigate()
   const { account } = useActiveWeb3React()
   const toggleWallet = useWalletModalToggle()
+  const walletIsConnected = useWalletIsConnected()
 
   // fetch the user's balances of all tracked V2 LP tokens
   const trackedTokenPairs = useTrackedTokenPairs()
@@ -122,7 +124,7 @@ export default function Pool() {
             <Box minHeight={332} display="flex" justifyContent="center" alignItems="center">
               <Loader size={90} />
             </Box>
-          ) : account ? (
+          ) : walletIsConnected && account ? (
             <Grid container mt={20} spacing={20} alignItems="stretch" minHeight={332}>
               {v2Pairs.length === 0 && (
                 <Grid item xs={12} justifyContent="center" alignItems={'center'}>

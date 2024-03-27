@@ -5,19 +5,21 @@ import application from './application/reducer'
 import { updateVersion } from './global/actions'
 import user from './user/reducer'
 import transactions from './transactions/reducer'
+import walletConnect from './walletConnect/reducer'
 import multicall from './multicall/reducer'
 import swap from './swap/reducer'
 import mint from './mint/reducer'
 import burn from './burn/reducer'
 import userToken from './userToken/reducer'
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions']
+const PERSISTED_KEYS: string[] = ['user', 'transactions', 'walletConnect']
 
 const store = configureStore({
   reducer: {
     application,
     user,
     transactions,
+    walletConnect,
     multicall,
     userToken,
     swap,

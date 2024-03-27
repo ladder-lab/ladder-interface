@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react'
 import useModal from './useModal'
 import { useSignLogin } from './useSignIn'
 import { useIsWindowFocus } from './useIsWindowVisible'
+import { useWalletIsConnected } from 'state/walletConnect/hooks'
 
 interface AirdropProps {
   boxType: number
@@ -145,13 +146,14 @@ export function useAirdropData() {
   const [refresh, setRefresh] = useState(false)
   const { account, chainId } = useActiveWeb3React()
   const [airdropData, setAirdropData] = useState<any>(undefined)
+  const walletIsConnected = useWalletIsConnected()
 
   const refreshCb = useCallback(() => {
     setRefresh(prev => !prev)
   }, [])
 
   const cb = useCallback(() => {
-    if (!account || !chainId) return
+    if (!walletIsConnected || !account || !chainId) return
     axiosAirdropInstance
       .get('/drop/getdropInfo', {
         params: { account, chainId }
@@ -164,7 +166,7 @@ export function useAirdropData() {
       .catch(e => {
         console.error(e)
       })
-  }, [account, chainId])
+  }, [account, chainId, walletIsConnected])
 
   useEffect(() => {
     cb()
@@ -180,9 +182,10 @@ export function useActivityList(refreshCb: () => void) {
   const [taskState, setTaskState] = useState<any>(null)
   const { hideModal } = useModal()
   const [activity, setActivityState] = useState<AirdropProps>()
+  const walletIsConnected = useWalletIsConnected()
 
   const cb = useCallback(() => {
-    if (!account) return
+    if (!walletIsConnected || !account) return
     axiosAirdropInstanceLockLP
       .get('mint/nft/complete', {
         params: { account }
@@ -195,12 +198,12 @@ export function useActivityList(refreshCb: () => void) {
       .catch(e => {
         console.error(e)
       })
-  }, [account])
+  }, [account, walletIsConnected])
 
   const getBox = useCallback(
     ({ boxType, boxs }: { boxType: number; boxs: number }) =>
       () => {
-        if (!account || !chainId) return
+        if (!walletIsConnected || !account || !chainId) return
         axiosAirdropInstance
           .get('/drop/saveCompleteBox', { params: { account, boxType, boxs, chainId } })
           .then(r => {
@@ -214,7 +217,7 @@ export function useActivityList(refreshCb: () => void) {
             console.error(e)
           })
       },
-    [account, cb, chainId, hideModal, refreshCb]
+    [account, cb, chainId, hideModal, refreshCb, walletIsConnected]
   )
 
   useEffect(() => {
@@ -229,6 +232,7 @@ export function useVerifyEmail() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const { account } = useActiveWeb3React()
   const isWindowVisible = useIsWindowFocus()
+  const walletIsConnected = useWalletIsConnected()
   useEffect(() => {
     if (isWindowVisible) {
       setTimeout(() => {
@@ -238,7 +242,7 @@ export function useVerifyEmail() {
   }, [isWindowVisible])
   const jump = useCallback(async () => {
     try {
-      if (!account) return
+      if (!walletIsConnected || !account) return
       const res = await axiosAirdropInstance.get('/drop/googleOauth', {
         params: {
           address: account
@@ -263,7 +267,7 @@ export function useVerifyEmail() {
       setIsLoading(false)
       console.error('useGoogleOauth', error)
     }
-  }, [account])
+  }, [account, walletIsConnected])
 
   const { token, sign } = useSignLogin(jump)
   const openVerify = useCallback(() => {
@@ -287,9 +291,10 @@ interface MuaTastState {
 export function useMuaTasks() {
   const { account, chainId } = useActiveWeb3React()
   const [taskState, setTaskState] = useState<MuaTastState>({ nftSwapCount: 0, sftSwapCount: 0, task3: false })
+  const walletIsConnected = useWalletIsConnected()
 
   const cb = useCallback(() => {
-    if (!account || !chainId) return
+    if (!walletIsConnected || !account || !chainId) return
     Promise.all([
       axiosAirdropInstance.get('/mua/nftBuyCount', {
         params: { address: account, chainId: 137 }
@@ -336,7 +341,7 @@ export function useMuaTasks() {
       .catch(e => {
         console.error(e)
       })
-  }, [account, chainId])
+  }, [account, chainId, walletIsConnected])
 
   useEffect(() => {
     cb()
@@ -351,9 +356,10 @@ export function useMuaSeasonTwoTasks() {
   const { account, chainId } = useActiveWeb3React()
   const [taskState, setTaskState] = useState<any>(null)
   const { hideModal } = useModal()
+  const walletIsConnected = useWalletIsConnected()
 
   const cb = useCallback(() => {
-    if (!account || !chainId) return
+    if (!walletIsConnected || !account || !chainId) return
     axiosAirdropMuaInstance
       .get('getCompleteTaskStatus', {
         params: { account: account, chainId: chainId }
@@ -366,12 +372,12 @@ export function useMuaSeasonTwoTasks() {
       .catch(e => {
         console.error(e)
       })
-  }, [account, chainId])
+  }, [account, chainId, walletIsConnected])
 
   const getBox = useCallback(
     ({ boxType, boxs }: { boxType: number; boxs: number }) =>
       () => {
-        if (!account || !chainId) return
+        if (!walletIsConnected || !account || !chainId) return
         axiosAirdropInstance
           .get('/drop/saveCompleteBox', { params: { account, boxType, boxs, chainId } })
           .then(r => {
@@ -384,7 +390,7 @@ export function useMuaSeasonTwoTasks() {
             console.error(e)
           })
       },
-    [account, cb, chainId, hideModal]
+    [account, cb, chainId, hideModal, walletIsConnected]
   )
 
   useEffect(() => {

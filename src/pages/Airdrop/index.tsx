@@ -14,7 +14,7 @@ import { useRef } from 'react'
 import darkBg2 from 'assets/images/dark_bg.png'
 import QuestionHelper from 'components/essential/QuestionHelper'
 // import ActivityBox from './Activity'
-// import Mua from './Mua'
+import Mua from './Mua'
 
 const StyledLuck = styled(Luck)({})
 
@@ -236,7 +236,7 @@ export default function Airdrop() {
           </Box>
         </Box>
       </Box>
-      {/* <Mua /> */}
+      <Mua />
       {/* <Box>
         <ActivityBox refreshCb={refreshCb} />
       </Box> */}

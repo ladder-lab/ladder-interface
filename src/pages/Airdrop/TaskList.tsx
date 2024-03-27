@@ -13,6 +13,8 @@ import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
 import QuestionHelper from 'components/essential/QuestionHelper'
 import { ActivityProps } from './Activity'
+import { useWalletIsConnected } from 'state/walletConnect/hooks'
+import Image from 'components/Image'
 
 const disabledBtn = false
 
@@ -38,6 +40,7 @@ export interface CardProp {
   claimed?: boolean
   action?: () => void
   icon?: React.ReactNode
+  iconUrl?: string
   expired?: boolean
   route?: string
   tooltip?: string
@@ -484,6 +487,7 @@ export function MuaSeasonTowTaskCards({ data, type, sx }: { data: CardProp[]; ty
   const { account } = useActiveWeb3React()
   const isDarkMode = useIsDarkMode()
   const toggleWalletModal = useWalletModalToggle()
+  const walletIsConnected = useWalletIsConnected()
   if (data.length === 0)
     return (
       <Typography variant="h5" fontSize={20} textAlign={'center'} pt={60}>
@@ -508,7 +512,11 @@ export function MuaSeasonTowTaskCards({ data, type, sx }: { data: CardProp[]; ty
               justifyContent={'space-between'}
             >
               <Box display="flex" alignItems={'center'} gap={15}>
-                {data.icon}
+                {data.icon ? (
+                  data.icon
+                ) : (
+                  <Image src={data.iconUrl as any} style={{ height: 40, width: 40, borderRadius: '100%' }} />
+                )}
                 <Typography
                   sx={{
                     fontSize: 12,
@@ -568,7 +576,7 @@ export function MuaSeasonTowTaskCards({ data, type, sx }: { data: CardProp[]; ty
                 )}
               </Box>
 
-              {!account && (
+              {(!walletIsConnected || !account) && (
                 <Button
                   sx={{
                     fontSize: 16,
@@ -591,7 +599,7 @@ export function MuaSeasonTowTaskCards({ data, type, sx }: { data: CardProp[]; ty
                 </Button>
               )}
 
-              {account && (
+              {walletIsConnected && account && (
                 <>
                   {!data.completed ? (
                     <Button

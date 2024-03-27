@@ -34,6 +34,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { liquidityParamBuilder, liquidityParamSplitter, routes } from 'constants/routes'
 import { useCurrency } from 'hooks/Tokens'
 import { replaceErrorMessage } from 'utils'
+import { useWalletIsConnected } from 'state/walletConnect/hooks'
+import { useGasFee } from 'hooks/useGasPrice'
 
 export default function Swap() {
   // const theme = useTheme()
@@ -41,7 +43,11 @@ export default function Swap() {
   const { account, chainId } = useActiveWeb3React()
   const navigate = useNavigate()
 
+  const walletIsConnected = useWalletIsConnected()
+
   const [summaryExpanded, setSummaryExpanded] = useState(false)
+
+  const { gasFeeState } = useGasFee()
 
   // modal and loading
   const [{ showConfirm, tradeToConfirm, attemptingTxn, txHash }, setSwapState] = useState<{
@@ -278,7 +284,7 @@ export default function Swap() {
   }, [fromAsset, toAsset])
 
   const onSwitch = useCallback(() => {
-    if (!account) {
+    if (!walletIsConnected || !account) {
       return
     }
     onSwitchTokens()
@@ -286,7 +292,7 @@ export default function Swap() {
     const to = toErc721SubTokens
     setFromErc721SubTokens(to)
     setToErc721SubTokens(from)
-  }, [account, onSwitchTokens, fromErc721SubTokens, toErc721SubTokens])
+  }, [walletIsConnected, account, onSwitchTokens, fromErc721SubTokens, toErc721SubTokens])
 
   useEffect(() => {
     if (fromAsset && checkIs721(fromAsset) && fromErc721SubTokens) {
@@ -400,7 +406,7 @@ export default function Swap() {
                 onSelectCurrency={handleFromAsset}
                 currency={fromAsset}
                 onMax={handleMaxInput}
-                disabled={!account}
+                disabled={!walletIsConnected || !account}
                 onSelectSubTokens={handleFromSubAssets}
                 currencyA={fromAsset}
                 currencyB={toAsset}
@@ -423,7 +429,7 @@ export default function Swap() {
               }
             }}
           >
-            <SwitchCircle onClick={onSwitch} style={{ cursor: account ? 'pointer' : 'auto' }} />
+            <SwitchCircle onClick={onSwitch} style={{ cursor: walletIsConnected && account ? 'pointer' : 'auto' }} />
           </Box>
           <Box mb={toAsset ? 16 : 0}>
             <>
@@ -432,7 +438,7 @@ export default function Swap() {
                 onChange={handleToVal}
                 onSelectCurrency={handleToAsset}
                 currency={toAsset}
-                disabled={!account}
+                disabled={!walletIsConnected || !account}
                 onSelectSubTokens={handleToSubAssets}
                 enableAuto={true}
                 pairAddress={pair721Address}
@@ -452,14 +458,14 @@ export default function Swap() {
               expanded={summaryExpanded}
               onChange={() => setSummaryExpanded(!summaryExpanded)}
               margin="20px 0 0"
-              gasFee="--"
+              gasFee={gasFeeState.gasFeeEth}
               slippage={+(priceImpactWithoutFee?.toFixed(2) ?? 0)}
               minReceiveQty={slippageAdjustedAmounts.OUTPUT?.toFixed(6) ?? '-'}
               routerTokens={trade?.route.path.slice(1, -1)}
             />
           )}
           <Box mt={40}>
-            {!account ? (
+            {!walletIsConnected || !account ? (
               <Button onClick={toggleWallet} sx={{ fontSize: 16, fontWeight: 600 }}>
                 Connect Wallet
               </Button>
