@@ -57,11 +57,17 @@ let [currency0, currency1] = [
   // new Token721(137, '0x2871e92209D9B0936FbbB178483877f51C7c9321', undefined)
   // new Token721(137, '0x2871e92209D9B0936FbbB178483877f51C7c9321', undefined)
   ETHER,
-  new Token721(137, '0x9E8Ea82e76262E957D4cC24e04857A34B0D8f062', undefined, {
-    name: 'Drago',
-    tokenUri: 'https://lok-nft.leagueofkingdoms.com/api/drago/',
-    symbol: 'DRG',
-    uri: 'https://polygonscan.com/token/images/lokdrago_32.png'
+  // new Token721(137, '0x9E8Ea82e76262E957D4cC24e04857A34B0D8f062', undefined, {
+  //   name: 'Drago',
+  //   tokenUri: 'https://lok-nft.leagueofkingdoms.com/api/drago/',
+  //   symbol: 'DRG',
+  //   uri: 'https://polygonscan.com/token/images/lokdrago_32.png'
+  // })
+  new Token721(137, '0x0A77f356cF1dE1727145E66C92254881Ac3da34B', undefined, {
+    name: 'GensoKishiOnline.v2',
+    // tokenUri: 'https://lok-nft.leagueofkingdoms.com/api/drago/',
+    symbol: 'Genso_NFT_v2',
+    uri: 'https://image.nftscan.com/pls/logo/0x0a77f356cf1de1727145e66c92254881ac3da34b.png'
   })
 ]
 
