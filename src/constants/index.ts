@@ -58,6 +58,14 @@ export const LOCK_LIQUIDITY_CONTRACT_ADDRESS = '0x94A72a52cBa59DF873247b8A797d50
 
 export const LOCK_LP_TOKEN = new Token(137, LOCK_LIQUIDITY_ADDRESS, 18, 'LAD-V1', 'Ladder V1')
 
+export const LOCK_LP_TOKEN_GESON = new Token(
+  137,
+  '0x88Bd0AcB770fd8f5ac9C280b2dd62fD98D5C18db',
+  18,
+  'LAD-V1',
+  'Ladder V1'
+)
+
 export const AMPL = new Token(ChainId.MAINNET, '0xD46bA6D942050d489DBd938a2C909A5d5039A161', 9, 'AMPL', 'Ampleforth')
 export const DAI = new Token(ChainId.MAINNET, '0x6B175474E89094C44Da98b954EedeAC495271d0F', 18, 'DAI', 'Dai Stablecoin')
 export const USDC = new Token(ChainId.MAINNET, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 6, 'USDC', 'USD//C')

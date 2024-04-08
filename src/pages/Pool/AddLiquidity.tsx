@@ -1,5 +1,5 @@
 import { useCallback, useState, ChangeEvent, useEffect, useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { routes } from 'constants/routes'
 import { Typography, Box, useTheme, Button } from '@mui/material'
 import { TokenAmount } from '@ladder/sdk'
@@ -51,15 +51,25 @@ import { AllTokens } from 'models/allTokens'
 // export const [currencyA] = [ETHER]
 
 export default function AddLiquidy() {
+  const { state } = useLocation()
+  const isGenso = (state as { isGenso: string }).isGenso
+  console.log('isGenso', isGenso)
   const isDownSm = useBreakpoint('sm')
   const [currencyA] = useState<undefined | AllTokens>(ETHER)
   const [currencyB, setCurrencyB] = useState<undefined | AllTokens>(
-    new Token721(137, '0x9E8Ea82e76262E957D4cC24e04857A34B0D8f062', undefined, {
-      name: 'Drago',
-      tokenUri: 'https://lok-nft.leagueofkingdoms.com/api/drago/',
-      symbol: 'DRG',
-      uri: 'https://polygonscan.com/token/images/lokdrago_32.png'
-    })
+    isGenso
+      ? new Token721(137, '0x0A77f356cF1dE1727145E66C92254881Ac3da34B', undefined, {
+          name: 'GensoKishiOnline.v2',
+          // tokenUri: 'https://lok-nft.leagueofkingdoms.com/api/drago/',
+          symbol: 'Genso_NFT_v2',
+          uri: 'https://image.nftscan.com/pls/logo/0x0a77f356cf1de1727145e66c92254881ac3da34b.png'
+        })
+      : new Token721(137, '0x9E8Ea82e76262E957D4cC24e04857A34B0D8f062', undefined, {
+          name: 'Drago',
+          tokenUri: 'https://lok-nft.leagueofkingdoms.com/api/drago/',
+          symbol: 'DRG',
+          uri: 'https://polygonscan.com/token/images/lokdrago_32.png'
+        })
   )
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
 

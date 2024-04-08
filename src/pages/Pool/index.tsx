@@ -30,7 +30,12 @@ import {
   useLockLPToken
 } from 'hooks/useLockLPTokenCallback'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
-import { LOCK_LP_TOKEN, LOCK_LIQUIDITY_CONTRACT_ADDRESS, LOCK_LIQUIDITY_ADDRESS } from '../../constants'
+import {
+  LOCK_LP_TOKEN,
+  LOCK_LP_TOKEN_GESON,
+  LOCK_LIQUIDITY_CONTRACT_ADDRESS,
+  LOCK_LIQUIDITY_ADDRESS
+} from '../../constants'
 import { tryParseAmount } from 'utils/parseAmount'
 import QuestionHelper from 'components/essential/QuestionHelper'
 import Spinner from 'components/Spinner'
@@ -41,13 +46,19 @@ import { replaceNativeTokenName } from 'utils'
 import { ChainId } from 'constants/chain'
 import { Token721 } from 'constants/token/token721'
 
-const [currencyA, currencyB] = [
+const [currencyA, currencyB, currencyC] = [
   WETH[ChainId.MATIC],
   new Token721(137, '0x9E8Ea82e76262E957D4cC24e04857A34B0D8f062', undefined, {
     name: 'Drago',
     tokenUri: 'https://lok-nft.leagueofkingdoms.com/api/drago/',
     symbol: 'DRG',
     uri: 'https://polygonscan.com/token/images/lokdrago_32.png'
+  }),
+  new Token721(137, '0x0A77f356cF1dE1727145E66C92254881Ac3da34B', undefined, {
+    name: 'GensoKishiOnline.v2',
+    // tokenUri: 'https://lok-nft.leagueofkingdoms.com/api/drago/',
+    symbol: 'Genso_NFT_v2',
+    uri: 'https://image.nftscan.com/pls/logo/0x0a77f356cf1de1727145e66c92254881ac3da34b.png'
   })
 ]
 
@@ -98,6 +109,10 @@ export default function Pool() {
       {
         liquidityToken: LOCK_LP_TOKEN,
         tokens: [currencyA, currencyB]
+      },
+      {
+        liquidityToken: LOCK_LP_TOKEN_GESON,
+        tokens: [currencyA, currencyC]
       }
     ]
 
@@ -118,9 +133,13 @@ export default function Pool() {
   // fetch the reserves for all V2 pools in which the user has a balance
   const liquidityTokensWithBalances = useMemo(
     () =>
-      tokenPairsWithLiquidityTokens.reduce((acc, { liquidityToken }) => {
+      tokenPairsWithLiquidityTokens.reduce((acc, { liquidityToken }, index) => {
         // if (v2PairsBalances[liquidityToken.address]?.greaterThan('0')) {
-        acc.push({ liquidityToken: liquidityToken, tokens: [currencyA, currencyB] })
+        // acc.push({ liquidityToken: liquidityToken, tokens: [currencyA, currencyB] })
+        acc.push({
+          liquidityToken: liquidityToken,
+          tokens: index == 0 ? [currencyA, currencyB] : [currencyA, currencyC]
+        })
         // }
         return acc
       }, [] as { liquidityToken: Token; tokens: [Token, Token] }[]),
@@ -141,7 +160,7 @@ export default function Pool() {
           padding: { xs: 16, md: 0 }
         }}
       >
-        <AppBody width={'100%'} maxWidth={'680px'}>
+        <AppBody width={'100%'} maxWidth={'880px'}>
           <Box sx={{ padding: { xs: '20px', md: '30px 32px' } }}>
             <Box sx={{ padding: '16px 20px', background: theme.palette.background.default, borderRadius: '8px' }}>
               <Typography sx={{ fontSize: { xs: 18, md: 28 }, fontWeight: 500, mb: 12 }}>
@@ -213,7 +232,8 @@ export default function Pool() {
                 {v2Pairs.map(([, pair], idx) => {
                   if (!pair) return null
 
-                  const [token0, token1] = [currencyA, currencyB]
+                  // const [token0, token1] = [currencyA, currencyB]
+                  const [token0, token1] = idx == 0 ? [currencyA, currencyB] : [currencyC, currencyA]
 
                   const balance = v2PairsBalances?.[liquidityTokensWithBalances[idx].liquidityToken.address]
                   const totalSupply = totalSupplies?.[liquidityTokensWithBalances[idx].liquidityToken.address]
@@ -236,7 +256,7 @@ export default function Pool() {
 
                   return (
                     // <Grid item xs={4} md={6} lg={8} key={pair.liquidityToken.address}>
-                    <Grid item lg={8} key={pair.liquidityToken.address}>
+                    <Grid item lg={6} key={pair.liquidityToken.address}>
                       <PoolCard
                         currency0={amountA.token}
                         currency1={amountB.token}
@@ -250,7 +270,12 @@ export default function Pool() {
                         shareAmount={poolTokenPercentage}
                         tokenAmount={balance ? balance?.toExact() : '-'}
                         onAdd={() => {
-                          navigate(routes.addLiquidity)
+                          navigate(routes.addLiquidity, {
+                            state: {
+                              isGenso:
+                                amountA.token.symbol == 'Genso_NFT_v2' || amountB.token.symbol == 'Genso_NFT_v2' ? 1 : 0
+                            }
+                          })
                           // navigate(routes.addLiquidity + liquidityParamBuilder(amountA.token, amountB.token))
                         }}
                         onRemove={() =>
