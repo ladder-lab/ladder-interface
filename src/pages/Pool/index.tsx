@@ -433,6 +433,7 @@ function PoolAssetCard({ currency, value }: { currency: AllTokens; value: string
   )
 }
 
+/*
 function LockToken({ tokenAmount }: { tokenAmount: string }) {
   const theme = useTheme()
   const { account } = useActiveWeb3React()
@@ -626,3 +627,4 @@ function WithdrawLockLPToken({ leftDate }: { leftDate: LeftDateProps }) {
     </Box>
   )
 }
+*/
