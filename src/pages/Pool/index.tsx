@@ -408,7 +408,7 @@ function PoolCard({
           padding: '1px 0'
         }}
       />
-      {!isLock ? <LockToken tokenAmount={tokenAmount} /> : <WithdrawLockLPToken leftDate={leftDate} />}
+      {/* {!isLock ? <LockToken tokenAmount={tokenAmount} /> : <WithdrawLockLPToken leftDate={leftDate} />} */}
     </Card>
   )
 }
