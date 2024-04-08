@@ -330,6 +330,7 @@ function PoolCard({
   const isDarkMode = useIsDarkMode()
   const has721 = checkIs721(currency0) || checkIs721(currency1)
   const has1155 = checkIs1155(currency0) || checkIs1155(currency1)
+  const hideLockToken = true
 
   return (
     <Card
@@ -408,7 +409,13 @@ function PoolCard({
           padding: '1px 0'
         }}
       />
-      {/* {!isLock ? <LockToken tokenAmount={tokenAmount} /> : <WithdrawLockLPToken leftDate={leftDate} />} */}
+      {hideLockToken ? (
+        <></>
+      ) : !isLock ? (
+        <LockToken tokenAmount={tokenAmount} />
+      ) : (
+        <WithdrawLockLPToken leftDate={leftDate} />
+      )}
     </Card>
   )
 }
@@ -433,7 +440,6 @@ function PoolAssetCard({ currency, value }: { currency: AllTokens; value: string
   )
 }
 
-/*
 function LockToken({ tokenAmount }: { tokenAmount: string }) {
   const theme = useTheme()
   const { account } = useActiveWeb3React()
@@ -627,4 +633,3 @@ function WithdrawLockLPToken({ leftDate }: { leftDate: LeftDateProps }) {
     </Box>
   )
 }
-*/
