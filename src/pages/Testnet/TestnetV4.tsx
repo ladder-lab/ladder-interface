@@ -949,7 +949,7 @@ function LeaderBoardBox() {
           rows={topAssetsValue}
           bgcolors={bgcolors}
           title="Top Asset Value"
-          helper={currentType == 'Weekly' ? 'Update every Monday' : 'Update once an hour'}
+          helper={currentType == 'Weekly' ? 'Update every Monday' : 'Update once a day'}
           page={assetsPage}
           setPage={setAssetsPage}
           totalPage={assetsTotalPage}
@@ -959,7 +959,7 @@ function LeaderBoardBox() {
           bgcolors={bgcolors}
           title="Top Liquidity Provided"
           // helper="Update once an hour"
-          helper={currentType == 'Weekly' ? 'Update every Monday' : 'Update once an hour'}
+          helper={currentType == 'Weekly' ? 'Update every Monday' : 'Update once a day'}
           page={liquidityPage}
           setPage={setLiquidityPage}
           totalPage={liquidityTotalPage}
