@@ -9,7 +9,7 @@ import { ReactComponent as Monopoly } from 'assets/svg/airdrop/monopoly.svg'
 import { ReactComponent as Badges } from 'assets/svg/airdrop/badges.svg'
 import { ReactComponent as Trading } from 'assets/svg/airdrop/trading.svg'
 
-const expiredList = ['test1', 'test2', 'monopoly', 'swap-two', 'hold-two']
+const expiredList = ['test1', 'test2', 'monopoly', 'swap-two', 'hold-two', 'gensoSwap', 'lokSwap']
 
 const tasks = [
   // {
@@ -99,6 +99,20 @@ const tasks = [
     id: 'hold-two',
     chain: ChainId.MATIC,
     link: 'https://wolfpack.ladder.top/swap',
+    icon: <Trading />
+  },
+  {
+    title: 'Genso Beginner Equipment Swap',
+    id: 'gensoSwap',
+    chain: ChainId.MATIC,
+    link: 'https://mua-campaign.ladder.top/swap',
+    icon: <Trading />
+  },
+  {
+    title: 'League of Kingdoms Drago Swap',
+    id: 'lokSwap',
+    chain: ChainId.MATIC,
+    link: 'https://mua-campaign.ladder.top/swap',
     icon: <Trading />
   }
 ]
