@@ -5,6 +5,7 @@ import { ReactComponent as BSC } from 'assets/svg/binance.svg'
 import BSCUrl from 'assets/svg/binance.svg'
 import { ReactComponent as MATIC } from 'assets/svg/matic.svg'
 import MATICUrl from 'assets/svg/matic.svg'
+import Etherlink from 'assets/svg/etherlink.svg'
 // import { toHex } from 'web3-utils'
 
 export enum ChainId {
@@ -15,7 +16,8 @@ export enum ChainId {
   KOVAN = 42,
   BSC = 56,
   SEPOLIA = 11155111,
-  MATIC = 137
+  MATIC = 137,
+  ETHERLINK = 128123
 }
 
 export const NETWORK_CHAIN_ID: ChainId = process.env.REACT_APP_CHAIN_ID
@@ -92,6 +94,14 @@ export const AllChainList = [
     name: 'Polygon',
     id: ChainId.MATIC,
     hex: '0xA86A'
+  },
+  {
+    icon: <ETH />,
+    logo: Etherlink,
+    symbol: 'Etherlink',
+    name: 'Etherlink Testnet',
+    id: ChainId.ETHERLINK,
+    hex: '0x1f47b'
   }
 ]
 
@@ -209,6 +219,17 @@ export const SUPPORTED_NETWORKS: {
     },
     rpcUrls: ['https://polygon-rpc.com/'],
     blockExplorerUrls: ['https://polygonscan.com']
+  },
+  [ChainId.ETHERLINK]: {
+    chainId: '0x1f47b',
+    chainName: 'Etherlink Testnet',
+    nativeCurrency: {
+      name: 'XTZ',
+      symbol: 'XTZ',
+      decimals: 18
+    },
+    rpcUrls: ['https://node.ghostnet.etherlink.com'],
+    blockExplorerUrls: ['https://testnet-explorer.etherlink.com/']
   }
 }
 

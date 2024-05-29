@@ -516,6 +516,24 @@ export const DEFAULT_TOKENS = {
       decimals: 18,
       chainId: 137,
       logoURI: 'https://assets.coingecko.com/coins/images/4713/thumb/matic-token-icon.png?1624446912'
+    },
+    {
+      name: 'Wrapped Ether',
+      address: '0x281B137369F9446BdA014BB44e1Be269300634B5',
+      symbol: 'WETH',
+      decimals: 18,
+      chainId: 128123,
+      logoURI:
+        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png'
+    },
+    {
+      name: 'Tether USD',
+      address: '0xD21B917D2f4a4a8E3D12892160BFFd8f4cd72d4F',
+      symbol: 'USDT',
+      decimals: 18,
+      chainId: 128123,
+      logoURI:
+        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png'
     }
   ]
 }

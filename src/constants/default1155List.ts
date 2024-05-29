@@ -122,5 +122,6 @@ export const DEFAULT_1155_LIST: { [chainId in ChainId]?: Token1155[] } = {
         uri: ` https://info.chainswap.com/file/tnt-${idx + 1}.jpg`
       })
     })
-  ]
+  ],
+  [ChainId.ETHERLINK]: [] as Token1155[]
 }
