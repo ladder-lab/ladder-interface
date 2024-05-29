@@ -179,7 +179,8 @@ export const DEFAULT_721_LIST: { [chainId in ChainId]?: Token721[] } = {
     })
   ] as Token721[],
   [ChainId.GÖRLI]: TEST_721_LIST,
-  [ChainId.SEPOLIA]: [...TEST_721_TESTNET_V3_LIST_SEPOLIA, ...TEST_721_LIST_SEPOLIA]
+  [ChainId.SEPOLIA]: [...TEST_721_TESTNET_V3_LIST_SEPOLIA, ...TEST_721_LIST_SEPOLIA],
+  [ChainId.ETHERLINK]: [] as Token721[]
 }
 
 const v3Erc20Tokens = ['0x55979784068d1BEf37B49F41cAC8040A4b79C4a7', '0xaDefa85603c36FcE62919fd85Cf60F90cb8Dc642']

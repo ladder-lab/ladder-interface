@@ -12,8 +12,8 @@ import { fortmatic, injected, portis, walletconnect, walletlink } from '../conne
 import { NETWORK_CHAIN_ID } from './chain'
 import { DEFAULT_1155_LIST } from './default1155List'
 
-console.log(FACTORY_ADDRESS_SDK(1, true))
-console.log(INIT_CODE_HASH(1, true))
+console.log('FACTORY_ADDRESS_SDK: ', FACTORY_ADDRESS_SDK(1, true))
+console.log('INIT_CODE_HASH: ', INIT_CODE_HASH(1, true))
 
 type ChainTokenList = {
   readonly [chainId in ChainId]: Token[]
@@ -30,7 +30,8 @@ export const ROUTER_ADDRESS_721: (chainId: ChainId | null | undefined) => string
       [56]: '',
       [1]: '0x7770AE4205771Cc5a1a23ED9B6575aB2E5855341',
       [11155111]: '0x18Acb521d87A46FdDceD5074f26A155c64074365',
-      [137]: ''
+      [137]: '',
+      [128123]: '0xE28b9dD2d7637F03B43972C1C76e6Bf953B5Fd8d'
     } as any
   )[chainId ?? NETWORK_CHAIN_ID] ?? '')
 
@@ -68,7 +69,8 @@ const WETH_ONLY: ChainTokenList = {
   [ChainId.KOVAN]: [WETH[ChainId.KOVAN]],
   [ChainId.BSC]: [WETH[ChainId.BSC]],
   [ChainId.SEPOLIA]: [WETH[ChainId.SEPOLIA]],
-  [ChainId.MATIC]: [WETH[ChainId.MATIC]]
+  [ChainId.MATIC]: [WETH[ChainId.MATIC]],
+  [ChainId.ETHERLINK]: [WETH[ChainId.ETHERLINK]]
 }
 
 // used to construct intermediary pairs for trading
@@ -79,7 +81,11 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     ...WETH_ONLY[ChainId.RINKEBY],
     new Token(ChainId.RINKEBY, '0xD64b11169B87030EB5647Add8265d2F1D30cF2e6', 18, 'TEST', 'Test Coin')
   ],
-  [ChainId.GÖRLI]: [...WETH_ONLY[ChainId.GÖRLI]]
+  [ChainId.GÖRLI]: [...WETH_ONLY[ChainId.GÖRLI]],
+  [ChainId.ETHERLINK]: [
+    ...WETH_ONLY[ChainId.ETHERLINK],
+    new Token(ChainId.ETHERLINK, '0xD21B917D2f4a4a8E3D12892160BFFd8f4cd72d4F', 18, 'USDT', 'Tether USD')
+  ]
 }
 
 /**
@@ -105,6 +111,10 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
     ...WETH_ONLY[ChainId.MATIC],
     new Token(ChainId.MATIC, '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', 6, 'USDC', 'USD Coin'),
     new Token(ChainId.MATIC, '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', 6, 'USDT', 'Tether USD')
+  ],
+  [ChainId.ETHERLINK]: [
+    ...WETH_ONLY[ChainId.ETHERLINK],
+    new Token(ChainId.ETHERLINK, '0xD21B917D2f4a4a8E3D12892160BFFd8f4cd72d4F', 18, 'USDT', 'Tether USD')
   ]
 }
 
