@@ -84,6 +84,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [ChainId.GÖRLI]: [...WETH_ONLY[ChainId.GÖRLI]],
   [ChainId.ETHERLINK]: [
     ...WETH_ONLY[ChainId.ETHERLINK],
+    new Token(ChainId.ETHERLINK, '0xB1Ea698633d57705e93b0E40c1077d46CD6A51d8', 18, 'WXTZ', 'Wrapped XTZ'),
     new Token(ChainId.ETHERLINK, '0xD21B917D2f4a4a8E3D12892160BFFd8f4cd72d4F', 18, 'USDT', 'Tether USD')
   ]
 }
@@ -114,6 +115,7 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   ],
   [ChainId.ETHERLINK]: [
     ...WETH_ONLY[ChainId.ETHERLINK],
+    new Token(ChainId.ETHERLINK, '0xB1Ea698633d57705e93b0E40c1077d46CD6A51d8', 18, 'WXTZ', 'Wrapped XTZ'),
     new Token(ChainId.ETHERLINK, '0xD21B917D2f4a4a8E3D12892160BFFd8f4cd72d4F', 18, 'USDT', 'Tether USD')
   ]
 }

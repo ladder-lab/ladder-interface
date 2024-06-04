@@ -107,7 +107,7 @@ export default function CurrencyList({
             </Box>
             <span style={{ fontWeight: 500 }}>{0}</span>
           </ListItem>
-        ) : filteredOptions?.length > 0 || filteredOptions?.length > 0 ? (
+        ) : filteredOptions?.length > 0 ? (
           <CurrencyListComponent
             onSelect={onSelectCurrency}
             options={filteredOptions}

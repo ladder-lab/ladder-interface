@@ -24,6 +24,8 @@ import { Token1155 } from 'constants/token/token1155'
 import ERC721List from './ERC721List'
 import { useCurrencyModalListHeight } from 'hooks/useScreenSize'
 import { useTokenTypeCallback } from 'hooks/useTokenType'
+import { useActiveWeb3React } from 'hooks'
+import { ChainId } from 'constants/chain'
 
 export enum Mode {
   ERC20 = 'erc20',
@@ -59,6 +61,7 @@ export default function SelectCurrencyModal({
   // const [searchQueryNFT, setSearchQueryNFT] = useState<string>('')
   const [invertSearchOrder] = useState<boolean>(false)
   const tokenType = useTokenTypeCallback(searchQuery, IsDisplay)
+  const { chainId } = useActiveWeb3React()
 
   const fixedList = useRef<FixedSizeList>()
 
@@ -89,7 +92,7 @@ export default function SelectCurrencyModal({
 
   const showETH: boolean = useMemo(() => {
     const s = debouncedQuery.toLowerCase().trim()
-    return s === '' || s === 'e' || s === 'et' || s === 'eth'
+    return s === 'e' || s === 'et' || s === 'eth'
   }, [debouncedQuery])
 
   const tokenComparator = useTokenComparator(invertSearchOrder)
@@ -110,7 +113,7 @@ export default function SelectCurrencyModal({
   //const filteredSortedTokensNFT = useSortedTokensByQuery(sortedTokens, debouncedQueryNFT)
 
   const commonCur = useMemo(() => {
-    const curList: Currency[] = [ETHER]
+    const curList: Currency[] = chainId !== ChainId.ETHERLINK ? [ETHER] : []
     Object.keys(allTokens)
       .map(key => {
         const token = allTokens[key as keyof typeof allTokens]
@@ -120,7 +123,7 @@ export default function SelectCurrencyModal({
       })
       .slice(0, 4)
     return curList
-  }, [allTokens])
+  }, [allTokens, chainId])
 
   // manage focus on modal show
   const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {

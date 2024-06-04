@@ -534,6 +534,14 @@ export const DEFAULT_TOKENS = {
       chainId: 128123,
       logoURI:
         'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png'
+    },
+    {
+      name: 'Wrapped XTZ',
+      address: '0xB1Ea698633d57705e93b0E40c1077d46CD6A51d8',
+      symbol: 'WXTZ',
+      decimals: 18,
+      chainId: 128123,
+      logoURI: '	https://s2.coinmarketcap.com/static/img/coins/64x64/2011.png'
     }
   ]
 }

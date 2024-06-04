@@ -18,17 +18,22 @@ import { AllTokens } from 'models/allTokens'
 import useModal from 'hooks/useModal'
 import { Loader } from 'components/AnimatedSvg/Loader'
 import { useCurrencyModalListHeight } from 'hooks/useScreenSize'
+import { useActiveWeb3React } from 'hooks'
+import { ChainId } from 'constants/chain'
 
 export const defaultErc721Address = '0xE684c11F6E90905EF63B16A4FAD3851AC8f432Be'
 
-const DefaultErc721: Token721[] = [
-  new Token721(1, defaultErc721Address, 1, {
-    name: 'AI_Meets_Bitcoin',
-    symbol: 'AIBTC',
-    uri: AiBitcoin,
-    tokenUri: ''
-  })
-]
+const DefaultErc721: Record<string, Token721[]> = {
+  [ChainId.MAINNET]: [
+    new Token721(1, defaultErc721Address, 1, {
+      name: 'AI_Meets_Bitcoin',
+      symbol: 'AIBTC',
+      uri: AiBitcoin,
+      tokenUri: ''
+    })
+  ],
+  [ChainId.ETHERLINK]: []
+}
 
 export default function ERC721List({
   searchQueryNFT,
@@ -37,6 +42,7 @@ export default function ERC721List({
   searchQueryNFT: string
   onSelectCurrency: ((currency: AllTokens) => void) | undefined
 }) {
+  const { chainId = ChainId.MAINNET } = useActiveWeb3React()
   // const [searchQueryNFT, setSearchQueryNFT] = useState<string>('')
   const { loading: Token721Loading, data: tokenOptions } = useTrackedToken721List()
 
@@ -53,8 +59,8 @@ export default function ERC721List({
     if (tokenOptions.find(v => v.address === defaultErc721Address)) {
       return tokens
     }
-    return tokens.concat(...DefaultErc721)
-  }, [debouncedQueryNFT, tokenOptions])
+    return tokens.concat(...DefaultErc721[chainId])
+  }, [debouncedQueryNFT, tokenOptions, chainId])
 
   // const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
   //   const input = event.target.value
@@ -112,7 +118,7 @@ export default function ERC721List({
             </Box>
           ) : (
             <>
-              {searchTokenNFT && filteredTokens.length === 0 && !loading && !Token721Loading ? (
+              {filteredTokens.length === 0 && !loading && !Token721Loading ? (
                 <Box width={'100%'} display="flex" alignItems="center" justifyContent="center" mt={100}>
                   <Typography
                     textAlign="center"
