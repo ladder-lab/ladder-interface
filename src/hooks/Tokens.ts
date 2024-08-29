@@ -17,7 +17,7 @@ import { DEFAULT_721_LIST } from 'constants/default721List'
 import { Token721 } from 'constants/token/token721'
 import ERC721_ABI from 'constants/abis/erc721.json'
 import tUSDCImg from 'assets/images/tUSDC.jpg'
-import tWETHImg from 'assets/images/tWETH.jpg'
+// import tWETHImg from 'assets/images/tWETH.jpg'
 
 // Check if currency is included in custom list from user storage
 export function useIsUserAddedToken(currency: Currency | undefined | null): boolean {
@@ -115,7 +115,18 @@ const testTokens = {
     )
   },
   [11155111]: {
-    '0x85eDB7A0cbAcf5BD641e0FF5D6270bEf9C72Bd6B': new WrappedTokenInfo(
+    '0xeb8C97C3350983a619f426D6459faE75788BBfD5': new WrappedTokenInfo(
+      {
+        chainId: 11155111,
+        address: '0xeb8C97C3350983a619f426D6459faE75788BBfD5',
+        decimals: 18,
+        symbol: 'MTK',
+        name: 'MYTOKEN',
+        logoURI: ''
+      },
+      []
+    ),
+    /*    '0x85eDB7A0cbAcf5BD641e0FF5D6270bEf9C72Bd6B': new WrappedTokenInfo(
       {
         chainId: 11155111,
         address: '0x85eDB7A0cbAcf5BD641e0FF5D6270bEf9C72Bd6B',
@@ -126,6 +137,7 @@ const testTokens = {
       },
       []
     ),
+
     '0xaDefa85603c36FcE62919fd85Cf60F90cb8Dc642': new WrappedTokenInfo(
       {
         chainId: 11155111,
@@ -147,7 +159,7 @@ const testTokens = {
         logoURI: tWETHImg
       },
       []
-    ),
+    ),*/
     '0x55979784068d1BEf37B49F41cAC8040A4b79C4a7': new WrappedTokenInfo(
       {
         chainId: 11155111,

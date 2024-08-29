@@ -29,7 +29,8 @@ export const ROUTER_ADDRESS_721: (chainId: ChainId | null | undefined) => string
       [4]: '0xC61d146BB1965ba0e387aA2Ad94c500a17dfe65F',
       [56]: '',
       [1]: '',
-      [11155111]: '0x146ADA3E3A615CAdEBC06C1b02cBE3D040DcC3A0',
+      // [11155111]: '0x2b5b174dC2847eEf3f92dEBF472658317ec90AC3',
+      [11155111]: '0x36D7F32720D6EaFCF672C56D9fe9B2B091FF7d0D',
       [137]: '0xf434274C78CF5567D47D765420CDbf552d1C1067'
     } as any
   )[chainId ?? NETWORK_CHAIN_ID] ?? '')
@@ -41,7 +42,9 @@ export const ROUTER_ADDRESS: (chainId: ChainId | null | undefined) => string = c
       [56]: '0x54F0d8485e931c22D542D7b95dbbf5ecdE9C91E8',
       [1]: '',
       [5]: '0x6ECBC55F9087b86aF9AADF553F086EfdAC5c1458',
-      [11155111]: '0x6e2c879382520c7B15927902eEf1c0FbC1F8de91',
+      // [11155111]: '0x6e2c879382520c7B15927902eEf1c0FbC1F8de91',
+      // [11155111]: '0x5e93CaA18078B311169cB0f604de4820a0fB45a3',
+      [11155111]: '0xbd5D676a540601893170C151A27417e9113a7cC9',
       [137]: '0x3c36a8F43c583c3b4d54E3170cCE7D04EfD41a49'
     } as any
   )[chainId ?? NETWORK_CHAIN_ID] ?? '')
@@ -223,3 +226,5 @@ export const BLOCKED_ADDRESSES: string[] = [
   '0xA7e5d5A720f06526557c513402f2e6B5fA20b008',
   '0x8576aCC5C05D6Ce88f4e49bf65BdF0C62F91353C'
 ]
+
+export const SUBGRAPH_URL = 'http://34.124.152.187:8000/subgraphs/name/ladder'

@@ -1,11 +1,11 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import ERC20_INTERFACE from '../../constants/abis/erc20'
 import ERC21155_ABI from 'constants/abis/erc1155.json'
 import ERC2721_ABI from 'constants/abis/erc721.json'
 import { use1155Contract, use721Contract, useMulticallContract } from '../../hooks/useContract'
 import { getContract, isAddress } from '../../utils'
-import { useSingleContractMultipleData, useMultipleContractSingleData, useSingleCallResult } from '../multicall/hooks'
-import { Currency, ETHER, Token, JSBI, CurrencyAmount, TokenAmount, ChainId } from '@ladder/sdk'
+import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../multicall/hooks'
+import { ChainId, Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount } from '@ladder/sdk'
 import { useActiveWeb3React } from 'hooks'
 import { useAllTokens } from 'hooks/Tokens'
 import { Token1155 } from 'constants/token/token1155'
@@ -13,7 +13,21 @@ import { checkIs1155, checkIs721, filter721 } from 'utils/checkIs1155'
 import { useBlockNumber } from 'state/application/hooks'
 import { Token721 } from 'constants/token/token721'
 import { getTest721uriWithIndex, isTest721 } from 'constants/default721List'
-import { axiosNftScanInstance, erc721CollectionResponseType, ResponseType } from 'utils/axios'
+
+// import { axiosNftScanInstance, erc721CollectionResponseType, ResponseType } from 'utils/axios'
+
+async function getNFTsOwnedByAddress(contract, ownerAddress) {
+  const totalTokens = await contract.tokenCounter()
+  const ownedTokens = []
+
+  for (let tokenId = 0; tokenId < totalTokens; tokenId++) {
+    const owner = await contract.ownerOf(tokenId)
+    if (owner.toLowerCase() === ownerAddress.toLowerCase()) {
+      ownedTokens.push(tokenId)
+    }
+  }
+  return ownedTokens
+}
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -233,9 +247,7 @@ export function useToken721Balances(tokens?: Token721[] | null | undefined) {
       setLoading(true)
       try {
         const callRes = await calls
-
         setLoading(false)
-
         const res = tokens?.map((token, idx) => new TokenAmount(token, callRes?.[idx]?.toString() ?? '0'))
         setBalances(res)
       } catch (e: any) {
@@ -277,7 +289,6 @@ export function useToken721BalanceTokens(tokenAmount?: TokenAmount): {
   const [tokens, setTokens] = useState<Token721[] | undefined>(undefined)
 
   const contract = use721Contract(isAddress(tokenAmount?.token?.address) ? tokenAmount?.token?.address : undefined)
-
   useEffect(() => {
     if (!chainId || !tokenAmount?.raw || !account || !tokenAmount?.token?.address) {
       return
@@ -285,56 +296,36 @@ export function useToken721BalanceTokens(tokenAmount?: TokenAmount): {
     ;(async () => {
       setLoading(true)
       try {
-        const res = await axiosNftScanInstance.get<ResponseType<erc721CollectionResponseType>>(
-          `account/own/${account}`,
-          {
-            params: { erc_type: 'erc721', contract_address: tokenAmount?.token?.address }
-          }
-        )
-        if (res?.data?.data?.total > 0 && !isTest721(tokenAmount.token.address)) {
-          const token721 = filter721(tokenAmount.token)
-          const tokens = res.data.data.content.map(
-            data =>
-              new Token721(chainId, data.contract_address, data.token_id, {
-                name: tokenAmount?.token?.name ?? data.name ?? data.contract_name,
-                symbol: tokenAmount?.token?.symbol ?? data.contract_name,
-                tokenUri: token721?.tokenUri,
-                uri:
-                  ChainId.SEPOLIA && isTest721(tokenAmount.token.address) && token721?.uri
-                    ? getTest721uriWithIndex(token721.uri, parseInt(data.token_id ? data.token_id : ''))
-                    : data.image_uri ?? undefined
-              })
-          )
-          setTokens(tokens)
+        const balance = tokenAmount?.toExact()
+        if (!balance || !account || !contract) return
+
+        const total = parseInt(balance)
+        let indexes = []
+        if (contract.address === '0x5989D7Ef3a9Bffa32320708d9D0bd4360ee0648A') {
+          indexes = await getNFTsOwnedByAddress(contract, account)
         } else {
-          const balance = tokenAmount?.toExact()
-
-          if (!balance || !account || !contract) return
-
-          const total = parseInt(balance)
           const arr = Array.from(Array(total).keys()).map((_, idx) => {
             return contract.tokenOfOwnerByIndex(account, idx)
           })
-          const calls = arr
-
-          const indexes = await Promise.all(calls)
-          const token721 = filter721(tokenAmount.token)
-          const tokens = indexes.map(
-            id =>
-              new Token721(chainId, tokenAmount.token.address, id.toString(), {
-                name: tokenAmount.token.name,
-                symbol: tokenAmount.token.symbol,
-                tokenUri: token721?.tokenUri,
-                uri:
-                  chainId === ChainId.SEPOLIA && isTest721(tokenAmount.token.address) && token721?.uri
-                    ? getTest721uriWithIndex(token721.uri, id)
-                    : undefined
-              })
-          )
-          setTokens(tokens)
+          indexes = await Promise.all(arr)
         }
+        const token721 = filter721(tokenAmount.token)
+        const tokens = indexes.map(
+          id =>
+            new Token721(chainId, tokenAmount.token.address, id.toString(), {
+              name: tokenAmount.token.name,
+              symbol: tokenAmount.token.symbol,
+              tokenUri: token721?.tokenUri,
+              uri:
+                chainId === ChainId.SEPOLIA && isTest721(tokenAmount.token.address) && token721?.uri
+                  ? getTest721uriWithIndex(token721.uri, id)
+                  : undefined
+            })
+        )
+        setTokens(tokens)
         setLoading(false)
       } catch (e) {
+        console.log(e)
         setLoading(false)
         console.error('cannot get 721 available ids')
       }

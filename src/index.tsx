@@ -6,8 +6,9 @@ import { CssBaseline } from '@mui/material'
 import { ThemeProvider } from 'theme/index'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 import Blocklist from './components/essential/Blocklist'
-import { NetworkContextName } from './constants'
+import { NetworkContextName, SUBGRAPH_URL } from './constants'
 import App from './pages/App'
 import store from './state'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
@@ -37,6 +38,11 @@ String.prototype.trimTrailingZero = function (this: string) {
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 
+const client = new ApolloClient({
+  uri: SUBGRAPH_URL,
+  cache: new InMemoryCache()
+})
+
 function Updaters() {
   return (
     <>
@@ -62,7 +68,9 @@ root.render(
             <ThemeProvider>
               <CssBaseline />
               <BrowserRouter>
-                <App />
+                <ApolloProvider client={client}>
+                  <App />
+                </ApolloProvider>
               </BrowserRouter>
             </ThemeProvider>
           </Provider>

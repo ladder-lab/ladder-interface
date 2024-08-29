@@ -2,46 +2,45 @@ import { Token721 } from './token/token721'
 import SampleNftImg from 'assets/images/sample-nft.png'
 import { ChainId } from '@ladder/sdk'
 
-const test721List = [
-  { address: '0x54C0ac6D96D7B79c2941FaA33e61188611F4d813', name: 'Mutant Ape Yacht Club', symbol: 'BAYC' },
-  { address: '0x9D88b325faA7b4C3E845c493fF282ed317414F6f', name: 'CryptoPunks', symbol: 'cp' },
-  { address: '0x9cd61d732a7BFb6D3C1E7F1b26e5aafB3A5763cd', name: 'Chromie Squiggle ', symbol: 'CS' },
-  { address: '0x0516eD436C66FC45E3353A784F64674F7DFD5940', name: 'Pudgy Penguins ', symbol: 'PPG' },
-  { address: '0x1137aaCBFDDD6Ed98a1a0B98D5a67d51f157bc31', name: 'World Of Women', symbol: 'WOW' },
-  { address: '0xD530d2191eBfF1b4CcC6A1f429Fdd8B965114296', name: 'RENGA', symbol: 'RNG' },
-  { address: '0x12AA0C5C73A4f5de6c5C646a5279505D0a4be970', name: 'Exosama', symbol: 'ESO' },
-  { address: '0x70020E84b37c54141e847b9AE540C1cA41cF2882', name: 'Cool Cats', symbol: 'COOL' },
-  { address: '0xCaaB4d2107D465Ed58c2AAD6554b2dA1C3117860', name: 'Doodles', symbol: 'DOODLE' },
-  { address: '0xBA1a650Abd084AbF42742AB7df5f7E65D458481B', name: 'Azuki', symbol: 'AZUKI' }
+const test721List: any[] = [
+  // { address: '0x54C0ac6D96D7B79c2941FaA33e61188611F4d813', name: 'Mutant Ape Yacht Club', symbol: 'BAYC' },
+  // { address: '0x9D88b325faA7b4C3E845c493fF282ed317414F6f', name: 'CryptoPunks', symbol: 'cp' },
+  // { address: '0x9cd61d732a7BFb6D3C1E7F1b26e5aafB3A5763cd', name: 'Chromie Squiggle ', symbol: 'CS' },
+  // { address: '0x0516eD436C66FC45E3353A784F64674F7DFD5940', name: 'Pudgy Penguins ', symbol: 'PPG' },
+  // { address: '0x1137aaCBFDDD6Ed98a1a0B98D5a67d51f157bc31', name: 'World Of Women', symbol: 'WOW' },
+  // { address: '0xD530d2191eBfF1b4CcC6A1f429Fdd8B965114296', name: 'RENGA', symbol: 'RNG' },
+  // { address: '0x12AA0C5C73A4f5de6c5C646a5279505D0a4be970', name: 'Exosama', symbol: 'ESO' },
+  // { address: '0x70020E84b37c54141e847b9AE540C1cA41cF2882', name: 'Cool Cats', symbol: 'COOL' },
+  // { address: '0xCaaB4d2107D465Ed58c2AAD6554b2dA1C3117860', name: 'Doodles', symbol: 'DOODLE' },
+  // { address: '0xBA1a650Abd084AbF42742AB7df5f7E65D458481B', name: 'Azuki', symbol: 'AZUKI' }
 ]
 
-const test721ListSepolia = [
-  {
-    address: '0x4186128305c4fF0a3FafB9126eEaf77169C2ec12',
-    name: 'Mutant Ape Yacht Club',
-    symbol: 'MAYC',
-    uriName: 'MutantApeYachtClub'
-  },
-  {
-    address: '0x7dc1BE8f47eE5805095c9bABa7123ED9AB2aB178',
-    name: 'CRYPTO PUNKS',
-    symbol: 'CRYPTOPUNKS',
-    uriName: 'CryptoPunks'
-  },
-  {
-    address: '0xb5dd2438a909C30d93184F1908733092aB618f31',
-    name: 'Art Blocks',
-    symbol: 'BLOCKS',
-    uriName: 'ChromieSquiggle'
-  },
-  { address: '0xaA2Ff5d0A9E098eB9644e22208adce451bAb24a3', name: 'Cool Cats', symbol: 'COOL' },
-  { address: '0x52CA73a56e50aA7973327b795959e4F2Afece1da', name: 'Doodles', symbol: 'DOODLE' },
-  { address: '0xF810E14fe787c4e41B37fb9484d769Cc3e5CF227', name: 'Exosama', symbol: 'EXO' },
-  { address: '0x9F8b37d69f1209FB5cE45B50dF698a1C12A42831', name: 'Pudgy Penguins ', symbol: 'PPG' },
-  { address: '0x92F6Ea44eF7DC9e3293a41cEc53610F3f0a6D127', name: 'World Of Women', symbol: 'WOW' },
-  { address: '0x9c111fEDD3aa778a46D0E7067D0e894D1eA0A029', name: 'RENGA', symbol: 'RENGA' },
-  { address: '0xf904B6C5aBa72dD44fBc840Be139c100F291d5FA', name: 'Azuki', symbol: 'AZUKI' }
-
+const test721ListSepolia: any[] = [
+  // {
+  //   address: '0x4186128305c4fF0a3FafB9126eEaf77169C2ec12',
+  //   name: 'Mutant Ape Yacht Club',
+  //   symbol: 'MAYC',
+  //   uriName: 'MutantApeYachtClub'
+  // },
+  // {
+  //   address: '0x7dc1BE8f47eE5805095c9bABa7123ED9AB2aB178',
+  //   name: 'CRYPTO PUNKS',
+  //   symbol: 'CRYPTOPUNKS',
+  //   uriName: 'CryptoPunks'
+  // },
+  // {
+  //   address: '0xb5dd2438a909C30d93184F1908733092aB618f31',
+  //   name: 'Art Blocks',
+  //   symbol: 'BLOCKS',
+  //   uriName: 'ChromieSquiggle'
+  // },
+  // { address: '0xaA2Ff5d0A9E098eB9644e22208adce451bAb24a3', name: 'Cool Cats', symbol: 'COOL' },
+  // { address: '0x52CA73a56e50aA7973327b795959e4F2Afece1da', name: 'Doodles', symbol: 'DOODLE' },
+  // { address: '0xF810E14fe787c4e41B37fb9484d769Cc3e5CF227', name: 'Exosama', symbol: 'EXO' },
+  // { address: '0x9F8b37d69f1209FB5cE45B50dF698a1C12A42831', name: 'Pudgy Penguins ', symbol: 'PPG' },
+  // { address: '0x92F6Ea44eF7DC9e3293a41cEc53610F3f0a6D127', name: 'World Of Women', symbol: 'WOW' },
+  // { address: '0x9c111fEDD3aa778a46D0E7067D0e894D1eA0A029', name: 'RENGA', symbol: 'RENGA' },
+  // { address: '0xf904B6C5aBa72dD44fBc840Be139c100F291d5FA', name: 'Azuki', symbol: 'AZUKI' }
   // { name: 'LADDER-TEST-721-1', symbol: 'T-721-1', address: '0x6746e7bd4250263F7F6CedEEDa3d055749c82A9e' },
   // { name: 'LADDER-TEST-721-2', symbol: 'T-721-2', address: '0x96013A85E4B2ad0B579A8713a56225F8ed7530E9' },
   // { name: 'LADDER-TEST-721-3', symbol: 'T-721-3', address: '0x5070F6ac4B161aa3f9B48E14d4A6182752939Cfe' },
@@ -56,10 +55,16 @@ const test721ListSepolia = [
 
 const test721TestnetV3ListSepolia = [
   {
+    address: '0x5989D7Ef3a9Bffa32320708d9D0bd4360ee0648A',
+    name: 'MYNFT',
+    symbol: 'NFT',
+    metaDataUri: ''
+  }
+  /*  {
     address: '0xbef96b9354EaF451FaD72E41A1a4d4fE9D696ef4',
     name: 'Rh!noX',
     symbol: 'RNX',
-    metaDataUri: 'https://v1-test.ladder.top/ladder/RNX/'
+    metaDataUri: ''
   },
   {
     address: '0x3e9fc47be41ef38eb97822856b9145fbe632902b',
@@ -128,7 +133,7 @@ const test721TestnetV3ListSepolia = [
     name: 'Cheers UP',
     symbol: 'CUP',
     uriName: 'CheersUp'
-  }
+  }*/
 ]
 
 export const getTest721uri = (name: string, uriName?: string) => {

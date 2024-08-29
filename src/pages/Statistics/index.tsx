@@ -1,17 +1,5 @@
 import { ChainId } from '@ladder/sdk'
-import {
-  Box,
-  useTheme,
-  styled,
-  Typography,
-  Stack,
-  Tooltip,
-  Link,
-  Popper,
-  ClickAwayListener,
-  Divider
-} from '@mui/material'
-import AreaChart from 'components/Chart'
+import { Box, useTheme, styled, Typography, Stack, Link, Popper, ClickAwayListener, Divider } from '@mui/material'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 // import { StyledPollingDot } from 'components/essential/Polling'
 import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
@@ -19,10 +7,6 @@ import { routes } from 'constants/routes'
 import {
   useTopTokensList,
   useTopPoolsList,
-  useTransactionsList,
-  StatTransactionsType,
-  StatTransactionsProp,
-  useStatisticsOverviewData,
   useSearchTokenInfo,
   StatTokenInfo,
   StatTopPoolsProp
@@ -30,17 +14,14 @@ import {
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useIsDarkMode } from 'state/user/hooks'
-import { formatMillion, getEtherscanLink, isAddress, scrollToElement, shortenAddress } from 'utils'
+import { formatMillion, isAddress, scrollToElement } from 'utils'
 import StatTable, { TableHeadCellsProp, TableRowCellsProp } from './StatTable'
 import Input from 'components/Input'
 import { Loader } from 'components/AnimatedSvg/Loader'
 import { useActiveWeb3React } from 'hooks'
-
-const RowBetween = styled(Box)(({}) => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center'
-}))
+import RowBetween from '../../styled/RowBetween'
+import { StatTransList } from './StatTransList'
+import { TopPoolsList } from './TopPoolsList'
 
 const StyledTabText = styled(Box)(({ theme }) => ({
   fontSize: 16,
@@ -113,28 +94,6 @@ export default function Statistics() {
             margin: 'auto'
           }}
         >
-          {/* <RowBetween padding="12px 0">
-            <Box display={'flex'} alignItems="center">
-              <Box
-                display={'flex'}
-                sx={{
-                  padding: '6px 12px',
-                  backgroundColor: theme.color.color3,
-                  borderRadius: '8px',
-                  mr: 12
-                }}
-              >
-                <Typography fontSize={12} fontWeight={500} color={theme.palette.text.secondary}>
-                  Latest synced block:
-                </Typography>
-                <Typography ml={6} fontSize={12} fontWeight={500} color="#27AE60">
-                  15095147{' '}
-                </Typography>
-                <StyledPollingDot />
-              </Box>
-              <Typography ml={16}>ETH Price: $1.18k</Typography>
-            </Box>
-          </RowBetween> */}
           <RowBetween padding="20px 24px">
             <RowBetween width={'100%'} flexWrap={'wrap'}>
               <Stack direction={'row'} spacing={24} alignItems="center">
@@ -160,17 +119,6 @@ export default function Statistics() {
                 ></Box>
               )}
               <Box display={'flex'} alignItems="center" sx={{ mt: { sm: 0, xs: 15 } }}>
-                {/* <Select defaultValue={curChainId} value={curChainId} width="max-content" height={'40px'}>
-                  {ChainList.map(option => (
-                    <MenuItem value={option.id} key={option.id} selected={curChainId === option.id}>
-                      {isDownSm ? (
-                        <Image src={option.logo} style={{ height: 20, width: 20, margin: '5px 0 0' }} />
-                      ) : (
-                        <LogoText logo={option.logo} text={option.symbol} gapSize={'small'} fontSize={14} />
-                      )}
-                    </MenuItem>
-                  ))}
-                </Select> */}
                 <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
                   <Box ml={10}>
                     <Input
@@ -219,57 +167,6 @@ export default function Statistics() {
 
         <StatTransList chainId={curChainId} />
       </Stack>
-    </Box>
-  )
-}
-
-export function OverviewData({ chainId }: { chainId: ChainId }) {
-  const { result } = useStatisticsOverviewData(chainId)
-
-  const theme = useTheme()
-  return (
-    <Box id="Overview">
-      <Typography mb={16} fontWeight={500} fontSize={16} color={theme.palette.text.primary} mr={8}>
-        LADDER Overview
-      </Typography>
-      <Box
-        display={'grid'}
-        sx={{
-          gridTemplateColumns: '1fr 1fr',
-          gap: 20
-        }}
-      >
-        <Box
-          padding="20px"
-          sx={{
-            borderRadius: '12px',
-            backgroundColor: theme.palette.background.paper
-          }}
-        >
-          <Stack>
-            <Typography fontSize={16}>TVL</Typography>
-            <Typography fontSize={32} fontWeight={600}>
-              {result?.totalTvl ? formatMillion(result.totalTvl, '$', 2) : '-'}
-            </Typography>
-          </Stack>
-          <AreaChart id="transaction-tvl" unit="$" height={200} areaSeriesData={[]} />
-        </Box>
-        <Box
-          padding="20px"
-          sx={{
-            borderRadius: '12px',
-            backgroundColor: theme.palette.background.paper
-          }}
-        >
-          <Stack>
-            <Typography fontSize={16}>Volume 24H</Typography>
-            <Typography fontSize={32} fontWeight={600}>
-              {result?.totalVolume ? formatMillion(result?.totalVolume, '$', 2) : '-'}
-            </Typography>
-          </Stack>
-          <AreaChart id="transaction-volume" unit="$" height={200} areaSeriesData={[]} />
-        </Box>
-      </Box>
     </Box>
   )
 }
@@ -339,276 +236,6 @@ function TopTokensList({ chainId }: { chainId: ChainId }) {
     </Box>
   )
 }
-
-export function TopPoolsList({
-  chainId,
-  token,
-  supportPoolPairTypes,
-  defaultPoolPairType,
-  token1155Id
-}: {
-  chainId: ChainId
-  token?: string
-  supportPoolPairTypes?: PoolPairType[]
-  defaultPoolPairType?: PoolPairType | undefined
-  token1155Id?: number
-}) {
-  const {
-    search: poolsSearch,
-    result,
-    page,
-    order,
-    loading
-  } = useTopPoolsList(chainId, token, defaultPoolPairType || PoolPairType.ERC20_ERC721, token1155Id)
-  const theme = useTheme()
-
-  const headers: TableHeadCellsProp[] = [
-    {
-      label: '#'
-    },
-    { label: 'Name', align: 'left' },
-    { label: 'Price' },
-    { label: 'TVL', sortValue: 'TVL', sort: true },
-    { label: 'Volume 24H' },
-    { label: 'Volume 7D' }
-  ]
-  const rows: TableRowCellsProp[][] = result.map((item, index) => [
-    { label: page.pageSize * (page.currentPage - 1) + 1 + index },
-    {
-      label: (
-        <ShowTopPoolsCurrencyBox chainId={chainId} pair={item.pair} token0Info={item.token0} token1Info={item.token1} />
-      )
-    },
-    {
-      label: (
-        <Typography>
-          {/* {item.token0?.price ? formatMillion(Number(item.token0.price), '$', 4) : '-'}/
-          {item.token1?.price ? formatMillion(Number(item.token1.price), '$', 4) : '-'} */}
-          {[Mode.ERC1155, Mode.ERC721].includes(item.token0.type)
-            ? formatMillion(Number(item.token0?.price || 0), '$', 4)
-            : formatMillion(Number(item.token1?.price || 0), '$', 4)}
-        </Typography>
-      )
-    },
-    { label: `${formatMillion(Number(item.tvl), '$ ', 2)}` },
-    { label: `${formatMillion(Number(item.Volume), '$ ', 2)}` },
-    { label: `${formatMillion(Number(item.Volume7), '$ ', 2)}` }
-  ])
-
-  return (
-    <Box id="TopPools">
-      <RowBetween mb={18}>
-        <RowBetween flexWrap="wrap">
-          <Typography fontWeight={500} fontSize={16} color={theme.palette.text.primary} mr={16}>
-            {token ? 'Top Pairs' : 'Top Pools'}
-          </Typography>
-          <Box display="flex" flexWrap={'wrap'}>
-            {(supportPoolPairTypes || Object.values(PoolPairType)).map(item => (
-              <StyledTabButtonText
-                sx={{ mt: { sm: 0, xs: 10 } }}
-                key={item}
-                className={item === poolsSearch.type ? 'active' : ''}
-                onClick={() => poolsSearch.setType(item)}
-              >
-                {item}
-              </StyledTabButtonText>
-            ))}
-          </Box>
-        </RowBetween>
-        {/* {!token && (
-          <Typography fontWeight={500} fontSize={16} color={theme.palette.text.primary}>
-            Explore
-          </Typography>
-        )} */}
-      </RowBetween>
-      <Box
-        sx={{
-          backgroundColor: theme.palette.background.paper,
-          borderRadius: '12px'
-        }}
-      >
-        <StatTable
-          headers={headers}
-          loading={loading}
-          rows={rows}
-          page={page.currentPage}
-          setPage={page.setCurrentPage}
-          count={page.count}
-          {...order}
-          pageSize={page.pageSize}
-        />
-      </Box>
-    </Box>
-  )
-}
-
-export function StatTransList({ chainId, token, pair }: { chainId: ChainId; token?: string; pair?: string }) {
-  const { result, page, order, loading, search } = useTransactionsList(chainId, token, pair)
-  const theme = useTheme()
-
-  const headers: TableHeadCellsProp[] = [
-    {
-      label: (
-        <Stack spacing={16} direction={'row'}>
-          {Object.values(StatTransactionsType).map(item => (
-            <Typography
-              sx={{
-                cursor: 'pointer',
-                opacity: item === search.type ? 1 : 0.6
-              }}
-              onClick={() => search.setType(item)}
-              key={item}
-            >
-              {item}
-            </Typography>
-          ))}
-        </Stack>
-      )
-    },
-    { label: 'Total Value' },
-    { label: 'Token Amount' },
-    { label: 'Token Amount' },
-    { label: 'Account' },
-    { label: 'Time', sortValue: 'Time', sort: true }
-  ]
-  const rows: TableRowCellsProp[][] = result.map(item => [
-    {
-      label:
-        item.type === StatTransactionsType.SWAPS ? (
-          <ShowTransactionsSwapName item={item} />
-        ) : (
-          <ShowTransactionsLiquidityName item={item} />
-        )
-    },
-    { label: `${formatMillion(Number(item.totalValue), '$ ', 2)}` },
-    {
-      label: (
-        <Box display={'flex'} justifyContent="center" alignItems={'center'}>
-          {`${formatMillion(Number(item.buyAmount), '', 4)}`} {item.buyToken.symbol}
-        </Box>
-      )
-    },
-    {
-      label: (
-        <Box display={'flex'} justifyContent="center" alignItems={'center'}>
-          {`${formatMillion(Number(item.sellAmount), '', 4)}`} {item.sellToken.symbol}
-        </Box>
-      )
-    },
-    {
-      label: (
-        <Link href={getEtherscanLink(chainId, item.account, 'address')} target="_blank" underline="hover">
-          {shortenAddress(item.account)}
-        </Link>
-      )
-    },
-    { label: <ShowTime timeStamp={Number(item.timestamp)} showTime /> }
-  ])
-
-  return (
-    <Box id="Transactions">
-      <RowBetween mb={18}>
-        <Stack direction={'row'} spacing={8} alignItems="center">
-          <Typography fontWeight={500} fontSize={16} color={theme.palette.text.primary} mr={8}>
-            Transactions
-          </Typography>
-        </Stack>
-      </RowBetween>
-      <Box
-        sx={{
-          backgroundColor: theme.palette.background.paper,
-          borderRadius: '12px'
-        }}
-      >
-        <StatTable
-          headers={headers}
-          loading={loading}
-          rows={rows}
-          page={page.currentPage}
-          setPage={page.setCurrentPage}
-          count={page.count}
-          {...order}
-          pageSize={page.pageSize}
-        />
-      </Box>
-    </Box>
-  )
-}
-
-function ShowTime({ timeStamp, showTime }: { timeStamp: number; showTime?: boolean }) {
-  const str = useMemo(() => {
-    const now = Math.ceil(new Date().getTime() / 1000)
-    const gap = now - timeStamp
-    if (gap < 0) {
-      return '0 secs ago'
-    }
-    if (gap < 60) {
-      return `${gap} secs ago`
-    }
-    if (gap < 3600) {
-      return `${Number(gap / 60).toFixed()} mins ago`
-    }
-    if (gap < 3600 * 24) {
-      return `${Number(gap / 3600).toFixed()} hrs ago`
-    }
-    return `${Number(gap / 86400).toFixed()} days ago`
-  }, [timeStamp])
-
-  if (showTime) {
-    return (
-      <Tooltip title={new Date(timeStamp * 1000).toLocaleString()} arrow placement="top">
-        <span>{str}</span>
-      </Tooltip>
-    )
-  }
-  return <>{str}</>
-}
-
-// export function useGetLocalToken(
-//   type: Mode,
-//   chainId: ChainId,
-//   address: string,
-//   token1155Id?: number
-// ): Token | Token1155 | Token721 | undefined {
-//   const allTokens = useAllTokens()
-//   const allToken1155 = useTrackedToken1155List()
-//   const tokenOptions = useTrackedToken721List()
-//   const erc20Token = useToken(Mode.ERC20 === type ? address : '')
-
-//   return useMemo(() => {
-//     if (erc20Token) return erc20Token
-//     if (Mode.ERC20 === type) {
-//       for (const token of Object.values(allTokens)) {
-//         if (token.chainId === chainId && token.address.toLowerCase() === address.toLowerCase()) {
-//           return token
-//         }
-//       }
-//     }
-//     if (Mode.ERC1155 === type) {
-//       for (const token of allToken1155) {
-//         if (token.chainId === chainId && chainId === 5 && token.address.toLowerCase() === address.toLowerCase()) {
-//           if (!token1155Id) {
-//             return token
-//           }
-//           const _token = TEST_1155_LIST.filter(i => i.address.toLowerCase() === token.address.toLowerCase())[0]
-//           return new Token1155(chainId, token.address, token1155Id, {
-//             name: _token.name,
-//             symbol: _token.symbol,
-//             uri: _token.uri
-//           })
-//         }
-//       }
-//     }
-//     if (Mode.ERC721 === type) {
-//       for (const token of tokenOptions) {
-//         if (token.chainId === chainId && token.address.toLowerCase() === address.toLowerCase()) {
-//           return token
-//         }
-//       }
-//     }
-//     return undefined
-//   }, [address, allToken1155, allTokens, chainId, erc20Token, token1155Id, tokenOptions, type])
-// }
 
 function ShowTopTokensCurrencyBox({ chainId, tokenInfo }: { chainId: ChainId; tokenInfo: StatTokenInfo }) {
   const navigate = useNavigate()
@@ -728,29 +355,6 @@ export function ShowTopPoolsCurrencyBox({
         </Typography>
       )}
     </Box>
-  )
-}
-
-function ShowTransactionsSwapName({ item }: { item: StatTransactionsProp }) {
-  return (
-    <Link href={getEtherscanLink(item.chainId, item.hash, 'transaction')} target="_blank" underline="hover">
-      Swap {item.sellToken.symbol} for {item.buyToken.symbol}
-    </Link>
-  )
-}
-
-function ShowTransactionsLiquidityName({ item }: { item: StatTransactionsProp }) {
-  if (item.type === StatTransactionsType.ADDS) {
-    return (
-      <Link href={getEtherscanLink(item.chainId, item.hash, 'transaction')} target="_blank" underline="hover">
-        Add Liquidity {item.buyToken.symbol} / {item.sellToken.symbol}
-      </Link>
-    )
-  }
-  return (
-    <Link href={getEtherscanLink(item.chainId, item.hash, 'transaction')} target="_blank" underline="hover">
-      Remove Liquidity {item.buyToken.symbol} / {item.sellToken.symbol}
-    </Link>
   )
 }
 

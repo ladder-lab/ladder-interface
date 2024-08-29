@@ -11,6 +11,7 @@ import WETH_ABI from '../constants/abis/weth.json'
 import ERC20_ABI from '../constants/abis/erc20.json'
 import ERC1155_ABI from '../constants/abis/erc1155.json'
 import ERC721_ABI from '../constants/abis/erc721.json'
+import ERC721_TEST_ABI from '../constants/abis/erc721-test.json'
 import MERKLE_TREE_ABI from '../constants/abis/merkleTree.json'
 import UNISOCKS_ABI from '../constants/abis/unisocks.json'
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
@@ -39,6 +40,8 @@ export function useContract(address: string | undefined, ABI: any, withSignerIfP
 }
 
 export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
+  tokenAddress && console.warn('useTokenContract', tokenAddress)
+
   return useContract(tokenAddress, ERC20_ABI, withSignerIfPossible)
 }
 
@@ -49,6 +52,11 @@ export function useWETHContract(withSignerIfPossible?: boolean): Contract | null
 
 export function useArgentWalletDetectorContract(): Contract | null {
   const { chainId } = useActiveWeb3React()
+  chainId === ChainId.MAINNET &&
+    console.warn(
+      'useArgentWalletDetectorContract',
+      chainId === ChainId.MAINNET ? ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS : undefined
+    )
   return useContract(
     chainId === ChainId.MAINNET ? ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS : undefined,
     ARGENT_WALLET_DETECTOR_ABI,
@@ -103,7 +111,9 @@ export function use1155Contract(address: string | undefined, withSignerIfPossibl
 }
 
 export function use721Contract(address: string | undefined, withSignerIfPossible?: boolean): Contract | null {
-  return useContract(address, ERC721_ABI, withSignerIfPossible)
+  // return useContract(address, ERC721_ABI, withSignerIfPossible)
+  const ABI = address === '0x5989D7Ef3a9Bffa32320708d9D0bd4360ee0648A' ? ERC721_TEST_ABI : ERC721_ABI
+  return useContract(address, ABI, withSignerIfPossible)
 }
 
 export function use721PairContract(address: string | undefined, withSignerIfPossible?: boolean): Contract | null {

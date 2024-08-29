@@ -7,7 +7,9 @@ import { useTokenDetailData } from 'hooks/useStatBacked'
 import { useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { formatMillion, getEtherscanLink, shortenAddress } from 'utils'
-import { PoolPairType, StatTransList, TopPoolsList } from '..'
+import { PoolPairType } from '..'
+import { StatTransList } from '../StatTransList'
+import { TopPoolsList } from '../TopPoolsList'
 
 export default function Tokens() {
   const theme = useTheme()

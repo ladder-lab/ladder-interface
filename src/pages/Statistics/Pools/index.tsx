@@ -3,7 +3,8 @@ import { Box, Breadcrumbs, Stack, Typography, useTheme } from '@mui/material'
 import { routes } from 'constants/routes'
 import { usePoolDetailData } from 'hooks/useStatBacked'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ShowTopPoolsCurrencyBox, StatTransList } from '..'
+import { ShowTopPoolsCurrencyBox } from '..'
+import { StatTransList } from '../StatTransList'
 
 export default function Pools() {
   const theme = useTheme()

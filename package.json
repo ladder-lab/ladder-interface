@@ -63,7 +63,8 @@
     "start:service-worker": "yarn build && yarn serve -s build",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "gcloud storage cp -r build/* gs://v2-ladder-top"
   },
   "eslintConfig": {
     "extends": "react-app",
@@ -71,20 +72,14 @@
       "node_modules"
     ]
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
   "license": "GPL-3.0-or-later",
   "dependencies": {
+    "@apollo/client": "^3.11.4",
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
     "@ladder/sdk": "ladder-lab/sdk.git#master",
@@ -95,6 +90,7 @@
     "big.js": "^6.2.0",
     "dayjs": "^1.11.3",
     "decimal.js-light": "^2.5.1",
+    "graphql": "^16.9.0",
     "jsbi": "^4.3.0",
     "ladder-sdk-beta": "^0.0.10",
     "lightweight-charts": "^3.7.0",

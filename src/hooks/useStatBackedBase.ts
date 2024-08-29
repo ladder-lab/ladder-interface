@@ -4,7 +4,6 @@ import { PoolPairType } from 'pages/Statistics'
 import { Order } from 'pages/Statistics/StatTable'
 import { useEffect, useState } from 'react'
 import { Axios, StatBaseURL } from 'utils/axios'
-import { useTransactionsQueries } from '../graphql/useTransactionsQueries'
 
 export interface StatTokenInfo {
   symbol: string
@@ -383,37 +382,111 @@ const transactionsListDataHandler = (list: any) => {
     })
   )
 }
-
 export function useTransactionsList(chainId: ChainId, token?: string, pair?: string) {
   const [currentPage, setCurrentPage] = useState(1)
   const [order, setOrder] = useState<Order>('desc')
   const [orderBy, setOrderBy] = useState<string | number>('')
   const [type, setType] = useState(StatTransactionsType.ALL)
+
+  const [firstLoadData, setFirstLoadData] = useState(true)
+  const [loading, setLoading] = useState<boolean>(false)
   const [count, setCount] = useState<number>(0)
-  const [result, setResult] = useState([] as StatTransactionsProp[])
+  const [result, setResult] = useState<StatTransactionsProp[]>([])
 
-  const { loading, dataA, dataB, dataDefault } = useTransactionsQueries(currentPage, pageSize, token, pair)
-
-  useEffect(() => {
-    const transactions = []
-
-    if (dataA) {
-      transactions.push(...transactionsListDataHandler(dataA.transactions))
-    }
-    if (dataB) {
-      transactions.push(...transactionsListDataHandler(dataB.transactions))
-    }
-    if (dataDefault) {
-      transactions.push(...transactionsListDataHandler(dataDefault.transactions))
-    }
-
-    setCount(transactions.length)
-    setResult(transactions)
-  }, [dataA, dataB, dataDefault])
+  const [timeRefresh, setTimeRefresh] = useState(-1)
+  const toTimeRefresh = () => setTimeout(() => setTimeRefresh(Math.random()), 60000)
 
   useEffect(() => {
+    if (firstLoadData) {
+      setFirstLoadData(false)
+      return
+    }
     setCurrentPage(1)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, type, token])
+
+  useEffect(() => {
+    ;(async () => {
+      setLoading(true)
+      try {
+        const filter = token ? { token } : {}
+        const filterPair = pair ? { pair } : {}
+        const res = await Axios.get(StatBaseURL + 'getSwapRecords', {
+          chainId,
+          type:
+            type === StatTransactionsType.ADDS
+              ? 2
+              : type === StatTransactionsType.REMOVES
+              ? 3
+              : type === StatTransactionsType.SWAPS
+              ? 1
+              : '',
+          pageSize,
+          pageNum: currentPage,
+          ...filter,
+          ...filterPair,
+          order,
+          orderBy
+        })
+        setLoading(false)
+        const data = res.data.data as any
+        if (!data) {
+          setResult([])
+          setCount(0)
+          return
+        }
+        setCount(Number(data.total))
+        setResult(transactionsListDataHandler(data.list))
+      } catch (error) {
+        setResult([])
+        setCount(0)
+        setLoading(false)
+        console.error('useTransactionsList', error)
+      }
+    })()
+  }, [chainId, currentPage, order, orderBy, pair, token, type])
+
+  useEffect(() => {
+    ;(async () => {
+      if (timeRefresh === -1) {
+        toTimeRefresh()
+        return
+      }
+      try {
+        const filter = token ? { token } : {}
+        const filterPair = pair ? { pair } : {}
+        const res = await Axios.get(StatBaseURL + 'getSwapRecords', {
+          chainId,
+          type:
+            type === StatTransactionsType.ADDS
+              ? 2
+              : type === StatTransactionsType.REMOVES
+              ? 3
+              : type === StatTransactionsType.SWAPS
+              ? 1
+              : '',
+          pageSize,
+          ...filter,
+          ...filterPair,
+          pageNum: currentPage,
+          order,
+          orderBy
+        })
+        const data = res.data.data as any
+        if (!data) {
+          return
+        }
+        setCount(Number(data.total))
+        setResult(transactionsListDataHandler(data.list))
+        toTimeRefresh()
+      } catch (error) {
+        toTimeRefresh()
+        console.error('useTransactionsList', error)
+      }
+    })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeRefresh])
+
   return {
     loading: loading,
     page: {

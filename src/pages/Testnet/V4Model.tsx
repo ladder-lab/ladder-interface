@@ -143,44 +143,16 @@ function MedalRow({
   const milestone = useMemo(() => {
     return curMilestone
   }, [curMilestone])
-  const medalIcons = useMemo<{ icon: string; isColor: boolean }[]>(() => {
-    if (!account) {
-      return medal.icons.map(i => {
-        return {
-          icon: i,
-          isColor: false
-        }
-      })
-    }
-    if (medal.currentAmount < milestone[0]) {
-      return medal.icons.map(i => {
-        return {
-          icon: i,
-          isColor: false
-        }
-      })
-    } else if (medal.currentAmount < milestone[1]) {
-      return medal.icons.map((i, idx) => {
-        return {
-          icon: i,
-          isColor: idx < 1
-        }
-      })
-    } else if (medal.currentAmount < milestone[2]) {
-      return medal.icons.map((i, idx) => {
-        return {
-          icon: i,
-          isColor: idx < 2
-        }
-      })
-    } else {
-      return medal.icons.map(i => {
-        return {
-          icon: i,
-          isColor: true
-        }
-      })
-    }
+  const medalIcons = useMemo(() => {
+    return medal.icons.map((icon, idx) => ({
+      icon,
+      isColor:
+        account &&
+        (medal.currentAmount >= milestone[idx] ||
+          (idx === 0 && medal.currentAmount >= milestone[0]) ||
+          (idx === 1 && medal.currentAmount >= milestone[1]) ||
+          (idx === 2 && medal.currentAmount >= milestone[2]))
+    }))
   }, [account, medal.currentAmount, medal.icons, milestone])
 
   const linesDash = useMemo(() => {
