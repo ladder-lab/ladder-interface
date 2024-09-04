@@ -12,7 +12,7 @@ import { Token1155 } from 'constants/token/token1155'
 import { checkIs1155, checkIs721, filter721 } from 'utils/checkIs1155'
 import { useBlockNumber } from 'state/application/hooks'
 import { Token721 } from 'constants/token/token721'
-import { getTest721uriWithIndex, isTest721 } from 'constants/default721List'
+import { getTest721uriWithIndex, isTest721, TEST_721_LADDER } from 'constants/default721List'
 
 // import { axiosNftScanInstance, erc721CollectionResponseType, ResponseType } from 'utils/axios'
 
@@ -301,7 +301,7 @@ export function useToken721BalanceTokens(tokenAmount?: TokenAmount): {
 
         const total = parseInt(balance)
         let indexes = []
-        if (contract.address === '0x5989D7Ef3a9Bffa32320708d9D0bd4360ee0648A') {
+        if (TEST_721_LADDER.includes(contract.address)) {
           indexes = await getNFTsOwnedByAddress(contract, account)
         } else {
           const arr = Array.from(Array(total).keys()).map((_, idx) => {

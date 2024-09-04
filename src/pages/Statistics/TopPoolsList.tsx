@@ -28,7 +28,6 @@ export function TopPoolsList({
     loading
   } = useTopPoolsList(chainId, token, defaultPoolPairType || PoolPairType.ERC20_ERC721, token1155Id)
   const theme = useTheme()
-
   const headers: TableHeadCellsProp[] = [
     {
       label: '#'
@@ -75,7 +74,10 @@ export function TopPoolsList({
                 sx={{ mt: { sm: 0, xs: 10 } }}
                 key={item}
                 className={item === poolsSearch.type ? 'active' : ''}
-                onClick={() => poolsSearch.setType(item)}
+                onClick={() => {
+                  poolsSearch.setType(item)
+                  page.setCurrentPage(1)
+                }}
               >
                 {item}
               </StyledTabButtonText>

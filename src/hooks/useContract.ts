@@ -23,6 +23,7 @@ import {
 } from '../constants/abis/argent-wallet-detector'
 import { MERKLE_TREE_ADDRESS, SBT_URI_ADDRESS, TEST_NFT_URI_ADDRESS } from '../constants'
 import SbtAbi from 'constants/abis/SbtFactory.json'
+import { TEST_721_LADDER } from '../constants/default721List'
 
 // returns null on errors
 export function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -112,7 +113,7 @@ export function use1155Contract(address: string | undefined, withSignerIfPossibl
 
 export function use721Contract(address: string | undefined, withSignerIfPossible?: boolean): Contract | null {
   // return useContract(address, ERC721_ABI, withSignerIfPossible)
-  const ABI = address === '0x5989D7Ef3a9Bffa32320708d9D0bd4360ee0648A' ? ERC721_TEST_ABI : ERC721_ABI
+  const ABI = TEST_721_LADDER.includes(address) ? ERC721_TEST_ABI : ERC721_ABI
   return useContract(address, ABI, withSignerIfPossible)
 }
 

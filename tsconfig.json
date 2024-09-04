@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ESNext",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -23,6 +23,9 @@
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": "src"
+  },
+  "ts-node": {
+    "esm": true
   },
   "exclude": ["node_modules"],
   "include": ["./src/**/*.ts", "./src/**/*.tsx", "src/constants/abis/erc1155ts"]

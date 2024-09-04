@@ -6,9 +6,9 @@ import { CssBaseline } from '@mui/material'
 import { ThemeProvider } from 'theme/index'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
+import { ApolloProvider } from '@apollo/client'
 import Blocklist from './components/essential/Blocklist'
-import { NetworkContextName, SUBGRAPH_URL } from './constants'
+import { NetworkContextName } from './constants'
 import App from './pages/App'
 import store from './state'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
@@ -18,6 +18,7 @@ import TransactionUpdater from './state/transactions/updater'
 import getLibrary from './utils/getLibrary'
 import { Buffer } from 'buffer'
 import ReactGA from 'react-ga4'
+import client from './graphql/apolloClient'
 
 const GOOGLE_ANALYTICS_ID: string | undefined = process.env.REACT_APP_GOOGLE_ANALYTICS_ID
 if (typeof GOOGLE_ANALYTICS_ID === 'string') {
@@ -37,11 +38,6 @@ String.prototype.trimTrailingZero = function (this: string) {
 }
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
-
-const client = new ApolloClient({
-  uri: SUBGRAPH_URL,
-  cache: new InMemoryCache()
-})
 
 function Updaters() {
   return (

@@ -8,8 +8,6 @@ import { useIsDarkMode } from 'state/user/hooks'
 import TestnetV3 from './TestnetV3'
 import TestnetV4 from './TestnetV4'
 
-export const v2ActiveTimeStamp = [1669093260000, 1669697940000]
-
 const routes = ['/round1', '/round2', '/monopoly', '/round3', '/airdrop']
 const testnetNames = ['ROUND 1', 'ROUND 2', 'Monopoly', 'ROUND 3', 'AIRDROP']
 

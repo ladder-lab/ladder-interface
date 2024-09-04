@@ -9,6 +9,7 @@ import { ROUTER_ADDRESS, ROUTER_ADDRESS_721 } from 'constants/index'
 import V2RouterABI from 'constants/abis/v2Router.json'
 import router721ABI from 'constants/abis/router721.json'
 import moment from 'moment'
+import { ethers } from 'ethers'
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -83,7 +84,8 @@ export function getEtherscanLink(
   data: string,
   type: 'transaction' | 'token' | 'address' | 'block'
 ): string {
-  const chain = chains[chainId]
+  // const chain = chains[chainId]
+  const chain = chains['11155111']
   return chain.builder(chain.link, data, type)
 }
 
@@ -218,3 +220,7 @@ export function getUTC0MondayMidnightTimestamp(): number {
 
 const utc0MondayMidnightTimestamp = getUTC0MondayMidnightTimestamp()
 console.log(utc0MondayMidnightTimestamp)
+
+export function convertWeiToEther(value: string): string {
+  return ethers.utils.formatUnits(value, 18)
+}

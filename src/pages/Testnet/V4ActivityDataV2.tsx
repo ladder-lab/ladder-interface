@@ -1,15 +1,13 @@
 import { Box, useTheme, Typography } from '@mui/material'
 import QuestionHelper from 'components/essential/QuestionHelper'
-import { ChainId } from 'constants/chain'
 import { useMemo } from 'react'
 import { formatMillion } from 'utils'
 import { Row } from '../MyAccount/OrigAccount'
 import { useActivityData } from '../../hooks/useTestnet'
 
 export default function V4ActivityData() {
-  const curChainId = ChainId.SEPOLIA
   const theme = useTheme()
-  const activityData = useActivityData(curChainId)
+  const activityData = useActivityData()
   const data = useMemo(
     () => [
       {

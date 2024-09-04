@@ -4,7 +4,7 @@ import { ChainId } from 'constants/chain'
 import { StatTopPoolsProp, topPoolsListDataHandler } from './useStatBacked'
 import { useActiveWeb3React } from 'hooks'
 import { ApolloQueryResult, gql, useQuery } from '@apollo/client'
-import { JSBI } from '@ladder/sdk'
+import { convertWeiToEther } from '../utils'
 
 // interface RrogressResponse {
 //   tasks: TaskProgress[]
@@ -18,12 +18,6 @@ export interface TaskProgress {
   taskId: string
 }
 
-function convertWeiToEther(value) {
-  const liquidityInBigInt = JSBI.BigInt(value)
-  const etherConversionFactor = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18))
-  const liquidityInEther = JSBI.divide(liquidityInBigInt, etherConversionFactor)
-  return liquidityInEther.toString()
-}
 export function useActivityData() {
   const [result, setResult] = useState<{
     transactions: number
@@ -44,9 +38,9 @@ export function useActivityData() {
     if (data && data.total) {
       const { liquidity, transactions, volume } = data.total
       setResult({
-        transactions,
-        TVL: convertWeiToEther(liquidity),
-        volume
+        transactions: +transactions,
+        TVL: +convertWeiToEther(liquidity),
+        volume: +convertWeiToEther(volume)
       })
     } else {
       setResult(undefined)

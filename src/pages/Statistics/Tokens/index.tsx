@@ -3,13 +3,13 @@ import { Box, Breadcrumbs, Link, Stack, Typography, useTheme } from '@mui/materi
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
 import { routes } from 'constants/routes'
-import { useTokenDetailData } from 'hooks/useStatBacked'
 import { useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { formatMillion, getEtherscanLink, shortenAddress } from 'utils'
 import { PoolPairType } from '..'
 import { StatTransList } from '../StatTransList'
 import { TopPoolsList } from '../TopPoolsList'
+import { useTokenDetailsQueries } from '../../../graphql/useTokenQueries'
 
 export default function Tokens() {
   const theme = useTheme()
@@ -21,12 +21,8 @@ export default function Tokens() {
     token1155Id: string
   }>()
   const curChainId = Number(chainId) as ChainId
-  const { result: tokenDetailData } = useTokenDetailData(
-    curChainId,
-    address || '',
-    type || Mode.ERC20,
-    Number(token1155Id)
-  )
+
+  const { result: tokenDetailData } = useTokenDetailsQueries(curChainId, address)
 
   const supportPoolPairTypes = useMemo(() => {
     if (type === Mode.ERC721) {
@@ -98,7 +94,7 @@ export default function Tokens() {
           token1155Id={Number(token1155Id)}
         />
 
-        <StatTransList chainId={curChainId} token={address} />
+        <StatTransList chainId={curChainId} token={address} tokenType={type} />
       </Stack>
     </Box>
   )

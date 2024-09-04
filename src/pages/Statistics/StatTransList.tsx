@@ -5,9 +5,20 @@ import StatTable, { TableHeadCellsProp, TableRowCellsProp } from './StatTable'
 import { formatMillion, getEtherscanLink, shortenAddress } from '../../utils'
 import RowBetween from '../../styled/RowBetween'
 import { useMemo } from 'react'
+import { Mode } from '../../components/Input/CurrencyInputPanel/SelectCurrencyModal'
 
-export function StatTransList({ chainId, token, pair }: { chainId: ChainId; token?: string; pair?: string }) {
-  const { result, page, order, loading, search } = useTransactionsList(chainId, token, pair)
+export function StatTransList({
+  chainId,
+  token,
+  pair,
+  tokenType
+}: {
+  chainId: ChainId
+  token?: string
+  pair?: string
+  tokenType: Mode
+}) {
+  const { result, page, order, loading, search } = useTransactionsList({ chainId, token, tokenType, pair })
   const theme = useTheme()
 
   const headers: TableHeadCellsProp[] = [

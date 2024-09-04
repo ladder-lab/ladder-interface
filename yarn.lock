@@ -2486,9 +2486,9 @@
     "@json-rpc-tools/types" "^1.7.6"
     "@pedrouid/environment" "^1.0.1"
 
-"@ladder/sdk@ladder-lab/sdk.git#master":
-  version "2.0.6-alpha"
-  resolved "https://codeload.github.com/ladder-lab/sdk/tar.gz/80eaaf05c2ba79387eeb5b270d6857b179ef5086"
+"@ladder/sdk@ladder-lab/sdk.git#test_sepolia":
+  version "2.0.7-alpha"
+  resolved "https://codeload.github.com/ladder-lab/sdk/tar.gz/85ebcf537acf61119f16e24a4c9e10e70000b5b0"
   dependencies:
     "@uniswap/v2-core" "^1.0.0"
     big.js "^5.2.2"

@@ -272,6 +272,7 @@ export default function CurrencyInputPanel({
               integer={!!is1155 || !!is721}
               height={isDownMd ? 48 : 52}
             />
+
             <Box display="flex" justifyContent="space-between" alignItems="center" mt={9}>
               <Typography fontSize={12} sx={{ color: theme.palette.text.secondary }}></Typography>
               <Box display="flex" alignItems={'center'}>

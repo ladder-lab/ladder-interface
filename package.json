@@ -59,7 +59,7 @@
     "workbox-strategies": "^6.5.3"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "cross-env NODE_OPTIONS=--max-old-space-size=4096 react-scripts start",
     "start:service-worker": "yarn build && yarn serve -s build",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
@@ -82,7 +82,7 @@
     "@apollo/client": "^3.11.4",
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
-    "@ladder/sdk": "ladder-lab/sdk.git#master",
+    "@ladder/sdk": "ladder-lab/sdk.git#test_sepolia",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.7",
     "@uniswap/default-token-list": "^2.0.0",

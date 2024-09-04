@@ -1,6 +1,6 @@
 import { useIsDarkMode } from '../../state/user/hooks'
 import { ChainId } from '../../constants/chain'
-import { convertWeiToEther, formatMillion, getUTC0MondayMidnightTimestamp, shortenAddress } from '../../utils'
+import { formatMillion, getUTC0MondayMidnightTimestamp, shortenAddress } from '../../utils'
 import { useActiveWeb3React } from '../../hooks'
 import { useEffect, useMemo, useState } from 'react'
 import { AccountRankValues } from '../../hooks/useTestnetV4'
@@ -8,7 +8,6 @@ import { Box, MenuItem, Select, Typography, useTheme } from '@mui/material'
 import { Axios, v4Url } from '../../utils/axios'
 import { StyledTabButtonText } from '../Statistics'
 import { LeaderBoardRank } from './LeaderBoardRank'
-import { useUserQueries } from '../../graphql/useUsersQueries'
 
 function MyRankItem({ num }: { num: string | number }) {
   const theme = useTheme()
@@ -17,10 +16,6 @@ function MyRankItem({ num }: { num: string | number }) {
       <span style={{ color: theme.palette.text.secondary }}>You </span>#{num}
     </Typography>
   )
-}
-enum UserOrderBy {
-  'Liquidity' = 'liquidity',
-  'Volume' = 'volume'
 }
 
 export function LeaderBoardBox() {
@@ -50,49 +45,6 @@ export function LeaderBoardBox() {
 
   const theme = useTheme()
 
-  const { result: liquidityResult } = useUserQueries({
-    pageSize: 10,
-    timestamp,
-    currentPage: liquidityPage,
-    orderBy: UserOrderBy.Liquidity
-  })
-  useEffect(() => {
-    const liquidityList: any = liquidityResult.map((item: any, index) => ({
-      value: convertWeiToEther(item.liquidity),
-      rank: accountLiquidityRankList.length === 0 ? index + 1 : accountLiquidityRankList.length + index,
-      account: item.id
-    }))
-    setAccountLiquidityRankList(liquidityList)
-    const accountRank = liquidityResult.findIndex((item: any) => item.id === account)
-    setAccountLiquidityRank({
-      account: account || '',
-      rank: accountRank === -1 ? '-' : accountRank + accountLiquidityRankList.length,
-      value: convertWeiToEther(liquidityResult.find((item: any) => item.id === account)?.liquidity || 0)
-    })
-    setLiquidityTotalPage(liquidityList.length)
-  }, [liquidityResult])
-
-  const { result: volumeResult } = useUserQueries({
-    pageSize: 10,
-    timestamp,
-    currentPage: volumePage,
-    orderBy: UserOrderBy.Volume
-  })
-  useEffect(() => {
-    const volumeList: any = volumeResult.map((item: any, index) => ({
-      value: convertWeiToEther(item.volume),
-      rank: accountVolumeRankList.length === 0 ? index + 1 : accountVolumeRankList.length + index,
-      account: item.id
-    }))
-    setAccountVolumeRankList(volumeList)
-    const accountRank = volumeResult.findIndex((item: any) => item.id === account)
-    setAccountVolumeRank({
-      account: account || '',
-      rank: accountRank === -1 ? '-' : accountRank + accountVolumeRankList.length,
-      value: convertWeiToEther(volumeResult.find((item: any) => item.id === account)?.volume || 0)
-    })
-    setVolumeTotalPage(volumeList.length)
-  }, [volumeResult])
   const fetchRankData = async (
     url: string,
     page: number,
@@ -100,7 +52,6 @@ export function LeaderBoardBox() {
     setRank: (data: AccountRankValues) => void
   ) => {
     if (!chainId) return setRankList([])
-
     try {
       const res = await Axios.get(v4Url + url, {
         chainId,
@@ -144,6 +95,32 @@ export function LeaderBoardBox() {
     }
     fetchAssets()
   }, [account, assetsPage, chainId, timestamp])
+
+  useEffect(() => {
+    const fetchLiquidity = async () => {
+      const lastPage = await fetchRankData(
+        timestamp === '0' ? 'getAccountTvlRank' : 'getAccountTvlWeekRank',
+        liquidityPage,
+        setAccountLiquidityRankList,
+        setAccountLiquidityRank
+      )
+      setLiquidityTotalPage(lastPage)
+    }
+    fetchLiquidity()
+  }, [account, liquidityPage, chainId, timestamp])
+
+  useEffect(() => {
+    const fetchVolume = async () => {
+      const lastPage = await fetchRankData(
+        'getAccountVolumeRank',
+        volumePage,
+        setAccountVolumeRankList,
+        setAccountVolumeRank
+      )
+      setVolumeTotalPage(lastPage)
+    }
+    fetchVolume()
+  }, [account, chainId, timestamp, volumePage])
 
   const createRankData = (rankList: AccountRankValues[], accountRank?: AccountRankValues) => {
     const ret = rankList.map(item => [
@@ -189,7 +166,6 @@ export function LeaderBoardBox() {
   return (
     <Box>
       <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
-        {/*
         <Box display={'flex'} gap={20}>
           {['Total', 'Weekly'].map(item => (
             <StyledTabButtonText
@@ -212,7 +188,6 @@ export function LeaderBoardBox() {
             </StyledTabButtonText>
           ))}
         </Box>
-*/}
         {currentType == 'Weekly' && (
           <Select
             sx={{

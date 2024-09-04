@@ -115,12 +115,10 @@ export default function SelectCurrencyModal({
       .map(key => {
         const token = allTokens[key as keyof typeof allTokens]
         if (token?.symbol && COMMON_CURRENCIES.includes(token.symbol)) {
-          console.log('token', token)
           curList.push(token)
         }
       })
       .slice(0, 4)
-    console.log('curList', curList)
     return curList
   }, [allTokens])
 

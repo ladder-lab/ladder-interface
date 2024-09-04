@@ -2,9 +2,19 @@ import { ChainId } from '@ladder/sdk'
 import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
 import { PoolPairType } from 'pages/Statistics'
 import { Order } from 'pages/Statistics/StatTable'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Axios, StatBaseURL } from 'utils/axios'
-import { useTransactionsQueries } from '../graphql/useTransactionsQueries'
+import { useTransactionsQueries, useTransactionsTotal } from '../graphql/useTransactionsQueries'
+import { convertWeiToEther } from '../utils'
+import { usePoolsDetailsQueries, usePoolsQueries } from '../graphql/usePoolsQueries'
+import { useTokensQueries } from '../graphql/useTokenQueries'
+
+export enum GraphOrderType {
+  Time = 'timestamp',
+  TVL = 'liquidity'
+}
+
+const pageSize = 5
 
 export interface StatTokenInfo {
   symbol: string
@@ -25,150 +35,75 @@ export interface StatTopTokensProp {
   tvl: string
   transfers: number
 }
-const pageSize = 5
 
 export function useTopTokensList(
   chainId: ChainId,
-  defaultMode?: Mode,
-  defaultPageSize?: number,
+  defaultMode: Mode = Mode.ERC721,
+  defaultPageSize: number = pageSize,
   token?: string,
   token1155Id?: number
 ) {
   const [currentPage, setCurrentPage] = useState(1)
   const [order, setOrder] = useState<Order>('desc')
   const [orderBy, setOrderBy] = useState<string | number>('')
-  const [_pageSize] = useState(defaultPageSize || pageSize)
-  const [type, setType] = useState(defaultMode || Mode.ERC721)
-
-  const [firstLoadData, setFirstLoadData] = useState(true)
+  const [type, setType] = useState(defaultMode)
   const [loading, setLoading] = useState<boolean>(false)
-  const [count, setCount] = useState<number>(0)
+  // const [count, setCount] = useState<number>(20)
   const [result, setResult] = useState<StatTopTokensProp[]>([])
-
-  const [timeRefresh, setTimeRefresh] = useState(-1)
-  const toTimeRefresh = () => setTimeout(() => setTimeRefresh(Math.random()), 60000)
+  const count = 20
+  const id = token || token1155Id
+  const { dataTokens, loadingToken } = useTokensQueries({
+    currentPage,
+    pageSize: defaultPageSize,
+    order,
+    orderBy,
+    id,
+    type
+  })
 
   useEffect(() => {
-    if (firstLoadData) {
-      setFirstLoadData(false)
-      return
-    }
+    const tokens =
+      dataTokens.map(i => ({
+        Volume: i.volume,
+        tvl: convertWeiToEther(i.liquidity),
+        price: convertWeiToEther(i.price),
+        token: {
+          name: i.name,
+          symbol: i.symbol,
+          address: i.id,
+          type: i.type === 'ERC20' ? Mode.ERC20 : i.type === 'ERC721' ? Mode.ERC721 : Mode.ERC1155,
+          tokenId: i.id
+        }
+      })) || []
+    setResult(tokens)
+  }, [dataTokens])
+  useEffect(() => {
+    setLoading(loadingToken)
+  }, [loadingToken])
+
+  const search = useCallback((val: string) => {
+    setOrderBy(val)
     setCurrentPage(1)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, type])
-
-  useEffect(() => {
-    ;(async () => {
-      setLoading(true)
-      try {
-        const filter: any = token ? { token } : {}
-        if (Mode.ERC1155 === type) {
-          filter.tokenId = token1155Id
-        }
-        const res = await Axios.get(StatBaseURL + 'getTokenList', {
-          chainId,
-          type: type === Mode.ERC20 ? 1 : type === Mode.ERC721 ? 2 : 3,
-          ...filter,
-          pageSize: _pageSize,
-          pageNum: currentPage,
-          order,
-          orderBy
-        })
-        setLoading(false)
-        const data = res.data.data as any
-        if (!data) {
-          setResult([])
-          setCount(0)
-          return
-        }
-        setCount(Number(data.total))
-        setResult(
-          data.list.map((item: any) => ({
-            ...item,
-            token: {
-              symbol: item.symbol,
-              name: item.name,
-              logo: item.logo,
-              address: item.token,
-              tokenId: item.tokenId,
-              type
-            }
-          }))
-        )
-      } catch (error) {
-        setResult([])
-        setCount(0)
-        setLoading(false)
-        console.error('useTopTokensList', error)
-      }
-    })()
-  }, [chainId, currentPage, order, orderBy, _pageSize, type, token, token1155Id])
-
-  useEffect(() => {
-    ;(async () => {
-      if (timeRefresh === -1) {
-        toTimeRefresh()
-        return
-      }
-      try {
-        const filter: any = token ? { token } : {}
-        if (Mode.ERC1155 === type) {
-          filter.tokenId = token1155Id
-        }
-        const res = await Axios.get(StatBaseURL + 'getTokenList', {
-          chainId,
-          type: type === Mode.ERC20 ? 1 : type === Mode.ERC721 ? 2 : 3,
-          ...filter,
-          pageSize: _pageSize,
-          pageNum: currentPage,
-          order,
-          orderBy
-        })
-        const data = res.data.data as any
-        if (!data) {
-          return
-        }
-        setCount(Number(data.total))
-        setResult(
-          data.list.map((item: any) => ({
-            ...item,
-            token: {
-              symbol: item.symbol,
-              name: item.name,
-              logo: item.logo,
-              address: item.token,
-              tokenId: item.tokenId,
-              type
-            }
-          }))
-        )
-        toTimeRefresh()
-      } catch (error) {
-        toTimeRefresh()
-        console.error('useTopTokensList', error)
-      }
-    })()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeRefresh])
+  }, [])
 
   return {
     loading: loading,
     page: {
-      setCurrentPage: (page: number) => setCurrentPage(page),
+      setCurrentPage,
       currentPage,
       count,
-      totalPage: Math.ceil(count / _pageSize),
-      pageSize: _pageSize
+      totalPage: Math.ceil(count / defaultPageSize),
+      pageSize: defaultPageSize
     },
     search: {
       type,
-      setType: (type: Mode) => setType(type)
+      setType
     },
     order: {
       order,
       orderBy,
-      setOrder: (order: Order) => setOrder(order),
-      setOrderBy: (orderBy: number | string) => setOrderBy(orderBy)
+      setOrder,
+      setOrderBy: search
     },
     result
   }
@@ -184,24 +119,28 @@ export interface StatTopPoolsProp {
   pair: string
 }
 
-export const topPoolsListDataHandler = (list: any) => {
-  return list.map((item: any) =>
-    Object.assign(item, {
-      token0: {
-        ...item[item.token0],
-        type: item.token0Type === 1 ? Mode.ERC20 : item.token0Type === 2 ? Mode.ERC721 : Mode.ERC1155,
-        address: item.token0,
-        balance: item.token0Balance
-      },
-      token1: {
-        ...item[item.token1],
-        address: item.token1,
-        type: item.token1Type === 1 ? Mode.ERC20 : item.token1Type === 2 ? Mode.ERC721 : Mode.ERC1155,
-        balance: item.token1Balance
-      }
-    })
-  )
+const mapToken = (item: any, tokenKey: string) => {
+  const token = item[tokenKey]
+  const price = convertWeiToEther(token.price)
+  return {
+    ...token,
+    address: token.id,
+    price,
+    type: token.type === 'ERC20' ? Mode.ERC20 : token.type === 'ERC721' ? Mode.ERC721 : Mode.ERC1155
+  }
 }
+
+export const topPoolsListDataHandler = (list: any) =>
+  list.map(item => ({
+    ...item,
+    pair: item.id,
+    Volume: item.volume,
+    Volume7: item.volume7d,
+    tvl: convertWeiToEther(item.liquidity),
+    token0: mapToken(item, 'tokenA'),
+    token1: mapToken(item, 'tokenB')
+  }))
+
 export function useTopPoolsList(
   chainId: ChainId | undefined,
   token?: string,
@@ -215,105 +154,41 @@ export function useTopPoolsList(
   const [type, setType] = useState(defaultPoolPairType || PoolPairType.ERC20_ERC20)
   const [_pageSize] = useState(defaultPageSize || pageSize)
 
-  const [firstLoadData, setFirstLoadData] = useState(true)
   const [loading, setLoading] = useState<boolean>(false)
-  const [count, setCount] = useState<number>(0)
+  const [count, setCount] = useState<number>(20)
   const [result, setResult] = useState<StatTopPoolsProp[]>([])
 
-  const [timeRefresh, setTimeRefresh] = useState(-1)
-  const toTimeRefresh = () => setTimeout(() => setTimeRefresh(Math.random()), 60000)
+  const { dataPairs, loadingPairs } = usePoolsQueries({
+    chainId,
+    currentPage,
+    pageSize: _pageSize,
+    order,
+    orderBy,
+    token,
+    token1155Id,
+    type,
+    setLoading,
+    setCount,
+    setResult
+  })
+  useEffect(() => {
+    const formatData = topPoolsListDataHandler(dataPairs)
+    setResult(formatData)
+  }, [dataPairs])
 
   useEffect(() => {
-    if (firstLoadData) {
-      setFirstLoadData(false)
-      return
-    }
+    setLoading(loadingPairs)
+  }, [loadingPairs])
+
+  const search = useCallback((val: string) => {
+    setOrderBy(val)
     setCurrentPage(1)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, type, token])
-
-  useEffect(() => {
-    ;(async () => {
-      if (!chainId) {
-        setResult([])
-        return
-      }
-      setLoading(true)
-      try {
-        const filter: any = token ? { token } : {}
-        if (PoolPairType.ERC20_ERC1155 === type) {
-          filter.tokenId = token1155Id
-        }
-        const res = await Axios.get(StatBaseURL + 'getPoolList', {
-          chainId,
-          type: type === PoolPairType.ERC20_ERC20 ? 1 : type === PoolPairType.ERC20_ERC721 ? 2 : 3,
-          pageSize: _pageSize,
-          ...filter,
-          pageNum: currentPage,
-          order,
-          orderBy
-        })
-        setLoading(false)
-        const data = res.data.data as any
-        if (!data) {
-          setResult([])
-          setCount(0)
-          return
-        }
-        setCount(Number(data.total))
-        setResult(topPoolsListDataHandler(data.list))
-      } catch (error) {
-        setResult([])
-        setCount(0)
-        setLoading(false)
-        console.error('useTopPoolsList', error)
-      }
-    })()
-  }, [_pageSize, chainId, currentPage, order, orderBy, token, token1155Id, type])
-
-  useEffect(() => {
-    ;(async () => {
-      if (!chainId) {
-        setResult([])
-        return
-      }
-      if (timeRefresh === -1) {
-        toTimeRefresh()
-        return
-      }
-      try {
-        const filter: any = token ? { token } : {}
-        if (PoolPairType.ERC20_ERC1155 === type) {
-          filter.tokenId = token1155Id
-        }
-        const res = await Axios.get(StatBaseURL + 'getPoolList', {
-          chainId,
-          type: type === PoolPairType.ERC20_ERC20 ? 1 : type === PoolPairType.ERC20_ERC721 ? 2 : 3,
-          pageSize: _pageSize,
-          pageNum: currentPage,
-          ...filter,
-          order,
-          orderBy
-        })
-        const data = res.data.data as any
-        if (!data) {
-          return
-        }
-        setCount(Number(data.total))
-        setResult(topPoolsListDataHandler(data.list))
-        toTimeRefresh()
-      } catch (error) {
-        toTimeRefresh()
-        console.error('useTopPoolsList', error)
-      }
-    })()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeRefresh])
+  }, [])
 
   return {
-    loading: loading,
+    loading,
     page: {
-      setCurrentPage: (page: number) => setCurrentPage(page),
+      setCurrentPage,
       currentPage,
       count,
       totalPage: Math.ceil(count / _pageSize),
@@ -321,13 +196,13 @@ export function useTopPoolsList(
     },
     search: {
       type,
-      setType: (type: PoolPairType) => setType(type)
+      setType
     },
     order: {
       order,
       orderBy,
-      setOrder: (order: Order) => setOrder(order),
-      setOrderBy: (orderBy: number | string) => setOrderBy(orderBy)
+      setOrder,
+      setOrderBy: search
     },
     result
   }
@@ -354,70 +229,85 @@ export interface StatTransactionsProp {
   type: StatTransactionsType
 }
 
-const transactionsListDataHandler = (list: any) => {
-  return list.map((item: any) =>
-    Object.assign(item, {
-      buyToken: {
-        symbol: item.buyTokenSymbol,
-        name: item.buyTokenName,
-        logo: item.buyTokenUri,
-        address: item.buyToken,
-        type: item.buyTokenType === 'ERC20' ? Mode.ERC20 : item.buyTokenType === 'ERC721' ? Mode.ERC721 : Mode.ERC1155,
-        tokenId: item.tokenId
-      },
-      sellToken: {
-        symbol: item.sellTokenSymbol,
-        name: item.sellTokenName,
-        logo: item.sellTokenUri,
-        address: item.sellToken,
-        type:
-          item.sellTokenType === 'ERC20' ? Mode.ERC20 : item.sellTokenType === 'ERC721' ? Mode.ERC721 : Mode.ERC1155,
-        tokenId: item.tokenId
-      },
-      type:
-        item.type === 1
-          ? StatTransactionsType.SWAPS
-          : item.type === 2
-          ? StatTransactionsType.ADDS
-          : StatTransactionsType.REMOVES
-    })
-  )
+const getTokenData = (token: StatTokenInfo) => ({
+  ...token,
+  address: token.id,
+  type: token.type === 'ERC20' ? Mode.ERC20 : token.type === 'ERC721' ? Mode.ERC721 : Mode.ERC1155,
+  tokenId: token.id
+})
+
+const transactionsListDataHandler = (list: any[]) => {
+  console.log(list)
+  return list.map((item: any) => ({
+    ...item,
+    buyToken: getTokenData(item.TokenA),
+    buyAmount: convertWeiToEther(item.TokenAamount),
+    sellToken: getTokenData(item.TokenB),
+    sellAmount: convertWeiToEther(item.TokenBamount),
+    totalValue: convertWeiToEther(item.value),
+    type:
+      item.type === 'Swap'
+        ? StatTransactionsType.SWAPS
+        : item.type === 'addLiquidity'
+        ? StatTransactionsType.ADDS
+        : StatTransactionsType.REMOVES,
+    hash: item.id.includes('-') ? item.id.split('-')[0] : item.id
+  }))
 }
 
-export function useTransactionsList(chainId: ChainId, token?: string, pair?: string) {
+export function useTransactionsList({
+  chainId,
+  token,
+  pair,
+  tokenType
+}: {
+  chainId: ChainId
+  token?: string
+  pair?: string
+  tokenType: Mode
+}) {
   const [currentPage, setCurrentPage] = useState(1)
   const [order, setOrder] = useState<Order>('desc')
-  const [orderBy, setOrderBy] = useState<string | number>('')
+  const [orderBy, setOrderBy] = useState<string>('Time')
   const [type, setType] = useState(StatTransactionsType.ALL)
   const [count, setCount] = useState<number>(0)
   const [result, setResult] = useState([] as StatTransactionsProp[])
-
-  const { loading, dataA, dataB, dataDefault } = useTransactionsQueries(currentPage, pageSize, token, pair)
+  const { dataA, dataB, dataDefault, loading } = useTransactionsQueries({
+    currentPage,
+    pageSize,
+    order,
+    orderBy,
+    token,
+    tokenType,
+    pair,
+    type
+  })
+  const { total } = useTransactionsTotal({ type, token })
 
   useEffect(() => {
-    const transactions = []
-
-    if (dataA) {
-      transactions.push(...transactionsListDataHandler(dataA.transactions))
-    }
-    if (dataB) {
-      transactions.push(...transactionsListDataHandler(dataB.transactions))
-    }
-    if (dataDefault) {
-      transactions.push(...transactionsListDataHandler(dataDefault.transactions))
-    }
-
-    setCount(transactions.length)
+    const transactions = [
+      ...(dataA ? transactionsListDataHandler(dataA.transactions) : []),
+      ...(dataB ? transactionsListDataHandler(dataB.transactions) : []),
+      ...(dataDefault ? transactionsListDataHandler(dataDefault.transactions) : [])
+    ]
     setResult(transactions)
-  }, [dataA, dataB, dataDefault])
+  }, [dataA, dataB, dataDefault, total])
 
   useEffect(() => {
     setCurrentPage(1)
   }, [chainId, type, token])
+
+  useEffect(() => {
+    setCount(total)
+  }, [total])
+  const search = useCallback((val: string) => {
+    setOrderBy(val)
+    setCurrentPage(1)
+  }, [])
   return {
     loading: loading,
     page: {
-      setCurrentPage: (page: number) => setCurrentPage(page),
+      setCurrentPage,
       currentPage,
       count,
       totalPage: Math.ceil(count / pageSize),
@@ -425,13 +315,13 @@ export function useTransactionsList(chainId: ChainId, token?: string, pair?: str
     },
     search: {
       type,
-      setType: (type: StatTransactionsType) => setType(type)
+      setType
     },
     order: {
       order,
       orderBy,
-      setOrder: (order: Order) => setOrder(order),
-      setOrderBy: (orderBy: number | string) => setOrderBy(orderBy)
+      setOrder,
+      setOrderBy: search
     },
     result
   }
@@ -493,30 +383,40 @@ export function usePoolDetailData(chainId: ChainId, pair: string) {
   const [loading, setLoading] = useState<boolean>(false)
   const [result, setResult] = useState<StatTopPoolsProp>()
 
+  const { data: pairDetails, loading: pairDetailsLoading } = usePoolsDetailsQueries(chainId, pair)
+
   useEffect(() => {
-    ;(async () => {
-      setLoading(true)
-      try {
-        const res = await Axios.get(StatBaseURL + 'getPoolList', {
-          chainId,
-          pair,
-          pageNum: 1,
-          pageSize: 1
-        })
-        setLoading(false)
-        const data = res.data.data as any
-        if (!data?.list?.length) {
-          setResult(undefined)
-          return
-        }
-        setResult(topPoolsListDataHandler(data.list)[0])
-      } catch (error) {
-        setResult(undefined)
-        setLoading(false)
-        console.error('usePoolDetailData', error)
+    setLoading(pairDetailsLoading)
+  }, [pairDetailsLoading])
+
+  useEffect(() => {
+    if (!pairDetails) {
+      setResult(undefined)
+      return
+    }
+    const data = pairDetails.pair
+    setResult({
+      Volume: data.volume,
+      Volume7: data.volume7d,
+      tvl: convertWeiToEther(data.liquidity),
+      tokenId: data.tokenId,
+      pair: data.id,
+      token0: {
+        symbol: data.tokenA.symbol,
+        name: data.tokenA.name,
+        logo: data.tokenA.logo,
+        address: data.tokenA.id,
+        type: data.tokenA.type === 'ERC20' ? Mode.ERC20 : data.tokenA.type === 'ERC721' ? Mode.ERC721 : Mode.ERC1155
+      },
+      token1: {
+        symbol: data.tokenB.symbol,
+        name: data.tokenB.name,
+        logo: data.tokenB.logo,
+        address: data.tokenB.id,
+        type: data.tokenB.type === 'ERC20' ? Mode.ERC20 : data.tokenB.type === 'ERC721' ? Mode.ERC721 : Mode.ERC1155
       }
-    })()
-  }, [chainId, pair])
+    })
+  }, [pairDetails])
 
   return {
     loading: loading,
