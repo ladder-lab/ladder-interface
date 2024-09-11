@@ -1,12 +1,18 @@
 import { useIsDarkMode } from '../../state/user/hooks'
 import { ChainId } from '../../constants/chain'
-import { convertWeiToEther, formatMillion, getUTC0MondayMidnightTimestamp, shortenAddress } from '../../utils'
+import {
+  convertWeiToEther,
+  formatMillion,
+  getUTC0MondayMidnightTimestamp,
+  isAddress,
+  shortenAddress
+} from '../../utils'
 import { useActiveWeb3React } from '../../hooks'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { AccountRankValues } from '../../hooks/useTestnetV4'
 import { Box, MenuItem, Select, Typography, useTheme } from '@mui/material'
 import { Axios, v4Url } from '../../utils/axios'
-import { StyledTabButtonText } from '../Statistics'
+// import { StyledTabButtonText } from '../Statistics'
 import { LeaderBoardRank } from './LeaderBoardRank'
 import { useUserQueries } from '../../graphql/useUsersQueries'
 
@@ -56,21 +62,25 @@ export function LeaderBoardBox() {
     currentPage: liquidityPage,
     orderBy: UserOrderBy.Liquidity
   })
+  const prevLiquidityResultRef = useRef()
+
   useEffect(() => {
+    if (prevLiquidityResultRef.current === liquidityResult) return
     const liquidityList: any = liquidityResult.map((item: any, index) => ({
       value: convertWeiToEther(item.liquidity),
       rank: accountLiquidityRankList.length === 0 ? index + 1 : accountLiquidityRankList.length + index,
       account: item.id
     }))
     setAccountLiquidityRankList(liquidityList)
-    const accountRank = liquidityResult.findIndex((item: any) => item.id === account)
+    const accountRank = liquidityResult.findIndex((item: any) => isAddress(item.id) === account)
     setAccountLiquidityRank({
       account: account || '',
-      rank: accountRank === -1 ? '-' : accountRank + accountLiquidityRankList.length,
-      value: convertWeiToEther(liquidityResult.find((item: any) => item.id === account)?.liquidity || 0)
+      rank: accountRank === -1 ? '-' : accountRank + 1,
+      value: convertWeiToEther(liquidityResult.find((item: any) => isAddress(item.id) === account)?.liquidity || 0)
     })
     setLiquidityTotalPage(liquidityList.length)
-  }, [liquidityResult])
+    prevLiquidityResultRef.current = liquidityResult
+  }, [liquidityResult, account])
 
   const { result: volumeResult } = useUserQueries({
     pageSize: 10,
@@ -78,21 +88,25 @@ export function LeaderBoardBox() {
     currentPage: volumePage,
     orderBy: UserOrderBy.Volume
   })
+  const prevVolumeResultRef = useRef()
   useEffect(() => {
+    if (prevVolumeResultRef.current === liquidityResult) return
     const volumeList: any = volumeResult.map((item: any, index) => ({
       value: convertWeiToEther(item.volume),
       rank: accountVolumeRankList.length === 0 ? index + 1 : accountVolumeRankList.length + index,
       account: item.id
     }))
     setAccountVolumeRankList(volumeList)
-    const accountRank = volumeResult.findIndex((item: any) => item.id === account)
+    const accountRank = volumeResult.findIndex((item: any) => isAddress(item.id) === account)
     setAccountVolumeRank({
       account: account || '',
-      rank: accountRank === -1 ? '-' : accountRank + accountVolumeRankList.length,
-      value: convertWeiToEther(volumeResult.find((item: any) => item.id === account)?.volume || 0)
+      rank: accountRank === -1 ? '-' : accountRank + 1,
+      value: convertWeiToEther(volumeResult.find((item: any) => isAddress(item.id) === account)?.volume || 0)
     })
     setVolumeTotalPage(volumeList.length)
+    prevVolumeResultRef.current = liquidityResult
   }, [volumeResult])
+
   const fetchRankData = async (
     url: string,
     page: number,

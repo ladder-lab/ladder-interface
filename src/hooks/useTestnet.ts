@@ -1,21 +1,18 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Axios, StatBaseURL } from 'utils/axios'
 import { ChainId } from 'constants/chain'
 import { StatTopPoolsProp, topPoolsListDataHandler } from './useStatBacked'
 import { useActiveWeb3React } from 'hooks'
-import { ApolloQueryResult, gql, useQuery } from '@apollo/client'
 import { convertWeiToEther } from '../utils'
-
-// interface RrogressResponse {
-//   tasks: TaskProgress[]
-//   userAddress: string
-// }
+import { useTotal } from '../graphql/useTotal'
+import { useBadgeQueries } from '../graphql/useBadgesQueries'
 
 export interface TaskProgress {
-  L1: boolean
-  L2: boolean
-  L3: boolean
-  taskId: string
+  fl: number
+  le: number
+  tr: number
+  lp: number
+  [key: string]: number
 }
 
 export function useActivityData() {
@@ -24,19 +21,10 @@ export function useActivityData() {
     TVL: number
     volume: number
   }>()
-  const GET_ACTIVITY_DATA = gql`
-    query MyQuery {
-      total(id: "total") {
-        liquidity
-        transactions
-        volume
-      }
-    }
-  `
-  const { data } = useQuery<ApolloQueryResult>(GET_ACTIVITY_DATA)
+  const { data } = useTotal()
   useEffect(() => {
-    if (data && data.total) {
-      const { liquidity, transactions, volume } = data.total
+    if (Object.keys(data).length) {
+      const { liquidity, transactions, volume } = data
       setResult({
         transactions: +transactions,
         TVL: +convertWeiToEther(liquidity),
@@ -50,55 +38,15 @@ export function useActivityData() {
   return result
 }
 
-export function useV4Medal() {
-  const { account } = useActiveWeb3React()
-  const [result, setResult] = useState<TaskProgress[]>([])
-  const getTestnetTasks = useCallback(async () => {
-    try {
-      // const res = await Axios.get<RrogressResponse>(`${v4Url}/tasks/progress`, {
-      //   userAddress: account || ''
-      // })
-      const res = {
-        userAddress: account,
-        tasks: [
-          {
-            taskId: 'LiquidityProvider',
-            L1: true,
-            L2: false,
-            L3: false
-          },
-          {
-            taskId: 'Tradoooor',
-            L1: true,
-            L2: true,
-            L3: false
-          },
-          {
-            taskId: 'Flippooor',
-            L1: true,
-            L2: true,
-            L3: true
-          },
-          {
-            taskId: 'Legend Collectooor',
-            L1: false,
-            L2: false,
-            L3: false
-          }
-        ]
-      }
-      console.log(res.tasks, 'res.tasks')
-      setResult(res.tasks)
-    } catch (e) {
-      console.warn(e)
-    }
-  }, [account])
+export function useV4Medal(): { result: TaskProgress } {
+  const { result, error } = useBadgeQueries()
+  if (error) {
+    console.error('useV4Medal', error)
+  }
 
-  useEffect(() => {
-    getTestnetTasks()
-  }, [account, getTestnetTasks])
-
-  return { result }
+  return {
+    result
+  }
 }
 
 export function useV3PoolTop10(chainId: ChainId) {

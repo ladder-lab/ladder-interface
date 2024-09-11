@@ -31,6 +31,7 @@ import MyAccount from './MyAccount'
 import OrigAccount from './MyAccount/OrigAccount'
 import Footer from '../components/Footer'
 import Airdrop from './Airdrop'
+import ScrollToTop from '../components/ScrollToTop'
 
 const AppWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDarkMode' })<{ isDarkMode: boolean }>(
   ({ theme, isDarkMode }) => ({
@@ -87,6 +88,8 @@ export default function App() {
             <Header />
             <GoogleAnalyticsReporter />
             <BodyWrapper id="body">
+              <ScrollToTop />
+
               <Popups />
               <Polling />
               {/* <WarningModal /> */}

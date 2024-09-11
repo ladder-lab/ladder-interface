@@ -1,6 +1,7 @@
 import { Token721 } from './token/token721'
 import SampleNftImg from 'assets/images/sample-nft.png'
 import { ChainId } from '@ladder/sdk'
+import { ERC721ImageMap } from './index'
 
 const test721List: any[] = [
   /*  { address: '0x54C0ac6D96D7B79c2941FaA33e61188611F4d813', name: 'Mutant Ape Yacht Club', symbol: 'BAYC' },
@@ -17,6 +18,72 @@ const test721List: any[] = [
 
 const test721ListSepolia = [
   {
+    address: '0x526B3cCD20BDE16BC90b319221BECb04f643F9CB',
+    name: 'Bored Ape Yacht Club',
+    symbol: 'BAYC',
+    metaDataUri: ERC721ImageMap['Bored Ape Yacht Club']
+  },
+  {
+    address: '0x17875C1432936a0AD3e915Eda2971cb0508C9961',
+    name: 'CryptoPunks',
+    symbol: 'CRYPTOPUNKS',
+    metaDataUri: ERC721ImageMap['CryptoPunks']
+  },
+  {
+    address: '0xF8D89ef6B1f3A02Be5684Ed287A00b68E982278F',
+    name: 'Mutant Ape Yacht Club',
+    symbol: 'MAYC',
+    metaDataUri: ERC721ImageMap['Mutant Ape Yacht Club']
+  },
+  {
+    address: '0xdD4d8AFB264c9dAab66Ea5DC470b195DE37609b7',
+    name: 'Azuki',
+    symbol: 'AZUKI',
+    metaDataUri: ERC721ImageMap['Azuki']
+  },
+  {
+    address: '0x36B8fA8d5C62c822C8a6c184b20586A9a247213e',
+    name: 'Pudgy Penguins',
+    symbol: 'PudgyPenguins',
+    metaDataUri: ERC721ImageMap['Pudgy Penguins']
+  },
+  {
+    address: '0xF0AA97d493AFadAeDFCDd020F80C8ea927676C1E',
+    name: 'Milady Maker',
+    symbol: 'Milady',
+    metaDataUri: ERC721ImageMap['Milady Maker']
+  },
+  {
+    address: '0x36B8fA8d5C62c822C8a6c184b20586A9a247213e',
+    name: 'mfers',
+    symbol: 'MFER',
+    metaDataUri: ERC721ImageMap['mfers']
+  },
+  {
+    address: '0x36B8fA8d5C62c822C8a6c184b20586A9a247213e',
+    name: 'Pudgy Penguins',
+    symbol: 'PudgyPenguins',
+    metaDataUri: ERC721ImageMap['Pudgy Penguins']
+  },
+  {
+    address: '0x36B8fA8d5C62c822C8a6c184b20586A9a247213e',
+    name: 'Lil Pudgys',
+    symbol: 'LilPudgys ',
+    metaDataUri: ERC721ImageMap['LilPudgys']
+  },
+  {
+    address: '0x36B8fA8d5C62c822C8a6c184b20586A9a247213e',
+    name: 'Moonbirds',
+    symbol: 'MOONBIRD ',
+    metaDataUri: ERC721ImageMap['Moonbirds']
+  },
+  {
+    address: '0x36B8fA8d5C62c822C8a6c184b20586A9a247213e',
+    name: 'Doodles',
+    symbol: 'DOODLE ',
+    metaDataUri: ERC721ImageMap['Doodles']
+  }
+  /*{
     address: '0x4186128305c4fF0a3FafB9126eEaf77169C2ec12',
     name: 'Mutant Ape Yacht Club',
     symbol: 'MAYC',
@@ -41,7 +108,7 @@ const test721ListSepolia = [
   { address: '0x92F6Ea44eF7DC9e3293a41cEc53610F3f0a6D127', name: 'World Of Women', symbol: 'WOW' },
   { address: '0x9c111fEDD3aa778a46D0E7067D0e894D1eA0A029', name: 'RENGA', symbol: 'RENGA' },
   { address: '0xf904B6C5aBa72dD44fBc840Be139c100F291d5FA', name: 'Azuki', symbol: 'AZUKI' }
-
+*/
   // { name: 'LADDER-TEST-721-1', symbol: 'T-721-1', address: '0x6746e7bd4250263F7F6CedEEDa3d055749c82A9e' },
   // { name: 'LADDER-TEST-721-2', symbol: 'T-721-2', address: '0x96013A85E4B2ad0B579A8713a56225F8ed7530E9' },
   // { name: 'LADDER-TEST-721-3', symbol: 'T-721-3', address: '0x5070F6ac4B161aa3f9B48E14d4A6182752939Cfe' },
@@ -55,13 +122,7 @@ const test721ListSepolia = [
 ]
 
 const test721TestnetV3ListSepolia = [
-  {
-    address: '0x5989D7Ef3a9Bffa32320708d9D0bd4360ee0648A',
-    name: 'MYNFT',
-    symbol: 'NFT',
-    metaDataUri: ''
-  },
-  {
+  /*  {
     address: '0xbef96b9354EaF451FaD72E41A1a4d4fE9D696ef4',
     name: 'Rh!noX',
     symbol: 'RNX',
@@ -134,7 +195,7 @@ const test721TestnetV3ListSepolia = [
     name: 'Cheers UP',
     symbol: 'CUP',
     uriName: 'CheersUp'
-  }
+  }*/
 ]
 
 export const getTest721uri = (name: string, uriName?: string) => {
@@ -159,11 +220,11 @@ const TEST_721_LIST = test721List.map(({ address, name, symbol }) => {
   })
 })
 
-const TEST_721_LIST_SEPOLIA = test721ListSepolia.map(({ address, name, symbol, uriName }) => {
+const TEST_721_LIST_SEPOLIA = test721ListSepolia.map(({ address, name, symbol, uriName, metaDataUri }) => {
   return new Token721(ChainId.SEPOLIA, address, undefined, {
     name,
     symbol,
-    uri: getTest721uri(name, uriName)
+    uri: metaDataUri ? metaDataUri : getTest721uri(name, uriName)
   })
 })
 
@@ -173,7 +234,7 @@ const TEST_721_TESTNET_V3_LIST_SEPOLIA = test721TestnetV3ListSepolia.map(
       name,
       symbol,
       tokenUri: metaDataUri,
-      uri: metaDataUri ? metaDataUri + '1.jpg' : getTest721uri(name, uriName)
+      uri: metaDataUri ? metaDataUri : getTest721uri(name, uriName)
     })
   }
 )

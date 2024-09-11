@@ -26,7 +26,12 @@ export function TopPoolsList({
     page,
     order,
     loading
-  } = useTopPoolsList(chainId, token, defaultPoolPairType || PoolPairType.ERC20_ERC721, token1155Id)
+  } = useTopPoolsList({
+    chainId,
+    token,
+    poolPairType: defaultPoolPairType || PoolPairType.ERC20_ERC721,
+    token1155Id
+  })
   const theme = useTheme()
   const headers: TableHeadCellsProp[] = [
     {

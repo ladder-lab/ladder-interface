@@ -9,10 +9,18 @@ import useModal from 'hooks/useModal'
 import { useIsDarkMode } from 'state/user/hooks'
 import { Link } from 'react-router-dom'
 import { ExternalLink } from 'theme/components'
-import { ActivityProps } from './Activity'
+import React, { useCallback, useState } from 'react'
+import MessageBox from '../../components/Modal/TransactionModals/MessageBox'
+import Input from '../../components/Input'
+import useBreakpoint from '../../hooks/useBreakpoint'
 
 export default function BoxModal({ getBox, BoxId }: { getBox: () => void; BoxId?: string }) {
   const isDardMode = useIsDarkMode()
+  const { hideModal } = useModal()
+  const closeBox = useCallback(() => {
+    hideModal()
+    getBox()
+  }, [hideModal, getBox])
   return (
     <Modal maxWidth="360px">
       <Box padding={24} display={'flex'} flexDirection={'column'} alignItems={'center'} gap={20}>
@@ -23,16 +31,31 @@ export default function BoxModal({ getBox, BoxId }: { getBox: () => void; BoxId?
           <br />
           Congrats on your 1 box reward!
         </Typography>
-        <Button onClick={getBox} disabled={BoxId === 'lockLP' || BoxId === ActivityProps.Mint}>
-          GET IT NOW
+        <Button onClick={closeBox} sx={{ mt: '20px' }}>
+          CLOSE
         </Button>
+        {/*        <Button onClick={getBox} disabled={BoxId === 'lockLP' || BoxId === ActivityProps.Mint}>
+          GET IT NOW
+        </Button>*/}
       </Box>
     </Modal>
   )
 }
 
-export function IncompleteModal({ route, action, link }: { route?: string; link?: string; action?: () => void }) {
+export function IncompleteModal({
+  route,
+  action,
+  link,
+  scrollTo
+}: {
+  route?: string
+  link?: string
+  action?: () => void
+  scrollTo?: string
+}) {
   const { hideModal } = useModal()
+  const routerScrollTo = route ? (scrollTo ? `${route}#${scrollTo}` : route) : ''
+  console.log(routerScrollTo)
   return (
     <Modal maxWidth="360px">
       <Box padding={'60px 24px'} display={'flex'} flexDirection={'column'} alignItems={'center'} gap={20}>
@@ -53,7 +76,7 @@ export function IncompleteModal({ route, action, link }: { route?: string; link?
             TO FINISH
           </Button>
         ) : route ? (
-          <Link to={route ?? ''} style={{ width: '100%' }} onClick={hideModal}>
+          <Link to={routerScrollTo ?? ''} style={{ width: '100%' }} onClick={hideModal}>
             <Button> TO FINISH </Button>
           </Link>
         ) : link ? (
@@ -83,6 +106,86 @@ export function LuckModal({ getLuck }: { getLuck: () => void }) {
           Your luck has increased by 10%.
         </Typography>
         <Button onClick={getLuck}>GET IT NOW</Button>
+      </Box>
+    </Modal>
+  )
+}
+
+export function EmailModal() {
+  const { hideModal } = useModal()
+  const isDownMd = useBreakpoint('md')
+  const [email, setEmail] = useState('')
+  const [code, setCode] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [isCodeSent, setIsCodeSent] = useState(false)
+
+  const handleSendCode = async () => {
+    if (!validateEmail(email)) {
+      alert('Please enter a valid email address.')
+      return
+    }
+    setIsLoading(true)
+    try {
+      // 这里可以添加发送验证码的逻辑
+      setIsCodeSent(true)
+      alert('Verification code sent to your email!')
+    } catch (error) {
+      alert('Failed to send verification code.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleSubmit = async () => {
+    setIsLoading(true)
+    try {
+      alert('Code verified successfully!')
+      hideModal()
+    } catch (error) {
+      alert('Failed to verify code.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return re.test(email)
+  }
+
+  return (
+    <Modal maxWidth="400px">
+      <Box padding={24} gap={20} bgcolor="background.paper" borderRadius={2} boxShadow={3}>
+        <Typography variant="h6" align="center" gutterBottom>
+          Send Verification Code
+        </Typography>
+        <Input
+          label="Email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          placeholder="Enter your email"
+          height={isDownMd ? 48 : 60}
+        />
+
+        <Button
+          variant="contained"
+          onClick={handleSendCode}
+          disabled={isLoading}
+          sx={{ marginBottom: 10, width: '100%' }}
+        >
+          {isLoading ? 'Sending...' : 'Get Code'}
+        </Button>
+        {isCodeSent && (
+          <Input
+            label="Verification Code"
+            value={code}
+            onChange={e => setCode(e.target.value)}
+            placeholder="Enter the code sent to your email"
+          />
+        )}
+        <Button variant="contained" onClick={handleSubmit} disabled={isLoading || !isCodeSent} sx={{ width: '100%' }}>
+          {isLoading ? 'Submitting...' : 'Submit'}
+        </Button>
       </Box>
     </Modal>
   )

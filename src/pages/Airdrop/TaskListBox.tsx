@@ -1,15 +1,10 @@
 import { ChainId } from '@ladder/sdk'
-import TaskList, { TYPE, TaskListData } from './TaskList'
-import { useBoxTasks } from 'hooks/useAirdrop'
+import TaskList, { TYPE } from './TaskList'
 import { useMemo } from 'react'
-import useModal from 'hooks/useModal'
-import BoxModal, { IncompleteModal } from './AirdropModal'
 import { ReactComponent as Tester } from 'assets/svg/airdrop/tester.svg'
 import { ReactComponent as Monopoly } from 'assets/svg/airdrop/monopoly.svg'
 import { ReactComponent as Badges } from 'assets/svg/airdrop/badges.svg'
-import { ReactComponent as Trading } from 'assets/svg/airdrop/trading.svg'
-
-const expiredList = ['test1', 'test2', 'monopoly', 'swap-two', 'hold-two', 'gensoSwap', 'lokSwap']
+import { BoxData } from './index'
 
 const tasks = [
   // {
@@ -63,117 +58,51 @@ const tasks = [
     id: 'all-Level-3',
     icon: <Badges />,
     route: 'round3'
-  },
-  // {
-  //   title: 'Buy at least 1 DWD-SFT',
-  //   id: 'dogewalkSwap',
-  //   chain: ChainId.BSC,
-  //   link: 'http://dogewalk.ladder.top/',
-  //   icon: <Trading />
-  // },
-  // {
-  //   title: 'Hold at least 4 DWD-SFT',
-  //   id: 'dogewalkHold',
-  //   chain: ChainId.BSC,
-  //   link: 'http://dogewalk.ladder.top/',
-  //   icon: <Trading />,
-  //   tooltip:
-  //     'A snapshot will be taken on a random date. All wallets with more than 4 DW SFTs will qualify for the reward.						'
-  // },
-  // {
-  //   title: 'Provide LP for LOK/ MATIC pool to earn Ladder Box',
-  //   id: 'lockLP',
-  //   chain: ChainId.MATIC,
-  //   link: 'https://lok.ladder.top',
-  //   icon: <Trading />
-  // },
-  {
-    title: 'Make 2 swaps to Earn Ladder Box => Swap at least 2 WolfPack Pups NFTs',
-    id: 'swap-two',
-    chain: ChainId.MATIC,
-    link: 'https://wolfpack.ladder.top/swap',
-    icon: <Trading />
-  },
-  {
-    title: 'Hold at least 2 WolfPack Pups NFTs to Earn Ladder Box => Hold at least 2 WolfPack Pups NFTs',
-    id: 'hold-two',
-    chain: ChainId.MATIC,
-    link: 'https://wolfpack.ladder.top/swap',
-    icon: <Trading />
-  },
-  {
-    title: 'Genso Beginner Equipment Swap',
-    id: 'gensoSwap',
-    chain: ChainId.MATIC,
-    link: 'https://mua-campaign.ladder.top/swap',
-    icon: <Trading />
-  },
-  {
-    title: 'League of Kingdoms Drago Swap',
-    id: 'lokSwap',
-    chain: ChainId.MATIC,
-    link: 'https://mua-campaign.ladder.top/swap',
-    icon: <Trading />
   }
 ]
 
-export default function TaskListLuck({ refreshCb }: { refreshCb: () => void }) {
-  const { getBox, taskState: state } = useBoxTasks(refreshCb)
-  // console.log('🚀 ~ file: TaskListBox.tsx:100 ~ TaskListLuck ~ state:', state)
-  const { showModal } = useModal()
+export interface LuckItem {
+  taskId: string
+  description: string
+  rewardBox: number
+  rewardLuck: number
+  expireTime: string
+}
+interface TaskListLuckProps {
+  boxData: BoxData
+  claimBox: (item: LuckItem) => void
+}
 
-  const sorted: TaskListData = useMemo(
-    () =>
-      tasks.reduce(
-        (acc, item) => {
-          const itemState = state?.[item.id]
-          if (itemState) {
-            if (itemState.claimed === true) {
-              acc.completed.push({ ...item, completed: itemState.finished, claimed: itemState.claimed })
-              return acc
-            } else {
-              if (expiredList.includes(item.id) && !itemState.finished) {
-                acc.cannotComplete.push({
-                  ...item,
-                  completed: itemState.finished,
-                  claimed: itemState.claimed,
-                  expired: true
-                })
-                return acc
-              }
-              acc.canBeDone.push({
-                ...item,
-                completed: itemState.finished,
-                claimed: itemState.claimed,
-                action: () => {
-                  itemState.finished
-                    ? showModal(
-                        <BoxModal
-                          getBox={getBox({ boxType: itemState.boxType, boxs: itemState.boxs })}
-                          BoxId={item.id}
-                        />
-                      )
-                    : showModal(<IncompleteModal route={item.route} link={item.link} />)
-                }
-              })
-              return acc
-            }
-          } else {
-            if (expiredList.includes(item.id)) {
-              acc.cannotComplete.push({ ...item, completed: false, claimed: false, expired: true })
-              return acc
-            }
-            acc.canBeDone.push({ ...item, completed: false, claimed: false })
-            return acc
-          }
-        },
-        { canBeDone: [], completed: [], cannotComplete: [] } as TaskListData
-      ),
-    [getBox, showModal, state]
-  )
+export default function TaskListLuck({ boxData, claimBox }: TaskListLuckProps) {
+  const taskListData = useMemo(() => {
+    const mapTask = (item: LuckItem, completed: boolean, claimed: boolean, expired = false, scrollTo?: string) => {
+      const baseObj = {
+        ...item,
+        title: item.description,
+        id: item.taskId,
+        chain: ChainId.SEPOLIA,
+        icon: <Badges />,
+        route: 'round3',
+        completed,
+        claimed,
+        expired,
+        scrollTo
+      }
+      return {
+        ...baseObj,
+        action: () => claimBox(baseObj)
+      }
+    }
+
+    return {
+      canBeDone: boxData?.toClaim ? boxData.toClaim.map(item => mapTask(item, false, false, false, 'badge')) : [],
+      completed: boxData?.claimed ? boxData.claimed.map(item => mapTask(item, true, true)) : [],
+      cannotComplete: boxData?.expired ? boxData.expired.map(item => mapTask(item, false, false, true)) : []
+    }
+  }, [boxData, claimBox])
   return (
     <>
-      <TaskList type={TYPE.box} data={sorted} />
+      <TaskList type={TYPE.box} data={taskListData} />
     </>
   )
 }

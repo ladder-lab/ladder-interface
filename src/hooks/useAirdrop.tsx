@@ -1,7 +1,7 @@
-import { axiosAirdropInstance, axiosAirdropInstanceLockLP, axiosAirdropMuaInstance } from 'utils/axios'
+import { Axios, axiosAirdropInstance, axiosAirdropInstanceLockLP, axiosAirdropMuaInstance } from 'utils/axios'
 import useInterval from './useInterval'
 import { useActiveWeb3React } from 'hooks'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import useModal from './useModal'
 import { useSignLogin } from './useSignIn'
 import { useIsWindowFocus } from './useIsWindowVisible'
@@ -145,34 +145,52 @@ export function useBoxTasks(refreshCb: () => void) {
 export function useAirdropData() {
   const [refresh, setRefresh] = useState(false)
   const { account, chainId } = useActiveWeb3React()
-  const [airdropData, setAirdropData] = useState<any>(undefined)
+  const [userBoxAmount, setUserBoxAmount] = useState(0)
+  const [useLockAmount, setUserLockAmount] = useState(0)
+  const isFetching = useRef(false)
   const walletIsConnected = useWalletIsConnected()
+
+  const airdropData = useMemo(
+    () => ({
+      myBoxs: userBoxAmount,
+      myLuck: useLockAmount
+    }),
+    [userBoxAmount, useLockAmount]
+  )
 
   const refreshCb = useCallback(() => {
     setRefresh(prev => !prev)
   }, [])
 
-  const cb = useCallback(() => {
-    if (!walletIsConnected || !account || !chainId) return
-    axiosAirdropInstance
-      .get('/drop/getdropInfo', {
-        params: { account, chainId }
-      })
-      .then(r => {
-        if (r.data.code === 200) {
-          setAirdropData(r.data.data)
-        }
-      })
-      .catch(e => {
-        console.error(e)
-      })
+  const fetchData = useCallback(async () => {
+    if (!walletIsConnected || !account || !chainId || isFetching.current) return
+
+    try {
+      isFetching.current = true
+      const [boxResponse, luckResponse] = await Promise.all([
+        Axios.get('/airdrop/getBoxAmount', { walletAddress: account }),
+        Axios.get('/airdrop/getLuckAmount', { walletAddress: account })
+      ])
+
+      if (boxResponse.data) {
+        setUserBoxAmount(boxResponse.data.boxAmount)
+      }
+
+      if (luckResponse.data) {
+        setUserLockAmount(luckResponse.data.luckAmount)
+      }
+      isFetching.current = false
+    } catch (error) {
+      console.error('Error fetching airdrop data:', error)
+      isFetching.current = false
+    }
   }, [account, chainId, walletIsConnected])
 
   useEffect(() => {
-    cb()
-  }, [cb, refresh])
+    fetchData()
+  }, [fetchData, refresh])
 
-  useInterval(cb, account ? 60000 : null)
+  useInterval(fetchData, account ? 60000 : null)
 
   return { airdropData, refreshCb }
 }

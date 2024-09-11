@@ -347,12 +347,12 @@ function SearchToken1155({
 }) {
   const theme = useTheme()
   const [token1155Id, setToken1155Id] = useState('')
-  const pools = useTopPoolsList(
-    token1155Id ? chainId : undefined,
+  const pools = useTopPoolsList({
+    chainId: token1155Id ? chainId : undefined,
     token,
-    PoolPairType.ERC20_ERC1155,
-    Number(token1155Id)
-  )
+    poolPairType: PoolPairType.ERC20_ERC1155,
+    token1155Id: Number(token1155Id)
+  })
 
   return (
     <Stack spacing={10}>

@@ -28,5 +28,11 @@
     "esm": true
   },
   "exclude": ["node_modules"],
-  "include": ["./src/**/*.ts", "./src/**/*.tsx", "src/constants/abis/erc1155ts"]
+  "include": [
+    "./src/**/*.ts",
+    "./src/**/*.tsx",
+    "setupProxy.ts",
+    "src/constants/abis/erc1155ts",
+    "node_modules/@types/node/globals.d.ts"
+  ]
 }

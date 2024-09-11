@@ -6,8 +6,10 @@ import qs from 'qs'
 export const StatBaseURL = 'https://v1-test.ladder.top/web/'
 // export const StatBaseURL = 'https://v1-ladder.c2py.com/web/'
 
-export const baseURL = 'https://test-nftapi.antimatter.finance:8443/web/'
-// export const baseURL = 'https://dualinvest-testapi.antimatter.finance/web/'
+// export const baseURL = 'https://test-nftapi.antimatter.finance:8443/web/'
+export const baseURL = process.env.NODE_ENV === 'development' ? '/api' : process.env.REACT_APP_API_URL
+// export const baseURL = process.env.REACT_APP_API_URL
+
 export const testURL = 'https://testapi.settle3.com/web/'
 export const testAssetUrl = 'https://testapi.settle3.com'
 
@@ -25,7 +27,7 @@ const nftScanXApiKey = 'lz5gWLaiA8ZXOHlyFK854hRg'
 
 export const axiosInstance = axios.create({
   baseURL,
-  timeout: 10000,
+  timeout: 30000,
   headers: { 'content-type': 'application/json', accept: 'application/json' }
 })
 export const axiosTestInstance = axios.create({

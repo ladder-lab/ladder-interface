@@ -12,18 +12,18 @@ import trador1 from 'assets/svg/round3/tradoor-1.svg'
 import trador2 from 'assets/svg/round3/tradoor-2.svg'
 import trador3 from 'assets/svg/round3/tradoor-3.svg'
 import { useMemo } from 'react'
-import { useV4Medal } from '../../hooks/useTestnet'
+import { TaskProgress, useV4Medal } from '../../hooks/useTestnet'
 import useBreakpoint from '../../hooks/useBreakpoint'
 import { useActiveWeb3React } from '../../hooks'
-import { TaskProgress } from '../../hooks/useTestnet'
 
 interface Medal {
   type: string
+  attr: string
+  currentLevel: number
   desc: string
   icons: string[]
 }
 
-interface MedalProgress extends Medal, TaskProgress {}
 const LineText = styled('span')({
   textDecoration: 'underline'
 })
@@ -61,32 +61,39 @@ function MedalRow({
   needDollar = true,
   needTips
 }: {
-  medal: MedalProgress
+  medal: Medal
   curMilestone: number[]
   needDollar?: boolean
   needTips?: boolean
 }) {
   const { account } = useActiveWeb3React()
+  // console.log(medal)
   const isDownMD = useBreakpoint('md')
   const theme = useTheme()
   const milestone = useMemo(() => curMilestone, [curMilestone])
   const medalIcons = useMemo(() => {
+    if (!account) {
+      return medal.icons.map(i => {
+        return {
+          icon: i,
+          isColor: false
+        }
+      })
+    }
     return medal.icons.map((icon, idx) => {
       let isColor = false
-      if (account) {
-        switch (idx) {
-          case 0:
-            isColor = medal.L1
-            break
-          case 1:
-            isColor = medal.L2
-            break
-          case 2:
-            isColor = medal.L3
-            break
-          default:
-            isColor = false
-        }
+      switch (idx) {
+        case 0:
+          isColor = medal.currentLevel > 0
+          break
+        case 1:
+          isColor = medal.currentLevel > 1
+          break
+        case 2:
+          isColor = medal.currentLevel > 2
+          break
+        default:
+          isColor = false
       }
       return {
         icon,
@@ -96,9 +103,9 @@ function MedalRow({
   }, [account, medal])
 
   const linesDash = useMemo(() => {
-    if (medal.L1) {
+    if (medal.currentLevel > 1) {
       return [true, true]
-    } else if (medal.L2) {
+    } else if (medal.currentLevel === 2) {
       return [false, true]
     } else {
       return [false, false]
@@ -169,7 +176,7 @@ function MedalRow({
 }
 
 export default function V4Medal() {
-  const { result } = useV4Medal()
+  const { result } = useV4Medal() as { result: TaskProgress }
   const isDownMD = useBreakpoint('md')
   const theme = useTheme()
   const milestone = [
@@ -178,42 +185,45 @@ export default function V4Medal() {
     [1500, 5000, 15000],
     [5000, 10000, 20000]
   ]
-  // eslint-disable--line react-hooks/exhaustive-deps
 
   const taskProcess = useMemo(() => {
     const list: Medal[] = [
       {
         type: 'Liquidity Providooor',
+        attr: 'lp',
+        currentLevel: 0,
         desc: 'Provide more liquidity to level up!',
         icons: [provider1, provider2, provider3]
       },
       {
         type: 'Tradoooor',
+        attr: 'tr',
+        currentLevel: 1,
         desc: 'Generate more NFT trading volume to level up!',
         icons: [trador1, trador2, trador3]
       },
       {
         type: 'Flippooor',
+        attr: 'fl',
+        currentLevel: 2,
         desc: 'Make more NFT swaps to level up!',
         icons: [dompor1, dompor2, dompor3]
       },
       {
         type: 'Legend Collectooor',
+        attr: 'fl',
+        currentLevel: 3,
         desc: 'Trade (buy or sell) at least one high value NFT to level up!',
         icons: [accumulator1, accumulator2, accumulator3]
       }
     ]
-    return list.map((i, index) => {
+    return list.map(i => {
       return {
         ...i,
-        taskId: result.length ? result[index].taskId : '',
-        L1: result.length ? result[index].L1 : false,
-        L2: result.length ? result[index].L2 : false,
-        L3: result.length ? result[index].L3 : false
+        currentLevel: result[i.attr]
       }
     })
   }, [result])
-
   return (
     <Stack spacing={isDownMD ? 30 : 60}>
       <Typography

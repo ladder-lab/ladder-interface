@@ -40,7 +40,7 @@ export function ShowTopTokensCurrencyBox({ chainId, tokenInfo }: { chainId: Chai
 }
 
 export function TopTokensList({ chainId }: { chainId: ChainId }) {
-  const { search: topTokensSearch, result, page, order, loading } = useTopTokensList(chainId)
+  const { search: topTokensSearch, result, page, order, loading } = useTopTokensList({ chainId })
   const theme = useTheme()
 
   const headers: TableHeadCellsProp[] = [

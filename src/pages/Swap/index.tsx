@@ -36,10 +36,10 @@ import { useCurrency } from 'hooks/Tokens'
 import { replaceErrorMessage } from 'utils'
 import { useWalletIsConnected } from 'state/walletConnect/hooks'
 import { useGasFee } from 'hooks/useGasPrice'
+const SUPPORTED_Tokens = ['USDT', 'USDC', 'WETH', 'ETH']
 
 export default function Swap() {
   // const theme = useTheme()
-
   const { account, chainId } = useActiveWeb3React()
   const navigate = useNavigate()
 
@@ -91,12 +91,10 @@ export default function Swap() {
   const [toErc721SubTokens, setToErc721SubTokens] = useState<Token721[] | null>(null)
 
   const trade = v2Trade
-
   const parsedAmounts = {
     [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
     [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount
   }
-
   const { onSwitchTokens, onCurrencySelection, onUserInput } = useSwapActionHandlers()
 
   const isValid = !swapInputError
@@ -358,6 +356,12 @@ export default function Swap() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromAsset, typedValue])
 
+  const isSupportedBaseToken = useMemo(() => {
+    return (
+      (currency0?.symbol && SUPPORTED_Tokens.includes(currency0.symbol)) ||
+      (currency1?.symbol && SUPPORTED_Tokens.includes(currency1.symbol))
+    )
+  }, [currency0, currency1])
   return (
     <>
       <ConfirmSwapModal
@@ -396,7 +400,6 @@ export default function Swap() {
           >
             SWAP
           </Typography>
-
           <Settings />
           <Box mb={fromAsset ? 16 : 0}>
             <>
@@ -448,7 +451,6 @@ export default function Swap() {
               {PriceCorrectOutput}
             </>
           </Box>
-          {/* {toAsset && <AssetAccordion token={toAsset} />} */}
           {isValid && !swapCallbackError && (
             <SwapSummary
               fromAsset={fromAsset ?? undefined}
@@ -515,13 +517,15 @@ export default function Swap() {
                     !isValid ||
                     // (priceImpactSeverity > 3 && !isExpertMode) ||
                     !!swapCallbackError ||
-                    (showApproveFlow && approval !== ApprovalState.APPROVED)
+                    (showApproveFlow && approval !== ApprovalState.APPROVED) ||
+                    !isSupportedBaseToken
                   }
                   error={
                     swapInputError
                       ? swapInputError
-                      : // : priceImpactSeverity > 3 && !isExpertMode
-                        // ? `Price Impact Too High`
+                      : !isSupportedBaseToken
+                      ? 'Please select USDT, USDC, or WETH'
+                      : // ? `Price Impact Too High`
                         undefined
                   }
                 />

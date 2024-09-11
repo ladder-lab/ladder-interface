@@ -14,13 +14,7 @@ import Divider from 'components/Divider'
 // import { ETHER } from 'constants/token'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { useNavigate, useParams } from 'react-router-dom'
-import {
-  StatTokenInfo,
-  StatTopPoolsProp,
-  StatTopTokensProp,
-  useTopPoolsList,
-  useTopTokensList
-} from 'hooks/useStatBacked'
+import { StatTokenInfo, StatTopPoolsProp, StatTopTokensProp, useTopPoolsList } from 'hooks/useStatBacked'
 import { ChainId } from 'constants/chain'
 import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
 import Copy from 'components/essential/Copy'
@@ -30,9 +24,7 @@ import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { routes } from 'constants/routes'
 import { ArrowBack } from '@mui/icons-material'
 import TestnetV3Mark from 'components/TestnetV3Mark'
-import { useToken721PairTradePrice } from 'hooks/useToken721PairTrade'
-import { useErc721Price } from 'utils/ercTokenSwapPrice'
-import { useTokenErc20Price } from 'hooks/useTokenErc20Price'
+import { useTokenDetailsQueries } from '../../graphql/useTokenQueries'
 
 export default function Collection() {
   const isDownMd = useBreakpoint('md')
@@ -43,15 +35,7 @@ export default function Collection() {
     token1155Id: string
   }>()
   const curChainId = Number(chainId) as ChainId
-  const { result, loading } = useTopTokensList(
-    curChainId,
-    type || Mode.ERC20,
-    1,
-    address || '',
-    Number(token1155Id || 0)
-  )
-  const tokenDetailData = useMemo(() => result[0], [result])
-
+  const { result: tokenDetailData, loading } = useTokenDetailsQueries(curChainId, address || '')
   const curPoolPairType = useMemo(() => {
     if (Mode.ERC721 === type) {
       return PoolPairType.ERC20_ERC721
@@ -61,12 +45,12 @@ export default function Collection() {
     return PoolPairType.ERC20_ERC20
   }, [type])
 
-  const { result: topPoolsResult, page: topPoolsListPage } = useTopPoolsList(
-    curChainId,
-    address || '',
-    curPoolPairType,
-    Number(token1155Id || 0)
-  )
+  const { result: topPoolsResult, page: topPoolsListPage } = useTopPoolsList({
+    chainId: curChainId,
+    token: address || '',
+    poolPairType: curPoolPairType,
+    token1155Id: Number(token1155Id || 0)
+  })
   const topPoolsList = useMemo(() => {
     return topPoolsResult.map((item, index) => ({
       no: (topPoolsListPage.pageSize - 1) * topPoolsListPage.pageSize + index + 1,
@@ -89,7 +73,7 @@ export default function Collection() {
       </Backdrop>
       <Grid container spacing={isDownMd ? 0 : 20} width="100%">
         <Grid item xs={12} md={6}>
-          <MainCard token={tokenDetailData?.token} />
+          <MainCard token={tokenDetailData} />
         </Grid>
         <Grid item xs={12} md={6}>
           <StatCard chainId={curChainId} info={tokenDetailData} />
@@ -101,7 +85,7 @@ export default function Collection() {
         </Grid>
         {topPoolsList.map(item => (
           <Grid key={`collection -${item.no}`} item xs={12} md={4}>
-            <PairCard item={item} type={type} token={tokenDetailData?.token} chainId={curChainId} />
+            <PairCard item={item} type={type} token={tokenDetailData} chainId={curChainId} />
           </Grid>
         ))}
       </Grid>
@@ -174,19 +158,14 @@ function MainCard({ token }: { token: StatTokenInfo | undefined }) {
 function StatCard({ info, chainId }: { info: StatTopTokensProp | undefined; chainId: ChainId }) {
   const theme = useTheme()
   const isDownMd = useBreakpoint('md')
-
   const data = useMemo(() => {
     return {
       collectionType: (
         <>
-          <span style={{ textTransform: 'uppercase' }}>{info?.token.type}</span> Collection
+          <span style={{ textTransform: 'uppercase' }}>{info?.type}</span> Collection
         </>
       ),
-      title: info
-        ? `${info.token.name} (${info.token.symbol}) ${
-            info.token.type === Mode.ERC1155 ? ' #' + info.token.tokenId : ''
-          }`
-        : ''
+      title: info ? `${info.name} (${info.symbol}) ${info.type === Mode.ERC1155 ? ' #' + info.tokenId : ''}` : ''
     }
   }, [info])
 
@@ -201,7 +180,7 @@ function StatCard({ info, chainId }: { info: StatTopTokensProp | undefined; chai
           <Typography sx={{ color: theme.palette.info.main, fontSize: 14, fontWeight: 500 }}>
             {data.collectionType}
           </Typography>
-          <TestnetV3Mark addresss={info?.token.address ? [info?.token.address] : []} />
+          <TestnetV3Mark addresss={info?.address ? [info?.address] : []} />
           {/* <ButtonBase onClick={() => {}}>
             Share <ShareIcon style={{ marginLeft: 8 }} />
           </ButtonBase> */}
@@ -231,7 +210,7 @@ function StatCard({ info, chainId }: { info: StatTopTokensProp | undefined; chai
           <Button
             variant="outlined"
             sx={{ height: 48, borderColor: theme.palette.info.main, color: theme.palette.info.main }}
-            onClick={() => window.open(getEtherscanLink(chainId, info?.token.address || '', 'token'))}
+            onClick={() => window.open(getEtherscanLink(chainId, info?.address || '', 'token'))}
           >
             View on explorer
           </Button>
@@ -256,15 +235,16 @@ function StatCard({ info, chainId }: { info: StatTopTokensProp | undefined; chai
           <Grid item xs={6}>
             <NumericalCard
               title="Volume(24hrs)"
-              value={info ? formatMillion(Number(info.Volume) || 0, '$ ', 2) : '-'}
+              value={info ? formatMillion(Number(info.volume) || 0, '$ ', 2) : '-'}
               percentage={0}
             />
           </Grid>
           <Grid item xs={12}>
             <NumericalCard
               title="Total Liquidity"
-              value={info ? formatMillion(Number(info.tvl) || 0, '$ ', 2) : '-'}
+              value={info ? formatMillion(Number(info.liquidity) || 0, '$ ', 2) : '-'}
               percentage={0}
+              liquidity
             />
           </Grid>
         </Grid>
@@ -324,21 +304,24 @@ function PairCard({
     return item.token1
   }, [item.token0, item.token1, token?.address])
 
-  const { swapNumber } = useToken721PairTradePrice(isErc721, token?.address, erc20.address, chainId)
-  const erc20TokenPrice = useTokenErc20Price(erc20.address, chainId)
-  const erc721Price = useErc721Price(swapNumber, erc20TokenPrice, 2)
+  const erc721Price = item.token0.price
 
   return (
     <Card padding="20px 17px" color={theme.palette.background.paper}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 12 }}>
-        <Box display={'flex'} alignItems="center">
+        <Box display={'flex'} alignItems="center" justifyContent="space-between">
           <Typography sx={{ fontSize: 16, fontWeight: 500 }}> #{item.no}</Typography>
           <TestnetV3Mark addresss={[item?.token0.address, item.token1.address]} />
         </Box>
         <Typography sx={{ fontSize: 16, fontWeight: 500, color: theme.palette.info.main }}>
           {item.curPoolPairType}
         </Typography>
-        {isErc721 && <Typography sx={{ fontSize: 16, fontWeight: 500 }}> ${erc721Price || 0}</Typography>}
+        {isErc721 && (
+          <Typography sx={{ fontSize: 16, fontWeight: 500 }}>
+            {' '}
+            {formatMillion(Number(erc721Price) || 0, '$ ', 2)}
+          </Typography>
+        )}
       </Box>
       <Card light padding="20px 34px 24px">
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

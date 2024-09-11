@@ -1,9 +1,8 @@
 import { gql, useQuery } from '@apollo/client'
 import { useEffect, useMemo, useState } from 'react'
 import { ChainId } from '@ladder/sdk'
-import { GraphOrderType } from '../hooks/useStatBacked'
+import { GraphOrderTypeMap } from '../hooks/useStatBacked'
 import client from './apolloClient'
-import { Mode } from '../components/Input/CurrencyInputPanel/SelectCurrencyModal'
 
 const TOKEN_FIELDS = gql`
   fragment TokenFields on Token {
@@ -22,7 +21,7 @@ const GET_PAIRS = gql`
     $pageSize: Int
     $orderBy: String
     $order: String
-    $pairType: String!
+    $pairType: [String]!
     $tokenA: String
     $tokenB: String
   ) {
@@ -31,7 +30,7 @@ const GET_PAIRS = gql`
       first: $pageSize
       orderBy: $orderBy
       orderDirection: $order
-      where: { pairType: $pairType, tokenA_contains: $tokenA, tokenB_contains: $tokenB }
+      where: { pairType_in: $pairType, tokenA_contains: $tokenA, tokenB_contains: $tokenB }
     ) {
       tokenA {
         ...TokenFields
@@ -70,21 +69,28 @@ interface Props {
   orderBy: string
   type: string
   token?: string
+  showNFT?: boolean
 }
 export function usePoolsQueries(props: Props) {
-  const { currentPage, pageSize, type, order, orderBy, token } = props
+  const { currentPage, pageSize, type, order, orderBy, token, showNFT } = props
   const [dataPairs, setDataPairs] = useState([])
   const today = new Date()
   const todayMidnight = Math.floor(new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime() / 1000) // 转换为秒
   const pairType = type.split(' - ')[1]
+  let tokenType: string[] = ['ERC20', 'ERC1155', 'ERC721']
+  if (showNFT) {
+    tokenType = ['ERC1155', 'ERC721']
+  } else if (!!type) {
+    tokenType = [pairType]
+  }
   const skip = pageSize * (currentPage - 1)
-  const queryOrderBy = orderBy ? GraphOrderType[orderBy] : 'liquidity'
+  const queryOrderBy = orderBy ? GraphOrderTypeMap[orderBy] : 'liquidity'
   const baseVariables = {
     skip,
     pageSize,
     order,
     orderBy: queryOrderBy,
-    pairType
+    pairType: tokenType
   }
   const {
     loading: loadingPairsA,
@@ -96,7 +102,7 @@ export function usePoolsQueries(props: Props) {
       tokenA: token,
       tokenB: ''
     },
-    skip: !token || pairType === Mode.ERC20
+    skip: !token || !!(pairType && pairType === 'ERC20')
   })
   const {
     loading: loadingPairsB,
@@ -108,7 +114,7 @@ export function usePoolsQueries(props: Props) {
       tokenA: '',
       tokenB: token
     },
-    skip: !token || pairType !== Mode.ERC20
+    skip: !token || !!(pairType && pairType !== 'ERC20')
   })
   const {
     loading: loadingPairsDefault,
@@ -188,7 +194,6 @@ const GET_PAIRS_DETAILS = gql`
       liquidity
       tokenAAmount
       tokenBAmount
-      transactions
       volume
       pairType
     }

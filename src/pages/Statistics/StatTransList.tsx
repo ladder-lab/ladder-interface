@@ -16,7 +16,7 @@ export function StatTransList({
   chainId: ChainId
   token?: string
   pair?: string
-  tokenType: Mode
+  tokenType?: Mode
 }) {
   const { result, page, order, loading, search } = useTransactionsList({ chainId, token, tokenType, pair })
   const theme = useTheme()

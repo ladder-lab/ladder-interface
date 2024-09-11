@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client'
-import { StatTransactionsType, GraphOrderType } from '../hooks/useStatBacked'
+import { StatTransactionsType, GraphOrderTypeMap, GraphOrderType } from '../hooks/useStatBacked'
 import { Mode } from '../components/Input/CurrencyInputPanel/SelectCurrencyModal'
 
 const TOKEN_FIELDS = gql`
@@ -59,7 +59,7 @@ interface Props {
   currentPage: number
   pageSize: number
   order: string
-  orderBy: string
+  orderBy: GraphOrderType
   token?: string
   tokenType?: Mode
   pair?: string
@@ -77,7 +77,7 @@ export function useTransactionsQueries(props: Props) {
 
   const statTransactionsType = statTransactionsTypeMap[type] || ''
   const skip = pageSize * (currentPage - 1)
-  const queryOrderBy = GraphOrderType[orderBy]
+  const queryOrderBy = orderBy ? GraphOrderTypeMap[orderBy] : 'liquidity'
 
   const baseVariables = {
     skip,
@@ -93,7 +93,7 @@ export function useTransactionsQueries(props: Props) {
       tokenA: token,
       tokenB: ''
     },
-    skip: !token && tokenType === Mode.ERC20
+    skip: !token || (tokenType && tokenType === Mode.ERC20)
   })
   const { loading: loadingB, data: dataB } = useQuery(GET_TRANSACTIONS, {
     variables: {
@@ -101,7 +101,7 @@ export function useTransactionsQueries(props: Props) {
       tokenA: '',
       tokenB: token
     },
-    skip: !token && tokenType !== Mode.ERC20
+    skip: !token || (tokenType && tokenType !== Mode.ERC20)
   })
   const { loading: loadingDefault, data: dataDefault } = useQuery(GET_TRANSACTIONS, {
     variables: {
@@ -139,7 +139,7 @@ enum TotalsType {
   Removes = 'removeLiquidityTxs'
 }
 
-export function useTransactionsTotal({ type, token }: { type: StatTransactionsType; token?: string }) {
+export function useTransactionsTotal(type: StatTransactionsType, token?: string) {
   const { data } = useQuery(GET_TRANSACTIONS_TOTAL, {
     variables: {
       id: !token ? 'total' : token

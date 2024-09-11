@@ -29,7 +29,6 @@ export const ROUTER_ADDRESS_721: (chainId: ChainId | null | undefined) => string
       [4]: '0xC61d146BB1965ba0e387aA2Ad94c500a17dfe65F',
       [56]: '',
       [1]: '',
-      // [11155111]: '0x2b5b174dC2847eEf3f92dEBF472658317ec90AC3',
       // [11155111]: '0x36D7F32720D6EaFCF672C56D9fe9B2B091FF7d0D',
       [11155111]: '0x7C68819B675d158b975f62175Bf62A850AB095Cd',
       [137]: '0xf434274C78CF5567D47D765420CDbf552d1C1067'
@@ -43,13 +42,14 @@ export const ROUTER_ADDRESS: (chainId: ChainId | null | undefined) => string = c
       [56]: '0x54F0d8485e931c22D542D7b95dbbf5ecdE9C91E8',
       [1]: '',
       [5]: '0x6ECBC55F9087b86aF9AADF553F086EfdAC5c1458',
-      // [11155111]: '0x5e93CaA18078B311169cB0f604de4820a0fB45a3',
       // [11155111]: '0xbd5D676a540601893170C151A27417e9113a7cC9',
-      [11155111]: '0x6D581B4dBE3C0fA4d6703598C0CC8Eb922acB9cE',
+      // [11155111]: '0x6D581B4dBE3C0fA4d6703598C0CC8Eb922acB9cE',
+      [11155111]: '0x5486585754FD31047D8413A1f15b57d6632d0739',
       [137]: '0x3c36a8F43c583c3b4d54E3170cCE7D04EfD41a49'
     } as any
   )[chainId ?? NETWORK_CHAIN_ID] ?? '')
 
+export const TEST_TOKEN_ADDRESS = '0x3ABF888da82368800F2908171284ae97AbFAeB41'
 export const MERKLE_TREE_ADDRESS = '0x6bA46c1B67C9B1C2436EC9d7ca2a169BF9d0F167'
 export const TEST_NFT_URI_ADDRESS = '0x5D0F0780c6f7d95780D50de1413919E8CdD5579d'
 export const SBT_URI_ADDRESS = '0xeE363B10548db98A6a52ca8e40c49a7c3f26F324'
@@ -114,6 +114,36 @@ export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } 
       DEFAULT_1155_LIST[4]![0]!
     ]
   ]
+}
+
+enum ERC721Type {
+  BAYC = 'Bored Ape Yacht Club',
+  CRYPTOPUNKS = 'CryptoPunks',
+  MAYC = 'Mutant Ape Yacht Club',
+  AZUKI = 'Azuki',
+  PudgyPenguins = 'Pudgy Penguins',
+  Milady = 'Milady Maker',
+  MFER = 'mfers',
+  LilPudgys = 'Lil Pudgys',
+  MOONBIRD = 'Moonbirds',
+  DOODLE = 'Doodles'
+}
+
+export const ERC721ImageMap: { [tokenName: string]: string } = {
+  [ERC721Type.BAYC]: 'https://storage.googleapis.com/v2-ladder-top/erc721/BAYC.jpg',
+  [ERC721Type.CRYPTOPUNKS]: 'https://storage.googleapis.com/v2-ladder-top/erc721/CRYPTOPUNKS.png',
+  [ERC721Type.MAYC]: 'https://storage.googleapis.com/v2-ladder-top/erc721/MAYC.avif',
+  [ERC721Type.AZUKI]: 'https://storage.googleapis.com/v2-ladder-top/erc721/AZUKI.jpg',
+  [ERC721Type.PudgyPenguins]: 'https://storage.googleapis.com/v2-ladder-top/erc721/PudgyPenguins.jpg',
+  [ERC721Type.Milady]: 'https://storage.googleapis.com/v2-ladder-top/erc721/Milady.jpg',
+  [ERC721Type.MFER]: 'https://storage.googleapis.com/v2-ladder-top/erc721/MFER.jpg',
+  [ERC721Type.LilPudgys]: 'https://storage.googleapis.com/v2-ladder-top/erc721/LilPudgys.jpg',
+  [ERC721Type.MOONBIRD]: 'https://storage.googleapis.com/v2-ladder-top/erc721/MOONBIRD.jpg',
+  [ERC721Type.DOODLE]: 'https://storage.googleapis.com/v2-ladder-top/erc721/DOODLE.jpg'
+}
+
+export const TokenLogo = {
+  ...ERC721ImageMap
 }
 
 export interface WalletInfo {

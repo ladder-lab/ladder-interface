@@ -3,64 +3,8 @@ import { Axios, testURL, v4Url } from '../utils/axios'
 import { useActiveWeb3React } from './index'
 import { useSignLogin } from './useSignIn'
 import { useIsWindowFocus } from './useIsWindowVisible'
-
-export function useVerifyTwitterAll(sbt: string) {
-  const { account, chainId } = useActiveWeb3React()
-  const [allPass, isAllPass] = useState('')
-
-  const verifyAll = useCallback(async () => {
-    Axios.get(testURL + 'checkTwiterTaskStatus', {
-      address: account,
-      sbt,
-      chainId
-    })
-      .then(r => {
-        if (r?.data.code === 200) {
-          const statusResult = r.data.data
-          let verify = false
-          let retweet = false
-          let followAll = true
-          Object.keys(statusResult).forEach(key => {
-            if (key.includes('oauthStatus')) {
-              verify = statusResult[key] == 2
-            }
-            if (key.includes('retweetStatus')) {
-              retweet = statusResult[key] == 2
-            }
-            if (key.includes('followStatus')) {
-              followAll = followAll && statusResult[key] == 2
-            }
-          })
-          console.log('verify', verify)
-          console.log('verify1', followAll)
-          console.log('verify2', retweet)
-          if (!verify) {
-            isAllPass('Twitter not verify')
-            return
-          }
-          if (!followAll) {
-            isAllPass('Need to follow all users')
-            return
-          }
-          if (!retweet) {
-            isAllPass('Need to retweet')
-            return
-          }
-          isAllPass('')
-        } else {
-          throw Error('useVerifyTwitterFollow error')
-        }
-      })
-      .catch(e => {
-        console.error(e)
-      })
-  }, [account, chainId, sbt])
-
-  return {
-    verifyAll,
-    allPass
-  }
-}
+import MessageBox from '../components/Modal/TransactionModals/MessageBox'
+import useModal from './useModal'
 
 export function useVerifyTwitterFollow(sbtContract: string) {
   const { account, chainId } = useActiveWeb3React()
@@ -185,7 +129,7 @@ export function useVerifyLadderOauth() {
   }
 }
 
-export function useVerifyTwitter(isV4 = false) {
+export function useVerifyTwitter() {
   const { account } = useActiveWeb3React()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const isWindowVisible = useIsWindowFocus()
@@ -200,29 +144,14 @@ export function useVerifyTwitter(isV4 = false) {
   const jump = useCallback(async () => {
     try {
       if (!account) return
-      const res = await Axios.get((isV4 ? v4Url : testURL) + 'requestToken', {
-        address: account
-      })
-      const data = res.data.msg as string
-      if (!data) {
-        return
-      }
-      setIsLoading(true)
-      const twitter = window.open(
-        data,
-        'intent',
-        'scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=500,height=500,left=0,top=0'
-      )
-      twitter?.addEventListener('beforeunload', () => {
-        // not working
-        console.log('close twitter')
-      })
-      return
+      const res = await Axios.get('/auth/twitter/login')
+      console.log(res.data.authUrl)
+      window.location.href = res.data.authUrl
     } catch (error) {
       setIsLoading(false)
       console.error('useAccountTestInfo', error)
     }
-  }, [account, isV4])
+  }, [account])
   const { token, sign } = useSignLogin(jump)
   const openVerify = useCallback(() => {
     if (!token) {
@@ -237,31 +166,52 @@ export function useVerifyTwitter(isV4 = false) {
   }
 }
 
+const STEP_STATUS = {
+  wallet_connected: 1,
+  twitter_connected: 2,
+  tweet_sent: 3,
+  claim_completed: 4
+}
+
+function useGetUserStatus(account: string | null | undefined) {
+  const [userStatus, setUserStatus] = useState<keyof typeof STEP_STATUS>('')
+
+  const getUserStatus = useCallback(async () => {
+    try {
+      const response = await Axios.get('/user-status', {
+        walletAddress: account
+      })
+      if (response?.status === 200) {
+        setUserStatus(response.data.status)
+      } else {
+        setUserStatus('')
+        throw new Error('Failed to fetch user status')
+      }
+    } catch (error) {
+      console.error('getUserStatus error:', error)
+    }
+  }, [account])
+
+  return {
+    getUserStatus,
+    userStatus
+  }
+}
 export function useGetRemoteStep() {
   const { account } = useActiveWeb3React()
   const { token } = useSignLogin()
-  const { verifyOauth, oauth } = useVerifyLadderOauth()
-  const { makeTwitter, checkMakeTwitter } = useCheckMakeTwitter()
-
-  const verifyAll = useCallback(() => {
-    verifyOauth()
-    checkMakeTwitter()
-  }, [checkMakeTwitter, verifyOauth])
+  const { getUserStatus, userStatus } = useGetUserStatus(account)
 
   const remoteStep = useMemo(() => {
-    if (!account || !token) {
+    if (!account || !userStatus) {
       return 0
-    } else if (oauth && makeTwitter) {
-      return 3
-    } else if (oauth) {
-      return 2
     } else {
-      return 1
+      return STEP_STATUS[userStatus]
     }
-  }, [account, makeTwitter, oauth, token])
+  }, [account, userStatus, token])
 
   return {
-    verifyAll,
+    verifyAll: getUserStatus,
     remoteStep
   }
 }
@@ -284,6 +234,41 @@ export function useCheckMakeTwitter() {
       })
       .catch(e => {
         isMakeTwitter(false)
+        console.error(e)
+      })
+  }, [account])
+
+  return {
+    makeTwitter,
+    checkMakeTwitter
+  }
+}
+
+export function useMakeTwitter(verifyAll?: () => void) {
+  const { account } = useActiveWeb3React()
+  const [makeTwitter, isMakeTwitter] = useState(false)
+  const { showModal } = useModal()
+
+  const checkMakeTwitter = useCallback(async () => {
+    Axios.post('/post-tweet', {
+      walletAddress: account
+    })
+      .then(r => {
+        if (r?.tweet) {
+          isMakeTwitter(true)
+          if (verifyAll) {
+            setTimeout(verifyAll)
+          }
+          showModal(<MessageBox type="success">Make A Tweet Success</MessageBox>)
+        } else {
+          isMakeTwitter(false)
+          throw Error('useCheckMakeTwitter error')
+        }
+      })
+      .catch((e: any) => {
+        const err: any = e
+        isMakeTwitter(false)
+        showModal(<MessageBox type="error">Make A Tweet Failed</MessageBox>)
         console.error(e)
       })
   }, [account])

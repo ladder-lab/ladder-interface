@@ -23,7 +23,6 @@ import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
 import { formatMillion } from 'utils'
 import { PoolPairType, ShowTopPoolsCurrencyBox } from 'pages/Statistics'
 import Swiper from 'components/Swiper'
-import { ChainId } from '@ladder/sdk'
 import TestnetV3Mark from 'components/TestnetV3Mark'
 
 const defaultPageSize = 9
@@ -32,60 +31,38 @@ export default function Explore() {
   const theme = useTheme()
   const { chainId } = useActiveWeb3React()
   // const isDarkMode = useIsDarkMode()
-  const { result: statisticsGlobalTVL } = useStatisticsOverviewData(chainId || ChainId.SEPOLIA)
+  const { result: statisticsGlobalTVL } = useStatisticsOverviewData()
+  const { result: listNFT, loading: listNFTTLoading } = useTopTokensList({
+    chainId: chainId || NETWORK_CHAIN_ID,
+    defaultMode: Mode.ERC721,
+    defaultPageSize,
+    showNFT: true
+  })
 
-  const { result: list721, loading: list721Loading } = useTopTokensList(
-    chainId || NETWORK_CHAIN_ID,
-    Mode.ERC721,
-    defaultPageSize
-  )
-
-  const { result: list1155, loading: list1155Loading } = useTopTokensList(
-    chainId || NETWORK_CHAIN_ID,
-    Mode.ERC1155,
-    defaultPageSize
-  )
-  const ERC721Collection: CollectionsProp[] = useMemo(
+  const CollectionList: CollectionsProp[] = useMemo(
     () =>
-      list721.map(item => ({
+      listNFT.map(item => ({
         title: item.token.name || '-',
         imgPath: item.token.logo,
+        // imgPath: TokenLogo['Doodles'] || '',
         amount: `${formatMillion(Number(item.tvl), '$ ', 2)}`,
-        route: routes.explorer + `/${Mode.ERC721}/${chainId}/${item.token.address}/${item.token.tokenId || 0}`,
+        route: routes.explorer + `/${item.token.type}/${chainId}/${item.token.address}/${item.token.tokenId || 0}`,
         percentage: ''
       })),
-    [chainId, list721]
+    [chainId, listNFT]
   )
-  const ERC1155Collection: CollectionsProp[] = useMemo(
-    () =>
-      list1155.map(item => ({
-        title: item.token.name || '-',
-        imgPath: item.token.logo,
-        amount: `${formatMillion(Number(item.tvl), '$ ', 2)}`,
-        route: routes.explorer + `/${Mode.ERC1155}/${chainId}/${item.token.address}/${item.token.tokenId || 0}`,
-        percentage: ''
-      })),
-    [chainId, list1155]
-  )
+  const { result: listNFTPool, loading: listNFTPoolLoading } = useTopPoolsList({
+    chainId: chainId || NETWORK_CHAIN_ID,
+    token: undefined,
+    poolPairType: PoolPairType.ERC20_ERC721,
+    token1155Id: undefined,
+    defaultPageSize: defaultPageSize,
+    showNFT: true
+  })
 
-  const { result: list721Pool, loading: list721PoolLoading } = useTopPoolsList(
-    chainId || NETWORK_CHAIN_ID,
-    undefined,
-    PoolPairType.ERC20_ERC721,
-    undefined,
-    defaultPageSize
-  )
-
-  const { result: list1155Pool, loading: list1155PoolLoading } = useTopPoolsList(
-    chainId || NETWORK_CHAIN_ID,
-    undefined,
-    PoolPairType.ERC20_ERC1155,
-    undefined,
-    defaultPageSize
-  )
-  const pool721Collection: CollectionsProp[] = useMemo(
+  const CollectionPoolList: CollectionsProp[] = useMemo(
     () =>
-      list721Pool.map(item => ({
+      listNFTPool.map(item => ({
         title: (
           <ShowTopPoolsCurrencyBox
             chainId={chainId || NETWORK_CHAIN_ID}
@@ -102,30 +79,8 @@ export default function Explore() {
         percentage: '',
         addresss: [item.token0.address, item.token1.address]
       })),
-    [chainId, list721Pool]
+    [chainId, listNFTPool]
   )
-
-  const pool1155Collection: CollectionsProp[] = useMemo(
-    () =>
-      list1155Pool.map(item => ({
-        title: (
-          <ShowTopPoolsCurrencyBox
-            color={theme.palette.text.primary}
-            chainId={chainId || NETWORK_CHAIN_ID}
-            pair={item.pair}
-            token0Info={item.token0}
-            token1Info={item.token1}
-            key={0}
-          />
-        ),
-        imgPath: item.token0.type !== Mode.ERC20 ? item.token0.logo : item.token1.logo,
-        amount: `${formatMillion(Number(item.tvl), '$ ', 2)}`,
-        route: routes.statisticsPools + `/${chainId}/${item.pair}`,
-        percentage: ''
-      })),
-    [chainId, list1155Pool, theme.palette.text.primary]
-  )
-
   return (
     <Box
       // maxWidth={theme.width.maxContent}
@@ -139,7 +94,7 @@ export default function Explore() {
     >
       <Backdrop
         sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }}
-        open={list1155PoolLoading || list721Loading || list721PoolLoading || list1155Loading}
+        open={listNFTTLoading || listNFTPoolLoading}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
@@ -174,12 +129,10 @@ export default function Explore() {
             />
           </Box>
         </Box>
-        <CollectionHighLight collections={ERC721Collection.slice(0, 3)} />
+        <CollectionHighLight collections={CollectionList.slice(0, 3)} />
       </Box>
-      <CollectionListing collections={ERC721Collection} title="Popular ERC-721 Collection" dark />
-      <CollectionListing collections={ERC1155Collection} title="Popular ERC-1155 Collection" />
-      <CollectionListing collections={pool721Collection} title="Top ERC-721 Liquidity Pool" dark />
-      <CollectionListing collections={pool1155Collection} title="Top ERC-1155 Liquidity Pool" />
+      <CollectionListing collections={CollectionList} title="Popular Collection" dark />
+      <CollectionListing collections={CollectionPoolList} title="Top Liquidity Pool" />
     </Box>
   )
 }

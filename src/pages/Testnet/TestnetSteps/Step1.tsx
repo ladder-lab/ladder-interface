@@ -4,18 +4,8 @@ import { Box } from '@mui/material'
 import { StepBtn, StepDescText, StepNameText, StepText } from './Styled'
 import { ReactComponent as Twitter } from 'assets/socialLinksIcon/twitter.svg'
 
-export default function Step1({
-  step,
-  setStep,
-  oauth,
-  verifyOauth
-}: {
-  step: number
-  setStep: (step: number) => void
-  oauth: boolean
-  verifyOauth?: () => void
-}) {
-  const { openVerify } = useVerifyTwitter(true)
+export default function Step1({ step }: { step: number }) {
+  const { openVerify } = useVerifyTwitter()
   const isDownMD = useBreakpoint('md')
 
   return (
@@ -44,44 +34,11 @@ export default function Step1({
           onClick={() => {
             if (step < 1) return
             openVerify()
-            setTimeout(() => {
-              if (step < 2 && oauth) {
-                setStep(2)
-              }
-            }, 5000)
-            // let counter = 0
-            // const intervalId = setInterval(() => {
-            //   counter++
-            //   if (counter > 20 || oauth) {
-            //     clearInterval(intervalId)
-            //     return
-            //   }
-            //   verifyOauth()
-            // }, 1000)
           }}
         >
           <Twitter />
-          {oauth ? 'Connected' : 'Connect'}
+          {step > 1 ? 'Connected' : 'Connect'}
         </StepBtn>
-        {/*{!oauth && (*/}
-        {false && (
-          <StepBtn
-            sx={{
-              pointerEvents: step < 1 ? 'none' : 'auto',
-              border: '1px solid #1F9898',
-              backgroundColor: 'transparent',
-              color: '#1F9898'
-            }}
-            onClick={() => {
-              if (step < 1) return
-              if (!oauth) {
-                verifyOauth()
-              }
-            }}
-          >
-            Verify
-          </StepBtn>
-        )}
       </Box>
     </Box>
   )

@@ -14,6 +14,8 @@ import ERC721_ABI from '../constants/abis/erc721.json'
 import ERC721_TEST_ABI from '../constants/abis/erc721-test.json'
 import MERKLE_TREE_ABI from '../constants/abis/merkleTree.json'
 import UNISOCKS_ABI from '../constants/abis/unisocks.json'
+import TEST_TOKEN_ABI from 'constants/abis/myToken.json'
+
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
 import { getContract } from '../utils'
 import { useActiveWeb3React } from './index'
@@ -21,7 +23,7 @@ import {
   ARGENT_WALLET_DETECTOR_ABI,
   ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS
 } from '../constants/abis/argent-wallet-detector'
-import { MERKLE_TREE_ADDRESS, SBT_URI_ADDRESS, TEST_NFT_URI_ADDRESS } from '../constants'
+import { MERKLE_TREE_ADDRESS, SBT_URI_ADDRESS, TEST_NFT_URI_ADDRESS, TEST_TOKEN_ADDRESS } from '../constants'
 import SbtAbi from 'constants/abis/SbtFactory.json'
 import { TEST_721_LADDER } from '../constants/default721List'
 
@@ -119,6 +121,10 @@ export function use721Contract(address: string | undefined, withSignerIfPossible
 
 export function use721PairContract(address: string | undefined, withSignerIfPossible?: boolean): Contract | null {
   return useContract(address, ERC721_PAIR_ABI, withSignerIfPossible)
+}
+
+export function useTestTokenContract(): Contract | null {
+  return useContract(TEST_TOKEN_ADDRESS, TEST_TOKEN_ABI, true)
 }
 
 export function useMerkleContract(): Contract | null {

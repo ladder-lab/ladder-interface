@@ -10,8 +10,14 @@ export const GET_USERS = gql`
     }
   }
 `
+interface userQueriesProps {
+  pageSize: any
+  timestamp: any
+  currentPage: any
+  orderBy: any
+}
 
-export function useUserQueries(props) {
+export function useUserQueries(props: userQueriesProps) {
   const { currentPage, pageSize, orderBy, timestamp } = props
   const skip = pageSize * (currentPage - 1)
 
@@ -27,21 +33,5 @@ export function useUserQueries(props) {
   return {
     loading,
     result
-  }
-}
-
-const GET_USERS_TOTAL = gql`
-  query usersTotalQuery {
-    totals {
-      usersCount
-    }
-  }
-`
-
-export function useTransactionsTotal() {
-  const { data } = useQuery(GET_USERS_TOTAL)
-  const total = data ? data.totals[0].usersCount : 0
-  return {
-    total: +total
   }
 }

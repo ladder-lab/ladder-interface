@@ -115,7 +115,29 @@ const testTokens = {
     )
   },
   [11155111]: {
-    '0xeb8C97C3350983a619f426D6459faE75788BBfD5': new WrappedTokenInfo(
+    '0x85eDB7A0cbAcf5BD641e0FF5D6270bEf9C72Bd6B': new WrappedTokenInfo(
+      {
+        chainId: 11155111,
+        address: '0xe857daCe6FdBC4d27b6F17A0a67D3EF7B0380862',
+        decimals: 18,
+        symbol: 'USDC',
+        name: 'Ladder USDC',
+        logoURI: tUSDCImg
+      },
+      []
+    ),
+    '0x3ABF888da82368800F2908171284ae97AbFAeB41': new WrappedTokenInfo(
+      {
+        chainId: 11155111,
+        address: '0xe857daCe6FdBC4d27b6F17A0a67D3EF7B0380862',
+        decimals: 18,
+        symbol: 'USDT',
+        name: 'Tether',
+        logoURI: tUSDCImg
+      },
+      []
+    ),
+    /* '0xeb8C97C3350983a619f426D6459faE75788BBfD5': new WrappedTokenInfo(
       {
         chainId: 11155111,
         address: '0xeb8C97C3350983a619f426D6459faE75788BBfD5',
@@ -170,7 +192,7 @@ const testTokens = {
         logoURI: tUSDCImg
       },
       []
-    ),
+    ),*/
     [WETH[11155111].address]: WETH[11155111]
   }
 }
@@ -343,7 +365,7 @@ export function useToken721WithLoadingIndicator(
   const [loading, setLoading] = useState(false)
   const token721 = useToken721(tokenAddress, tokenId, setLoading)
 
-  return { loading: !!loading, token721: token721 }
+  return { loading: loading, token721: token721 }
 }
 
 export function useCurrency(

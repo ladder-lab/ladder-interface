@@ -8,12 +8,17 @@ import { useTransactionsQueries, useTransactionsTotal } from '../graphql/useTran
 import { convertWeiToEther } from '../utils'
 import { usePoolsDetailsQueries, usePoolsQueries } from '../graphql/usePoolsQueries'
 import { useTokensQueries } from '../graphql/useTokenQueries'
+import { useTotal } from '../graphql/useTotal'
+import { TokenLogo } from '../constants'
 
 export enum GraphOrderType {
   Time = 'timestamp',
   TVL = 'liquidity'
 }
-
+export const GraphOrderTypeMap: Record<string, string> = {
+  TVL: 'liquidity',
+  Time: 'timestamp'
+}
 const pageSize = 5
 
 export interface StatTokenInfo {
@@ -21,7 +26,7 @@ export interface StatTokenInfo {
   name: string
   logo: string
   address: string
-  type: Mode
+  type: string
   token?: string
   price?: string
   tokenId?: number
@@ -36,16 +41,27 @@ export interface StatTopTokensProp {
   transfers: number
 }
 
-export function useTopTokensList(
-  chainId: ChainId,
-  defaultMode: Mode = Mode.ERC721,
-  defaultPageSize: number = pageSize,
-  token?: string,
+export interface TokensListProp {
+  chainId: ChainId | undefined
+  defaultMode?: Mode
+  defaultPageSize?: number
+  token?: string
   token1155Id?: number
-) {
+  showNFT?: boolean
+}
+
+export function useTopTokensList({
+  chainId,
+  defaultMode = Mode.ERC721,
+  defaultPageSize,
+  token,
+  token1155Id,
+  showNFT
+}: TokensListProp) {
   const [currentPage, setCurrentPage] = useState(1)
   const [order, setOrder] = useState<Order>('desc')
-  const [orderBy, setOrderBy] = useState<string | number>('')
+  const [orderBy, setOrderBy] = useState<string>('')
+  const [_pageSize] = useState(defaultPageSize || pageSize)
   const [type, setType] = useState(defaultMode)
   const [loading, setLoading] = useState<boolean>(false)
   // const [count, setCount] = useState<number>(20)
@@ -54,11 +70,12 @@ export function useTopTokensList(
   const id = token || token1155Id
   const { dataTokens, loadingToken } = useTokensQueries({
     currentPage,
-    pageSize: defaultPageSize,
+    pageSize: _pageSize,
     order,
     orderBy,
     id,
-    type
+    type,
+    showNFT
   })
 
   useEffect(() => {
@@ -68,6 +85,7 @@ export function useTopTokensList(
         tvl: convertWeiToEther(i.liquidity),
         price: convertWeiToEther(i.price),
         token: {
+          logo: TokenLogo[i.name] || '',
           name: i.name,
           symbol: i.symbol,
           address: i.id,
@@ -92,8 +110,8 @@ export function useTopTokensList(
       setCurrentPage,
       currentPage,
       count,
-      totalPage: Math.ceil(count / defaultPageSize),
-      pageSize: defaultPageSize
+      totalPage: Math.ceil(count / _pageSize),
+      pageSize: _pageSize
     },
     search: {
       type,
@@ -131,31 +149,52 @@ const mapToken = (item: any, tokenKey: string) => {
 }
 
 export const topPoolsListDataHandler = (list: any) =>
-  list.map(item => ({
-    ...item,
-    pair: item.id,
-    Volume: item.volume,
-    Volume7: item.volume7d,
-    tvl: convertWeiToEther(item.liquidity),
-    token0: mapToken(item, 'tokenA'),
-    token1: mapToken(item, 'tokenB')
-  }))
+  list.map((item: any) => {
+    item.tokenA = {
+      ...item.tokenA,
+      logo: TokenLogo[item.tokenB.name] || '',
+      balance: convertWeiToEther(item.tokenAAmount, item.tokenA.type)
+    }
+    item.tokenB = {
+      ...item.tokenB,
+      logo: TokenLogo[item.tokenB.name] || '',
+      balance: convertWeiToEther(item.tokenBAmount, item.tokenB.type)
+    }
+    return {
+      ...item,
+      pair: item.id,
+      Volume: item.volume,
+      Volume7: item.volume7d,
+      tvl: convertWeiToEther(item.liquidity),
+      token0: mapToken(item, 'tokenA'),
+      token1: mapToken(item, 'tokenB')
+    }
+  })
 
-export function useTopPoolsList(
-  chainId: ChainId | undefined,
-  token?: string,
-  defaultPoolPairType?: PoolPairType,
-  token1155Id?: number,
+export interface PoolsListProp {
+  chainId: ChainId | undefined
+  token?: string | undefined
+  poolPairType?: PoolPairType
+  token1155Id?: number | undefined
   defaultPageSize?: number
-) {
+  showNFT?: boolean
+}
+
+export function useTopPoolsList({
+  chainId,
+  token,
+  poolPairType,
+  token1155Id,
+  defaultPageSize,
+  showNFT
+}: PoolsListProp) {
   const [currentPage, setCurrentPage] = useState(1)
   const [order, setOrder] = useState<Order>('desc')
   const [orderBy, setOrderBy] = useState<string | number>('')
-  const [type, setType] = useState(defaultPoolPairType || PoolPairType.ERC20_ERC20)
+  const [type, setType] = useState(poolPairType || PoolPairType.ERC20_ERC20)
   const [_pageSize] = useState(defaultPageSize || pageSize)
-
-  const [loading, setLoading] = useState<boolean>(false)
-  const [count, setCount] = useState<number>(20)
+  // const [count] = useState<number>(20)
+  const count = 20
   const [result, setResult] = useState<StatTopPoolsProp[]>([])
 
   const { dataPairs, loadingPairs } = usePoolsQueries({
@@ -166,19 +205,13 @@ export function useTopPoolsList(
     orderBy,
     token,
     token1155Id,
-    type,
-    setLoading,
-    setCount,
-    setResult
+    showNFT,
+    type
   })
   useEffect(() => {
     const formatData = topPoolsListDataHandler(dataPairs)
     setResult(formatData)
   }, [dataPairs])
-
-  useEffect(() => {
-    setLoading(loadingPairs)
-  }, [loadingPairs])
 
   const search = useCallback((val: string) => {
     setOrderBy(val)
@@ -186,7 +219,7 @@ export function useTopPoolsList(
   }, [])
 
   return {
-    loading,
+    loading: loadingPairs,
     page: {
       setCurrentPage,
       currentPage,
@@ -237,22 +270,23 @@ const getTokenData = (token: StatTokenInfo) => ({
 })
 
 const transactionsListDataHandler = (list: any[]) => {
-  console.log(list)
-  return list.map((item: any) => ({
-    ...item,
-    buyToken: getTokenData(item.TokenA),
-    buyAmount: convertWeiToEther(item.TokenAamount),
-    sellToken: getTokenData(item.TokenB),
-    sellAmount: convertWeiToEther(item.TokenBamount),
-    totalValue: convertWeiToEther(item.value),
-    type:
-      item.type === 'Swap'
-        ? StatTransactionsType.SWAPS
-        : item.type === 'addLiquidity'
-        ? StatTransactionsType.ADDS
-        : StatTransactionsType.REMOVES,
-    hash: item.id.includes('-') ? item.id.split('-')[0] : item.id
-  }))
+  return list.map((item: any) => {
+    return {
+      ...item,
+      buyToken: getTokenData(item.TokenA),
+      buyAmount: convertWeiToEther(item.TokenAamount, item.TokenA.type),
+      sellToken: getTokenData(item.TokenB),
+      sellAmount: convertWeiToEther(item.TokenBamount, item.TokenB.type),
+      totalValue: convertWeiToEther(item.value),
+      type:
+        item.type === 'Swap'
+          ? StatTransactionsType.SWAPS
+          : item.type === 'addLiquidity'
+          ? StatTransactionsType.ADDS
+          : StatTransactionsType.REMOVES,
+      hash: item.id.includes('-') ? item.id.split('-')[0] : item.id
+    }
+  })
 }
 
 export function useTransactionsList({
@@ -282,7 +316,7 @@ export function useTransactionsList({
     pair,
     type
   })
-  const { total } = useTransactionsTotal({ type, token })
+  const { total } = useTransactionsTotal(type, token || pair)
 
   useEffect(() => {
     const transactions = [
@@ -332,34 +366,24 @@ export interface StatisticsTVLProp {
   totalVolume: number
 }
 
-export function useStatisticsOverviewData(chainId: ChainId) {
-  const [loading, setLoading] = useState<boolean>(false)
+export function useStatisticsOverviewData() {
   const [result, setResult] = useState<StatisticsTVLProp>()
 
+  const { data, loading } = useTotal()
   useEffect(() => {
-    ;(async () => {
-      setLoading(true)
-      try {
-        const res = await Axios.get(StatBaseURL + 'getLadderStatistics', {
-          chainId
-        })
-        setLoading(false)
-        const data = res.data.data as any
-        if (!data) {
-          setResult(undefined)
-          return
-        }
-        setResult({ totalVolume: Number(data.totalVolume), totalTvl: Number(data.totalTvl) })
-      } catch (error) {
-        setResult(undefined)
-        setLoading(false)
-        console.error('useStatisticsTVL', error)
-      }
-    })()
-  }, [chainId])
+    if (Object.keys(data).length) {
+      const { liquidity, volume } = data
+      setResult({
+        totalTvl: +convertWeiToEther(liquidity),
+        totalVolume: +convertWeiToEther(volume)
+      })
+    } else {
+      setResult(undefined)
+    }
+  }, [data])
 
   return {
-    loading: loading,
+    loading,
     result
   }
 }
@@ -406,6 +430,7 @@ export function usePoolDetailData(chainId: ChainId, pair: string) {
         name: data.tokenA.name,
         logo: data.tokenA.logo,
         address: data.tokenA.id,
+        balance: convertWeiToEther(data.tokenAAmount, data.tokenA.type),
         type: data.tokenA.type === 'ERC20' ? Mode.ERC20 : data.tokenA.type === 'ERC721' ? Mode.ERC721 : Mode.ERC1155
       },
       token1: {
@@ -413,6 +438,7 @@ export function usePoolDetailData(chainId: ChainId, pair: string) {
         name: data.tokenB.name,
         logo: data.tokenB.logo,
         address: data.tokenB.id,
+        balance: convertWeiToEther(data.tokenBAmount, data.tokenB.type),
         type: data.tokenB.type === 'ERC20' ? Mode.ERC20 : data.tokenB.type === 'ERC721' ? Mode.ERC721 : Mode.ERC1155
       }
     })

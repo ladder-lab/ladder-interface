@@ -14,6 +14,7 @@ import { useCurrencyBalance, useTokenBalance } from '../wallet/hooks'
 import { Field, resetMintState, setTokenIds, typeInput } from './actions'
 
 const ZERO = JSBI.BigInt(0)
+const SUPPORTED_Tokens = ['USDT', 'USDC', 'WETH', 'ETH']
 
 export function useMintState(): AppState['mint'] {
   return useSelector<AppState, AppState['mint']>(state => state.mint)
@@ -221,7 +222,9 @@ export function useDerivedMintInfo(
   if (pairState === PairState.INVALID) {
     error = error ?? 'Invalid pair'
   }
-
+  if (![currencyA?.symbol, currencyB?.symbol].some(symbol => SUPPORTED_Tokens.includes(symbol))) {
+    error = error ?? 'Please select USDT, USDC, or WETH'
+  }
   if (!parsedAmounts[Field.CURRENCY_A] || !parsedAmounts[Field.CURRENCY_B]) {
     error = error ?? 'Enter an amount'
   }

@@ -80,7 +80,7 @@ const chains: ChainObject = Object.keys(SUPPORTED_NETWORKS).reduce((acc, chainId
 }, {} as any)
 
 export function getEtherscanLink(
-  chainId: ChainId,
+  chainId?: ChainId,
   data: string,
   type: 'transaction' | 'token' | 'address' | 'block'
 ): string {
@@ -221,6 +221,10 @@ export function getUTC0MondayMidnightTimestamp(): number {
 const utc0MondayMidnightTimestamp = getUTC0MondayMidnightTimestamp()
 console.log(utc0MondayMidnightTimestamp)
 
-export function convertWeiToEther(value: string): string {
-  return ethers.utils.formatUnits(value, 18)
+export function convertWeiToEther(value: string, type?: string): string {
+  if ('ERC1155' === type || 'ERC721' === type) {
+    return value
+  } else {
+    return ethers.utils.formatUnits(value, 18)
+  }
 }

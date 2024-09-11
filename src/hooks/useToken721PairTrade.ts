@@ -11,7 +11,6 @@ export function useToken721PairTradePrice(
   direction?: 'Buy' | 'Sell'
 ) {
   const [swapNumber, setSwapNumber] = useState<string>('')
-
   useEffect(() => {
     const func = async () => {
       if (!isErc721) return

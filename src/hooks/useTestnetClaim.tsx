@@ -4,7 +4,7 @@ import TransactionSubmittedModal from 'components/Modal/TransactionModals/Transa
 import { useCallback, useEffect, useState } from 'react'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { Axios } from 'utils/axios'
-import { useMerkleContract } from './useContract'
+import { useMerkleContract, useTestTokenContract } from './useContract'
 import useModal from './useModal'
 
 export enum ClaimState {
@@ -14,6 +14,7 @@ export enum ClaimState {
   UNCLAIMED
 }
 
+/*
 export function useTestnetClaim(account: string | undefined) {
   const [data, setData] = useState<null | { proof: string[]; index: string }>(null)
   console.log(data)
@@ -62,6 +63,52 @@ export function useTestnetClaim(account: string | undefined) {
     try {
       showModal(<TransacitonPendingModal />)
       const res = await contract.claim1(account)
+      addTransaction(res, {
+        summary: 'Claim test assets',
+        claim: { recipient: `${account}_claim4` }
+      })
+      hideModal()
+      showModal(<TransactionSubmittedModal />)
+    } catch (e) {
+      const err: any = e
+      hideModal()
+      showModal(<MessageBox type="error">{err?.error?.message || 'Claim Test assets Failed'}</MessageBox>)
+      console.error(e)
+    }
+  }, [account, addTransaction, claimState, contract, hideModal, showModal])
+
+  return { testnetClaim, claimState }
+}
+*/
+
+export function useTestnetClaim(account: string | undefined) {
+  const [claimState, setClaimState] = useState<boolean>(false)
+  const { showModal, hideModal } = useModal()
+  const contract = useTestTokenContract()
+  const addTransaction = useTransactionAdder()
+
+  useEffect(() => {
+    if (!contract || !account) return
+    ;(async () => {
+      try {
+        const { data } = await Axios.post<{ walletAddress: string }>('/claim', {
+          walletAddress: account
+        })
+        setClaimState(data.enableClaim)
+      } catch (e) {
+        console.error(e)
+      }
+    })()
+  }, [account, contract, showModal])
+
+  const testnetClaim = useCallback(async () => {
+    if (!claimState) return
+
+    if (!contract || !account) return
+
+    try {
+      showModal(<TransacitonPendingModal />)
+      const res = await contract.faucet()
       addTransaction(res, {
         summary: 'Claim test assets',
         claim: { recipient: `${account}_claim4` }

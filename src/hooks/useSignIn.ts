@@ -1,7 +1,7 @@
 import { useActiveWeb3React } from 'hooks'
 import { useCallback, useEffect } from 'react'
 import { useUserTokenCallback } from 'state/userToken/hooks'
-import { Axios, axiosInstance, v4Url } from 'utils/axios'
+import { Axios, axiosInstance } from 'utils/axios'
 import { API_TOKEN, getCookie, setCookie } from 'utils/cookies'
 import { useWeb3Instance } from './useWeb3Instance'
 
@@ -14,20 +14,15 @@ export function useSignLogin(afterToken?: () => void) {
     if (!web3 || !account || token) return
 
     const message = 'Login to ladder'
-    const signature = await library?.getSigner().signMessage(message)
-
-    Axios.post(v4Url + 'accountSign', {
-      publicAddress: account,
-      signature,
-      chainId,
-      message
+    await library?.getSigner().signMessage(message)
+    Axios.post('/connect-wallet', {
+      walletAddress: account
     })
       .then(r => {
-        if (r?.data.code === 200) {
-          const _token = r.data.data.token
+        if (r?.data) {
+          const _token = r.data.walletAddress
           setCookie(API_TOKEN + account, _token)
           setToken(_token)
-          axiosInstance.defaults.headers.common['token'] = _token
           if (afterToken) {
             setTimeout(afterToken)
           }

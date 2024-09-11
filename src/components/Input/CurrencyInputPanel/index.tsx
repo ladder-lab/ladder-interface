@@ -15,6 +15,8 @@ import { getSymbol } from 'utils/getSymbol'
 import Erc721IdSelectionModal from 'components/Modal/Erc721IdSelectionModal'
 import { Token721 } from 'constants/token/token721'
 import QuestionHelper from 'components/essential/QuestionHelper'
+import { useSwapActionHandlers } from '../../../state/swap/hooks'
+import { Field } from '../../../state/swap/actions'
 
 interface Props {
   currency?: AllTokens | null
@@ -37,7 +39,7 @@ interface Props {
   currencyB?: AllTokens | null
 }
 
-enum SwapType {
+export enum SwapType {
   AUTO = 'Auto',
   MANUAL = 'Choose by yourself'
 }
@@ -108,6 +110,8 @@ export default function CurrencyInputPanel({
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
   const [swapType, setSwapType] = useState(SwapType.AUTO)
 
+  const { onUserInput } = useSwapActionHandlers()
+
   const { hideModal, showModal } = useModal()
   const theme = useTheme()
   const isDownMd = useBreakpoint('md')
@@ -154,6 +158,7 @@ export default function CurrencyInputPanel({
 
   const handleOpenIdSelectionModal = useCallback(() => {
     subTokenSelection()
+    onUserInput(Field.OUTPUT, '')
     setSwapType(SwapType.MANUAL)
   }, [subTokenSelection])
 
@@ -162,7 +167,6 @@ export default function CurrencyInputPanel({
       onSelectSubTokens([])
     }
   }, [enableAuto, onSelectSubTokens, swapType])
-
   return (
     <>
       {is721 && onSelectSubTokens && (
@@ -252,7 +256,7 @@ export default function CurrencyInputPanel({
             </Typography>
           )}
         </SelectButton>
-        {is721 && !enableAuto ? (
+        {is721 && (!enableAuto || swapType === SwapType.MANUAL) ? (
           <Box flexGrow={1}>
             <SelectButton onClick={handleOpenIdSelectionModal} selected={!!value}>
               <Typography fontSize={16} fontWeight={500}>

@@ -10,9 +10,14 @@ import { ReactComponent as BoxIcon } from 'assets/svg/airdrop/box_icon.svg'
 import TaskListLuck from './TaskListLuck'
 import TaskListBox from './TaskListBox'
 import { useAirdropData } from 'hooks/useAirdrop'
-import { useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import darkBg2 from 'assets/images/dark_bg.png'
 import QuestionHelper from 'components/essential/QuestionHelper'
+import { useActiveWeb3React } from '../../hooks'
+import useModal from '../../hooks/useModal'
+import { Axios } from '../../utils/axios'
+import BoxModal, { EmailModal, IncompleteModal } from './AirdropModal'
+import { useTotal } from '../../graphql/useTotal'
 // import ActivityBox from './Activity'
 // import Mua from './Mua'
 
@@ -46,19 +51,103 @@ const StyledWrapper = styled('div', { shouldForwardProp: prop => prop !== 'isDar
   })
 )
 
+interface LuckItem {
+  taskId: string
+  description: string
+  rewardBox: number
+  rewardLuck: number
+  expireTime: string
+}
+export interface BoxData {
+  toClaim: LuckItem[]
+  claimed: LuckItem[]
+  expired: LuckItem[]
+}
+
+export enum LuckType {
+  googleOauth = 'task_5',
+  twitterOauth = 'task_6'
+}
+const useTaskList = () => {
+  const { account } = useActiveWeb3React()
+  const { showModal } = useModal()
+  const [boxData, setBoxData] = useState<BoxData>({} as BoxData)
+  const [lucksData, setLucksData] = useState<BoxData>({} as BoxData)
+  // showModal(<EmailModal />)
+  const getTaskStatus = useCallback(async () => {
+    try {
+      const { data } = await Axios.get('/airdrop/getTaskStatus', {
+        walletAddress: account ?? '0x',
+        timestamp: new Date().toISOString()
+      })
+      const boxes = data.boxes
+      const lucks = data.lucks
+      setBoxData(boxes)
+      setLucksData(lucks)
+    } catch (e) {
+      console.warn(e)
+    }
+  }, [account])
+
+  const handleClaimBox = useCallback(
+    async (item: any) => {
+      console.log(item)
+      try {
+        await Axios.post('/airdrop/claimBox', {
+          walletAddress: account,
+          taskId: item.taskId
+        })
+        showModal(<BoxModal getBox={getTaskStatus} BoxId={item.id} />)
+      } catch (e) {
+        if (item.id === LuckType.googleOauth) {
+        } else if (item.id === LuckType.twitterOauth) {
+          showModal(<IncompleteModal route={item.route} link={item.link} scrollTo={item.scrollTo} />)
+        }
+        console.warn(e)
+      }
+    },
+    [account]
+  )
+
+  const handleClaimLuck = useCallback(
+    async (item: any) => {
+      console.log(item)
+      try {
+        await Axios.post('/airdrop/claimLuck', {
+          walletAddress: account,
+          taskId: item.taskId
+        })
+        showModal(<BoxModal getBox={getTaskStatus} BoxId={item.id} />)
+      } catch (e) {
+        showModal(<IncompleteModal route={item.route} link={item.link} scrollTo={item.scrollTo} />)
+        console.warn(e)
+      }
+    },
+    [account]
+  )
+  useEffect(() => {
+    getTaskStatus()
+  }, [getTaskStatus])
+  return {
+    boxData,
+    lucksData,
+    handleClaimBox,
+    handleClaimLuck
+  }
+}
+
 export default function Airdrop() {
   const theme = useTheme()
   const isDarkMode = useIsDarkMode()
-  const { refreshCb, airdropData } = useAirdropData()
+  const { airdropData } = useAirdropData()
   const luckSection = useRef<HTMLDivElement>(null)
   const boxSection = useRef<HTMLDivElement>(null)
-
+  const { boxData, lucksData, handleClaimBox } = useTaskList()
+  const { data: totalData } = useTotal()
   return (
     <StyledWrapper isDarkMode={isDarkMode}>
       <Box
         sx={{
-          // background: isDarkMode ? '#ffffff12' : '#ffffff32',
-
           width: '100%'
         }}
         padding={{ xs: 0, sm: '60px 24px' }}
@@ -69,7 +158,6 @@ export default function Airdrop() {
           margin="0 auto"
           gap={{ xs: 20, xl: 80 }}
           sx={{
-            // background: isDarkMode ? '#ffffff12' : '#ffffff32',
             display: { xs: 'grid', md: 'flex' },
             width: '100%',
             justifyContent: 'space-between'
@@ -100,15 +188,6 @@ export default function Airdrop() {
                 }
               }}
             >
-              {/* <Link
-                to={'/airdrop#box'}
-                onClick={() => {
-                  const sec = boxSection.current
-                  sec && window.scrollTo({ top: boxSection.current.offsetTop - 100, behavior: 'smooth' })
-                }}
-              >
-                Get details
-              </Link> */}
               <Link
                 to={'/airdrop#qa'}
                 onClick={() => {
@@ -136,7 +215,7 @@ export default function Airdrop() {
             >
               Current Participants:{' '}
               <Typography component="span" fontWeight={400} fontSize={20}>
-                {airdropData ? airdropData.currentParticipants ?? '--' : '--'}
+                {totalData ? totalData.usersCount ?? '--' : '--'}
               </Typography>
             </Box>
           </Box>
@@ -241,10 +320,10 @@ export default function Airdrop() {
         <ActivityBox refreshCb={refreshCb} />
       </Box> */}
       <Box id="box" ref={boxSection}>
-        <TaskListBox refreshCb={refreshCb} />
+        <TaskListBox boxData={boxData} claimBox={handleClaimBox} />
       </Box>
       <Box id="luck" ref={luckSection}>
-        <TaskListLuck refreshCb={refreshCb} />{' '}
+        <TaskListLuck lucksData={lucksData} claimBox={handleClaimBox} />{' '}
       </Box>
       <QuestionList />
     </StyledWrapper>
