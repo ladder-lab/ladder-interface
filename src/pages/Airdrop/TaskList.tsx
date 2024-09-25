@@ -13,8 +13,6 @@ import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
 import QuestionHelper from 'components/essential/QuestionHelper'
 import { ActivityProps } from './Activity'
-import { useWalletIsConnected } from 'state/walletConnect/hooks'
-import Image from 'components/Image'
 import { LuckType } from './index'
 
 const disabledBtn = false

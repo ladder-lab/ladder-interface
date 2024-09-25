@@ -1,10 +1,10 @@
-import { ChainId } from '@ladder/sdk'
 import { getTest721uriWithIndex, isTest721 } from 'constants/default721List'
 import { Token721 } from 'constants/token/token721'
 import { useActiveWeb3React } from 'hooks'
 import { useMemo, useState } from 'react'
 import { useSingleCallResult } from 'state/multicall/hooks'
 import { use721PairContract } from './useContract'
+import { ChainId } from '../constants/chain'
 
 export function useToken721PoolIds(pairAddress: string | undefined, collection: Token721 | undefined) {
   const { chainId } = useActiveWeb3React()

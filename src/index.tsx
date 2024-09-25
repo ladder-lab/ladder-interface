@@ -7,6 +7,8 @@ import { ThemeProvider } from 'theme/index'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import { ApolloProvider } from '@apollo/client'
+import { SnackbarProvider } from 'notistack'
+
 import Blocklist from './components/essential/Blocklist'
 import { NetworkContextName } from './constants'
 import App from './pages/App'
@@ -59,17 +61,19 @@ root.render(
     <Web3ReactProvider getLibrary={getLibrary}>
       <Web3ProviderNetwork getLibrary={getLibrary}>
         <Blocklist>
-          <Provider store={store}>
-            <Updaters />
-            <ThemeProvider>
-              <CssBaseline />
-              <BrowserRouter>
-                <ApolloProvider client={client}>
-                  <App />
-                </ApolloProvider>
-              </BrowserRouter>
-            </ThemeProvider>
-          </Provider>
+          <SnackbarProvider>
+            <Provider store={store}>
+              <Updaters />
+              <ThemeProvider>
+                <CssBaseline />
+                <BrowserRouter>
+                  <ApolloProvider client={client}>
+                    <App />
+                  </ApolloProvider>
+                </BrowserRouter>
+              </ThemeProvider>
+            </Provider>
+          </SnackbarProvider>
         </Blocklist>
       </Web3ProviderNetwork>
     </Web3ReactProvider>

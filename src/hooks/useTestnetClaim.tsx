@@ -1,11 +1,13 @@
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { Axios } from 'utils/axios'
-import { useMerkleContract, useTestTokenContract } from './useContract'
+import { useTestTokenContract } from './useContract'
 import useModal from './useModal'
+import { useActiveWeb3React } from './index'
+import { useGetRemoteStep } from './useVerifyTwitter'
 
 export enum ClaimState {
   UNKNOWN,
@@ -81,38 +83,35 @@ export function useTestnetClaim(account: string | undefined) {
 }
 */
 
-export function useTestnetClaim(account: string | undefined) {
-  const [claimState, setClaimState] = useState<boolean>(false)
+export function useTestnetClaim() {
+  const { account } = useActiveWeb3React()
   const { showModal, hideModal } = useModal()
   const contract = useTestTokenContract()
   const addTransaction = useTransactionAdder()
-
-  useEffect(() => {
-    if (!contract || !account) return
-    ;(async () => {
-      try {
-        const { data } = await Axios.post<{ walletAddress: string }>('/claim', {
-          walletAddress: account
-        })
-        setClaimState(data.enableClaim)
-      } catch (e) {
-        console.error(e)
-      }
-    })()
-  }, [account, contract, showModal])
+  const { verifyAll } = useGetRemoteStep()
 
   const testnetClaim = useCallback(async () => {
-    if (!claimState) return
-
+    // if (!claimState) return
     if (!contract || !account) return
 
+    /*    const res = await contract.faucet()
+    console.log(res)
+
+    return*/
     try {
-      showModal(<TransacitonPendingModal />)
-      const res = await contract.faucet()
-      addTransaction(res, {
-        summary: 'Claim test assets',
-        claim: { recipient: `${account}_claim4` }
+      showModal(<TransacitonPendingModal pendingText="Processing your request..." />)
+      const res = await Axios.post('/claim', {
+        walletAddress: account
       })
+      addTransaction(
+        {
+          hash: res.data.transactionHash
+        },
+        {
+          summary: 'Claim test assets',
+          claim: { recipient: `${account}_claim4` }
+        }
+      )
       hideModal()
       showModal(<TransactionSubmittedModal />)
     } catch (e) {
@@ -121,7 +120,8 @@ export function useTestnetClaim(account: string | undefined) {
       showModal(<MessageBox type="error">{err?.error?.message || 'Claim Test assets Failed'}</MessageBox>)
       console.error(e)
     }
-  }, [account, addTransaction, claimState, contract, hideModal, showModal])
+    verifyAll()
+  }, [account, addTransaction, contract, hideModal, showModal])
 
-  return { testnetClaim, claimState }
+  return { testnetClaim }
 }

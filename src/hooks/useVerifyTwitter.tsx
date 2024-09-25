@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Axios, testURL, v4Url } from '../utils/axios'
+import { Axios, axiosInstance, testURL, v4Url } from '../utils/axios'
 import { useActiveWeb3React } from './index'
 import { useSignLogin } from './useSignIn'
 import { useIsWindowFocus } from './useIsWindowVisible'
 import MessageBox from '../components/Modal/TransactionModals/MessageBox'
 import useModal from './useModal'
+
+const isDev = process.env.NODE_ENV
 
 export function useVerifyTwitterFollow(sbtContract: string) {
   const { account, chainId } = useActiveWeb3React()
@@ -144,9 +146,19 @@ export function useVerifyTwitter() {
   const jump = useCallback(async () => {
     try {
       if (!account) return
-      const res = await Axios.get('/auth/twitter/login')
-      console.log(res.data.authUrl)
-      window.location.href = res.data.authUrl
+      const res = await axiosInstance.get('/auth/twitter/login', {
+        withCredentials: true,
+        params: { walletAddress: account }
+      })
+      // const res = await Axios.get('/auth/twitter/login')
+
+      sessionStorage.removeItem('twitter')
+
+      const url = decodeURIComponent(res?.data?.authUrl).replace(
+        'https://test.v2.ladder.top/round3',
+        'http://127.0.0.1:3000/round3'
+      )
+      window.location.href = isDev === 'development' ? url : res?.data?.authUrl
     } catch (error) {
       setIsLoading(false)
       console.error('useAccountTestInfo', error)
@@ -174,7 +186,7 @@ const STEP_STATUS = {
 }
 
 function useGetUserStatus(account: string | null | undefined) {
-  const [userStatus, setUserStatus] = useState<keyof typeof STEP_STATUS>('')
+  const [userStatus, setUserStatus] = useState<keyof typeof STEP_STATUS | ''>('')
 
   const getUserStatus = useCallback(async () => {
     try {
@@ -188,6 +200,7 @@ function useGetUserStatus(account: string | null | undefined) {
         throw new Error('Failed to fetch user status')
       }
     } catch (error) {
+      setUserStatus('')
       console.error('getUserStatus error:', error)
     }
   }, [account])
@@ -254,7 +267,8 @@ export function useMakeTwitter(verifyAll?: () => void) {
       walletAddress: account
     })
       .then(r => {
-        if (r?.tweet) {
+        console.log('checkMakeTwitter', r)
+        if (r?.data.tweet) {
           isMakeTwitter(true)
           if (verifyAll) {
             setTimeout(verifyAll)
@@ -266,7 +280,6 @@ export function useMakeTwitter(verifyAll?: () => void) {
         }
       })
       .catch((e: any) => {
-        const err: any = e
         isMakeTwitter(false)
         showModal(<MessageBox type="error">Make A Tweet Failed</MessageBox>)
         console.error(e)

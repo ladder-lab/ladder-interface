@@ -1,4 +1,3 @@
-import { ChainId } from '@ladder/sdk'
 import { Box, Breadcrumbs, Link, Stack, Typography, useTheme } from '@mui/material'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
 import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
@@ -10,16 +9,19 @@ import { PoolPairType } from '..'
 import { StatTransList } from '../StatTransList'
 import { TopPoolsList } from '../TopPoolsList'
 import { useTokenDetailsQueries } from '../../../graphql/useTokenQueries'
+import { ChainId } from '../../../constants/chain'
+
+interface Params extends Record<string, string | undefined> {
+  type: Mode
+  chainId: string
+  address: string
+  token1155Id?: string
+}
 
 export default function Tokens() {
   const theme = useTheme()
   const navigate = useNavigate()
-  const { type, chainId, address, token1155Id } = useParams<{
-    type: Mode
-    chainId: string
-    address: string
-    token1155Id: string
-  }>()
+  const { type, chainId, address, token1155Id } = useParams<Params>()
   const curChainId = Number(chainId) as ChainId
 
   const { result: tokenDetailData } = useTokenDetailsQueries(curChainId, address)
@@ -33,7 +35,6 @@ export default function Tokens() {
     }
     return undefined
   }, [type])
-
   return (
     <Box
       sx={{
@@ -63,7 +64,7 @@ export default function Tokens() {
               href={getEtherscanLink(curChainId, tokenDetailData?.address || '', 'token')}
             >
               <Typography fontWeight={500} color={theme.palette.text.secondary}>
-                ({tokenDetailData ? shortenAddress(tokenDetailData.address) : ''})
+                ({tokenDetailData && tokenDetailData.address ? shortenAddress(tokenDetailData.address) : ''})
               </Typography>
             </Link>
           </Box>
@@ -87,7 +88,6 @@ export default function Tokens() {
         </Box>
 
         <TopPoolsList
-          supportPoolPairTypes={[]}
           defaultPoolPairType={supportPoolPairTypes?.[0] || PoolPairType.ERC20_ERC20}
           chainId={curChainId}
           token={address}

@@ -32,7 +32,7 @@ export default function Footer() {
         >
           <Box>
             <Logo />
-            <Typography>©2023 Ladder. All rights reserved.</Typography>
+            <Typography>©2024 Ladder. All rights reserved.</Typography>
           </Box>
           <Stack direction={'row'}>
             <Button variant="text">

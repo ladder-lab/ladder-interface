@@ -89,11 +89,6 @@ export function useSwap721State(): {
     [dispatch]
   )
   const res = useMemo(() => {
-    console.log({
-      [Field.INPUT]: inputIds,
-      [Field.OUTPUT]: outputIds
-    })
-
     return {
       onSubTokenSelection,
       resetSubTokenSelection,

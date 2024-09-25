@@ -5,7 +5,7 @@ import { isAddress } from 'utils'
 import { useBlockNumber } from 'state/application/hooks'
 import { Token1155 } from 'constants/token/token1155'
 import { NFT } from 'models/allTokens'
-import { NETWORK_CHAIN_ID } from 'constants/chain'
+import { ChainId, NETWORK_CHAIN_ID } from 'constants/chain'
 
 const ERC1155InterfaceId = '0xd9b67a26'
 
@@ -40,7 +40,7 @@ export function useNFTDataCb(
         const supports1155 = await nftContract.supportsInterface?.(ERC1155InterfaceId)
         is1155 = supports1155
         const allRes = await Promise.all([nftContract.name(), nftContract.symbol(), nftContract.uri(tokenId ?? '')])
-        const userToken = new Token1155(chainId, contractAddress, tokenId, {
+        const userToken = new Token1155(chainId as ChainId, contractAddress, tokenId, {
           name: allRes[0],
           symbol: allRes[1],
           uri: allRes[2]
@@ -53,7 +53,7 @@ export function useNFTDataCb(
         if (!is1155) {
           setIncorrenctToken(true)
         } else {
-          setToken(new Token1155(chainId ?? NETWORK_CHAIN_ID, contractAddress, tokenId))
+          setToken(new Token1155((chainId as ChainId) ?? NETWORK_CHAIN_ID, contractAddress, tokenId))
         }
         // setNftError(true)
         setNftResLoading(false)

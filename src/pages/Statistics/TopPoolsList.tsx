@@ -1,32 +1,24 @@
 import { ChainId } from '@ladder/sdk'
-import { useTopPoolsList } from '../../hooks/useStatBacked'
+import { GraphOrderType, useTopPoolsList } from '../../hooks/useStatBacked'
 import { Box, Typography, useTheme } from '@mui/material'
 import StatTable, { TableHeadCellsProp, TableRowCellsProp } from './StatTable'
 import { Mode } from '../../components/Input/CurrencyInputPanel/SelectCurrencyModal'
 import { formatMillion } from '../../utils'
 import RowBetween from '../../styled/RowBetween'
-import { PoolPairType, ShowTopPoolsCurrencyBox, StyledTabButtonText } from './index'
+import { PoolPairType, ShowTopPoolsCurrencyBox } from './index'
 
 export function TopPoolsList({
   chainId,
   token,
-  supportPoolPairTypes,
-  defaultPoolPairType,
-  token1155Id
+  token1155Id,
+  defaultPoolPairType
 }: {
   chainId: ChainId
   token?: string
-  supportPoolPairTypes?: PoolPairType[]
-  defaultPoolPairType?: PoolPairType | undefined
+  defaultPoolPairType?: PoolPairType | undefined | null
   token1155Id?: number
 }) {
-  const {
-    search: poolsSearch,
-    result,
-    page,
-    order,
-    loading
-  } = useTopPoolsList({
+  const { result, page, order, loading } = useTopPoolsList({
     chainId,
     token,
     poolPairType: defaultPoolPairType || PoolPairType.ERC20_ERC721,
@@ -39,7 +31,7 @@ export function TopPoolsList({
     },
     { label: 'Name', align: 'left' },
     { label: 'Price' },
-    { label: 'TVL', sortValue: 'TVL', sort: true },
+    { label: 'TVL', sortValue: GraphOrderType.TVL, sort: true },
     { label: 'Volume 24H' },
     { label: 'Volume 7D' }
   ]
@@ -47,7 +39,12 @@ export function TopPoolsList({
     { label: page.pageSize * (page.currentPage - 1) + 1 + index },
     {
       label: (
-        <ShowTopPoolsCurrencyBox chainId={chainId} pair={item.pair} token0Info={item.token0} token1Info={item.token1} />
+        <ShowTopPoolsCurrencyBox
+          chainId={chainId}
+          pair={item.pair || item.id}
+          token0Info={item.token0}
+          token1Info={item.token1}
+        />
       )
     },
     {
@@ -73,21 +70,6 @@ export function TopPoolsList({
           <Typography fontWeight={500} fontSize={16} color={theme.palette.text.primary} mr={16}>
             {token ? 'Top Pairs' : 'Top Pools'}
           </Typography>
-          <Box display="flex" flexWrap={'wrap'}>
-            {(supportPoolPairTypes || Object.values(PoolPairType)).map(item => (
-              <StyledTabButtonText
-                sx={{ mt: { sm: 0, xs: 10 } }}
-                key={item}
-                className={item === poolsSearch.type ? 'active' : ''}
-                onClick={() => {
-                  poolsSearch.setType(item)
-                  page.setCurrentPage(1)
-                }}
-              >
-                {item}
-              </StyledTabButtonText>
-            ))}
-          </Box>
         </RowBetween>
       </RowBetween>
       <Box

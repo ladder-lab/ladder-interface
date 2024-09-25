@@ -50,7 +50,6 @@ function Web3StatusInner() {
 
   const walletIsConnected = useWalletIsConnected()
   // const setWalletConnectState = useWalletConnectStateManager()
-
   if (walletIsConnected && account) {
     return (
       <Box sx={{ cursor: 'pointer', display: 'flex', gap: 13, justifyContent: 'space-between', alignItems: 'center' }}>

@@ -1,21 +1,17 @@
-import { ChainId } from '@ladder/sdk'
-import { Box, useTheme, styled, Typography, Stack, Popper, ClickAwayListener, Divider } from '@mui/material'
+import { Box, useTheme, styled, Typography, Stack } from '@mui/material'
 import CurrencyLogo from 'components/essential/CurrencyLogo'
-// import { StyledPollingDot } from 'components/essential/Polling'
 import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
 import { routes } from 'constants/routes'
-import { useTopPoolsList, useSearchTokenInfo, StatTokenInfo, StatTopPoolsProp } from 'hooks/useStatBacked'
-import { useMemo, useState } from 'react'
+import { StatTokenInfo } from 'hooks/useStatBacked'
+import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useIsDarkMode } from 'state/user/hooks'
-import { isAddress, scrollToElement } from 'utils'
-import Input from 'components/Input'
-import { Loader } from 'components/AnimatedSvg/Loader'
+import { scrollToElement } from 'utils'
 import { useActiveWeb3React } from 'hooks'
 import RowBetween from '../../styled/RowBetween'
 import { StatTransList } from './StatTransList'
 import { TopPoolsList } from './TopPoolsList'
-import { ShowTopTokensCurrencyBox, TopTokensList } from './TopTokensList'
+import { TopTokensList } from './TopTokensList'
+import { ChainId } from '../../constants/chain'
 
 const StyledTabText = styled(Box)(({ theme }) => ({
   fontSize: 16,
@@ -54,16 +50,6 @@ export enum PoolPairType {
 export default function Statistics() {
   const { chainId } = useActiveWeb3React()
   const curChainId = useMemo(() => chainId || ChainId.SEPOLIA, [chainId])
-  const isDarkMode = useIsDarkMode()
-
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
-
-  const [searchText, setSearchText] = useState('')
-  const open = Boolean(anchorEl)
-  const popperId = open ? 'simple-popper' : undefined
 
   const theme = useTheme()
   return (
@@ -99,7 +85,7 @@ export default function Statistics() {
                 <StyledTabText onClick={() => scrollToElement('Transactions')}>Transactions</StyledTabText>
               </Stack>
 
-              {open && (
+              {/*            {open && (
                 <Box
                   sx={{
                     position: 'fixed',
@@ -111,7 +97,8 @@ export default function Statistics() {
                     background: isDarkMode ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.2)'
                   }}
                 ></Box>
-              )}
+              )}*/}
+              {/*
               <Box display={'flex'} alignItems="center" sx={{ mt: { sm: 0, xs: 15 } }}>
                 <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
                   <Box ml={10}>
@@ -139,6 +126,7 @@ export default function Statistics() {
                   </Box>
                 </ClickAwayListener>
               </Box>
+*/}
             </RowBetween>
           </RowBetween>
         </Box>
@@ -157,7 +145,7 @@ export default function Statistics() {
 
         <TopTokensList chainId={curChainId} />
 
-        <TopPoolsList chainId={curChainId} />
+        <TopPoolsList chainId={curChainId} defaultPoolPairType={null} />
 
         <StatTransList chainId={curChainId} />
       </Stack>
@@ -253,144 +241,5 @@ export function ShowTopPoolsCurrencyBox({
         </Typography>
       )}
     </Box>
-  )
-}
-
-function SearchBox({ searchText, chainId }: { searchText: string; chainId: ChainId }) {
-  const theme = useTheme()
-  const searchAddress = isAddress(searchText) ? searchText : ''
-  const { result: searchTokenInfo, loading } = useSearchTokenInfo(chainId, searchAddress)
-
-  return (
-    <Box
-      sx={{
-        border: 1,
-        p: '20px',
-        borderColor: theme.palette.primary.main,
-        borderRadius: '8px',
-        minHeight: 100,
-        bgcolor: 'background.paper'
-      }}
-    >
-      {!searchText.trim() ? (
-        <Typography textAlign={'center'}>Input token or pair address search.</Typography>
-      ) : !searchAddress ? (
-        <Typography textAlign={'center'}>Invalid address.</Typography>
-      ) : loading ? (
-        <Loader />
-      ) : searchTokenInfo.is1155Token ? (
-        <Stack spacing={12}>
-          <Stack>
-            <Typography mb={10} fontSize={18} fontWeight={500}>
-              Tokens
-            </Typography>
-            <Box display={'flex'} alignItems="center">
-              <CurrencyLogo logoUrl={searchTokenInfo.tokens[0].logo} />
-              <Box ml={8}>
-                <Typography>
-                  {searchTokenInfo.tokens[0].name || '-'}{' '}
-                  {searchTokenInfo.tokens[0].type === Mode.ERC1155 ? '#' + searchTokenInfo.tokens[0].tokenId : ''}
-                </Typography>
-                <Typography textAlign={'left'}>{searchTokenInfo.tokens[0].symbol}</Typography>
-              </Box>
-            </Box>
-          </Stack>
-          <Divider />
-          <Typography>You are searching for token ERC1155, you can enter the id to search pool.</Typography>
-          <SearchToken1155 chainId={chainId} token={searchAddress} defaultPools={searchTokenInfo.pools} />
-        </Stack>
-      ) : (
-        <Stack spacing={12}>
-          <Stack spacing={10}>
-            <Typography mb={10} fontSize={18} fontWeight={500}>
-              Tokens
-            </Typography>
-            {searchTokenInfo.tokens.length === 0 && (
-              <Typography color={theme.palette.text.secondary}>No Data</Typography>
-            )}
-            {searchTokenInfo.tokens.map(item => (
-              <ShowTopTokensCurrencyBox key={item.address + item.tokenId} chainId={chainId} tokenInfo={item} />
-            ))}
-          </Stack>
-          <Divider />
-          <Box>
-            <Typography mb={10} fontSize={18} fontWeight={500}>
-              Pools
-            </Typography>
-            {!searchTokenInfo.pools.length && <Typography color={theme.palette.text.secondary}>No Data</Typography>}
-            <Stack spacing={10}>
-              {searchTokenInfo.pools.map(item => (
-                <ShowTopPoolsCurrencyBox
-                  key={item.pair}
-                  chainId={chainId}
-                  pair={item.pair}
-                  token0Info={item.token0}
-                  token1Info={item.token1}
-                />
-              ))}
-            </Stack>
-          </Box>
-        </Stack>
-      )}
-    </Box>
-  )
-}
-
-function SearchToken1155({
-  chainId,
-  defaultPools,
-  token
-}: {
-  chainId: ChainId
-  token: string
-  defaultPools: StatTopPoolsProp[]
-}) {
-  const theme = useTheme()
-  const [token1155Id, setToken1155Id] = useState('')
-  const pools = useTopPoolsList({
-    chainId: token1155Id ? chainId : undefined,
-    token,
-    poolPairType: PoolPairType.ERC20_ERC1155,
-    token1155Id: Number(token1155Id)
-  })
-
-  return (
-    <Stack spacing={10}>
-      <Input height={44} value={token1155Id} onChange={e => setToken1155Id(e.target.value)} />
-      <Typography mb={10} fontSize={18} fontWeight={500}>
-        Pools
-      </Typography>
-      {token1155Id !== '' ? (
-        <>
-          {!pools.result.length && <Typography color={theme.palette.text.secondary}>No Data</Typography>}
-          <Stack spacing={10}>
-            {pools.result.map(item => (
-              <ShowTopPoolsCurrencyBox
-                key={item.pair}
-                chainId={chainId}
-                pair={item.pair}
-                token0Info={item.token0}
-                token1Info={item.token1}
-              />
-            ))}
-          </Stack>
-        </>
-      ) : (
-        <>
-          {!defaultPools.length && <Typography color={theme.palette.text.secondary}>No Data</Typography>}
-          <Stack spacing={10}>
-            {defaultPools.map(item => (
-              <ShowTopPoolsCurrencyBox
-                key={item.pair}
-                chainId={chainId}
-                pair={item.pair}
-                token0Info={item.token0}
-                token1Info={item.token1}
-              />
-            ))}
-          </Stack>
-        </>
-      )}
-    </Stack>
   )
 }

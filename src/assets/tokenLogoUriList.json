@@ -79,5 +79,16 @@
   "WFTM": "https://assets.spookyswap.finance/tokens/FTM.png",
   "Aave": "https://assets.coingecko.com/coins/images/12645/large/AAVE.png",
   "fUSDT": "https://assets.coingecko.com/coins/images/325/large/Tether-logo.png",
-  "FBNB": "https://assets.coingecko.com/coins/images/825/large/binance-coin-logo.png"
+  "FBNB": "https://assets.coingecko.com/coins/images/825/large/binance-coin-logo.png",
+
+"BAYC": "https://storage.googleapis.com/v2-ladder-top/erc721/BAYC.jpg",
+"CRYPTOPUNKS": "https://storage.googleapis.com/v2-ladder-top/erc721/CRYPTOPUNKS.png",
+"MAYC": "https://storage.googleapis.com/v2-ladder-top/erc721/MAYC.avif",
+"AZUKI": "https://storage.googleapis.com/v2-ladder-top/erc721/AZUKI.jpg",
+"PudgyPenguins": "https://storage.googleapis.com/v2-ladder-top/erc721/PudgyPenguins.jpg",
+"Milady": "https://storage.googleapis.com/v2-ladder-top/erc721/Milady.jpg",
+"MFER": "https://storage.googleapis.com/v2-ladder-top/erc721/MFER.jpg",
+"LilPudgys": "https://storage.googleapis.com/v2-ladder-top/erc721/LilPudgys.jpg",
+"MOONBIRD": "https://storage.googleapis.com/v2-ladder-top/erc721/MOONBIRD.jpg",
+"DOODLE": "https://storage.googleapis.com/v2-ladder-top/erc721/DOODLE.jpg"
 }

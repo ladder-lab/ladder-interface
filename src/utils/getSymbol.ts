@@ -1,5 +1,4 @@
-import { ChainId } from '@ladder/sdk'
-import { NETWORK_CHAIN_ID, SUPPORTED_NETWORKS } from 'constants/chain'
+import { ChainId, NETWORK_CHAIN_ID, SUPPORTED_NETWORKS } from 'constants/chain'
 import { AllTokens } from 'models/allTokens'
 
 export function getSymbol(token: AllTokens | undefined, chainId?: ChainId | null) {

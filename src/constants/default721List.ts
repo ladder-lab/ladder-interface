@@ -3,7 +3,14 @@ import SampleNftImg from 'assets/images/sample-nft.png'
 import { ChainId } from '@ladder/sdk'
 import { ERC721ImageMap } from './index'
 
-const test721List: any[] = [
+interface Token721Item {
+  address: string
+  name: string
+  symbol: string
+  metaDataUri?: string
+  uriName?: string
+}
+const test721List: Token721Item[] = [
   /*  { address: '0x54C0ac6D96D7B79c2941FaA33e61188611F4d813', name: 'Mutant Ape Yacht Club', symbol: 'BAYC' },
   { address: '0x9D88b325faA7b4C3E845c493fF282ed317414F6f', name: 'CryptoPunks', symbol: 'cp' },
   { address: '0x9cd61d732a7BFb6D3C1E7F1b26e5aafB3A5763cd', name: 'Chromie Squiggle ', symbol: 'CS' },
@@ -16,7 +23,7 @@ const test721List: any[] = [
   { address: '0xBA1a650Abd084AbF42742AB7df5f7E65D458481B', name: 'Azuki', symbol: 'AZUKI' }*/
 ]
 
-const test721ListSepolia = [
+const test721ListSepolia: Token721Item[] = [
   {
     address: '0x526B3cCD20BDE16BC90b319221BECb04f643F9CB',
     name: 'Bored Ape Yacht Club',
@@ -54,31 +61,25 @@ const test721ListSepolia = [
     metaDataUri: ERC721ImageMap['Milady Maker']
   },
   {
-    address: '0x36B8fA8d5C62c822C8a6c184b20586A9a247213e',
+    address: '0x176DaCc3cC7FE9433e11E96846E364C1CeC654CE',
     name: 'mfers',
     symbol: 'MFER',
     metaDataUri: ERC721ImageMap['mfers']
   },
   {
-    address: '0x36B8fA8d5C62c822C8a6c184b20586A9a247213e',
-    name: 'Pudgy Penguins',
-    symbol: 'PudgyPenguins',
-    metaDataUri: ERC721ImageMap['Pudgy Penguins']
-  },
-  {
-    address: '0x36B8fA8d5C62c822C8a6c184b20586A9a247213e',
+    address: '0x53e582C5Be395FD12Fe8276a1121ab8404C632B4',
     name: 'Lil Pudgys',
     symbol: 'LilPudgys ',
-    metaDataUri: ERC721ImageMap['LilPudgys']
+    metaDataUri: ERC721ImageMap['Lil Pudgys']
   },
   {
-    address: '0x36B8fA8d5C62c822C8a6c184b20586A9a247213e',
+    address: '0x1051e5d16f573806C9c590403f67525D155f5249',
     name: 'Moonbirds',
     symbol: 'MOONBIRD ',
     metaDataUri: ERC721ImageMap['Moonbirds']
   },
   {
-    address: '0x36B8fA8d5C62c822C8a6c184b20586A9a247213e',
+    address: '0xd300ECDf53fd1C4AD2C36d7c8Ba9609Dd67B5978',
     name: 'Doodles',
     symbol: 'DOODLE ',
     metaDataUri: ERC721ImageMap['Doodles']
@@ -121,7 +122,7 @@ const test721ListSepolia = [
   // { name: 'LADDER-TEST-721-10', symbol: ' T-721-10', address: '0xDE9e6C49C1E009314973A1FF37385b443d418971' }
 ]
 
-const test721TestnetV3ListSepolia = [
+const test721TestnetV3ListSepolia: Token721Item[] = [
   /*  {
     address: '0xbef96b9354EaF451FaD72E41A1a4d4fE9D696ef4',
     name: 'Rh!noX',

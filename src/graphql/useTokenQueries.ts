@@ -1,9 +1,10 @@
 import { gql, useQuery } from '@apollo/client'
-import { GraphOrderType, GraphOrderTypeMap } from '../hooks/useStatBacked'
+import { GraphOrderType } from '../hooks/useStatBacked'
 import { Mode } from '../components/Input/CurrencyInputPanel/SelectCurrencyModal'
 import { useEffect, useState } from 'react'
 import { ChainId } from '@ladder/sdk'
 import { convertWeiToEther } from '../utils'
+import tokenLogoUriList from '../assets/tokenLogoUriList.json'
 
 export const GET_TOKENS = gql`
   query TokensQuery($skip: Int, $pageSize: Int, $orderBy: String, $order: String, $type: [String]) {
@@ -20,21 +21,77 @@ export const GET_TOKENS = gql`
 
 const GET_TOKEN_VOLUME_BY_DAY = gql`
   query GetTokenVolumeByDay($token: String!, $todayMidnight: Int!) {
-    tokenVolumeByDays(where: { timestamp_lt: $todayMidnight, token: $token }) {
+    tokenVolumeByDays(where: { timestamp_gte: $todayMidnight, token: $token }) {
+      token
       volume
       volume7d
     }
   }
 `
 
+const GET_TOKEN_DETAILS = gql`
+  query GetTokenDetails($id: String!) {
+    tokens(where: { id: $id }) {
+      id
+      name
+      price
+      symbol
+      type
+      liquidity
+      total {
+        transactions
+      }
+    }
+  }
+`
+
+interface FetchToken {
+  address?: string
+  logo?: string
+  tokenId?: string
+  transfers?: string
+  volume?: string
+  volume7d?: string
+}
+
+export interface TokenDetailItem extends FetchToken {
+  id: string
+  name: string
+  price: string
+  symbol: string
+  type: string
+  liquidity: string
+}
+
+interface TokenVolumeByDay {
+  volume: string
+  volume7d: string
+}
+
+interface TokenDetails extends TokenDetailItem {
+  total: {
+    transactions: number
+  }
+}
+
 interface Props {
   currentPage: number
   pageSize: number
   order: string
-  orderBy: GraphOrderType
+  orderBy: GraphOrderType | string
   id?: string | number
   type: string
   showNFT?: boolean
+}
+
+interface UseTokensQueriesResult {
+  loadingToken: boolean
+  dataTokens: TokenDetailItem[]
+}
+
+interface UseTokenDetailsQueriesResult {
+  result: TokenDetails | undefined
+  loading: boolean
 }
 
 export const TokensTypeMap: Record<string, string> = {
@@ -43,20 +100,14 @@ export const TokensTypeMap: Record<string, string> = {
   [Mode.ERC721]: 'ERC721'
 }
 
-export function useTokensQueries(props: Props) {
-  const today = new Date()
-  const todayMidnight = Math.floor(new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime() / 1000)
-
-  const [dataTokens, setDataTokens] = useState([])
+export function useTokensQueries(props: Props): UseTokensQueriesResult {
+  const todayMidnight = Math.floor(new Date().setHours(0, 0, 0, 0) / 1000)
+  const [dataTokens, setDataTokens] = useState<TokenDetailItem[]>([])
   const { currentPage, pageSize, order, orderBy, id, type, showNFT } = props
-  let tokenType: string[] = ['ERC20', 'ERC1155', 'ERC721']
-  if (showNFT) {
-    tokenType = ['ERC1155', 'ERC721']
-  } else if (!!type) {
-    tokenType = [TokensTypeMap[type]]
-  }
+  const tokenType: string[] = showNFT ? ['ERC1155', 'ERC721'] : [TokensTypeMap[type] || 'ERC20', 'ERC1155', 'ERC721']
+
   const skip = pageSize * (currentPage - 1)
-  const queryOrderBy = orderBy ? GraphOrderTypeMap[orderBy] : 'liquidity'
+  const queryOrderBy = orderBy ? orderBy : 'liquidity'
   const {
     client,
     loading: loadingToken,
@@ -75,26 +126,27 @@ export function useTokensQueries(props: Props) {
     if (data) {
       const resTokensData = data.tokens
       const fetchVolumes = async () => {
-        const volumePromises = resTokensData.map((token: { id: any }) => {
+        const volumePromises = resTokensData.map((token: TokenDetailItem) => {
           return client.query({
             query: GET_TOKEN_VOLUME_BY_DAY,
             variables: { token: token.id, todayMidnight }
           })
         })
         const volumesResults = await Promise.all(volumePromises)
-        const tokenVolumeByDayMap = new Map()
+        const tokenVolumeByDayMap = new Map<string, TokenVolumeByDay>()
         volumesResults.map(item => {
           if (item.data.tokenVolumeByDays.length) {
             const tokenVolumeByDayData = item.data.tokenVolumeByDays[0]
             tokenVolumeByDayMap.set(tokenVolumeByDayData.token, { ...tokenVolumeByDayData })
           }
         })
-        const tokensData = resTokensData.reduce((acc: any[], cur: { token: any }) => {
-          // acc[pairId] = volumes
-          const byDayData = tokenVolumeByDayMap.get(cur.token) || { volume: 0, volume7d: 0 }
+
+        const tokensData = resTokensData.reduce((acc: TokenDetailItem[], cur: TokenDetailItem) => {
+          const byDayData = tokenVolumeByDayMap.get(cur.id) || { volume: '0', volume7d: '0' }
           acc.push({
             ...cur,
-            ...byDayData
+            volume: byDayData.volume,
+            volume7d: byDayData.volume7d
           })
           return acc
         }, [])
@@ -110,29 +162,15 @@ export function useTokensQueries(props: Props) {
   }
 }
 
-const GET_TOKEN_DETAILS = gql`
-  query GetTokenDetails($id: String!) {
-    tokens(where: { id: $id }) {
-      id
-      name
-      price
-      symbol
-      type
-      liquidity
-    }
-  }
-`
-
-export function useTokenDetailsQueries(chainId: ChainId, address?: string) {
+export function useTokenDetailsQueries(chainId: ChainId, address?: string): UseTokenDetailsQueriesResult {
   const todayMidnight = Math.floor(new Date().setHours(0, 0, 0, 0) / 1000)
-  const [result, setResult] = useState()
+  const [result, setResult] = useState<TokenDetails | undefined>()
   const { data, loading, client } = useQuery(GET_TOKEN_DETAILS, {
     variables: {
       id: address
     },
     skip: !address
   })
-
   useEffect(() => {
     const fetchVolumes = async (tokenId: string) => {
       const res = await client.query({
@@ -153,7 +191,9 @@ export function useTokenDetailsQueries(chainId: ChainId, address?: string) {
         setResult({
           ...tokenDetailsData,
           address: tokenDetailsData.id,
+          logo: (tokenLogoUriList as any)[tokenDetailsData.symbol],
           tokenId: tokenDetailsData.id,
+          transfers: tokenDetailsData.total.transactions,
           price: convertWeiToEther(tokenDetailsData.price),
           liquidity: convertWeiToEther(tokenDetailsData.liquidity),
           ...volumes

@@ -1,15 +1,11 @@
-import { useActiveWeb3React } from '../../../hooks'
 import { useTestnetClaim } from '../../../hooks/useTestnetClaim'
-import { useUserHasSubmitted } from '../../../state/transactions/hooks'
 import useBreakpoint from '../../../hooks/useBreakpoint'
-import { Box, Link, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 import ActionButton from '../../../components/Button/ActionButton'
 import { StepDescText, StepNameText, StepText } from './Styled'
 
 export default function Step3({ step }: { step: number }) {
-  const { account } = useActiveWeb3React()
-  const { testnetClaim } = useTestnetClaim(account || undefined)
-  const { submitted, complete } = useUserHasSubmitted(`${account}_claim4`)
+  const { testnetClaim } = useTestnetClaim()
   const isDownMD = useBreakpoint('md')
 
   return (
@@ -41,7 +37,7 @@ export default function Step3({ step }: { step: number }) {
           // disableAction={new Date() < new Date(v3ActiveTimeStamp[0])}
           // disableAction={!isOpenClaim && activeTimeStatus !== 'active'}
           actionText="Claim"
-          error={submitted || complete ? 'Test assets Claimed' : undefined}
+          error={step > 3 ? 'Test assets Claimed' : undefined}
           // disableAction={step < 2}
           disableAction={step < 3}
         />

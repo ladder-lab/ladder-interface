@@ -15,7 +15,6 @@ export default function Pools() {
   }>()
   const curChainId = Number(chainId) as ChainId
   const { result: poolDetailData } = usePoolDetailData(curChainId, pair as string)
-
   return (
     <Box
       sx={{

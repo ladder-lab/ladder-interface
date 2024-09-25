@@ -27,8 +27,8 @@ const nftScanXApiKey = 'lz5gWLaiA8ZXOHlyFK854hRg'
 
 export const axiosInstance = axios.create({
   baseURL,
-  timeout: 30000,
-  headers: { 'content-type': 'application/json', accept: 'application/json' }
+  timeout: 60000,
+  headers: { 'content-type': 'application/json; charset=utf-8' }
 })
 export const axiosTestInstance = axios.create({
   baseURL: testURL,
@@ -83,9 +83,7 @@ export const Axios = {
 export type AxiosResponseType<T = any, D = any> = AxiosResponse<T, D>
 
 export interface ResponseType<T = any> {
-  msg: string
-  code: number
-  data: T
+  [key: string]: T
 }
 
 export interface NFTResponseType {

@@ -110,7 +110,8 @@ export default function SelectCurrencyModal({
   //const filteredSortedTokensNFT = useSortedTokensByQuery(sortedTokens, debouncedQueryNFT)
 
   const commonCur = useMemo(() => {
-    const curList: Currency[] = [ETHER]
+    // const curList: Currency[] = [ETHER]
+    const curList: Currency[] = []
     Object.keys(allTokens)
       .map(key => {
         const token = allTokens[key as keyof typeof allTokens]
@@ -222,8 +223,7 @@ export default function SelectCurrencyModal({
       addUserToken(searchToken)
     }
   }, [addUserToken, searchToken, searchTokenIsAdded])
-  const modalHeight = useCurrencyModalListHeight('0px')
-
+  const modalHeight = useCurrencyModalListHeight(isDownMd ? '30px' : '20px')
   return (
     <>
       <ImportModal isOpen={isImportOpen} onImport={handleImport} onDismiss={() => setIsInportOpen(false)} />
@@ -307,7 +307,7 @@ export default function SelectCurrencyModal({
           </Box>
         )}
 
-        <Box paddingTop={'24px'} position="relative">
+        <Box position="relative">
           {mode === Mode.ERC20 && (
             <CurrencyList
               currencyOptions={filteredSortedTokens}
@@ -339,7 +339,7 @@ export default function SelectCurrencyModal({
               importToken={onImport}
             >
               <>
-                <Box display="flex" alignItems="center" gap={3} mb={16}>
+                <Box marginTop={'24px'} display="flex" alignItems="center" gap={3} mb={16}>
                   <Typography fontSize={16} fontWeight={500}>
                     Don&apos;t see your NFT ?
                   </Typography>

@@ -10,7 +10,7 @@ import TEST_NFT_URI_ABI from '../constants/abis/testNftUri.json'
 import WETH_ABI from '../constants/abis/weth.json'
 import ERC20_ABI from '../constants/abis/erc20.json'
 import ERC1155_ABI from '../constants/abis/erc1155.json'
-import ERC721_ABI from '../constants/abis/erc721.json'
+// import ERC721_ABI from '../constants/abis/erc721.json'
 import ERC721_TEST_ABI from '../constants/abis/erc721-test.json'
 import MERKLE_TREE_ABI from '../constants/abis/merkleTree.json'
 import UNISOCKS_ABI from '../constants/abis/unisocks.json'
@@ -25,7 +25,6 @@ import {
 } from '../constants/abis/argent-wallet-detector'
 import { MERKLE_TREE_ADDRESS, SBT_URI_ADDRESS, TEST_NFT_URI_ADDRESS, TEST_TOKEN_ADDRESS } from '../constants'
 import SbtAbi from 'constants/abis/SbtFactory.json'
-import { TEST_721_LADDER } from '../constants/default721List'
 
 // returns null on errors
 export function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -43,8 +42,6 @@ export function useContract(address: string | undefined, ABI: any, withSignerIfP
 }
 
 export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
-  tokenAddress && console.warn('useTokenContract', tokenAddress)
-
   return useContract(tokenAddress, ERC20_ABI, withSignerIfPossible)
 }
 
@@ -115,7 +112,8 @@ export function use1155Contract(address: string | undefined, withSignerIfPossibl
 
 export function use721Contract(address: string | undefined, withSignerIfPossible?: boolean): Contract | null {
   // return useContract(address, ERC721_ABI, withSignerIfPossible)
-  const ABI = TEST_721_LADDER.includes(address) ? ERC721_TEST_ABI : ERC721_ABI
+  // const ABI = TEST_721_LADDER.includes(address) ? ERC721_TEST_ABI : ERC721_ABI
+  const ABI = ERC721_TEST_ABI
   return useContract(address, ABI, withSignerIfPossible)
 }
 

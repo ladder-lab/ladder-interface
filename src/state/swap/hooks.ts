@@ -169,7 +169,6 @@ export function useDerivedSwapInfo(): {
     !isExactIn ? parsedAmount : undefined,
     !!tokenIds[Field.OUTPUT]?.length
   )
-  console.log('tokenIds', tokenIds)
   const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
   const currencies: { [field in Field]?: Currency } = useMemo(
     () => ({

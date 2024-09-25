@@ -1,8 +1,8 @@
 import { Token1155 } from './token/token1155'
 import SampleNftImg from 'assets/images/sample-nft.png'
-import { ChainId } from '@ladder/sdk'
+import { ChainId } from './chain'
 
-const test1155List = [
+const test1155List: any[] = [
   // '0x322dE6C57eAEDbc01ab9695Ad37E0d1541014CA0',
   // '0x1F25b15E58fE4B3E3866eed0263203D6318059D8',
   // '0x11Da20BE3C3C14dAAFfBbe21743BF38D8567c7D5',
@@ -12,10 +12,12 @@ const test1155List = [
   // '0xB6281d059A011982f46B885AaBA52dA608933757',
   // '0x3AD70F216c0be1DFB6761C957D33dE1291ca1B79',
   // '0x33d26866424F7791eB46A274F43344F6c9981A3b',
-  // '0x27b1940Ebc0C54A7cEF7ebc3b5A23133582A9feF'
+  // '0x27
+  // b1940Ebc0C54A7cEF7ebc3b5A23133582A9feF'
 ]
 
-const test1155Sepolia = [
+/*
+const test1155Sepolia: any[] = [
   // '0x5606aab6E54B967a8b0649d1Dd2C3C0EA9e4A561',
   // '0x6bc3d7742b0aF00d3A42d8E8cF21f867e13EEc41',
   // '0xE31fC5Cfe8618f599cF50B954E46CdAd82E9FE01',
@@ -36,6 +38,7 @@ const test1155Sepolia = [
   // '0x43f1138F109cAD8322754F97a46aF480A8F71A66',
   // '0xF120b1be9Ab77c3cE13806016e647633F7Ca75D9'
 ]
+*/
 
 const TEST_1155_LIST = test1155List.map((address, idx) => {
   return new Token1155(ChainId.GÖRLI, address, '1', {

@@ -92,7 +92,7 @@ export default function Modal(props: Props) {
                     height: height || 'auto',
                     borderRadius: '12px',
                     marginTop: theme.height.mobileHeader,
-                    marginBottom: 0,
+                    marginBottom: '20px',
                     pb: '10px',
                     pt: '10px'
                   }

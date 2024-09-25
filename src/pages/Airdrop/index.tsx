@@ -18,6 +18,8 @@ import useModal from '../../hooks/useModal'
 import { Axios } from '../../utils/axios'
 import BoxModal, { EmailModal, IncompleteModal } from './AirdropModal'
 import { useTotal } from '../../graphql/useTotal'
+import { useVerifyTwitter } from '../../hooks/useVerifyTwitter'
+import TransacitonPendingModal from '../../components/Modal/TransactionModals/TransactionPendingModal'
 // import ActivityBox from './Activity'
 // import Mua from './Mua'
 
@@ -68,12 +70,13 @@ export enum LuckType {
   googleOauth = 'task_5',
   twitterOauth = 'task_6'
 }
-const useTaskList = () => {
+const useTaskList = (refreshCb: () => void) => {
   const { account } = useActiveWeb3React()
-  const { showModal } = useModal()
+  const { showModal, hideModal } = useModal()
   const [boxData, setBoxData] = useState<BoxData>({} as BoxData)
   const [lucksData, setLucksData] = useState<BoxData>({} as BoxData)
-  // showModal(<EmailModal />)
+  const { openVerify } = useVerifyTwitter()
+
   const getTaskStatus = useCallback(async () => {
     try {
       const { data } = await Axios.get('/airdrop/getTaskStatus', {
@@ -91,39 +94,51 @@ const useTaskList = () => {
 
   const handleClaimBox = useCallback(
     async (item: any) => {
-      console.log(item)
+      showModal(<TransacitonPendingModal />)
       try {
         await Axios.post('/airdrop/claimBox', {
           walletAddress: account,
           taskId: item.taskId
         })
+        hideModal()
         showModal(<BoxModal getBox={getTaskStatus} BoxId={item.id} />)
-      } catch (e) {
-        if (item.id === LuckType.googleOauth) {
-        } else if (item.id === LuckType.twitterOauth) {
-          showModal(<IncompleteModal route={item.route} link={item.link} scrollTo={item.scrollTo} />)
+        if (refreshCb) {
+          setTimeout(refreshCb)
         }
+      } catch (e) {
+        hideModal()
+        showModal(<IncompleteModal route={item.route} link={item.link} scrollTo={item.scrollTo} />)
+
         console.warn(e)
       }
     },
-    [account]
+    [account, getTaskStatus, showModal]
   )
 
   const handleClaimLuck = useCallback(
     async (item: any) => {
-      console.log(item)
+      showModal(<TransacitonPendingModal />)
       try {
         await Axios.post('/airdrop/claimLuck', {
           walletAddress: account,
           taskId: item.taskId
         })
+        hideModal()
         showModal(<BoxModal getBox={getTaskStatus} BoxId={item.id} />)
+        if (refreshCb) {
+          setTimeout(refreshCb)
+        }
       } catch (e) {
-        showModal(<IncompleteModal route={item.route} link={item.link} scrollTo={item.scrollTo} />)
+        hideModal()
+        if (item.id === LuckType.googleOauth) {
+          showModal(<EmailModal />)
+        } else if (item.id === LuckType.twitterOauth) {
+          openVerify()
+        }
         console.warn(e)
       }
     },
-    [account]
+    [account, getTaskStatus, showModal]
   )
   useEffect(() => {
     getTaskStatus()
@@ -139,11 +154,16 @@ const useTaskList = () => {
 export default function Airdrop() {
   const theme = useTheme()
   const isDarkMode = useIsDarkMode()
-  const { airdropData } = useAirdropData()
+  const { account } = useActiveWeb3React()
+  const { airdropData, refreshCb } = useAirdropData()
   const luckSection = useRef<HTMLDivElement>(null)
   const boxSection = useRef<HTMLDivElement>(null)
-  const { boxData, lucksData, handleClaimBox } = useTaskList()
+  const { boxData, lucksData, handleClaimBox, handleClaimLuck } = useTaskList(refreshCb)
   const { data: totalData } = useTotal()
+
+  useEffect(() => {
+    refreshCb()
+  }, [account])
   return (
     <StyledWrapper isDarkMode={isDarkMode}>
       <Box
@@ -323,7 +343,7 @@ export default function Airdrop() {
         <TaskListBox boxData={boxData} claimBox={handleClaimBox} />
       </Box>
       <Box id="luck" ref={luckSection}>
-        <TaskListLuck lucksData={lucksData} claimBox={handleClaimBox} />{' '}
+        <TaskListLuck lucksData={lucksData} claimBox={handleClaimLuck} />{' '}
       </Box>
       <QuestionList />
     </StyledWrapper>

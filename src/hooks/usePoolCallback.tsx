@@ -361,7 +361,7 @@ export function useBurnCallback(currencyA: AllTokens | undefined, currencyB: All
     ]
     const message = {
       owner: account,
-      spender: is721Pair ? ROUTER_ADDRESS_721 : ROUTER_ADDRESS,
+      spender: is721Pair ? ROUTER_ADDRESS_721(chainId) : ROUTER_ADDRESS(chainId),
       value: liquidityAmount.raw.toString(),
       nonce: nonce.toHexString(),
       deadline: deadline.toNumber()

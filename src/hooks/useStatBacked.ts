@@ -1,4 +1,3 @@
-import { ChainId } from '@ladder/sdk'
 import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
 import { PoolPairType } from 'pages/Statistics'
 import { Order } from 'pages/Statistics/StatTable'
@@ -9,15 +8,12 @@ import { convertWeiToEther } from '../utils'
 import { usePoolsDetailsQueries, usePoolsQueries } from '../graphql/usePoolsQueries'
 import { useTokensQueries } from '../graphql/useTokenQueries'
 import { useTotal } from '../graphql/useTotal'
-import { TokenLogo } from '../constants'
+import tokenLogoUriList from '../assets/tokenLogoUriList.json'
+import { ChainId } from '../constants/chain'
 
 export enum GraphOrderType {
   Time = 'timestamp',
   TVL = 'liquidity'
-}
-export const GraphOrderTypeMap: Record<string, string> = {
-  TVL: 'liquidity',
-  Time: 'timestamp'
 }
 const pageSize = 5
 
@@ -34,18 +30,18 @@ export interface StatTokenInfo {
 }
 
 export interface StatTopTokensProp {
-  Volume: string
-  price: string
-  token: StatTokenInfo
-  tvl: string
-  transfers: number
+  Volume?: string
+  price?: string
+  token?: StatTokenInfo
+  tvl?: string
+  transfers?: number
 }
 
 export interface TokensListProp {
-  chainId: ChainId | undefined
-  defaultMode?: Mode
+  chainId?: ChainId
+  defaultMode?: Mode | null
   defaultPageSize?: number
-  token?: string
+  token?: StatTokenInfo
   token1155Id?: number
   showNFT?: boolean
 }
@@ -60,7 +56,7 @@ export function useTopTokensList({
 }: TokensListProp) {
   const [currentPage, setCurrentPage] = useState(1)
   const [order, setOrder] = useState<Order>('desc')
-  const [orderBy, setOrderBy] = useState<string>('')
+  const [orderBy, setOrderBy] = useState<GraphOrderType | string>('')
   const [_pageSize] = useState(defaultPageSize || pageSize)
   const [type, setType] = useState(defaultMode)
   const [loading, setLoading] = useState<boolean>(false)
@@ -85,7 +81,7 @@ export function useTopTokensList({
         tvl: convertWeiToEther(i.liquidity),
         price: convertWeiToEther(i.price),
         token: {
-          logo: TokenLogo[i.name] || '',
+          logo: (tokenLogoUriList as any)[i.symbol],
           name: i.name,
           symbol: i.symbol,
           address: i.id,
@@ -152,19 +148,18 @@ export const topPoolsListDataHandler = (list: any) =>
   list.map((item: any) => {
     item.tokenA = {
       ...item.tokenA,
-      logo: TokenLogo[item.tokenB.name] || '',
+      logo: (tokenLogoUriList as any)[item.tokenA.symbol],
       balance: convertWeiToEther(item.tokenAAmount, item.tokenA.type)
     }
     item.tokenB = {
       ...item.tokenB,
-      logo: TokenLogo[item.tokenB.name] || '',
+      logo: (tokenLogoUriList as any)[item.tokenB.symbol],
       balance: convertWeiToEther(item.tokenBAmount, item.tokenB.type)
     }
     return {
       ...item,
-      pair: item.id,
-      Volume: item.volume,
-      Volume7: item.volume7d,
+      Volume: convertWeiToEther(item.volume),
+      Volume7: convertWeiToEther(item.volume7d),
       tvl: convertWeiToEther(item.liquidity),
       token0: mapToken(item, 'tokenA'),
       token1: mapToken(item, 'tokenB')
@@ -172,9 +167,9 @@ export const topPoolsListDataHandler = (list: any) =>
   })
 
 export interface PoolsListProp {
-  chainId: ChainId | undefined
+  chainId: ChainId
   token?: string | undefined
-  poolPairType?: PoolPairType
+  poolPairType?: PoolPairType | null
   token1155Id?: number | undefined
   defaultPageSize?: number
   showNFT?: boolean
@@ -190,8 +185,8 @@ export function useTopPoolsList({
 }: PoolsListProp) {
   const [currentPage, setCurrentPage] = useState(1)
   const [order, setOrder] = useState<Order>('desc')
-  const [orderBy, setOrderBy] = useState<string | number>('')
-  const [type, setType] = useState(poolPairType || PoolPairType.ERC20_ERC20)
+  const [orderBy, setOrderBy] = useState<GraphOrderType | string>('')
+  const [type, setType] = useState(poolPairType === null ? null : poolPairType ?? PoolPairType.ERC20_ERC20)
   const [_pageSize] = useState(defaultPageSize || pageSize)
   // const [count] = useState<number>(20)
   const count = 20
@@ -249,6 +244,7 @@ export enum StatTransactionsType {
 }
 
 export interface StatTransactionsProp {
+  id: string
   totalValue: string
   buyToken: StatTokenInfo
   pair: string
@@ -302,7 +298,7 @@ export function useTransactionsList({
 }) {
   const [currentPage, setCurrentPage] = useState(1)
   const [order, setOrder] = useState<Order>('desc')
-  const [orderBy, setOrderBy] = useState<string>('Time')
+  const [orderBy, setOrderBy] = useState<GraphOrderType>(GraphOrderType.Time)
   const [type, setType] = useState(StatTransactionsType.ALL)
   const [count, setCount] = useState<number>(0)
   const [result, setResult] = useState([] as StatTransactionsProp[])
@@ -428,7 +424,7 @@ export function usePoolDetailData(chainId: ChainId, pair: string) {
       token0: {
         symbol: data.tokenA.symbol,
         name: data.tokenA.name,
-        logo: data.tokenA.logo,
+        logo: (tokenLogoUriList as any)[data.tokenA.symbol],
         address: data.tokenA.id,
         balance: convertWeiToEther(data.tokenAAmount, data.tokenA.type),
         type: data.tokenA.type === 'ERC20' ? Mode.ERC20 : data.tokenA.type === 'ERC721' ? Mode.ERC721 : Mode.ERC1155
@@ -436,7 +432,7 @@ export function usePoolDetailData(chainId: ChainId, pair: string) {
       token1: {
         symbol: data.tokenB.symbol,
         name: data.tokenB.name,
-        logo: data.tokenB.logo,
+        logo: (tokenLogoUriList as any)[data.tokenB.symbol],
         address: data.tokenB.id,
         balance: convertWeiToEther(data.tokenBAmount, data.tokenB.type),
         type: data.tokenB.type === 'ERC20' ? Mode.ERC20 : data.tokenB.type === 'ERC721' ? Mode.ERC721 : Mode.ERC1155

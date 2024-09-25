@@ -4,6 +4,7 @@ import React from 'react'
 import { ExternalLink } from 'theme/components'
 import { getEtherscanLink } from 'utils'
 import MessageBox from './MessageBox'
+import { ChainId } from '../../../constants/chain'
 
 export default function TransactionSubmittedModal({ children, hash }: { hash?: string; children?: React.ReactNode }) {
   const { chainId } = useActiveWeb3React()
@@ -15,7 +16,7 @@ export default function TransactionSubmittedModal({ children, hash }: { hash?: s
         {chainId && hash && (
           <ExternalLink
             underline="always"
-            href={getEtherscanLink(chainId, hash, 'transaction')}
+            href={getEtherscanLink(chainId as ChainId, hash, 'transaction')}
             style={{ color: '#ffffff', fontSize: 12 }}
           >
             View on explorer

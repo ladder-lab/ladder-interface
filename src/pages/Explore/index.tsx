@@ -41,10 +41,11 @@ export default function Explore() {
 
   const CollectionList: CollectionsProp[] = useMemo(
     () =>
-      listNFT.map(item => ({
+      listNFT.map((item: any) => ({
+        isCollection: true,
         title: item.token.name || '-',
         imgPath: item.token.logo,
-        // imgPath: TokenLogo['Doodles'] || '',
+        price: item.price,
         amount: `${formatMillion(Number(item.tvl), '$ ', 2)}`,
         route: routes.explorer + `/${item.token.type}/${chainId}/${item.token.address}/${item.token.tokenId || 0}`,
         percentage: ''
@@ -62,7 +63,7 @@ export default function Explore() {
 
   const CollectionPoolList: CollectionsProp[] = useMemo(
     () =>
-      listNFTPool.map(item => ({
+      listNFTPool.map((item: any) => ({
         title: (
           <ShowTopPoolsCurrencyBox
             chainId={chainId || NETWORK_CHAIN_ID}
@@ -75,7 +76,7 @@ export default function Explore() {
         ),
         imgPath: item.token0.type !== Mode.ERC20 ? item.token0.logo : item.token1.logo,
         amount: `${formatMillion(Number(item.tvl), '$ ', 2)}`,
-        route: routes.statisticsPools + `/${chainId}/${item.pair}`,
+        route: routes.statisticsPools + `/${chainId}/${item.pair || item.id}`,
         percentage: '',
         addresss: [item.token0.address, item.token1.address]
       })),
@@ -245,6 +246,8 @@ interface CollectionsProp {
   imgPath: string
   amount: string
   percentage: string
+  price?: string
+  isCollection?: boolean
   addresss?: string[]
 }
 
@@ -259,66 +262,81 @@ function CollectionListing({
 }) {
   const isDownMd = useBreakpoint('md')
   const navigate = useNavigate()
-
-  const items = collections.map(({ title, imgPath, amount, percentage, route, addresss }, index: number) => (
-    <Box
-      key={index}
-      sx={{
-        position: 'relative',
-        height: 280,
-        maxWidth: 218,
-        width: 218,
-        borderRadius: '12px',
-        backgroundColor: dark ? 'rgba(255, 255, 255, 0.28)' : 'rgba(207, 207, 207, 0.41)',
-        overflow: 'hidden',
-        cursor: 'pointer'
-      }}
-      onClick={() => navigate(route)}
-    >
+  const items = collections.map(
+    ({ title, imgPath, amount, percentage, route, addresss, price, isCollection }, index: number) => (
       <Box
+        key={index}
         sx={{
-          position: 'absolute',
-          right: 10,
-          top: 10
+          position: 'relative',
+          height: isCollection ? 300 : 280,
+          maxWidth: 218,
+          width: 218,
+          borderRadius: '12px',
+          backgroundColor: dark ? 'rgba(255, 255, 255, 0.28)' : 'rgba(207, 207, 207, 0.41)',
+          overflow: 'hidden',
+          cursor: 'pointer'
         }}
+        onClick={() => navigate(route)}
       >
-        <TestnetV3Mark addresss={addresss || []} />
-      </Box>
-      <Box
-        component="img"
-        sx={{
-          height: 168,
-          display: 'block',
-          width: '100%',
-          objectFit: 'cover'
-        }}
-        src={imgPath}
-        alt={'Token logo'}
-      />
-      <Box sx={{ padding: 16 }}>
-        <Typography
+        <Box
           sx={{
-            mb: 21,
-            color: dark ? '#FFFFFF' : '#333333',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis'
+            position: 'absolute',
+            right: 10,
+            top: 10
           }}
         >
-          {title}
-        </Typography>
-        <Typography sx={{ color: dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(51, 51, 51, 0.5)' }}>
-          Total Liquidity
-        </Typography>
-        <Box sx={{ display: 'flex', gap: 4, alignItems: 'flex-end' }}>
-          <Typography sx={{ fontSize: 20, fontWeight: 700, color: dark ? '#FFFFFF' : '#333333' }}>{amount}</Typography>
-          <Typography sx={{ fontSize: 14, color: dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(51, 51, 51, 0.5)' }}>
-            {percentage}
+          <TestnetV3Mark addresss={addresss || []} />
+        </Box>
+        <Box
+          component="img"
+          sx={{
+            height: 168,
+            display: 'block',
+            width: '100%',
+            objectFit: 'cover'
+          }}
+          src={imgPath}
+          alt={'Token logo'}
+        />
+        <Box sx={{ padding: 16 }}>
+          <Typography
+            sx={{
+              mb: isCollection ? 10 : 15,
+              color: dark ? '#FFFFFF' : '#333333',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis'
+            }}
+          >
+            {title}
           </Typography>
+          <Typography sx={{ color: dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(51, 51, 51, 0.5)', mb: 5 }}>
+            Total Liquidity
+          </Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 4,
+              alignItems: 'flex-end',
+              ...(isCollection && { mt: 10, mb: 10 })
+            }}
+          >
+            <Typography sx={{ fontSize: 20, fontWeight: 700, color: dark ? '#FFFFFF' : '#333333' }}>
+              {amount}
+            </Typography>
+            <Typography sx={{ fontSize: 14, color: dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(51, 51, 51, 0.5)' }}>
+              {percentage}
+            </Typography>
+          </Box>
+          {isCollection && (
+            <Typography sx={{ fontSize: 14, fontWeight: 600, color: 'rgba(255, 255, 255, 0.5)', mt: 2 }}>
+              Price: {formatMillion(Number(price) || 0, '$ ', 2)}
+            </Typography>
+          )}
         </Box>
       </Box>
-    </Box>
-  ))
+    )
+  )
 
   return (
     <Box

@@ -5,20 +5,28 @@ import ERC2721_ABI from 'constants/abis/erc721.json'
 import { use1155Contract, use721Contract, useMulticallContract } from '../../hooks/useContract'
 import { getContract, isAddress } from '../../utils'
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../multicall/hooks'
-import { ChainId, Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount } from '@ladder/sdk'
+import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount } from '@ladder/sdk'
 import { useActiveWeb3React } from 'hooks'
 import { useAllTokens } from 'hooks/Tokens'
 import { Token1155 } from 'constants/token/token1155'
 import { checkIs1155, checkIs721, filter721 } from 'utils/checkIs1155'
 import { useBlockNumber } from 'state/application/hooks'
 import { Token721 } from 'constants/token/token721'
-import { getTest721uriWithIndex, isTest721, TEST_721_LADDER } from 'constants/default721List'
+import { getTest721uriWithIndex, isTest721 } from 'constants/default721List'
+import { Contract } from '@ethersproject/contracts'
+import { ChainId } from '../../constants/chain'
 
 // import { axiosNftScanInstance, erc721CollectionResponseType, ResponseType } from 'utils/axios'
 
-async function getNFTsOwnedByAddress(contract, ownerAddress) {
+async function getNFTsOwnedByAddress(contract: Contract | null | undefined, ownerAddress: string | undefined) {
+  if (!contract) {
+    throw new Error('Contract is not defined')
+  }
+  if (!ownerAddress) {
+    throw new Error('Owner address is not defined')
+  }
   const totalTokens = await contract.tokenCounter()
-  const ownedTokens = []
+  const ownedTokens: number[] = []
 
   for (let tokenId = 0; tokenId < totalTokens; tokenId++) {
     const owner = await contract.ownerOf(tokenId)
@@ -299,20 +307,22 @@ export function useToken721BalanceTokens(tokenAmount?: TokenAmount): {
         const balance = tokenAmount?.toExact()
         if (!balance || !account || !contract) return
 
-        const total = parseInt(balance)
-        let indexes = []
-        if (TEST_721_LADDER.includes(contract.address)) {
-          indexes = await getNFTsOwnedByAddress(contract, account)
-        } else {
-          const arr = Array.from(Array(total).keys()).map((_, idx) => {
-            return contract.tokenOfOwnerByIndex(account, idx)
-          })
-          indexes = await Promise.all(arr)
-        }
+        const indexes = await getNFTsOwnedByAddress(contract, account)
+
+        /*    if (TEST_721_LADDER.includes(contract.address)) {
+              indexes = await getNFTsOwnedByAddress(contract, account)
+            } else {
+                    const total = parseInt(balance)
+
+              const arr = Array.from(Array(total).keys()).map((_, idx) => {
+                return contract.tokenOfOwnerByIndex(account, idx)
+              })
+              indexes = await Promise.all(arr)
+            }*/
         const token721 = filter721(tokenAmount.token)
         const tokens = indexes.map(
           id =>
-            new Token721(chainId, tokenAmount.token.address, id.toString(), {
+            new Token721(chainId as ChainId, tokenAmount.token.address, id.toString(), {
               name: tokenAmount.token.name,
               symbol: tokenAmount.token.symbol,
               tokenUri: token721?.tokenUri,

@@ -97,6 +97,7 @@
     "lightweight-charts": "^3.7.0",
     "lottie-web": "^5.9.6",
     "moment": "^2.29.4",
+    "notistack": "^3.0.1",
     "react-ga4": "^1.4.1",
     "react-virtualized-auto-sizer": "^1.0.15",
     "swiper": "^8.4.4",

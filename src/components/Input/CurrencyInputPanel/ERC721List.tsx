@@ -17,6 +17,7 @@ import { AllTokens } from 'models/allTokens'
 import useModal from 'hooks/useModal'
 import { Loader } from 'components/AnimatedSvg/Loader'
 import { useCurrencyModalListHeight } from 'hooks/useScreenSize'
+import useBreakpoint from '../../../hooks/useBreakpoint'
 
 export default function ERC721List({
   searchQueryNFT,
@@ -28,7 +29,7 @@ export default function ERC721List({
   // const [searchQueryNFT, setSearchQueryNFT] = useState<string>('')
   const tokenOptions = useTrackedToken721List()
 
-  // const isDownMd = useBreakpoint('md')
+  const isDownMd = useBreakpoint('md')
   const { hideModal } = useModal()
 
   const debouncedQueryNFT = useDebounce(searchQueryNFT, 200)
@@ -71,7 +72,7 @@ export default function ERC721List({
     }
   }, [addUserToken, searchTokenIsAddedNFT, searchTokenNFT])
 
-  const listHeight = useCurrencyModalListHeight('310px')
+  const listHeight = useCurrencyModalListHeight(isDownMd ? '200px' : '250px')
 
   return (
     <>

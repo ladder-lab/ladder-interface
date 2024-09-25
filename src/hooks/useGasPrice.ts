@@ -11,14 +11,23 @@ export function useGasPriceInfo() {
   return useCallback(async () => {
     if (!web3) throw new Error('web3 is null')
 
-    let gasPrice: string | undefined = undefined
-
-    try {
-      gasPrice = await web3.eth.getGasPrice()
-    } catch (error) {
-      console.log(error)
-      throw new Error('Get gas error, please try again.')
+    const getGasPriceWithRetry = async (retries: number): Promise<string> => {
+      let gasPrice: string | undefined = undefined
+      for (let attempt = 0; attempt < retries; attempt++) {
+        try {
+          gasPrice = await web3.eth.getGasPrice()
+          break
+        } catch (error) {
+          console.log(`Attempt ${attempt + 1} failed:`, error)
+          if (attempt === retries - 1) {
+            throw new Error('Get gas error, please try again.')
+          }
+        }
+      }
+      return gasPrice || ''
     }
+    const gasPrice = await getGasPriceWithRetry(3)
+
     return {
       gasPrice: calculateGasPriceMargin(gasPrice || '', speed)
     }

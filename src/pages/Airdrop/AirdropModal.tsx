@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, FormHelperText, Typography } from '@mui/material'
 import Modal from 'components/Modal'
 import boxModalUrl from 'assets/images/box_modal.png'
 import luckModalUrl from 'assets/images/luck_modal.png'
@@ -9,10 +9,12 @@ import useModal from 'hooks/useModal'
 import { useIsDarkMode } from 'state/user/hooks'
 import { Link } from 'react-router-dom'
 import { ExternalLink } from 'theme/components'
-import React, { useCallback, useState } from 'react'
-import MessageBox from '../../components/Modal/TransactionModals/MessageBox'
+import { useCallback, useEffect, useState } from 'react'
 import Input from '../../components/Input'
 import useBreakpoint from '../../hooks/useBreakpoint'
+import { Axios } from '../../utils/axios'
+import { useSnackbar } from 'notistack'
+import { useActiveWeb3React } from '../../hooks'
 
 export default function BoxModal({ getBox, BoxId }: { getBox: () => void; BoxId?: string }) {
   const isDardMode = useIsDarkMode()
@@ -113,24 +115,47 @@ export function LuckModal({ getLuck }: { getLuck: () => void }) {
 
 export function EmailModal() {
   const { hideModal } = useModal()
+  const { account } = useActiveWeb3React()
   const isDownMd = useBreakpoint('md')
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isCodeSent, setIsCodeSent] = useState(false)
+  const [emailError, setEmailError] = useState('')
+  const { enqueueSnackbar } = useSnackbar()
+  const [countdown, setCountdown] = useState(0)
 
+  useEffect(() => {
+    let timer: NodeJS.Timeout
+    if (countdown > 0) {
+      timer = setTimeout(() => setCountdown(countdown - 1), 1000)
+    }
+    return () => clearTimeout(timer)
+  }, [countdown])
   const handleSendCode = async () => {
     if (!validateEmail(email)) {
-      alert('Please enter a valid email address.')
+      setEmailError('Please enter a valid email address.')
       return
     }
+    setEmailError('')
     setIsLoading(true)
     try {
-      // 这里可以添加发送验证码的逻辑
+      await Axios.post('/email/send-verification-code', {
+        email
+      })
+      setCountdown(60)
       setIsCodeSent(true)
-      alert('Verification code sent to your email!')
+      enqueueSnackbar('Verification code sent to your email!', {
+        variant: 'success',
+        autoHideDuration: 3000,
+        anchorOrigin: { horizontal: 'right', vertical: 'top' }
+      })
     } catch (error) {
-      alert('Failed to send verification code.')
+      enqueueSnackbar('Failed to send verification code.', {
+        variant: 'warning',
+        autoHideDuration: 3000,
+        anchorOrigin: { horizontal: 'right', vertical: 'top' }
+      })
     } finally {
       setIsLoading(false)
     }
@@ -139,8 +164,17 @@ export function EmailModal() {
   const handleSubmit = async () => {
     setIsLoading(true)
     try {
-      alert('Code verified successfully!')
+      await Axios.post('/email/verify-code', {
+        walletAddress: account,
+        code,
+        email
+      })
       hideModal()
+      enqueueSnackbar('Code verified successfully!', {
+        variant: 'success',
+        autoHideDuration: 3000,
+        anchorOrigin: { horizontal: 'right', vertical: 'top' }
+      })
     } catch (error) {
       alert('Failed to verify code.')
     } finally {
@@ -165,15 +199,18 @@ export function EmailModal() {
           onChange={e => setEmail(e.target.value)}
           placeholder="Enter your email"
           height={isDownMd ? 48 : 60}
+          error={!!emailError}
         />
-
+        {emailError && (
+          <FormHelperText error>{emailError}</FormHelperText> // 显示错误提示
+        )}
         <Button
           variant="contained"
           onClick={handleSendCode}
-          disabled={isLoading}
-          sx={{ marginBottom: 10, width: '100%' }}
+          disabled={isLoading || !!emailError || countdown > 0}
+          sx={{ marginBottom: 10, marginTop: 10, width: '100%' }}
         >
-          {isLoading ? 'Sending...' : 'Get Code'}
+          {countdown > 0 ? `Resend Code (${countdown}s)` : isLoading ? 'Sending...' : 'Get Code'}
         </Button>
         {isCodeSent && (
           <Input
@@ -183,7 +220,12 @@ export function EmailModal() {
             placeholder="Enter the code sent to your email"
           />
         )}
-        <Button variant="contained" onClick={handleSubmit} disabled={isLoading || !isCodeSent} sx={{ width: '100%' }}>
+        <Button
+          variant="contained"
+          onClick={handleSubmit}
+          disabled={isLoading || !isCodeSent || !code}
+          sx={{ width: '100%', marginTop: 10 }}
+        >
           {isLoading ? 'Submitting...' : 'Submit'}
         </Button>
       </Box>

@@ -2,16 +2,7 @@ import { useMemo } from 'react'
 import { Box, Backdrop, CircularProgress, Typography, Button, Grid, useTheme } from '@mui/material'
 import Card from 'components/Card'
 import Image from 'components/Image'
-// import LogoText from 'components/LogoText'
 import Divider from 'components/Divider'
-// import DummyAvatar from 'assets/svg/dummy_avatar.svg'
-// import BscLogo from 'assets/svg/bsc.svg'
-// import { ExternalLink } from 'theme/components'
-// import { ReactComponent as DummyChart } from 'assets/svg/dummy_chart.svg'
-// import { ReactComponent as ShareIcon } from 'assets/svg/share_icon.svg'
-// import { AllTokens } from 'models/allTokens'
-// import DoubleCurrencyLogo from 'components/essential/CurrencyLogo/DoubleLogo'
-// import { ETHER } from 'constants/token'
 import useBreakpoint from 'hooks/useBreakpoint'
 import { useNavigate, useParams } from 'react-router-dom'
 import { StatTokenInfo, StatTopPoolsProp, StatTopTokensProp, useTopPoolsList } from 'hooks/useStatBacked'
@@ -44,7 +35,6 @@ export default function Collection() {
     }
     return PoolPairType.ERC20_ERC20
   }, [type])
-
   const { result: topPoolsResult, page: topPoolsListPage } = useTopPoolsList({
     chainId: curChainId,
     token: address || '',
@@ -58,7 +48,7 @@ export default function Collection() {
       ...item
     }))
   }, [curPoolPairType, topPoolsListPage.pageSize, topPoolsResult])
-
+  console.log(topPoolsList)
   return (
     <Box
       sx={{
@@ -155,7 +145,8 @@ function MainCard({ token }: { token: StatTokenInfo | undefined }) {
   )
 }
 
-function StatCard({ info, chainId }: { info: StatTopTokensProp | undefined; chainId: ChainId }) {
+interface StatCardProp extends StatTopTokensProp, StatTokenInfo {}
+function StatCard({ info, chainId }: { info: StatCardProp | undefined; chainId: ChainId }) {
   const theme = useTheme()
   const isDownMd = useBreakpoint('md')
   const data = useMemo(() => {
@@ -210,7 +201,7 @@ function StatCard({ info, chainId }: { info: StatTopTokensProp | undefined; chai
           <Button
             variant="outlined"
             sx={{ height: 48, borderColor: theme.palette.info.main, color: theme.palette.info.main }}
-            onClick={() => window.open(getEtherscanLink(chainId, info?.address || '', 'token'))}
+            onClick={() => window.open(getEtherscanLink(chainId, info.address, 'token'))}
           >
             View on explorer
           </Button>
@@ -244,7 +235,6 @@ function StatCard({ info, chainId }: { info: StatTopTokensProp | undefined; chai
               title="Total Liquidity"
               value={info ? formatMillion(Number(info.liquidity) || 0, '$ ', 2) : '-'}
               percentage={0}
-              liquidity
             />
           </Grid>
         </Grid>

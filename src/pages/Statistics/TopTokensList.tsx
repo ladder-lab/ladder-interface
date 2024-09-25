@@ -1,11 +1,10 @@
 import { ChainId } from '@ladder/sdk'
-import { StatTokenInfo, useTopTokensList } from '../../hooks/useStatBacked'
+import { GraphOrderType, StatTokenInfo, useTopTokensList } from '../../hooks/useStatBacked'
 import { Box, Link, Stack, Typography, useTheme } from '@mui/material'
 import StatTable, { TableHeadCellsProp, TableRowCellsProp } from './StatTable'
 import { formatMillion } from '../../utils'
 import RowBetween from '../../styled/RowBetween'
 import { Mode } from '../../components/Input/CurrencyInputPanel/SelectCurrencyModal'
-import { StyledTabButtonText } from './index'
 import { useNavigate } from 'react-router-dom'
 import { routes } from '../../constants/routes'
 import CurrencyLogo from '../../components/essential/CurrencyLogo'
@@ -40,9 +39,8 @@ export function ShowTopTokensCurrencyBox({ chainId, tokenInfo }: { chainId: Chai
 }
 
 export function TopTokensList({ chainId }: { chainId: ChainId }) {
-  const { search: topTokensSearch, result, page, order, loading } = useTopTokensList({ chainId })
+  const { result, page, order, loading } = useTopTokensList({ chainId, defaultMode: null })
   const theme = useTheme()
-
   const headers: TableHeadCellsProp[] = [
     {
       label: '#'
@@ -51,7 +49,7 @@ export function TopTokensList({ chainId }: { chainId: ChainId }) {
     { label: 'Price', sortValue: 'Price' },
     // { label: 'Price Change', sortValue: 'Price Change' },
     { label: 'Volume 24H', sortValue: 'Volume' },
-    { label: 'TVL', sortValue: 'TVL', sort: true }
+    { label: 'TVL', sortValue: GraphOrderType.TVL, sort: true }
   ]
   const rows: TableRowCellsProp[][] = result.map((item, index) => [
     { label: page.pageSize * (page.currentPage - 1) + 1 + index },
@@ -70,15 +68,6 @@ export function TopTokensList({ chainId }: { chainId: ChainId }) {
           <Typography fontWeight={500} fontSize={16} color={theme.palette.text.primary} mr={8}>
             Top Tokens
           </Typography>
-          {[Mode.ERC721, Mode.ERC1155, Mode.ERC20].map(item => (
-            <StyledTabButtonText
-              key={item}
-              className={item === topTokensSearch.type ? 'active' : ''}
-              onClick={() => topTokensSearch.setType(item)}
-            >
-              {item}
-            </StyledTabButtonText>
-          ))}
         </Stack>
       </RowBetween>
       <Box

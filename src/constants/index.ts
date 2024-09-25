@@ -1,15 +1,7 @@
-import {
-  Percent,
-  JSBI,
-  WETH,
-  ChainId,
-  Token,
-  FACTORY_ADDRESS as FACTORY_ADDRESS_SDK,
-  INIT_CODE_HASH
-} from '@ladder/sdk'
+import { Percent, JSBI, WETH, Token, FACTORY_ADDRESS as FACTORY_ADDRESS_SDK, INIT_CODE_HASH } from '@ladder/sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
-import { NETWORK_CHAIN_ID } from './chain'
+import { ChainId, NETWORK_CHAIN_ID } from './chain'
 import { DEFAULT_1155_LIST } from './default1155List'
 
 console.log(FACTORY_ADDRESS_SDK(137, false))
@@ -225,7 +217,8 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
 export const NetworkContextName = 'NETWORK'
 
 // default allowed slippage, in bips
-export const INITIAL_ALLOWED_SLIPPAGE = 50
+// export const INITIAL_ALLOWED_SLIPPAGE = 50
+export const INITIAL_ALLOWED_SLIPPAGE = 100
 export const INITIAL_USER_TRANSACTION_SPEED = 1.1
 // 20 minutes, denominated in seconds
 export const DEFAULT_DEADLINE_FROM_NOW = 60 * 20

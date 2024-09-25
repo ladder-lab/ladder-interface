@@ -21,7 +21,16 @@ export function useBadgeQueries() {
     },
     skip: !account
   })
-  const result = data ? data.badge : {}
+
+  const result = data?.badge
+    ? data.badge
+    : {
+        fl: 0,
+        le: 0,
+        lp: 0,
+        tr: 0
+      }
+
   return {
     loading,
     result,

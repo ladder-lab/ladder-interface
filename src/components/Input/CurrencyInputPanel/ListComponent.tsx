@@ -11,6 +11,7 @@ import { getName, getSymbol } from 'utils/getSymbol'
 import { Token721 } from 'constants/token/token721'
 import TestnetV3Mark from 'components/TestnetV3Mark'
 import AutoSizer from 'react-virtualized-auto-sizer'
+import useBreakpoint from '../../../hooks/useBreakpoint'
 
 export function CurrencyListComponent({
   onSelect,
@@ -45,7 +46,8 @@ export function CurrencyListComponent({
   )
 
   const itemData: (Currency | undefined)[] = useMemo(() => {
-    const formatted: (Currency | undefined)[] = showETH ? [Currency.ETHER, ...options] : options
+    // const formatted: (Currency | undefined)[] = showETH ? [Currency.ETHER, ...options] : options
+    const formatted: (Currency | undefined)[] = showETH ? [...options] : options
 
     return formatted
   }, [options, showETH])
@@ -78,7 +80,7 @@ export function CollectionListComponent({
   options: Token721[]
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>
 }) {
-  // const isDownMd = useBreakpoint('md')
+  const isDownMd = useBreakpoint('md')
 
   // const key = useCallback((collection: Token721): string => {
   //   return collection ? collection.tokenId?.toString() || idx + '' : ''
@@ -100,7 +102,7 @@ export function CollectionListComponent({
 
   return (
     <FixedSizeList
-      height={365}
+      height={isDownMd ? 365 : 600}
       width="100%"
       itemCount={options.length}
       itemSize={56}

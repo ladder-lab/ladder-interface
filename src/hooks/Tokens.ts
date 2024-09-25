@@ -15,9 +15,11 @@ import { NETWORK_CHAIN_ID } from 'constants/chain'
 import { DEFAULT_1155_LIST } from 'constants/default1155List'
 import { DEFAULT_721_LIST } from 'constants/default721List'
 import { Token721 } from 'constants/token/token721'
-import ERC721_ABI from 'constants/abis/erc721.json'
+// import ERC721_ABI from 'constants/abis/erc721.json'
+import ERC721_TEST_ABI from '../constants/abis/erc721-test.json'
+
 import tUSDCImg from 'assets/images/tUSDC.jpg'
-import tWETHImg from 'assets/images/tWETH.jpg'
+// import tWETHImg from 'assets/images/tWETH.jpg'
 
 // Check if currency is included in custom list from user storage
 export function useIsUserAddedToken(currency: Currency | undefined | null): boolean {
@@ -115,7 +117,7 @@ const testTokens = {
     )
   },
   [11155111]: {
-    '0x85eDB7A0cbAcf5BD641e0FF5D6270bEf9C72Bd6B': new WrappedTokenInfo(
+    '0xe857daCe6FdBC4d27b6F17A0a67D3EF7B0380862': new WrappedTokenInfo(
       {
         chainId: 11155111,
         address: '0xe857daCe6FdBC4d27b6F17A0a67D3EF7B0380862',
@@ -129,7 +131,7 @@ const testTokens = {
     '0x3ABF888da82368800F2908171284ae97AbFAeB41': new WrappedTokenInfo(
       {
         chainId: 11155111,
-        address: '0xe857daCe6FdBC4d27b6F17A0a67D3EF7B0380862',
+        address: '0x3ABF888da82368800F2908171284ae97AbFAeB41',
         decimals: 18,
         symbol: 'USDT',
         name: 'Tether',
@@ -407,7 +409,7 @@ export function useCurrency(
 }
 
 async function checkTokenType(address: string, library: any) {
-  const nftContract = getContract(address, ERC721_ABI, library)
+  const nftContract = getContract(address, ERC721_TEST_ABI, library)
   try {
     const res = await nftContract.supportsInterface(interface721[0])
     if (res === true) {

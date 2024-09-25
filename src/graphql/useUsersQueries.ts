@@ -30,6 +30,7 @@ export function useUserQueries(props: userQueriesProps) {
     }
   })
   const result = data ? data.users : []
+
   return {
     loading,
     result

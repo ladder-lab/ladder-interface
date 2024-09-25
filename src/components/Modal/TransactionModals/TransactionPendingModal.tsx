@@ -12,7 +12,8 @@ export default function TransacitonPendingModal({ pendingText }: { pendingText?:
           Waiting For Confirmation
         </Typography>
         <Typography fontWeight={400} fontSize={14} textAlign="center" color={theme.palette.text.primary}>
-          {pendingText || 'Please initiate transaction in your wallet'}
+          {/*{pendingText || 'Please initiate transaction in your wallet'}*/}
+          {pendingText || ''}
         </Typography>
       </Box>
     </Modal>

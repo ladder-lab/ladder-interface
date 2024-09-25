@@ -1,11 +1,16 @@
-import { ChainId } from '@ladder/sdk'
-import { StatTransactionsProp, StatTransactionsType, useTransactionsList } from '../../hooks/useStatBacked'
+import {
+  GraphOrderType,
+  StatTransactionsProp,
+  StatTransactionsType,
+  useTransactionsList
+} from '../../hooks/useStatBacked'
 import { Box, Link, Stack, Tooltip, Typography, useTheme } from '@mui/material'
 import StatTable, { TableHeadCellsProp, TableRowCellsProp } from './StatTable'
 import { formatMillion, getEtherscanLink, shortenAddress } from '../../utils'
 import RowBetween from '../../styled/RowBetween'
 import { useMemo } from 'react'
 import { Mode } from '../../components/Input/CurrencyInputPanel/SelectCurrencyModal'
+import { ChainId } from '../../constants/chain'
 
 export function StatTransList({
   chainId,
@@ -44,7 +49,7 @@ export function StatTransList({
     { label: 'Token Amount' },
     { label: 'Token Amount' },
     { label: 'Account' },
-    { label: 'Time', sortValue: 'Time', sort: true }
+    { label: 'Time', sortValue: GraphOrderType.Time, sort: true }
   ]
   const rows: TableRowCellsProp[][] = result.map(item => [
     {
@@ -72,7 +77,7 @@ export function StatTransList({
     },
     {
       label: (
-        <Link href={getEtherscanLink(chainId, item.account, 'address')} target="_blank" underline="hover">
+        <Link href={getEtherscanLink(chainId as ChainId, item.account, 'address')} target="_blank" underline="hover">
           {shortenAddress(item.account)}
         </Link>
       )

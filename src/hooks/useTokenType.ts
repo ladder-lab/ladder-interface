@@ -4,7 +4,6 @@ import { Mode } from 'components/Input/CurrencyInputPanel/SelectCurrencyModal'
 import { isAddress } from 'utils'
 
 export function useTokenTypeCallback(tokenContract: string | undefined, IsDisplay?: boolean) {
-  console.log(tokenContract)
   const Erc20Contract = useTokenContract(isAddress(tokenContract) ? tokenContract : undefined)
   const Erc1155Contract = use1155Contract(isAddress(tokenContract) ? tokenContract : undefined)
   const Erc721Contract = use721Contract(isAddress(tokenContract) ? tokenContract : undefined)

@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client'
-import { StatTransactionsType, GraphOrderTypeMap, GraphOrderType } from '../hooks/useStatBacked'
+import { StatTransactionsType, GraphOrderType } from '../hooks/useStatBacked'
 import { Mode } from '../components/Input/CurrencyInputPanel/SelectCurrencyModal'
 
 const TOKEN_FIELDS = gql`
@@ -77,7 +77,7 @@ export function useTransactionsQueries(props: Props) {
 
   const statTransactionsType = statTransactionsTypeMap[type] || ''
   const skip = pageSize * (currentPage - 1)
-  const queryOrderBy = orderBy ? GraphOrderTypeMap[orderBy] : 'liquidity'
+  const queryOrderBy = orderBy ? orderBy : 'liquidity'
 
   const baseVariables = {
     skip,
